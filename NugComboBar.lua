@@ -15,7 +15,7 @@ local MAX_POINTS = MAX_COMBO_POINTS
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
 local showEmpty = false
-local init
+--~ local init
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -40,13 +40,12 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         if class == "ROGUE" or class == "DRUID" then
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        elseif class == "PRIEST" then
+        elseif class == "PALADIN" then
             MAX_POINTS = 3
             self:RegisterEvent("UNIT_AURA")
             --self:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(63731) -- Serendipity
-            --scanAura = GetSpellInfo(47930) -- Grace
+            scanAura = GetSpellInfo(85247) -- Holy Power buff
             --allowedUnit = "target"
             GetComboPoints = GetAuraStack
         elseif class == "SHAMAN" then
@@ -64,9 +63,9 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetShards
-            init = function(self)
-                self:UNIT_COMBO_POINTS("INIT","player")
-            end
+--~             init = function(self)
+--~                 self:UNIT_COMBO_POINTS("INIT","player")
+--~             end
             showEmpty = true
 --~             self:RegisterEvent("UNIT_AURA")
 --~             self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -113,7 +112,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
-    if init then init(self) end
+    self:UNIT_COMBO_POINTS("INIT","player")
 end
 
 --~ function NugComboBar.UPDATE_STEALTH(self)
@@ -462,7 +461,7 @@ function NugComboBar.Create(self)
     
     fr:SetScale(NugComboBarDB.scale)
     fr:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
-    fr:Hide()
+--~     fr:Hide()
     return fr
 end
 
