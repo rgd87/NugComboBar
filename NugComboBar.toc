@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: NugComboBar
+## Notes: Combopoints counter
+## Author: d87
+## SavedVariablesPerCharacter: NugComboBarDB_Character
+## SavedVariables: NugComboBarDB_Global
+embeds.xml
+NugComboBar.lua
