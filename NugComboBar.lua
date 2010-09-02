@@ -8,11 +8,14 @@ local SHINE_FADE_OUT = 0.4;
 local FRAME_LAST_NUM_POINTS = 0;
 
 local user
+local prevPoints
 NugComboBarDB = {}
 
 local MAX_POINTS = MAX_COMBO_POINTS
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
+local showEmpty = false
+local init
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -25,6 +28,10 @@ local GetAuraStack = function(unit)
     local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, "HELPFUL")
     if caster ~= "player" then count = 0 end
     return (count or 0)
+end
+
+local GetShards = function(unit)
+    return UnitPower(unit, SHARD_BAR_POWER_INDEX)
 end
 
 function NugComboBar.ADDON_LOADED(self,event,arg1)
@@ -51,10 +58,20 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             GetComboPoints = GetAuraStack
         elseif class == "WARLOCK" then
             MAX_POINTS = 3
-            self:RegisterEvent("UNIT_AURA")
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(47383) -- Molten Core
-            GetComboPoints = GetAuraStack
+            self:RegisterEvent("UNIT_POWER")
+            self.UNIT_POWER = function(self,event,unit,ptype)
+                if ptype ~= "SOUL_SHARDS" or unit ~= "player" then return end
+                self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+            end
+            GetComboPoints = GetShards
+            init = function(self)
+                self:UNIT_COMBO_POINTS("INIT","player")
+            end
+            showEmpty = true
+--~             self:RegisterEvent("UNIT_AURA")
+--~             self.UNIT_AURA = self.UNIT_COMBO_POINTS
+--~             scanAura = GetSpellInfo(47383) -- Molten Core
+--~             GetComboPoints = GetAuraStack
         else
             return
         end
@@ -96,6 +113,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
+    if init then init(self) end
 end
 
 --~ function NugComboBar.UPDATE_STEALTH(self)
@@ -115,10 +133,11 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     self:UNIT_COMBO_POINTS(event, allowedUnit)
 end
 
-function NugComboBar.UNIT_COMBO_POINTS(self, event, unit)
+function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     if unit ~= allowedUnit then return end
     local comboPoints = GetComboPoints(unit);
 	local comboPoint, comboPointHighlight, fadeInfo;
+    --print(event,comboPoints,unit)
     if ( comboPoints > 0) then
 		if ( not self:IsVisible() ) then
 			self:Show();
@@ -126,9 +145,9 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit)
 		end
 
 		for i=1, MAX_POINTS do
-            comboPointAnim = getglobal("NugComboBarPoint"..i.."Animation");
-			comboPointHighlight = getglobal("NugComboBarPoint"..i.."Highlight");
-			comboPointShine = getglobal("NugComboBarPoint"..i.."Shine");
+            comboPointAnim = _G["NugComboBarPoint"..i.."Animation"]
+			comboPointHighlight = _G["NugComboBarPoint"..i.."Highlight"]
+			comboPointShine = _G["NugComboBarPoint"..i.."Shine"]
 			if ( i <= comboPoints ) then
 				if ( i > FRAME_LAST_NUM_POINTS ) then
 					local fadeInfo = {};
@@ -152,7 +171,8 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit)
 	else
 		NugComboBarPoint1Highlight:SetAlpha(0);
 		NugComboBarPoint1Shine:SetAlpha(0);
-		self:Hide();
+        NugComboBarPoint1Animation:SetAlpha(0);
+		if not showEmpty then self:Hide() end
 	end
 	FRAME_LAST_NUM_POINTS = comboPoints;
 end
@@ -167,7 +187,7 @@ function NugComboBar.ShineFadeIn(frame)
 end
 
 function NugComboBar.ShineFadeOut(frameName)
-	UIFrameFadeOut(getglobal(frameName), SHINE_FADE_OUT);
+	UIFrameFadeOut(_G[frameName], SHINE_FADE_OUT);
 end
 
 function NugComboBar.SetColor(point, r, g, b)
@@ -233,7 +253,7 @@ function NugComboBar.MakeOptions(self)
                         set = function(info, s)
                             NugComboBarDB.animation = s
                             for i=1, MAX_POINTS do
-                                comboPointAnim = getglobal("NugComboBarPoint"..i.."Animation");
+                                comboPointAnim = _G["NugComboBarPoint"..i.."Animation"]
                                 if NugComboBarDB.animation then
                                     comboPointAnim:Show()
                                     UIFrameFadeIn(comboPointAnim, HIGHLIGHT_FADE_IN)
