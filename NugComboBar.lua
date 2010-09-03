@@ -1,12 +1,5 @@
 NugComboBar = CreateFrame("Frame",nil, UIParent)
 
-local FADE_IN = 0.3;
-local FADE_OUT = 0.5;
-local HIGHLIGHT_FADE_IN = 0.4;
-local SHINE_FADE_IN = 0.3;
-local SHINE_FADE_OUT = 0.4;
-local FRAME_LAST_NUM_POINTS = 0;
-
 local user
 NugComboBarDB = {}
 
@@ -33,6 +26,10 @@ local GetShards = function(unit)
     return UnitPower(unit, SHARD_BAR_POWER_INDEX)
 end
 
+local GetHolyPower = function(unit)
+    return UnitPower(unit, HOLY_POWER_INDEX)
+end
+
 function NugComboBar.ADDON_LOADED(self,event,arg1)
     if arg1 == "NugComboBar" then
         local class = select(2,UnitClass("player"))
@@ -41,13 +38,12 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
         elseif class == "PALADIN" then
             MAX_POINTS = 3
-            self:RegisterEvent("UNIT_AURA")
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(85247) -- Holy Power buff
-            --self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            --scanAura = GetSpellInfo(47930) -- Grace
-            --allowedUnit = "target"
-            GetComboPoints = GetAuraStack
+            self:RegisterEvent("UNIT_POWER")
+            self.UNIT_POWER = function(self,event,unit,ptype)
+                if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
+                self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+            end
+            GetComboPoints = GetHolyPower
         elseif class == "SHAMAN" then
             MAX_POINTS = 5
             self:RegisterEvent("UNIT_AURA")
@@ -64,6 +60,10 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             end
             GetComboPoints = GetShards
             showEmpty = true
+        
+        --self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            --scanAura = GetSpellInfo(47930) -- Grace
+            --allowedUnit = "target"
         else
             return
         end
@@ -140,9 +140,9 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     end
     
     if comboPoints == 0 and not showEmpty then
-        self:Hide()
+        self:SetAlpha(0)
     else
-        self:Show()
+        self:SetAlpha(1)
     end
 
 end
@@ -314,15 +314,15 @@ end
 
 
 local ActivateFunc = function(self)
---~     if self.dag:IsPlaying() then self.dag:Pause() end
+    if self.dag:IsPlaying() then self.dag:Stop() end
     self:Show()
-    self.aag:Play()
     self.active = true
+    self.aag:Play()
 end
 local DeactivateFunc = function(self)
---~     if self.aag:IsPlaying() then self.aag:Pause() end
-    self.dag:Play()
+    if self.aag:IsPlaying() then self.aag:Stop() end
     self.active = false
+    self.dag:Play()
 end
 local SetColorFunc = function(self,r,g,b)
     self.t:SetVertexColor(r,g,b)
@@ -408,7 +408,6 @@ function NugComboBar.Create(self)
             f:SetAlpha(1)
         end)
         aag:SetScript("OnPlay",function(self)
-            f:Show()
             f.glow2:Play()
         end)
 
@@ -422,9 +421,6 @@ function NugComboBar.Create(self)
         dag:SetScript("OnFinished",function(self)
             f:SetAlpha(0)
             f:Hide()
-        end)
-        dag:SetScript("OnStop",function(self)
-            f:SetAlpha(0.5)
         end)
         
         
