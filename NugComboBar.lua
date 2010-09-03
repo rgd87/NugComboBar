@@ -63,7 +63,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetShards
---~             showEmpty = true
+            showEmpty = true
         else
             return
         end
@@ -84,7 +84,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.y = NugComboBarDB.y or 0
         NugComboBarDB.scale = NugComboBarDB.scale or 1
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
-        if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
+--~         if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
         NugComboBarDB.colors = NugComboBarDB.colors or { {0.81,0.04,0.97},{0.81,0.04,0.97},{0.81,0.04,0.97},{0.81,0.04,0.97},{0.97,0,0.8} }
         
         self:RegisterEvent("PLAYER_LOGIN")
@@ -139,7 +139,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
         end
     end
     
-    if comboPoints == 0 and not NugComboBarDB.showEmpty then
+    if comboPoints == 0 and not showEmpty then
         self:Hide()
     else
         self:Show()
@@ -150,7 +150,7 @@ end
 function NugComboBar.SetColor(point, r, g, b)
     NugComboBarDB.colors[point] = {r,g,b}
     local offset = 5 - MAX_POINTS
-    NugComboBar.p[point-offset]:SetColor(r,g,b)
+    if point-offset > 0 then NugComboBar.p[point-offset]:SetColor(r,g,b) end
 end
 
 
@@ -200,17 +200,17 @@ function NugComboBar.MakeOptions(self)
                         max = 2,
                         step = 0.01,
                     },
-                    anim = {
-                        type = "toggle",
-                        name = "Show Empty",
-                        desc = "toggle",
-                        get = function(info)
-                            return NugComboBarDB.showEmpty
-                        end,
-                        set = function(info, s)
-                            NugComboBarDB.showEmpty = s
-                        end,
-                    },
+--~                     anim = {
+--~                         type = "toggle",
+--~                         name = "Show Empty",
+--~                         desc = "toggle",
+--~                         get = function(info)
+--~                             return NugComboBarDB.showEmpty
+--~                         end,
+--~                         set = function(info, s)
+--~                             NugComboBarDB.showEmpty = s
+--~                         end,
+--~                     },
                 }
             },
             showColor = {
@@ -228,7 +228,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar:SetColor(1,r,g,b)
+                            NugComboBar.SetColor(1,r,g,b)
                         end,
                     },
                     color2 = {
@@ -240,7 +240,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar:SetColor(2,r,g,b)
+                            NugComboBar.SetColor(2,r,g,b)
                         end,
                     },
                     color3 = {
@@ -252,7 +252,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar:SetColor(3,r,g,b)
+                            NugComboBar.SetColor(3,r,g,b)
                         end,
                     },
                     color4 = {
@@ -264,7 +264,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar:SetColor(4,r,g,b)
+                            NugComboBar.SetColor(4,r,g,b)
                         end,
                     },
                     color5 = {
@@ -276,7 +276,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar:SetColor(5,r,g,b)
+                            NugComboBar.SetColor(5,r,g,b)
                         end,
                     },
                     color = {
@@ -289,7 +289,7 @@ function NugComboBar.MakeOptions(self)
                         end,
                         set = function(info, r, g, b)
                             for i=1,5 do
-                                NugComboBar:SetColor(i,r,g,b)
+                                NugComboBar.SetColor(i,r,g,b)
                             end
                         end,
                     },
