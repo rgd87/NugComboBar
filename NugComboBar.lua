@@ -8,7 +8,6 @@ local SHINE_FADE_OUT = 0.4;
 local FRAME_LAST_NUM_POINTS = 0;
 
 local user
-local prevPoints
 NugComboBarDB = {}
 
 local MAX_POINTS = MAX_COMBO_POINTS
@@ -43,9 +42,10 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         elseif class == "PALADIN" then
             MAX_POINTS = 3
             self:RegisterEvent("UNIT_AURA")
-            --self:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             scanAura = GetSpellInfo(85247) -- Holy Power buff
+            --self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            --scanAura = GetSpellInfo(47930) -- Grace
             --allowedUnit = "target"
             GetComboPoints = GetAuraStack
         elseif class == "SHAMAN" then
@@ -63,14 +63,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetShards
---~             init = function(self)
---~                 self:UNIT_COMBO_POINTS("INIT","player")
---~             end
-            showEmpty = true
---~             self:RegisterEvent("UNIT_AURA")
---~             self.UNIT_AURA = self.UNIT_COMBO_POINTS
---~             scanAura = GetSpellInfo(47383) -- Molten Core
---~             GetComboPoints = GetAuraStack
+--~             showEmpty = true
         else
             return
         end
@@ -90,7 +83,8 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.x = NugComboBarDB.x or 0
         NugComboBarDB.y = NugComboBarDB.y or 0
         NugComboBarDB.scale = NugComboBarDB.scale or 1
-        if not NugComboBarDB.animation then NugComboBarDB.animation = false end
+        if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
+        if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
         NugComboBarDB.colors = NugComboBarDB.colors or { {0.81,0.04,0.97},{0.81,0.04,0.97},{0.81,0.04,0.97},{0.81,0.04,0.97},{0.97,0,0.8} }
         
         self:RegisterEvent("PLAYER_LOGIN")
@@ -135,64 +129,28 @@ end
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     if unit ~= allowedUnit then return end
     local comboPoints = GetComboPoints(unit);
-	local comboPoint, comboPointHighlight, fadeInfo;
-    --print(event,comboPoints,unit)
-    if ( comboPoints > 0) then
-		if ( not self:IsVisible() ) then
-			self:Show();
-			UIFrameFadeIn(self, FADE_IN);
-		end
+    
+    for i = 1,MAX_POINTS do
+        if i <= comboPoints and not self.p[i].active then
+            self.p[i]:Activate()
+        end
+        if i > comboPoints and self.p[i].active then
+            self.p[i]:Deactivate()
+        end
+    end
+    
+    if comboPoints == 0 and not NugComboBarDB.showEmpty then
+        self:Hide()
+    else
+        self:Show()
+    end
 
-		for i=1, MAX_POINTS do
-            comboPointAnim = _G["NugComboBarPoint"..i.."Animation"]
-			comboPointHighlight = _G["NugComboBarPoint"..i.."Highlight"]
-			comboPointShine = _G["NugComboBarPoint"..i.."Shine"]
-			if ( i <= comboPoints ) then
-				if ( i > FRAME_LAST_NUM_POINTS ) then
-					local fadeInfo = {};
-					fadeInfo.mode = "IN";
-					fadeInfo.timeToFade = HIGHLIGHT_FADE_IN;
-					fadeInfo.finishedFunc = function(frame) NugComboBar.ShineFadeIn(frame) end;
-					fadeInfo.finishedArg1 = comboPointShine;
-                    if NugComboBarDB.animation then
-                        comboPointAnim:Show()
-                        UIFrameFadeIn(comboPointAnim, 1.3)
-                    end
-					UIFrameFade(comboPointHighlight, fadeInfo);
-				end
-			else
-                comboPointAnim:Hide()
-                comboPointAnim:SetAlpha(0);
-				comboPointHighlight:SetAlpha(0);
-				comboPointShine:SetAlpha(0);
-			end
-		end
-	else
-		NugComboBarPoint1Highlight:SetAlpha(0);
-		NugComboBarPoint1Shine:SetAlpha(0);
-        NugComboBarPoint1Animation:SetAlpha(0);
-		if not showEmpty then self:Hide() end
-	end
-	FRAME_LAST_NUM_POINTS = comboPoints;
-end
-
-function NugComboBar.ShineFadeIn(frame)
-	local fadeInfo = {};
-	fadeInfo.mode = "IN";
-	fadeInfo.timeToFade = SHINE_FADE_IN;
-	fadeInfo.finishedFunc = function(frameName) NugComboBar.ShineFadeOut(frameName) end;
-	fadeInfo.finishedArg1 = frame:GetName();
-	UIFrameFade(frame, fadeInfo);
-end
-
-function NugComboBar.ShineFadeOut(frameName)
-	UIFrameFadeOut(_G[frameName], SHINE_FADE_OUT);
 end
 
 function NugComboBar.SetColor(point, r, g, b)
     NugComboBarDB.colors[point] = {r,g,b}
-    _G["NugComboBarPoint"..point.."Highlight"]:SetVertexColor(r,g,b);
-    _G["NugComboBarPoint"..point.."Animation"].tex:SetVertexColor(r,g,b);
+    local offset = 5 - MAX_POINTS
+    NugComboBar.p[point-offset]:SetColor(r,g,b)
 end
 
 
@@ -244,23 +202,13 @@ function NugComboBar.MakeOptions(self)
                     },
                     anim = {
                         type = "toggle",
-                        name = "Fiery animation",
+                        name = "Show Empty",
                         desc = "toggle",
                         get = function(info)
-                            return NugComboBarDB.animation
+                            return NugComboBarDB.showEmpty
                         end,
                         set = function(info, s)
-                            NugComboBarDB.animation = s
-                            for i=1, MAX_POINTS do
-                                comboPointAnim = _G["NugComboBarPoint"..i.."Animation"]
-                                if NugComboBarDB.animation then
-                                    comboPointAnim:Show()
-                                    UIFrameFadeIn(comboPointAnim, HIGHLIGHT_FADE_IN)
-                                else
-                                    comboPointAnim:Hide()
-                                    comboPointAnim:SetAlpha(0)
-                                end
-                            end
+                            NugComboBarDB.showEmpty = s
                         end,
                     },
                 }
@@ -280,7 +228,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar.SetColor(1,r,g,b)
+                            NugComboBar:SetColor(1,r,g,b)
                         end,
                     },
                     color2 = {
@@ -292,7 +240,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar.SetColor(2,r,g,b)
+                            NugComboBar:SetColor(2,r,g,b)
                         end,
                     },
                     color3 = {
@@ -304,7 +252,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar.SetColor(3,r,g,b)
+                            NugComboBar:SetColor(3,r,g,b)
                         end,
                     },
                     color4 = {
@@ -316,7 +264,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar.SetColor(4,r,g,b)
+                            NugComboBar:SetColor(4,r,g,b)
                         end,
                     },
                     color5 = {
@@ -328,7 +276,7 @@ function NugComboBar.MakeOptions(self)
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
-                            NugComboBar.SetColor(5,r,g,b)
+                            NugComboBar:SetColor(5,r,g,b)
                         end,
                     },
                     color = {
@@ -341,7 +289,7 @@ function NugComboBar.MakeOptions(self)
                         end,
                         set = function(info, r, g, b)
                             for i=1,5 do
-                                NugComboBar.SetColor(i,r,g,b)
+                                NugComboBar:SetColor(i,r,g,b)
                             end
                         end,
                     },
@@ -364,106 +312,144 @@ function NugComboBar.MakeOptions(self)
 end
 
 
+
+local ActivateFunc = function(self)
+--~     if self.dag:IsPlaying() then self.dag:Pause() end
+    self:Show()
+    self.aag:Play()
+    self.active = true
+end
+local DeactivateFunc = function(self)
+--~     if self.aag:IsPlaying() then self.aag:Pause() end
+    self.dag:Play()
+    self.active = false
+end
+local SetColorFunc = function(self,r,g,b)
+    self.t:SetVertexColor(r,g,b)
+    self.g:SetVertexColor(r,g,b)
+    self.g2:SetVertexColor(r,g,b)
+end
+
+
 function NugComboBar.Create(self)
-    local fr = self
-    fr:SetFrameStrata("MEDIUM")
-    fr:SetWidth(140)
-    fr:SetHeight(32)
-
-    local ft = fr:CreateTexture("NugComboBarBackground","BACKGROUND")
-    ft:SetTexture[[Interface\Addons\NugComboBar\NCBBackground]]
-    if MAX_POINTS == 3 then
-        ft:SetTexture[[Interface\Addons\NugComboBar\NCBBackground3]]
-    end
-    ft:SetTexCoord(0, 140/256, 0, 1)
-    ft:SetAllPoints(fr)
-
+    self:SetFrameStrata("MEDIUM")
+    self:SetWidth(256)
+    self:SetHeight(64)
+    
+    local bgt = self:CreateTexture(nil,"BACKGROUND")
+    bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg"..MAX_POINTS)
+    bgt:SetAllPoints(self)
+    
+    local prev = self
+    local offsetX = -93.4
+    local offsetY = 3.2
+    local color_offset = 5 - MAX_POINTS
+    self.p = {}
     for i=1,MAX_POINTS do
-        local size = 14
-        if i == MAX_POINTS then size = 18 end
-        local offsetX = 24
-        if i == 4 then offsetX = 23 end
-        if i == MAX_POINTS then offsetX = 27 end
-        local offsetY = 0
-        local f = CreateFrame("Frame","NugComboBarPoint"..i,fr)
+        local size = (MAX_POINTS == i) and 32 or 23
+        local tex = (MAX_POINTS == i) and [[Interface\Addons\NugComboBar\tex\ncbu_point5]] or [[Interface\Addons\NugComboBar\tex\ncbu_point]]
+        local mul = (MAX_POINTS == i) and 1.8 or 1.55
+        local mul2 = (MAX_POINTS == i) and 2 or 2
+        local glowAlpha = (MAX_POINTS == i) and 0.85 or 0.85
+        local f = CreateFrame("Frame","NugComboBarPoint"..i,self)
+        f:SetHeight(size); f:SetWidth(size);
+        local t = f:CreateTexture(nil,"ARTWORK")
+        t:SetTexture(tex)
+        t:SetAllPoints(f)
+        f.t = t
         
-        f:SetWidth(size)
-        f:SetHeight(size)
         
-        if i == 1 then
-            f:SetPoint("LEFT",fr,"LEFT",12,2)
-        else
-            f:SetPoint("CENTER","NugComboBarPoint"..(i-1),"CENTER",offsetX,offsetY)
-        end
+        f:SetPoint("CENTER",prev,"CENTER",offsetX,offsetY)
+        offsetX = (MAX_POINTS == i+1) and 46 or 34.5
+        offsetY = (MAX_POINTS == i+1) and -3 or 0
         
-        local h = f:CreateTexture("NugComboBarPoint"..i.."Highlight","ARTWORK")
-        h:SetTexture[[Interface\Addons\NugComboBar\NCBPoint]]
+        local g = f:CreateTexture(nil,"OVERLAY")
+        g:SetHeight(size*mul); g:SetWidth(size*mul);
+        g:SetTexture[[Interface\Addons\NugComboBar\tex\ncbu_point_glow]]
+        g:SetPoint("CENTER",f,"CENTER",0,0)
+        g:SetAlpha(glowAlpha)
+        f.g = g
         
-        h:SetWidth(size-1)
-        h:SetHeight(size-1)
-            
-        h:SetAlpha(0)
-        h:SetPoint("CENTER",f,"CENTER",0,0)
-        h:SetVertexColor(unpack(NugComboBarDB.colors[i]))
+        local f2 = CreateFrame("Frame",nil,f)
+        f2:SetHeight(size*mul2); f2:SetWidth(size*mul2);
+        local g2 = f2:CreateTexture(nil,"OVERLAY")
+        g2:SetAllPoints(f2)
+        g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbu_glow2]]
+        f2:SetPoint("CENTER",f,"CENTER",0,0)
+        f.g2 = g2
         
-        local s = f:CreateTexture("NugComboBarPoint"..i.."Shine","OVERLAY")
-        s:SetTexture[[Interface\Addons\NugComboBar\NCBShine]]
+        f2:SetAlpha(0)
+        f:SetAlpha(0)
         
-        s:SetWidth(size+3)
-        s:SetHeight(size+3)
+        local g2aag = f2:CreateAnimationGroup()
+        local g2a = g2aag:CreateAnimation("Alpha")
+        g2a:SetStartDelay(0.2)
+        g2a:SetChange(1)
+        g2a:SetDuration(0.3)
+        g2a:SetOrder(1)
+        local g2d = g2aag:CreateAnimation("Alpha")
+        g2d:SetChange(-1)
+        g2d:SetDuration(0.7)
+        g2d:SetOrder(2)
+        f.glow2 = g2aag
+        
+        f.SetColor = SetColorFunc
+        f:SetColor(unpack(NugComboBarDB.colors[i+color_offset]))
+        
+        prev = f
+        
+        local aag = f:CreateAnimationGroup()
+        f.aag = aag
+        local a1 = aag:CreateAnimation("Alpha")
+        a1:SetChange(1)
+        a1:SetDuration(0.4)
+        a1:SetOrder(1)
+        aag:SetScript("OnFinished",function(self)
+            f:SetAlpha(1)
+        end)
+        aag:SetScript("OnPlay",function(self)
+            f:Show()
+            f.glow2:Play()
+        end)
+
+
+        local dag = f:CreateAnimationGroup()
+        f.dag = dag
+        local d1 = dag:CreateAnimation("Alpha")
+        d1:SetChange(-1)
+        d1:SetDuration(0.5)
+        d1:SetOrder(1)
+        dag:SetScript("OnFinished",function(self)
+            f:SetAlpha(0)
+            f:Hide()
+        end)
+        dag:SetScript("OnStop",function(self)
+            f:SetAlpha(0.5)
+        end)
+        
+        
+        f.Activate = ActivateFunc
+        f.Deactivate = DeactivateFunc
+        self.p[i] = f
+    end
     
-        s:SetAlpha(0)
-        s:SetBlendMode("ADD")
-        s:SetPoint("CENTER",f,"CENTER",0,0)
-        
-        
-        local a = CreateFrame("Frame","NugComboBarPoint"..i.."Animation",f)
-        
-        local asize = 30
-        if i == MAX_POINTS then asize = asize * 1.1 end
-        a:SetWidth(asize)
-        a:SetHeight(asize*1.5)
-        
-        a:SetPoint("CENTER",f,"CENTER",1.5,7)
-        
-        local h = a:CreateTexture(nil,"ARTWORK")
-        h:SetTexture("Interface\\AddOns\\NugComboBar\\fireballanimation1")
-        h:SetBlendMode("BLEND")
-        h:SetTexCoord(0,0.08333,0,1)
-        h:SetAllPoints(a)
-        h:SetVertexColor(unpack(NugComboBarDB.colors[i]))
-        
-        a.tex = h
-        a.tex.texcoord = 0 + (0.08333 * i * 2)
-        
-        local FrameOnUpdate = function (self, time)
-            self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
-            if self.OnUpdateCounter < 0.06 then return end
-            self.OnUpdateCounter = 0
-            self.tex:SetTexCoord(self.tex.texcoord, self.tex.texcoord + 0.08333,0,1)
-            self.tex.texcoord = self.tex.texcoord + 0.08333
-            if self.tex.texcoord > 0.99 then self.tex.texcoord = 0; end
-        end
-        a:SetScript("OnUpdate",FrameOnUpdate)
-        a:Hide()
-        a:SetAlpha(0)
-    end    
     
-    fr:EnableMouse(false)
-    fr:RegisterForDrag("LeftButton")
-    fr:SetMovable(true)
-    fr:SetScript("OnDragStart",function(self) self:StartMoving() end)
-    fr:SetScript("OnDragStop",function(self)
+    
+    self:EnableMouse(false)
+    self:RegisterForDrag("LeftButton")
+    self:SetMovable(true)
+    self:SetScript("OnDragStart",function(self) self:StartMoving() end)
+    self:SetScript("OnDragStop",function(self)
         self:StopMovingOrSizing();
         _,_, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
     end)
     
     
-    fr:SetScale(NugComboBarDB.scale)
-    fr:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
---~     fr:Hide()
-    return fr
+    self:SetScale(NugComboBarDB.scale)
+    self:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+    return self
 end
+
 
 
 function NugComboBar.SlashCmd(msg)
