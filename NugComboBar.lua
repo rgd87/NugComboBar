@@ -7,7 +7,8 @@ local MAX_POINTS = MAX_COMBO_POINTS
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
 local showEmpty = false
---~ local init
+local cataclysm = (select(4,GetBuildInfo()) - 40000) >= 0
+
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -36,7 +37,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         if class == "ROGUE" or class == "DRUID" then
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        elseif class == "PALADIN" then
+        elseif class == "PALADIN" and cataclysm then
             MAX_POINTS = 3
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -51,7 +52,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
-        elseif class == "WARLOCK" then
+        elseif class == "WARLOCK" and cataclysm then
             MAX_POINTS = 3
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -314,15 +315,24 @@ end
 
 
 local ActivateFunc = function(self)
-    if self.dag:IsPlaying() then self.dag:Stop() end
-    self:Show()
     self.active = true
-    self.aag:Play()
+    if cataclysm then
+        if self.dag:IsPlaying() then self.dag:Finish() end
+        self.aag:Play()
+    else
+        UIFrameFadeIn(self,0.4)
+    end
+        
+    self.glow2:Play()
 end
 local DeactivateFunc = function(self)
-    if self.aag:IsPlaying() then self.aag:Stop() end
     self.active = false
-    self.dag:Play()
+    if cataclysm then
+        if self.aag:IsPlaying() then self.aag:Finish() end
+        self.dag:Play()
+    else
+        UIFrameFadeOut(self,0.5)
+    end
 end
 local SetColorFunc = function(self,r,g,b)
     self.t:SetVertexColor(r,g,b)
@@ -405,10 +415,7 @@ function NugComboBar.Create(self)
         a1:SetDuration(0.4)
         a1:SetOrder(1)
         aag:SetScript("OnFinished",function(self)
-            f:SetAlpha(1)
-        end)
-        aag:SetScript("OnPlay",function(self)
-            f.glow2:Play()
+            self:GetParent():SetAlpha(1)
         end)
 
 
@@ -419,8 +426,7 @@ function NugComboBar.Create(self)
         d1:SetDuration(0.5)
         d1:SetOrder(1)
         dag:SetScript("OnFinished",function(self)
-            f:SetAlpha(0)
-            f:Hide()
+            self:GetParent():SetAlpha(0)
         end)
         
         
