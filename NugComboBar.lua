@@ -24,11 +24,11 @@ local GetAuraStack = function(unit)
 end
 
 local GetShards = function(unit)
-    return UnitPower(unit, SHARD_BAR_POWER_INDEX)
+    return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
 end
 
 local GetHolyPower = function(unit)
-    return UnitPower(unit, HOLY_POWER_INDEX)
+    return UnitPower(unit, SPELL_POWER_HOLY_POWER)
 end
 
 function NugComboBar.ADDON_LOADED(self,event,arg1)
@@ -83,10 +83,11 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.point = NugComboBarDB.point or "CENTER"
         NugComboBarDB.x = NugComboBarDB.x or 0
         NugComboBarDB.y = NugComboBarDB.y or 0
+        NugComboBarDB.anchorpoint = NugComboBarDB.anchorpoint or "LEFT"
         NugComboBarDB.scale = NugComboBarDB.scale or 1
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
 --~         if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
-        NugComboBarDB.colors = NugComboBarDB.colors or { {0.81,0.04,0.97},{0.81,0.04,0.97},{0.81,0.04,0.97},{0.81,0.04,0.97},{0.97,0,0.8} }
+        NugComboBarDB.colors = NugComboBarDB.colors or { {0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32} }
         
         self:RegisterEvent("PLAYER_LOGIN")
         
@@ -107,6 +108,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
+    self:CreateAnchor()
     self:UNIT_COMBO_POINTS("INIT","player")
 end
 
@@ -175,7 +177,13 @@ function NugComboBar.MakeOptions(self)
                     unlock = {
                         type = "execute",
                         name = "(Un)lock",
-                        func = function () local s = NugComboBar:IsMouseEnabled(); NugComboBar:EnableMouse(not s) end
+                        func = function ()
+                            if NugComboBar.anchor:IsVisible() then
+                                NugComboBar.anchor:Hide()
+                            else
+                                NugComboBar.anchor:Show()
+                            end
+                        end
                     },
                     lock = {
                         type = "execute",
@@ -340,18 +348,50 @@ local SetColorFunc = function(self,r,g,b)
     self.g2:SetVertexColor(r,g,b)
 end
 
+function NugComboBar.CreateAnchor(frame)
+    local self = CreateFrame("Frame",nil,UIParent)
+    self:SetWidth(10)
+    self:SetHeight(frame:GetHeight())
+    self:SetBackdrop{
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 0,
+        insets = {left = -2, right = -2, top = -2, bottom = -2},
+    }
+	self:SetBackdropColor(0.6, 0, 0, 0.7)
+    
+    self:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+    local p1 = NugComboBarDB.anchorpoint
+    local p2 = (p1 == "LEFT") and "RIGHT" or "LEFT"
+    frame:SetPoint("TOP"..p1,self,"TOP"..p2,0,0)
+    
+    
+    self:EnableMouse(true)
+    self:RegisterForDrag("LeftButton")
+    self:SetMovable(true)
+    self:SetScript("OnDragStart",function(self) self:StartMoving() end)
+    self:SetScript("OnDragStop",function(self)
+        self:StopMovingOrSizing();
+        _,_, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
+    end)
+    
+    self:Hide()
+    frame.anchor = self
+end
 
 function NugComboBar.Create(self)
     self:SetFrameStrata("MEDIUM")
-    self:SetWidth(256)
+    local w = (MAX_POINTS == 3) and 256-70-30 or 256-30
+    self:SetWidth(w)
     self:SetHeight(64)
+    self:SetPoint("CENTER",UIParent,"CENTER",0,0)
+    
     
     local bgt = self:CreateTexture(nil,"BACKGROUND")
     bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg"..MAX_POINTS)
-    bgt:SetAllPoints(self)
+    bgt:SetPoint("TOPLEFT",self,"TOPLEFT",0,0)
+    bgt:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",256,-64)
     
     local prev = self
-    local offsetX = -93.4
+    local offsetX = 35
     local offsetY = 3.2
     local color_offset = 5 - MAX_POINTS
     self.p = {}
@@ -368,8 +408,11 @@ function NugComboBar.Create(self)
         t:SetAllPoints(f)
         f.t = t
         
-        
-        f:SetPoint("CENTER",prev,"CENTER",offsetX,offsetY)
+        if i == 1 then
+            f:SetPoint("CENTER",prev,"LEFT",offsetX,offsetY)
+        else
+            f:SetPoint("CENTER",prev,"CENTER",offsetX,offsetY)
+        end
         offsetX = (MAX_POINTS == i+1) and 46 or 34.5
         offsetY = (MAX_POINTS == i+1) and -3 or 0
         
@@ -434,21 +477,8 @@ function NugComboBar.Create(self)
         f.Deactivate = DeactivateFunc
         self.p[i] = f
     end
-    
-    
-    
-    self:EnableMouse(false)
-    self:RegisterForDrag("LeftButton")
-    self:SetMovable(true)
-    self:SetScript("OnDragStart",function(self) self:StartMoving() end)
-    self:SetScript("OnDragStop",function(self)
-        self:StopMovingOrSizing();
-        _,_, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
-    end)
-    
-    
     self:SetScale(NugComboBarDB.scale)
-    self:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+    
     return self
 end
 
@@ -468,14 +498,19 @@ function NugComboBar.SlashCmd(msg)
         InterfaceOptionsFrame_OpenToCategory("NugComboBar")
     end
     if k == "unlock" then
-        NugComboBar:EnableMouse(true)
+        NugComboBar.anchor:Show()
     end
     if k == "lock" then
-        NugComboBar:EnableMouse(false)
+        NugComboBar.anchor:Hide()
     end
     if k == "reset" then
-        NugComboBar:ClearAllPoints()
-        NugComboBar:SetPoint("CENTER",UIParent,"CENTER",0,0)
+        NugComboBar.anchor:ClearAllPoints()
+        NugComboBar.anchor:SetPoint("CENTER",UIParent,"CENTER",0,0)
+    end
+    if k == "anchorpoint" then
+        local ap = v:upper()
+        if ap ~= "RIGHT" and ap ~="LEFT" then print ("right or left"); return end
+        NugComboBarDB.anchorpoint = ap
     end
     if k == "charspec" then
         if NugComboBarDB_Global.charspec[user] then NugComboBarDB_Global.charspec[user] = nil
