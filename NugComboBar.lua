@@ -7,7 +7,6 @@ local MAX_POINTS = MAX_COMBO_POINTS
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
 local showEmpty = false
-local cataclysm = (select(4,GetBuildInfo()) - 40000) >= 0
 
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
@@ -17,8 +16,9 @@ end)
 NugComboBar:RegisterEvent("ADDON_LOADED")
 
 local scanAura
+local filter = "HELPFUL"
 local GetAuraStack = function(unit)
-    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, "HELPFUL")
+    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
     if caster ~= "player" then count = 0 end
     return (count or 0)
 end
@@ -37,7 +37,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         if class == "ROGUE" or class == "DRUID" then
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        elseif class == "PALADIN" and cataclysm then
+        elseif class == "PALADIN" then
             MAX_POINTS = 3
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -52,7 +52,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
-        elseif class == "WARLOCK" and cataclysm then
+        elseif class == "WARLOCK" then
             MAX_POINTS = 3
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -61,8 +61,23 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             end
             GetComboPoints = GetShards
             showEmpty = true
-        
-        --self:RegisterEvent("PLAYER_TARGET_CHANGED")
+        elseif class == "WARRIOR" then
+            MAX_POINTS = 3
+            self:RegisterEvent("UNIT_AURA")
+            self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+            scanAura = GetSpellInfo(7386) -- Evangelism
+            filter = "HARMFUL"
+            allowedUnit = "target"
+            GetComboPoints = GetAuraStack
+        elseif class == "PRIEST" then
+            MAX_POINTS = 5
+            self:RegisterEvent("UNIT_AURA")
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+            scanAura = GetSpellInfo(81661) -- Evangelism
+            allowedUnit = "player"
+            GetComboPoints = GetAuraStack
+            --self:RegisterEvent("PLAYER_TARGET_CHANGED")
             --scanAura = GetSpellInfo(47930) -- Grace
             --allowedUnit = "target"
         else
@@ -88,6 +103,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
 --~         if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
         NugComboBarDB.colors = NugComboBarDB.colors or { {0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32} }
+        --NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.96,0.30,0.32}
         
         self:RegisterEvent("PLAYER_LOGIN")
         
@@ -102,12 +118,12 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         SLASH_NCBSLASH1 = "/ncb";
         SLASH_NCBSLASH2 = "/nugcombobar";
         SlashCmdList["NCBSLASH"] = NugComboBar.SlashCmd
-        
-        self.MakeOptions()
     end
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
+    self:SetAlpha(0)
+    self:SetScale(NugComboBarDB.scale)
     self:CreateAnchor()
     self:UNIT_COMBO_POINTS("INIT","player")
 end
@@ -134,10 +150,10 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     local comboPoints = GetComboPoints(unit);
     
     for i = 1,MAX_POINTS do
-        if i <= comboPoints and not self.p[i].active then
+        if i <= comboPoints then
             self.p[i]:Activate()
         end
-        if i > comboPoints and self.p[i].active then
+        if i > comboPoints then
             self.p[i]:Deactivate()
         end
     end
@@ -152,195 +168,24 @@ end
 
 function NugComboBar.SetColor(point, r, g, b)
     NugComboBarDB.colors[point] = {r,g,b}
+    --if point == 6 and NugComboBar.allowBGColor then
+    --    NugComboBar.bg:SetVertexColor(r,g,b)
+    --else
     local offset = 5 - MAX_POINTS
     if point-offset > 0 then NugComboBar.p[point-offset]:SetColor(r,g,b) end
+    --end
 end
-
-
-function NugComboBar.MakeOptions(self)
-    local opt = {
-		type = 'group',
-        name = "NugComboBar",
-        args = {},
-	}
-    opt.args.general = {
-        type = "group",
-        name = "NCB Options "..(NugComboBarDB_Global.charspec[user] and string.format("(%s)",user) or "(Global)"),
-        order = 1,
-        args = {
-            btns = {
-                type = "group",
-                name = "Position",
-                guiInline = true,
-                order = 1,
-                args = {
-                    unlock = {
-                        type = "execute",
-                        name = "(Un)lock",
-                        func = function ()
-                            if NugComboBar.anchor:IsVisible() then
-                                NugComboBar.anchor:Hide()
-                            else
-                                NugComboBar.anchor:Show()
-                            end
-                        end
-                    },
-                    lock = {
-                        type = "execute",
-                        name = "Charspec",
-                        desc = "Toggle character specific options for this toon",
-                        func = function () NugComboBar.SlashCmd("charspec") end
-                    },
-                }
-            },
-            showGeneral = {
-                type = "group",
-                name = "General",
-                guiInline = true,
-                order = 2,
-                args = {
-                    scale = {
-                        name = "Scale",
-                        type = "range",
-                        desc = "Change scale",
-                        get = function(info) return NugComboBarDB.scale end,
-                        set = function(info, s) NugComboBarDB.scale = s; NugComboBar:SetScale(NugComboBarDB.scale); end,
-                        min = 0.4,
-                        max = 2,
-                        step = 0.01,
-                    },
---~                     anim = {
---~                         type = "toggle",
---~                         name = "Show Empty",
---~                         desc = "toggle",
---~                         get = function(info)
---~                             return NugComboBarDB.showEmpty
---~                         end,
---~                         set = function(info, s)
---~                             NugComboBarDB.showEmpty = s
---~                         end,
---~                     },
-                }
-            },
-            showColor = {
-                type = "group",
-                name = "Colors",
-                guiInline = true,
-                order = 3,
-                args = {
-                    color1 = {
-                        name = "1st",
-                        type = 'color',
-                        desc = "Color of first point",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[1])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor(1,r,g,b)
-                        end,
-                    },
-                    color2 = {
-                        name = "2nd",
-                        type = 'color',
-                        desc = "Color of second point",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[2])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor(2,r,g,b)
-                        end,
-                    },
-                    color3 = {
-                        name = "3rd",
-                        type = 'color',
-                        desc = "Color of third point",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[3])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor(3,r,g,b)
-                        end,
-                    },
-                    color4 = {
-                        name = "4th",
-                        type = 'color',
-                        desc = "Color of fourth point",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[4])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor(4,r,g,b)
-                        end,
-                    },
-                    color5 = {
-                        name = "5th",
-                        type = 'color',
-                        desc = "Color of fifth point",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[5])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor(5,r,g,b)
-                        end,
-                    },
-                    color = {
-                        name = "ALL Points",
-                        type = 'color',
-                        desc = "Color of all Points",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[1])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            for i=1,5 do
-                                NugComboBar.SetColor(i,r,g,b)
-                            end
-                        end,
-                    },
-                },
-            },
-        },
-    }
-    
-    local Config = LibStub("AceConfigRegistry-3.0")
-    local Dialog = LibStub("AceConfigDialog-3.0")
-    Config:RegisterOptionsTable("NugComboBar", opt)
-    Config:RegisterOptionsTable("NugComboBar-Bliz", {name = "NugComboBar",type = 'group',args = {} })
-    Dialog:SetDefaultSize("NugComboBar-Bliz", 600, 400)
-    
-    Config:RegisterOptionsTable("NugComboBar-General", opt.args.general)
-    Dialog:AddToBlizOptions("NugComboBar-General", "NugComboBar")
-        
---~     SlashCmdList["NCBSLASH"] = function() InterfaceOptionsFrame_OpenToFrame("NugComboBar") end;
---~     SlashCmdList["NCBSLASH"] = function() LibStub("AceConfigDialog-3.0"):Open("NugComboBar") end;
-end
-
-
 
 local ActivateFunc = function(self)
-    self.active = true
-    if cataclysm then
-        if self.dag:IsPlaying() then self.dag:Finish() end
-        self.aag:Play()
-    else
-        UIFrameFadeIn(self,0.4)
-    end
-        
+    if self:GetAlpha() == 1 then return end
+    if self.dag:IsPlaying() then self.dag:Stop() end
+    self.aag:Play()
     self.glow2:Play()
 end
 local DeactivateFunc = function(self)
-    self.active = false
-    if cataclysm then
-        if self.aag:IsPlaying() then self.aag:Finish() end
-        self.dag:Play()
-    else
-        UIFrameFadeOut(self,0.5)
-    end
+    if self:GetAlpha() == 0 then return end
+    if self.aag:IsPlaying() then self.aag:Stop() end
+    self.dag:Play()
 end
 local SetColorFunc = function(self,r,g,b)
     self.t:SetVertexColor(r,g,b)
@@ -476,27 +321,49 @@ function NugComboBar.Create(self)
         f.Activate = ActivateFunc
         f.Deactivate = DeactivateFunc
         self.p[i] = f
-    end
-    self:SetScale(NugComboBarDB.scale)
-    
+    end    
     return self
 end
 
-
+function NugComboBar.ShowColorPicker(self,color)
+    ColorPickerFrame:Hide()
+    local upcolor = (color > 0) and color or 5
+    NugComboBar.colorPickerColor = color
+    ColorPickerFrame:SetColorRGB(unpack(NugComboBarDB.colors[upcolor]))
+    ColorPickerFrame.hasOpacity = false
+    ColorPickerFrame.previousValues = {unpack(NugComboBarDB.colors[upcolor])} -- otherwise we'll get reference to changed table
+    ColorPickerFrame.func = function(previousValues)
+        local r,g,b
+        local color = NugComboBar.colorPickerColor
+        if previousValues then
+            r,g,b = unpack(previousValues)
+        else
+            r,g,b = ColorPickerFrame:GetColorRGB();
+        end
+        if color == 0 then
+            for i=1,5 do
+                NugComboBar.SetColor(i,r,g,b)
+            end
+        else
+            NugComboBar.SetColor(color,r,g,b)
+        end
+    end
+    ColorPickerFrame.cancelFunc = ColorPickerFrame.func
+    ColorPickerFrame:Show()
+end
 
 function NugComboBar.SlashCmd(msg)
     local NCBString = "|cffff7777NCB: |r"
     k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
     if not k or k == "help" then print([[Usage:
-      |cff00ff00/ncb menu|r
       |cff00ff00/ncb charspec|r
       |cff00ff00/ncb lock|r
       |cff00ff00/ncb unlock|r
+      |cff00ff00/ncb scale|r <0.3 - 2.0>
+      |cff00ff00/ncb changecolor|r <1-5, 0 = all>
+      |cff00ff00/ncb anchorpoint|r <left | right>
       |cff00ff00/ncb reset|r]]
     )end
-    if k == "menu" then
-        InterfaceOptionsFrame_OpenToCategory("NugComboBar")
-    end
     if k == "unlock" then
         NugComboBar.anchor:Show()
     end
@@ -509,8 +376,21 @@ function NugComboBar.SlashCmd(msg)
     end
     if k == "anchorpoint" then
         local ap = v:upper()
-        if ap ~= "RIGHT" and ap ~="LEFT" then print ("right or left"); return end
+        if ap ~= "RIGHT" and ap ~="LEFT" then print ("Current anchor point is: "..NugComboBarDB.anchorpoint); return end
         NugComboBarDB.anchorpoint = ap
+    end
+    if k == "scale" then
+        local num = tonumber(v)
+        if num then 
+            NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
+        else print ("Current scale is: ".. NugComboBarDB.scale)
+        end
+    end
+    if k == "changecolor" then
+        local num = tonumber(v)
+        if num then 
+            NugComboBar:ShowColorPicker(num)
+        end
     end
     if k == "charspec" then
         if NugComboBarDB_Global.charspec[user] then NugComboBarDB_Global.charspec[user] = nil

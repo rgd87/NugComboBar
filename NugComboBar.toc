@@ -4,5 +4,4 @@
 ## Author: d87
 ## SavedVariablesPerCharacter: NugComboBarDB_Character
 ## SavedVariables: NugComboBarDB_Global
-embeds.xml
 NugComboBar.lua
