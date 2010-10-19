@@ -61,15 +61,15 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             end
             GetComboPoints = GetShards
             showEmpty = true
-        elseif class == "WARRIOR" then
-            MAX_POINTS = 3
-            self:RegisterEvent("UNIT_AURA")
-            self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(7386) -- Evangelism
-            filter = "HARMFUL"
-            allowedUnit = "target"
-            GetComboPoints = GetAuraStack
+        --elseif class == "WARRIOR" then     -- example of how to add harmful stacking spell display for target
+        --    MAX_POINTS = 3
+        --    self:RegisterEvent("UNIT_AURA")
+        --    self:RegisterEvent("PLAYER_TARGET_CHANGED")
+        --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
+        --    scanAura = GetSpellInfo(7386) -- Sunder Armor
+        --    filter = "HARMFUL"
+        --    allowedUnit = "target"
+        --    GetComboPoints = GetAuraStack
         elseif class == "PRIEST" then
             MAX_POINTS = 5
             self:RegisterEvent("UNIT_AURA")
@@ -77,9 +77,6 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             scanAura = GetSpellInfo(81661) -- Evangelism
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
-            --self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            --scanAura = GetSpellInfo(47930) -- Grace
-            --allowedUnit = "target"
         else
             return
         end
@@ -101,7 +98,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.anchorpoint = NugComboBarDB.anchorpoint or "LEFT"
         NugComboBarDB.scale = NugComboBarDB.scale or 1
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
---~         if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
+        --if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
         NugComboBarDB.colors = NugComboBarDB.colors or { {0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32} }
         --NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.96,0.30,0.32}
         
@@ -366,9 +363,14 @@ function NugComboBar.SlashCmd(msg)
     )end
     if k == "unlock" then
         NugComboBar.anchor:Show()
+        NugComboBar:SetAlpha(1)
+        for i=1,MAX_POINTS do
+            NugComboBar.p[i]:Activate()
+        end
     end
     if k == "lock" then
         NugComboBar.anchor:Hide()
+        NugComboBar:UNIT_COMBO_POINTS(nil, allowedUnit)
     end
     if k == "reset" then
         NugComboBar.anchor:ClearAllPoints()
