@@ -198,7 +198,8 @@ function NugComboBar.CreateAnchor(frame)
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 0,
         insets = {left = -2, right = -2, top = -2, bottom = -2},
     }
-	self:SetBackdropColor(0.6, 0, 0, 0.7)
+	self:SetBackdropColor(1, 0, 0, 0.8)
+    self:SetFrameStrata("HIGH")
     
     self:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
     local p1 = NugComboBarDB.anchorpoint
