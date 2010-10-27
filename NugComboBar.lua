@@ -6,6 +6,7 @@ NugComboBarDB = {}
 local MAX_POINTS = MAX_COMBO_POINTS
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
+local allowedCaster = "player"
 local showEmpty = false
 
 
@@ -19,7 +20,7 @@ local scanAura
 local filter = "HELPFUL"
 local GetAuraStack = function(unit)
     local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
-    if caster ~= "player" then count = 0 end
+    if allowedCaster and caster ~= allowedCaster then count = 0 end
     return (count or 0)
 end
 
@@ -69,6 +70,25 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         --    scanAura = GetSpellInfo(7386) -- Sunder Armor
         --    filter = "HARMFUL"
         --    allowedUnit = "target"
+        --    allowedCaster = nil
+        --    GetComboPoints = GetAuraStack
+        --elseif class == "HUNTER" then
+        --    MAX_POINTS = 5
+        --    self:RegisterEvent("UNIT_AURA")
+        --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
+        --    scanAura = GetSpellInfo(19615) -- Frenzy Effect
+        --    filter = "HELPFUL"
+        --    allowedUnit = "pet"
+        --    allowedCaster = "pet"
+        --    GetComboPoints = GetAuraStack
+        --elseif class == "DEATHKNIGHT" then
+        --    MAX_POINTS = 5
+        --    self:RegisterEvent("UNIT_AURA")
+        --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
+        --    scanAura = GetSpellInfo(91342) -- Shadow Infusion
+        --    filter = "HELPFUL"
+        --    allowedUnit = "pet"
+        --    allowedCaster = "player"
         --    GetComboPoints = GetAuraStack
         elseif class == "PRIEST" then
             MAX_POINTS = 5
