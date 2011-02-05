@@ -3,7 +3,8 @@ NugComboBar = CreateFrame("Frame",nil, UIParent)
 local user
 NugComboBarDB = {}
 
-local MAX_POINTS = MAX_COMBO_POINTS
+--default rogue setup
+local MAX_POINTS = 5
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
@@ -32,14 +33,41 @@ local GetHolyPower = function(unit)
     return UnitPower(unit, SPELL_POWER_HOLY_POWER)
 end
 
-function NugComboBar.ADDON_LOADED(self,event,arg1)
-    if arg1 == "NugComboBar" then
+
+function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
-        if class == "ROGUE" or class == "DRUID" then
+        if class == "ROGUE" then
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
+        elseif class == "DRUID" then
+            local cat = function()
+                self:UnregisterEvent("UNIT_AURA")
+                self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+                self:ConvertTo5()
+                GetComboPoints = GetComboPoints
+                allowedUnit = "player"
+            end
+            local bear = function()
+                self:ConvertTo3()
+                self:RegisterEvent("UNIT_AURA")
+                self:RegisterEvent("PLAYER_TARGET_CHANGED")
+                self.UNIT_AURA = self.UNIT_COMBO_POINTS
+                scanAura = GetSpellInfo(33745) -- Lacerate
+                filter = "HARMFUL"
+                allowedUnit = "target"
+                allowedCaster = nil
+                GetComboPoints = GetAuraStack
+            end
+            self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+            self.UPDATE_SHAPESHIFT_FORM = function(self)
+                if GetShapeshiftFormID() == BEAR_FORM
+                then bear()
+                else cat()
+                end
+            end
+            self:UPDATE_SHAPESHIFT_FORM()
         elseif class == "PALADIN" then
-            MAX_POINTS = 3
+            self:ConvertTo3()
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
@@ -47,14 +75,13 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             end
             GetComboPoints = GetHolyPower
         elseif class == "SHAMAN" then
-            MAX_POINTS = 5
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
         elseif class == "WARLOCK" then
-            MAX_POINTS = 3
+            self:ConvertTo3()
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "SOUL_SHARDS" or unit ~= "player" then return end
@@ -63,7 +90,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
             GetComboPoints = GetShards
             showEmpty = true
         --elseif class == "WARRIOR" then     -- example of how to add harmful stacking spell display for target
-        --    MAX_POINTS = 3
+        --    self:ConvertTo3()
         --    self:RegisterEvent("UNIT_AURA")
         --    self:RegisterEvent("PLAYER_TARGET_CHANGED")
         --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -73,7 +100,6 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         --    allowedCaster = nil
         --    GetComboPoints = GetAuraStack
         --elseif class == "HUNTER" then
-        --    MAX_POINTS = 5
         --    self:RegisterEvent("UNIT_AURA")
         --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
         --    scanAura = GetSpellInfo(19615) -- Frenzy Effect
@@ -82,7 +108,6 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         --    allowedCaster = "pet"
         --    GetComboPoints = GetAuraStack
         --elseif class == "DEATHKNIGHT" then
-        --    MAX_POINTS = 5
         --    self:RegisterEvent("UNIT_AURA")
         --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
         --    scanAura = GetSpellInfo(91342) -- Shadow Infusion
@@ -91,16 +116,34 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         --    allowedCaster = "player"
         --    GetComboPoints = GetAuraStack
         elseif class == "PRIEST" then
-            MAX_POINTS = 5
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(81661) -- Evangelism
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
+            local shadow_orbs = function()
+                self:ConvertTo3()
+                scanAura = GetSpellInfo(77487) -- Shadow Orbs
+            end
+            local evangelism = function()
+                self:ConvertTo5()
+                scanAura = GetSpellInfo(81661) -- Evangelism
+            end
+            self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
+                if IsSpellKnown(15407) -- MF
+                then shadow_orbs()
+                else evangelism()
+                end
+            end
+            self:ACTIVE_TALENT_GROUP_CHANGED()
         else
             return
         end
-        NugComboBar.MAX_POINTS = MAX_POINTS
+end
+
+function NugComboBar.ADDON_LOADED(self,event,arg1)
+    if arg1 == "NugComboBar" then
+--~         NugComboBar.MAX_POINTS = MAX_POINTS
         
         NugComboBarDB_Global = NugComboBarDB_Global or {}
         NugComboBarDB_Character = NugComboBarDB_Character or {}
@@ -119,7 +162,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.scale = NugComboBarDB.scale or 1
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
         --if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
-        NugComboBarDB.colors = NugComboBarDB.colors or { {0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32},{0.96,0.30,0.32} }
+        NugComboBarDB.colors = NugComboBarDB.colors or { {0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.79,0,0.96} }
         --NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.96,0.30,0.32}
         
         self:RegisterEvent("PLAYER_LOGIN")
@@ -139,6 +182,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
+    self:LoadClassSettings()
     self:SetAlpha(0)
     self:SetScale(NugComboBarDB.scale)
     self:CreateAnchor()
@@ -166,7 +210,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     if unit ~= allowedUnit then return end
     local comboPoints = GetComboPoints(unit);
     
-    for i = 1,MAX_POINTS do
+    for i = 1,#self.p do
         if i <= comboPoints then
             self.p[i]:Activate()
         end
@@ -188,26 +232,10 @@ function NugComboBar.SetColor(point, r, g, b)
     --if point == 6 and NugComboBar.allowBGColor then
     --    NugComboBar.bg:SetVertexColor(r,g,b)
     --else
-    local offset = 5 - MAX_POINTS
-    if point-offset > 0 then NugComboBar.p[point-offset]:SetColor(r,g,b) end
+--~     local offset = 5 - MAX_POINTS
+--~     if point-offset > 0 then NugComboBar.p[point-offset]:SetColor(r,g,b) end
+    NugComboBar.p[point]:SetColor(r,g,b)
     --end
-end
-
-local ActivateFunc = function(self)
-    if self:GetAlpha() == 1 then return end
-    if self.dag:IsPlaying() then self.dag:Stop() end
-    self.aag:Play()
-    self.glow2:Play()
-end
-local DeactivateFunc = function(self)
-    if self:GetAlpha() == 0 then return end
-    if self.aag:IsPlaying() then self.aag:Stop() end
-    self.dag:Play()
-end
-local SetColorFunc = function(self,r,g,b)
-    self.t:SetVertexColor(r,g,b)
-    self.g:SetVertexColor(r,g,b)
-    self.g2:SetVertexColor(r,g,b)
 end
 
 function NugComboBar.CreateAnchor(frame)
@@ -240,18 +268,68 @@ function NugComboBar.CreateAnchor(frame)
     frame.anchor = self
 end
 
+
+local ActivateFunc = function(self)
+    if self:GetAlpha() == 1 then return end
+    if self.dag:IsPlaying() then self.dag:Stop() end
+    self.aag:Play()
+    self.glow2:Play()
+end
+local DeactivateFunc = function(self)
+    if self:GetAlpha() == 0 then return end
+    if self.aag:IsPlaying() then self.aag:Stop() end
+    self.dag:Play()
+end
+local SetColorFunc = function(self,r,g,b)
+    self.t:SetVertexColor(r,g,b)
+    self.g:SetVertexColor(r,g,b)
+    self.g2:SetVertexColor(r,g,b)
+end
+function NugComboBar.ConvertTo3(self)
+    if MAX_POINTS == 3 then return end
+    local p1 = self.p[1]
+    local point,parent,to,x,y = p1:GetPoint(1)
+    x = x - 34.5*2
+    p1:SetPoint(point,parent,to,x,y)
+    local w = 256-70-30
+    self:SetWidth(w)
+    self.bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg3")
+    for i=1,5 do
+        self.p[i]:Deactivate()
+        self.p[i-2] = self.p[i]
+    end
+    self.p[5] = nil
+    self.p[4] = nil
+end
+function NugComboBar.ConvertTo5(self)
+    if MAX_POINTS == 5 then return end
+    local p1 = self.p[-1]
+    local point,parent,to,x,y = p1:GetPoint(1)
+    x = x + 34.5*2
+    p1:SetPoint(point,parent,to,x,y)
+    local w = 256-30
+    self:SetWidth(w)
+    self.bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg5")
+    for i=5,1,-1 do
+        self.p[i] = self.p[i-2]
+        self.p[i]:Deactivate()
+    end
+    self.p[0] = nil
+    self.p[-1] = nil
+end
 function NugComboBar.Create(self)
+    MAX_POINTS = 5
     self:SetFrameStrata("MEDIUM")
     local w = (MAX_POINTS == 3) and 256-70-30 or 256-30
     self:SetWidth(w)
     self:SetHeight(64)
     self:SetPoint("CENTER",UIParent,"CENTER",0,0)
     
-    
     local bgt = self:CreateTexture(nil,"BACKGROUND")
     bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg"..MAX_POINTS)
     bgt:SetPoint("TOPLEFT",self,"TOPLEFT",0,0)
     bgt:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",256,-64)
+    self.bgt = bgt
     
     local prev = self
     local offsetX = 35
@@ -385,7 +463,7 @@ function NugComboBar.SlashCmd(msg)
     if k == "unlock" then
         NugComboBar.anchor:Show()
         NugComboBar:SetAlpha(1)
-        for i=1,MAX_POINTS do
+        for i=1,#self.p do
             NugComboBar.p[i]:Activate()
         end
     end
