@@ -4,7 +4,7 @@ local user
 NugComboBarDB = {}
 
 --default rogue setup
-local MAX_POINTS = 5
+NugComboBar.MAX_POINTS = 5
 local GetComboPoints = GetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
@@ -143,7 +143,6 @@ end
 
 function NugComboBar.ADDON_LOADED(self,event,arg1)
     if arg1 == "NugComboBar" then
---~         NugComboBar.MAX_POINTS = MAX_POINTS
         
         NugComboBarDB_Global = NugComboBarDB_Global or {}
         NugComboBarDB_Character = NugComboBarDB_Character or {}
@@ -232,8 +231,6 @@ function NugComboBar.SetColor(point, r, g, b)
     --if point == 6 and NugComboBar.allowBGColor then
     --    NugComboBar.bg:SetVertexColor(r,g,b)
     --else
---~     local offset = 5 - MAX_POINTS
---~     if point-offset > 0 then NugComboBar.p[point-offset]:SetColor(r,g,b) end
     NugComboBar.p[point]:SetColor(r,g,b)
     --end
 end
@@ -286,7 +283,8 @@ local SetColorFunc = function(self,r,g,b)
     self.g2:SetVertexColor(r,g,b)
 end
 function NugComboBar.ConvertTo3(self)
-    if MAX_POINTS == 3 then return end
+    if NugComboBar.MAX_POINTS == 3 then return end
+    NugComboBar.MAX_POINTS = 3
     local p1 = self.p[1]
     local point,parent,to,x,y = p1:GetPoint(1)
     x = x - 34.5*2
@@ -302,7 +300,8 @@ function NugComboBar.ConvertTo3(self)
     self.p[4] = nil
 end
 function NugComboBar.ConvertTo5(self)
-    if MAX_POINTS == 5 then return end
+    if NugComboBar.MAX_POINTS == 5 then return end
+    NugComboBar.MAX_POINTS = 5
     local p1 = self.p[-1]
     local point,parent,to,x,y = p1:GetPoint(1)
     x = x + 34.5*2
@@ -318,7 +317,7 @@ function NugComboBar.ConvertTo5(self)
     self.p[-1] = nil
 end
 function NugComboBar.Create(self)
-    MAX_POINTS = 5
+    local MAX_POINTS = 5
     self:SetFrameStrata("MEDIUM")
     local w = (MAX_POINTS == 3) and 256-70-30 or 256-30
     self:SetWidth(w)
