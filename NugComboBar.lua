@@ -40,17 +40,18 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
         elseif class == "DRUID" then
+            self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             local cat = function()
                 self:UnregisterEvent("UNIT_AURA")
-                self:UnregisterEvent("PLAYER_TARGET_CHANGED")
                 self:ConvertTo5()
+                self:RegisterEvent("UNIT_COMBO_POINTS")
                 GetComboPoints = GetComboPoints
                 allowedUnit = "player"
             end
             local bear = function()
+                self:UnregisterEvent("UNIT_COMBO_POINTS")
                 self:ConvertTo3()
                 self:RegisterEvent("UNIT_AURA")
-                self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
                 scanAura = GetSpellInfo(33745) -- Lacerate
                 filter = "HARMFUL"
@@ -462,7 +463,7 @@ function NugComboBar.SlashCmd(msg)
     if k == "unlock" then
         NugComboBar.anchor:Show()
         NugComboBar:SetAlpha(1)
-        for i=1,#self.p do
+        for i=1,#NugComboBar.p do
             NugComboBar.p[i]:Activate()
         end
     end
