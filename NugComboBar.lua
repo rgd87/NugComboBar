@@ -80,7 +80,18 @@ function NugComboBar:LoadClassSettings()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
             allowedUnit = "player"
-            GetComboPoints = GetAuraStack
+            local LShield = GetSpellInfo(324) -- Lightning Shield
+            local GetLightningShield = function(unit)
+                local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
+                return (count and count - 4 or 0)
+            end
+            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
+                if IsSpellKnown(51490) -- Thunderstorm
+                then GetComboPoints = GetLightningShield
+                else GetComboPoints = GetAuraStack
+                end
+            end
+            self:ACTIVE_TALENT_GROUP_CHANGED()
         elseif class == "WARLOCK" then
             self:ConvertTo3()
             self:RegisterEvent("UNIT_POWER")
