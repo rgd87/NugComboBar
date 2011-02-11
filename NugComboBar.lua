@@ -5,7 +5,8 @@ NugComboBarDB = {}
 
 --default rogue setup
 NugComboBar.MAX_POINTS = 5
-local GetComboPoints = GetComboPoints
+local OriginalGetComboPoints = GetComboPoints
+local GetComboPoints = OriginalGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty = false
@@ -39,13 +40,14 @@ function NugComboBar:LoadClassSettings()
         if class == "ROGUE" then
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            local GetComboPoints = OriginalGetComboPoints
         elseif class == "DRUID" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             local cat = function()
                 self:UnregisterEvent("UNIT_AURA")
                 self:ConvertTo5()
                 self:RegisterEvent("UNIT_COMBO_POINTS")
-                GetComboPoints = GetComboPoints
+                GetComboPoints = OriginalGetComboPoints
                 allowedUnit = "player"
             end
             local bear = function()
