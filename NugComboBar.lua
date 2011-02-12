@@ -49,6 +49,7 @@ function NugComboBar:LoadClassSettings()
                 self:RegisterEvent("UNIT_COMBO_POINTS")
                 GetComboPoints = OriginalGetComboPoints
                 allowedUnit = "player"
+                self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
             local bear = function()
                 self:UnregisterEvent("UNIT_COMBO_POINTS")
@@ -60,6 +61,7 @@ function NugComboBar:LoadClassSettings()
                 allowedUnit = "target"
                 allowedCaster = nil
                 GetComboPoints = GetAuraStack
+                self:UNIT_AURA(nil,allowedUnit)
             end
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
             self.UPDATE_SHAPESHIFT_FORM = function(self)
@@ -92,6 +94,7 @@ function NugComboBar:LoadClassSettings()
                 then GetComboPoints = GetLightningShield
                 else GetComboPoints = GetAuraStack
                 end
+                self:UNIT_AURA(nil,allowedUnit)
             end
             self:ACTIVE_TALENT_GROUP_CHANGED()
         elseif class == "WARLOCK" then
