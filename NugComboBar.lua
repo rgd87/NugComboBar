@@ -248,7 +248,8 @@ function NugComboBar.SetColor(point, r, g, b)
     --if point == 6 and NugComboBar.allowBGColor then
     --    NugComboBar.bg:SetVertexColor(r,g,b)
     --else
-    NugComboBar.p[point]:SetColor(r,g,b)
+    local offset = NugComboBar.MAX_POINTS - 5
+    NugComboBar.p[point+offset]:SetColor(r,g,b)
     --end
 end
 
