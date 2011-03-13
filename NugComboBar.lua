@@ -202,6 +202,7 @@ function NugComboBar.PLAYER_LOGIN(self, event)
     self:SetAlpha(0)
     self:SetScale(NugComboBarDB.scale)
     self:CreateAnchor()
+    --self:AttachAnimationGroup()
     self:UNIT_COMBO_POINTS("INIT","player")
 end
 
@@ -252,6 +253,20 @@ function NugComboBar.SetColor(point, r, g, b)
     NugComboBar.p[point+offset]:SetColor(r,g,b)
     --end
 end
+
+--~ function NugComboBar.AttachAnimationGroup(self)
+--~     local ag = self:CreateAnimationGroup()
+--~     local a1 = ag:CreateAnimation("Rotation")
+--~     a1:SetDegrees(90)
+--~     a1:SetDuration(0.1)
+--~     a1:SetOrder(1)
+--~     a1.ag = ag
+--~     a1:SetScript("OnFinished",function(self)
+--~         self.ag:Pause();
+--~     end)
+--~     self.rag = ag
+--~     ag:Play()
+--~ end
 
 function NugComboBar.CreateAnchor(frame)
     local self = CreateFrame("Frame",nil,UIParent)
@@ -338,8 +353,9 @@ function NugComboBar.Create(self)
     local MAX_POINTS = 5
     self:SetFrameStrata("MEDIUM")
     local w = (MAX_POINTS == 3) and 256-70-30 or 256-30
+    local h = 64
     self:SetWidth(w)
-    self:SetHeight(64)
+    self:SetHeight(h)
     self:SetPoint("CENTER",UIParent,"CENTER",0,0)
     
     local bgt = self:CreateTexture(nil,"BACKGROUND")
@@ -368,6 +384,9 @@ function NugComboBar.Create(self)
         
         if i == 1 then
             f:SetPoint("CENTER",prev,"LEFT",offsetX,offsetY)
+            --f:SetPoint("TOPLEFT",prev,"TOPLEFT",offsetX,offsetY-(h-size)/2)
+            --f:SetPoint("BOTTOMRIGHT",prev,"BOTTOMRIGHT",0,0)---w+offsetX+size,offsetY+(h-size)/2)
+            --/dump NugComboBar.p[-1]:SetAlpha(1)
         else
             f:SetPoint("CENTER",prev,"CENTER",offsetX,offsetY)
         end
@@ -473,7 +492,7 @@ function NugComboBar.SlashCmd(msg)
       |cff00ff00/ncb lock|r
       |cff00ff00/ncb unlock|r
       |cff00ff00/ncb scale|r <0.3 - 2.0>
-      |cff00ff00/ncb changecolor|r <1-5, 0 = all>
+      |cff00ff00/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
       |cff00ff00/ncb anchorpoint|r <left | right>
       |cff00ff00/ncb reset|r]]
     )end
@@ -496,7 +515,22 @@ function NugComboBar.SlashCmd(msg)
         local ap = v:upper()
         if ap ~= "RIGHT" and ap ~="LEFT" then print ("Current anchor point is: "..NugComboBarDB.anchorpoint); return end
         NugComboBarDB.anchorpoint = ap
+        local p1 = NugComboBarDB.anchorpoint
+        local p2 = (p1 == "LEFT") and "RIGHT" or "LEFT"
+        NugComboBar:ClearAllPoints()
+        NugComboBar:SetPoint("TOP"..p1,NugComboBar.anchor,"TOP"..p2,0,0)
     end
+--~     if k == "rotation" then
+--~         local ag = name:CreateAnimationGroup()
+--~     local a1 = ag:CreateAnimation("Rotation")
+--~     a1:SetDegrees(90)
+--~     a1:SetDuration(0.1)
+--~     a1:SetOrder(1)
+--~     a1.ag = ag
+--~     a1:SetScript("OnFinished",function(self)
+--~         self.ag:Pause();
+--~     end)
+--~     end
     if k == "scale" then
         local num = tonumber(v)
         if num then 
