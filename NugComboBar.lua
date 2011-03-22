@@ -9,7 +9,7 @@ local OriginalGetComboPoints = GetComboPoints
 local GetComboPoints = OriginalGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
-local showEmpty = false
+local showEmpty
 
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
@@ -21,7 +21,7 @@ NugComboBar:RegisterEvent("ADDON_LOADED")
 local scanAura
 local filter = "HELPFUL"
 local GetAuraStack = function(unit)
-    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
+    if scanAura then local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter) end
     if allowedCaster and caster ~= allowedCaster then count = 0 end
     return (count or 0)
 end
@@ -33,7 +33,6 @@ end
 local GetHolyPower = function(unit)
     return UnitPower(unit, SPELL_POWER_HOLY_POWER)
 end
-
 
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
@@ -116,14 +115,29 @@ function NugComboBar:LoadClassSettings()
         --    allowedUnit = "target"
         --    allowedCaster = nil
         --    GetComboPoints = GetAuraStack
-        --elseif class == "HUNTER" then
-        --    self:RegisterEvent("UNIT_AURA")
-        --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
-        --    scanAura = GetSpellInfo(19615) -- Frenzy Effect
-        --    filter = "HELPFUL"
-        --    allowedUnit = "pet"
-        --    allowedCaster = "pet"
-        --    GetComboPoints = GetAuraStack
+        elseif class == "HUNTER" then
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+            GetComboPoints = GetAuraStack
+            filter = "HELPFUL"
+            local mm = function()
+                self:RegisterEvent("UNIT_AURA")
+                scanAura = GetSpellInfo(82925) -- Ready, Set, Aim...
+                allowedUnit = "player"
+                allowedCaster = "player"
+            end
+            local bm = function()
+                self:RegisterEvent("UNIT_AURA")
+                scanAura = GetSpellInfo(19615) -- Frenzy Effect
+                allowedUnit = "pet"
+                allowedCaster = "pet"
+            end
+            self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
+                if IsSpellKnown(19434) then return mm() end -- Aimed Shot
+                if IsSpellKnown(19577) then return bm() end -- Intimidation
+                self:UnregisterEvent("UNIT_AURA")
+            end
+            self:ACTIVE_TALENT_GROUP_CHANGED()
         --elseif class == "DEATHKNIGHT" then
         --    self:RegisterEvent("UNIT_AURA")
         --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -177,7 +191,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.anchorpoint = NugComboBarDB.anchorpoint or "LEFT"
         NugComboBarDB.scale = NugComboBarDB.scale or 1
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
-        --if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
+        if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
         NugComboBarDB.colors = NugComboBarDB.colors or { {0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.79,0,0.96} }
         --NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.96,0.30,0.32}
         
@@ -198,7 +212,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
-    self:LoadClassSettings()
+    self:LoadClassSettings(); if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
     self:SetAlpha(0)
     self:SetScale(NugComboBarDB.scale)
     self:CreateAnchor()
@@ -494,6 +508,7 @@ function NugComboBar.SlashCmd(msg)
       |cff00ff00/ncb scale|r <0.3 - 2.0>
       |cff00ff00/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
       |cff00ff00/ncb anchorpoint|r <left | right>
+      |cff00ff00/ncb showempty
       |cff00ff00/ncb reset|r]]
     )end
     if k == "unlock" then
@@ -520,6 +535,11 @@ function NugComboBar.SlashCmd(msg)
         NugComboBar:ClearAllPoints()
         NugComboBar:SetPoint("TOP"..p1,NugComboBar.anchor,"TOP"..p2,0,0)
     end
+    if k == "showempty" then
+        NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
+        showEmpty = NugComboBarDB.showEmpty
+        NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
+    end
 --~     if k == "rotation" then
 --~         local ag = name:CreateAnimationGroup()
 --~     local a1 = ag:CreateAnimation("Rotation")
@@ -534,7 +554,7 @@ function NugComboBar.SlashCmd(msg)
     if k == "scale" then
         local num = tonumber(v)
         if num then 
-            NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
+            scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
         else print ("Current scale is: ".. NugComboBarDB.scale)
         end
     end
