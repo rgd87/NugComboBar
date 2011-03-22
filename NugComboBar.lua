@@ -21,7 +21,8 @@ NugComboBar:RegisterEvent("ADDON_LOADED")
 local scanAura
 local filter = "HELPFUL"
 local GetAuraStack = function(unit)
-    if scanAura then local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter) end
+    if not scanAura then return 0 end
+    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
     if allowedCaster and caster ~= allowedCaster then count = 0 end
     return (count or 0)
 end
