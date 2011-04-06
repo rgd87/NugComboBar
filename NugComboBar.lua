@@ -175,9 +175,15 @@ end
 
 function NugComboBar.ADDON_LOADED(self,event,arg1)
     if arg1 == "NugComboBar" then
+        SLASH_NCBSLASH1 = "/ncb";
+        SLASH_NCBSLASH2 = "/nugcombobar";
+        SlashCmdList["NCBSLASH"] = NugComboBar.SlashCmd
         
         NugComboBarDB_Global = NugComboBarDB_Global or {}
         NugComboBarDB_Character = NugComboBarDB_Character or {}
+        local _,class = UnitClass("player")
+        NugComboBarDB_Global.disabled = NugComboBarDB_Global.disabled or {}
+        if NugComboBarDB_Global.disabled[class] then return end
         NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
         user = UnitName("player").."@"..GetRealmName()
         if NugComboBarDB_Global.charspec[user] then
@@ -205,10 +211,6 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 --~         self.UNIT_DISPLAYPOWER = self.UPDATE_STEALTH
 --~         self.PLAYER_REGEN_ENABLED = self.UPDATE_STEALTH
 --~         self.PLAYER_REGEN_DISABLED = self.UPDATE_STEALTH
-    
-        SLASH_NCBSLASH1 = "/ncb";
-        SLASH_NCBSLASH2 = "/nugcombobar";
-        SlashCmdList["NCBSLASH"] = NugComboBar.SlashCmd
     end
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
@@ -502,15 +504,20 @@ end
 function NugComboBar.SlashCmd(msg)
     local NCBString = "|cffff7777NCB: |r"
     k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
-    if not k or k == "help" then print([[Usage:
-      |cff00ff00/ncb charspec|r
-      |cff00ff00/ncb lock|r
-      |cff00ff00/ncb unlock|r
-      |cff00ff00/ncb scale|r <0.3 - 2.0>
-      |cff00ff00/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
-      |cff00ff00/ncb anchorpoint|r <left | right>
-      |cff00ff00/ncb showempty
-      |cff00ff00/ncb reset|r]]
+    if not k or k == "help" then 
+    if NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] then
+        print("|cffffaaaaNCB is disabled for this class!|r")
+    end
+    print([[Usage:
+      |cff55ff55/ncb charspec|r
+      |cff55ff55/ncb lock|r
+      |cff55ff55/ncb unlock|r
+      |cff55ff55/ncb scale|r <0.3 - 2.0>
+      |cff55ff55/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
+      |cff55ff55/ncb anchorpoint|r <left | right>
+      |cff55ff55/ncb showempty|r
+      |cff55ff55/ncb disable|enable|r (for current class)
+      |cff55ff55/ncb reset|r]]
     )end
     if k == "unlock" then
         NugComboBar.anchor:Show()
@@ -552,10 +559,18 @@ function NugComboBar.SlashCmd(msg)
 --~         self.ag:Pause();
 --~     end)
 --~     end
+    if k == "disable" then
+        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = true
+        print ("NCB> Disabled for current class. Changes will take effect after /reload")
+    end
+    if k == "enable" then
+        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = nil
+        print ("NCB> Enabled for current class. Changes will take effect after /reload")
+    end
     if k == "scale" then
         local num = tonumber(v)
         if num then 
-            scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
+            NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
         else print ("Current scale is: ".. NugComboBarDB.scale)
         end
     end
