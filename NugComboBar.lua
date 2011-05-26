@@ -59,7 +59,7 @@ function NugComboBar:LoadClassSettings()
                 scanAura = GetSpellInfo(33745) -- Lacerate
                 filter = "HARMFUL"
                 allowedUnit = "target"
-                allowedCaster = nil
+                allowedCaster = "player"
                 GetComboPoints = GetAuraStack
                 self:UNIT_AURA(nil,allowedUnit)
             end
@@ -139,14 +139,14 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_AURA")
             end
             self:ACTIVE_TALENT_GROUP_CHANGED()
-        --elseif class == "DEATHKNIGHT" then
-        --    self:RegisterEvent("UNIT_AURA")
-        --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
-        --    scanAura = GetSpellInfo(91342) -- Shadow Infusion
-        --    filter = "HELPFUL"
-        --    allowedUnit = "pet"
-        --    allowedCaster = "player"
-        --    GetComboPoints = GetAuraStack
+        elseif class == "DEATHKNIGHT" then
+            self:RegisterEvent("UNIT_AURA")
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+            scanAura = GetSpellInfo(91342) -- Shadow Infusion
+            filter = "HELPFUL"
+            allowedUnit = "pet"
+            allowedCaster = "player"
+            GetComboPoints = GetAuraStack
         elseif class == "PRIEST" then
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
