@@ -439,6 +439,10 @@ function NugComboBar.Create(self)
         g2d:SetDuration(0.7)
         g2d:SetOrder(2)
         f.glow2 = g2aag
+        --Required for 4.2
+        g2aag:SetScript("OnFinished",function(self)
+            self:GetParent():SetAlpha(0)
+        end)
         
         f.SetColor = SetColorFunc
         f:SetColor(unpack(NugComboBarDB.colors[i+color_offset]))
