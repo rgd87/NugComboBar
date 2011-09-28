@@ -10,6 +10,7 @@ local GetComboPoints = OriginalGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty
+local hideSlowly = true
 
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
@@ -199,10 +200,14 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB.scale = NugComboBarDB.scale or 1
         if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
         if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
+        if NugComboBarDB.hideSlowly == nil then NugComboBarDB.hideSlowly = true end
+        if NugComboBarDB.disableBlizz == nil then NugComboBarDB.disableBlizz = false end
         NugComboBarDB.colors = NugComboBarDB.colors or { {0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.79,0,0.96} }
         --NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.96,0.30,0.32}
-        
+
         self:RegisterEvent("PLAYER_LOGIN")
+        self:RegisterEvent("PLAYER_ENTERING_WORLD")
+        self.PLAYER_ENTERING_WORLD = self.PLAYER_TARGET_CHANGED -- Update on looading screen to clear after battlegrounds
         
 --~         self:RegisterEvent("UPDATE_STEALTH")
 --~         self:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -215,10 +220,15 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 end
 function NugComboBar.PLAYER_LOGIN(self, event)
     self:Create()
-    self:LoadClassSettings(); if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
+    self:LoadClassSettings()
+    if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
+    if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
     self:SetAlpha(0)
     self:SetScale(NugComboBarDB.scale)
     self:CreateAnchor()
+
+    NugComboBar.toggleBlizz()
+
     --self:AttachAnimationGroup()
     self:UNIT_COMBO_POINTS("INIT","player")
 end
@@ -236,10 +246,43 @@ end
 --~     if allowedUnits[unit] then self:UNIT_COMBO_POINTS(event,unit)end
 --~ end
 
+-- function NugComboBar.AddHidingAnimation(self)
+--     local ag = self:CreateAnimationGroup()
+--     local a1 = ag:CreateAnimation("Alpha")
+--     a1:SetChange(0)
+--     a1:SetDuration(4)
+--     a1:SetOrder(1)
+
+--     local a2 = ag:CreateAnimation("Alpha")
+--     a2:SetChange(-1)
+--     a2:SetDuration(2)
+--     a2:SetOrder(2)
+
+--     self.HideAnim = ag
+--     ag:SetScript("OnFinished",function(self)
+--         self:GetParent():SetAlpha(0)
+--     end)
+-- end
+local HideTimer = function(self, time)
+    self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
+    if self.OnUpdateCounter < 4 then return end
+
+    local a = 5 - self.OnUpdateCounter
+    self:SetAlpha(a)
+    if self.OnUpdateCounter >= 5 then
+        self:SetScript("OnUpdate",nil)
+        self:SetAlpha(0)
+        self.Hiding = false
+        self.OnUpdateCounter = 0
+    end
+end
+
+
 function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     self:UNIT_COMBO_POINTS(event, allowedUnit)
 end
 
+local comboPointsBefore = 0
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     if unit ~= allowedUnit then return end
     local comboPoints = GetComboPoints(unit);
@@ -254,11 +297,22 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     end
     
     if comboPoints == 0 and not showEmpty then
-        self:SetAlpha(0)
+        if comboPointsBefore ~= 0 and hideSlowly then
+            self:SetScript("OnUpdate", HideTimer)
+            self.Hiding = true
+            -- if not self.HideAnim:IsPlaying() then self.HideAnim:Play() end
+        else
+            if not self.Hiding then self:SetAlpha(0) end
+        end
     else
+        if hideSlowly then
+            self:SetScript("OnUpdate", nil)
+            self.Hiding = false
+        end
         self:SetAlpha(1)
     end
 
+    comboPointsBefore = comboPoints
 end
 
 function NugComboBar.SetColor(point, r, g, b)
@@ -316,167 +370,6 @@ function NugComboBar.CreateAnchor(frame)
 end
 
 
-local ActivateFunc = function(self)
-    if self:GetAlpha() == 1 then return end
-    if self.dag:IsPlaying() then self.dag:Stop() end
-    self.aag:Play()
-    self.glow2:Play()
-end
-local DeactivateFunc = function(self)
-    if self:GetAlpha() == 0 then return end
-    if self.aag:IsPlaying() then self.aag:Stop() end
-    self.dag:Play()
-end
-local SetColorFunc = function(self,r,g,b)
-    self.t:SetVertexColor(r,g,b)
-    self.g:SetVertexColor(r,g,b)
-    self.g2:SetVertexColor(r,g,b)
-end
-function NugComboBar.ConvertTo3(self)
-    if NugComboBar.MAX_POINTS == 3 then return end
-    NugComboBar.MAX_POINTS = 3
-    local p1 = self.p[1]
-    local point,parent,to,x,y = p1:GetPoint(1)
-    x = x - 34.5*2
-    p1:SetPoint(point,parent,to,x,y)
-    local w = 256-70-30
-    self:SetWidth(w)
-    self.bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg3")
-    for i=1,5 do
-        self.p[i]:Deactivate()
-        self.p[i-2] = self.p[i]
-    end
-    self.p[5] = nil
-    self.p[4] = nil
-end
-function NugComboBar.ConvertTo5(self)
-    if NugComboBar.MAX_POINTS == 5 then return end
-    NugComboBar.MAX_POINTS = 5
-    local p1 = self.p[-1]
-    local point,parent,to,x,y = p1:GetPoint(1)
-    x = x + 34.5*2
-    p1:SetPoint(point,parent,to,x,y)
-    local w = 256-30
-    self:SetWidth(w)
-    self.bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg5")
-    for i=5,1,-1 do
-        self.p[i] = self.p[i-2]
-        self.p[i]:Deactivate()
-    end
-    self.p[0] = nil
-    self.p[-1] = nil
-end
-function NugComboBar.Create(self)
-    local MAX_POINTS = 5
-    self:SetFrameStrata("MEDIUM")
-    local w = (MAX_POINTS == 3) and 256-70-30 or 256-30
-    local h = 64
-    self:SetWidth(w)
-    self:SetHeight(h)
-    self:SetPoint("CENTER",UIParent,"CENTER",0,0)
-    
-    local bgt = self:CreateTexture(nil,"BACKGROUND")
-    bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg"..MAX_POINTS)
-    bgt:SetPoint("TOPLEFT",self,"TOPLEFT",0,0)
-    bgt:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",256,-64)
-    self.bgt = bgt
-    
-    local prev = self
-    local offsetX = 35
-    local offsetY = 3.2
-    local color_offset = 5 - MAX_POINTS
-    self.p = {}
-    for i=1,MAX_POINTS do
-        local size = (MAX_POINTS == i) and 32 or 23
-        local tex = (MAX_POINTS == i) and [[Interface\Addons\NugComboBar\tex\ncbu_point5]] or [[Interface\Addons\NugComboBar\tex\ncbu_point]]
-        local mul = (MAX_POINTS == i) and 1.8 or 1.55
-        local mul2 = (MAX_POINTS == i) and 2 or 2
-        local glowAlpha = (MAX_POINTS == i) and 0.85 or 0.85
-        local f = CreateFrame("Frame","NugComboBarPoint"..i,self)
-        f:SetHeight(size); f:SetWidth(size);
-        local t = f:CreateTexture(nil,"ARTWORK")
-        t:SetTexture(tex)
-        t:SetAllPoints(f)
-        f.t = t
-        
-        if i == 1 then
-            f:SetPoint("CENTER",prev,"LEFT",offsetX,offsetY)
-            --f:SetPoint("TOPLEFT",prev,"TOPLEFT",offsetX,offsetY-(h-size)/2)
-            --f:SetPoint("BOTTOMRIGHT",prev,"BOTTOMRIGHT",0,0)---w+offsetX+size,offsetY+(h-size)/2)
-            --/dump NugComboBar.p[-1]:SetAlpha(1)
-        else
-            f:SetPoint("CENTER",prev,"CENTER",offsetX,offsetY)
-        end
-        offsetX = (MAX_POINTS == i+1) and 46 or 34.5
-        offsetY = (MAX_POINTS == i+1) and -3 or 0
-        
-        local g = f:CreateTexture(nil,"OVERLAY")
-        g:SetHeight(size*mul); g:SetWidth(size*mul);
-        g:SetTexture[[Interface\Addons\NugComboBar\tex\ncbu_point_glow]]
-        g:SetPoint("CENTER",f,"CENTER",0,0)
-        g:SetAlpha(glowAlpha)
-        f.g = g
-        
-        local f2 = CreateFrame("Frame",nil,f)
-        f2:SetHeight(size*mul2); f2:SetWidth(size*mul2);
-        local g2 = f2:CreateTexture(nil,"OVERLAY")
-        g2:SetAllPoints(f2)
-        g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbu_glow2]]
-        f2:SetPoint("CENTER",f,"CENTER",0,0)
-        f.g2 = g2
-        
-        f2:SetAlpha(0)
-        f:SetAlpha(0)
-        
-        local g2aag = f2:CreateAnimationGroup()
-        local g2a = g2aag:CreateAnimation("Alpha")
-        g2a:SetStartDelay(0.2)
-        g2a:SetChange(1)
-        g2a:SetDuration(0.3)
-        g2a:SetOrder(1)
-        local g2d = g2aag:CreateAnimation("Alpha")
-        g2d:SetChange(-1)
-        g2d:SetDuration(0.7)
-        g2d:SetOrder(2)
-        f.glow2 = g2aag
-        --Required for 4.2
-        g2aag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(0)
-        end)
-        
-        f.SetColor = SetColorFunc
-        f:SetColor(unpack(NugComboBarDB.colors[i+color_offset]))
-        
-        prev = f
-        
-        local aag = f:CreateAnimationGroup()
-        f.aag = aag
-        local a1 = aag:CreateAnimation("Alpha")
-        a1:SetChange(1)
-        a1:SetDuration(0.4)
-        a1:SetOrder(1)
-        aag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(1)
-        end)
-
-
-        local dag = f:CreateAnimationGroup()
-        f.dag = dag
-        local d1 = dag:CreateAnimation("Alpha")
-        d1:SetChange(-1)
-        d1:SetDuration(0.5)
-        d1:SetOrder(1)
-        dag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(0)
-        end)
-        
-        
-        f.Activate = ActivateFunc
-        f.Deactivate = DeactivateFunc
-        self.p[i] = f
-    end    
-    return self
-end
 
 function NugComboBar.ShowColorPicker(self,color)
     ColorPickerFrame:Hide()
@@ -520,6 +413,8 @@ function NugComboBar.SlashCmd(msg)
       |cff55ff55/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
       |cff55ff55/ncb anchorpoint|r <left | right>
       |cff55ff55/ncb showempty|r
+      |cff55ff55/ncb hideslowly|r
+      |cff55ff55/ncb toggleblizz|r
       |cff55ff55/ncb disable|enable|r (for current class)
       |cff55ff55/ncb reset|r]]
     )end
@@ -551,6 +446,14 @@ function NugComboBar.SlashCmd(msg)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
         showEmpty = NugComboBarDB.showEmpty
         NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
+    end
+    if k == "hideslowly" then
+        NugComboBarDB.hideSlowly = not NugComboBarDB.hideSlowly
+        hideSlowly = NugComboBarDB.hideSlowly
+    end
+    if k == "toggleblizz" then
+        NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
+        NugComboBar.toggleBlizz()
     end
 --~     if k == "rotation" then
 --~         local ag = name:CreateAnimationGroup()
@@ -590,5 +493,46 @@ function NugComboBar.SlashCmd(msg)
         end
 --~         ReloadUI()
         print (NCBString..(NugComboBarDB_Global.charspec[user] and "Enabled" or "Disabled").." character specific options for this toon. Will take effect after ui reload.",0.7,1,0.7)
+    end
+end
+
+
+function NugComboBar.toggleBlizz()
+    local class = select(2,UnitClass("player"))
+    if NugComboBarDB.disableBlizz then
+        if class == "ROGUE" or class == "DRUID" then
+            ComboFrame:UnregisterAllEvents()
+            ComboFrame:Hide()
+        end
+        if class == "WARLOCK" then
+            ShardBarFrame:UnregisterAllEvents()
+            ShardBarFrame:Hide()
+            ShardBarFrame._Show = ShardBarFrame.Show
+            ShardBarFrame.Show = ShardBarFrame.Hide
+        end
+        if class == "PALADIN" then
+            PaladinPowerBar:UnregisterAllEvents()
+            PaladinPowerBar:Hide()
+            PaladinPowerBar._Show = PaladinPowerBar.Show
+            PaladinPowerBar.Show = PaladinPowerBar.Hide
+        end
+    else
+        if class == "ROGUE" or class == "DRUID" then
+            ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+            ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
+            ComboFrame_Update()
+        end
+        if class == "WARLOCK" then
+            ShardBarFrame.Show = ShardBarFrame._Show
+            ShardBarFrame:Show()
+            ShardBar_OnLoad(ShardBarFrame)
+            ShardBar_Update()
+        end
+        if class == "PALADIN" then
+            PaladinPowerBar.Show = PaladinPowerBar._Show
+            PaladinPowerBar:Show()
+            PaladinPowerBar_OnLoad(PaladinPowerBar)
+            PaladinPowerBar_Update(PaladinPowerBar)
+        end
     end
 end

@@ -5,3 +5,4 @@
 ## SavedVariablesPerCharacter: NugComboBarDB_Character
 ## SavedVariables: NugComboBarDB_Global
 NugComboBar.lua
+skin.lua
