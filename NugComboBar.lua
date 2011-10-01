@@ -10,8 +10,7 @@ local GetComboPoints = OriginalGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty
-local hideSlowly = true
-
+local hideSlowly
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -169,6 +168,13 @@ function NugComboBar:LoadClassSettings()
                 end
             end
             self:ACTIVE_TALENT_GROUP_CHANGED()
+        -- elseif class == "MAGE" then 
+        --      self:RegisterEvent("UNIT_AURA") 
+        --      self.UNIT_AURA = self.UNIT_COMBO_POINTS 
+        --      scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
+        --      filter = "HARMFUL" 
+        --      allowedUnit = "player" 
+        --      GetComboPoints = GetAuraStack
         else
             return
         end
@@ -188,9 +194,15 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
         user = UnitName("player").."@"..GetRealmName()
         if NugComboBarDB_Global.charspec[user] then
-        setmetatable(NugComboBarDB,{__index = function(t,k) return NugComboBarDB_Character[k] end, __newindex = function(t,k,v) rawset(NugComboBarDB_Character,k,v) end})
+        setmetatable(NugComboBarDB,{
+            __index = function(t,k) return NugComboBarDB_Character[k] end,
+            __newindex = function(t,k,v) rawset(NugComboBarDB_Character,k,v) end
+        })
         else
-        setmetatable(NugComboBarDB,{__index = function(t,k) return NugComboBarDB_Global[k] end, __newindex = function(t,k,v) rawset(NugComboBarDB_Global,k,v) end})
+        setmetatable(NugComboBarDB,{
+            __index = function(t,k) return NugComboBarDB_Global[k] end,
+            __newindex =function(t,k,v) rawset(NugComboBarDB_Global,k,v) end
+            })
         end
         
         NugComboBarDB.point = NugComboBarDB.point or "CENTER"
