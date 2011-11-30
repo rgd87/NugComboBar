@@ -125,12 +125,20 @@ function NugComboBar:LoadClassSettings()
                 scanAura = GetSpellInfo(82925) -- Ready, Set, Aim...
                 allowedUnit = "player"
                 allowedCaster = "player"
+                GetComboPoints = function (unit)
+                    if not scanAura then return 0 end
+                    if UnitAura(allowedUnit, GetSpellInfo(82926), nil, filter) then return 5 end -- Fire! proc buff
+                    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
+                    if allowedCaster and caster ~= allowedCaster then count = 0 end
+                    return (count or 0)
+                end
             end
             local bm = function()
                 self:RegisterEvent("UNIT_AURA")
                 scanAura = GetSpellInfo(19615) -- Frenzy Effect
                 allowedUnit = "pet"
                 allowedCaster = "pet"
+                GetComboPoints = GetAuraStack
             end
             self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
             self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
