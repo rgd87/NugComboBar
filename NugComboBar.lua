@@ -30,7 +30,15 @@ end
 local GetShards = function(unit)
     return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
 end
-
+local GetBurningEmbers = function(unit)
+    return UnitPower(unit, SPELL_POWER_BURNING_EMBERS)
+end
+local GetBurningEmbers = function(unit)
+    return UnitPower(unit, SPELL_POWER_BURNING_EMBERS)
+end
+local GetChi = function(unit)
+    return UnitPower(unit, SPELL_POWER_LIGHT_FORCE)
+end
 local GetHolyPower = function(unit)
     return UnitPower(unit, SPELL_POWER_HOLY_POWER)
 end
@@ -101,11 +109,24 @@ function NugComboBar:LoadClassSettings()
             self:ConvertTo3()
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
-                if ptype ~= "SOUL_SHARDS" or unit ~= "player" then return end
-                self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+                if unit ~= "player" then return end
+                if ptype == "SOUL_SHARDS" or ptype == "BURNING_EMBERS" then
+                    self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+                end
             end
             GetComboPoints = GetShards
             showEmpty = true
+            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
+                local spec = GetSpecialization()
+                if      spec == SPEC_WARLOCK_DESTRUCTION then
+                    GetComboPoints = GetBurningEmbers
+                    self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
+                elseif  spec == SPEC_WARLOCK_AFFLICTION then
+                    GetComboPoints = GetShards
+                    self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
+                end
+            end
+            self:ACTIVE_TALENT_GROUP_CHANGED()
         --elseif class == "WARRIOR" then     -- example of how to add harmful stacking spell display for target
         --    self:ConvertTo3()
         --    self:RegisterEvent("UNIT_AURA")
@@ -302,11 +323,30 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     self:UNIT_COMBO_POINTS(event, allowedUnit)
 end
 
+-- local frame = CreateFrame("Frame")
+-- local tfunc = function(self,time)
+--     self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
+--     if self.OnUpdateCounter < 0 then return end
+--     self.OnUpdateCounter = 0
+--     print("haaai")
+
+--     OldFunc = GetComboPoints
+--     local ptype = self.ptype
+--     local unit = self.unit
+--     GetComboPoints = function(unit) return OldFunc(unit)+1 end
+--     NugComboBar:UNIT_COMBO_POINTS(-1, unit, ptype)
+--     GetComboPoints = OldFunc
+   
+--     self.started = nil
+--     self:SetScript("OnUpdate", nil) 
+-- end
+
+
 local comboPointsBefore = 0
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
-    if unit ~= allowedUnit then return end
+    if unit ~= allowedUnit then return end     
     local comboPoints = GetComboPoints(unit);
-    
+
     for i = 1,#self.p do
         if i <= comboPoints then
             self.p[i]:Activate()
@@ -333,6 +373,13 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     end
 
     comboPointsBefore = comboPoints
+
+    -- if event ~= -1 then
+    --     tframe.started = true
+    --     tframe.unit = unit
+    --     tframe.ptype = ptype
+    --     tframe:SetScript("OnUpdate", tfunc)
+    -- end
 end
 
 function NugComboBar.SetColor(point, r, g, b)
@@ -525,10 +572,10 @@ function NugComboBar.toggleBlizz()
             ComboFrame:Hide()
         end
         if class == "WARLOCK" then
-            ShardBarFrame:UnregisterAllEvents()
-            ShardBarFrame:Hide()
-            ShardBarFrame._Show = ShardBarFrame.Show
-            ShardBarFrame.Show = ShardBarFrame.Hide
+            WarlockPowerFrame:UnregisterAllEvents()
+            WarlockPowerFrame:Hide()
+            WarlockPowerFrame._Show = WarlockPowerFrame.Show
+            WarlockPowerFrame.Show = WarlockPowerFrame.Hide
         end
         if class == "PALADIN" then
             PaladinPowerBar:UnregisterAllEvents()
@@ -543,10 +590,10 @@ function NugComboBar.toggleBlizz()
             ComboFrame_Update()
         end
         if class == "WARLOCK" then
-            ShardBarFrame.Show = ShardBarFrame._Show
-            ShardBarFrame:Show()
-            ShardBar_OnLoad(ShardBarFrame)
-            ShardBar_Update()
+            WarlockPowerFrame.Show = WarlockPowerFrame._Show
+            WarlockPowerFrame:Show()
+            WarlockPowerFrame_OnLoad(WarlockPowerFrame)
+            -- WarlockPowerFrame_Update()
         end
         if class == "PALADIN" then
             PaladinPowerBar.Show = PaladinPowerBar._Show
