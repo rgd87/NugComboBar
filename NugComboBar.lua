@@ -43,6 +43,7 @@ local GetHolyPower = function(unit)
     return UnitPower(unit, SPELL_POWER_HOLY_POWER)
 end
 
+
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         if class == "ROGUE" then
@@ -80,13 +81,21 @@ function NugComboBar:LoadClassSettings()
             end
             self:UPDATE_SHAPESHIFT_FORM()
         elseif class == "PALADIN" then
-            self:ConvertTo3()
+            self:ConvertTo5()
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetHolyPower
+        elseif class == "MONK" then
+            self:ConvertTo5()
+            self:RegisterEvent("UNIT_POWER")
+            self.UNIT_POWER = function(self,event,unit,ptype)
+                if ptype ~= "LIGHT_FORCE" or ptype == "DARK_FORCE" or unit ~= "player" then return end
+                self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+            end
+            GetComboPoints = GetChi
         elseif class == "SHAMAN" then
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
