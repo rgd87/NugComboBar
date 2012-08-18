@@ -47,6 +47,7 @@ end
 
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
+        self.MAX_POINTS = nil
         if class == "ROGUE" then
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_COMBO_POINTS")
@@ -144,7 +145,6 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("GLYPH_REMOVED")
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
-                print(event)
                 local spec = GetSpecialization()
                 if      spec == SPEC_WARLOCK_DESTRUCTION then
                     self:EnableBar(0,10)
@@ -256,7 +256,7 @@ function NugComboBar:LoadClassSettings()
         end
 end
 
-function NugComboBar.ADDON_LOADED(self,event,arg1)
+function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
     if arg1 == "NugComboBar" then
         SLASH_NCBSLASH1 = "/ncb";
         SLASH_NCBSLASH2 = "/nugcombobar";
@@ -269,17 +269,16 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         if NugComboBarDB_Global.disabled[class] then return end
         NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
         user = UnitName("player").."@"..GetRealmName()
+
         if NugComboBarDB_Global.charspec[user] then
-        setmetatable(NugComboBarDB,{
-            __index = function(t,k) return NugComboBarDB_Character[k] end,
-            __newindex = function(t,k,v) rawset(NugComboBarDB_Character,k,v) end
-        })
+            NugComboBarDB._db = NugComboBarDB_Character
         else
-        setmetatable(NugComboBarDB,{
-            __index = function(t,k) return NugComboBarDB_Global[k] end,
-            __newindex =function(t,k,v) rawset(NugComboBarDB_Global,k,v) end
-            })
+            NugComboBarDB._db = NugComboBarDB_Global
         end
+        setmetatable(NugComboBarDB,{
+            __index = function(t,k) return t._db[k] end,
+            __newindex = function(t,k,v) t._db[k] = v end
+        })
         
         NugComboBarDB.point = NugComboBarDB.point or "CENTER"
         NugComboBarDB.x = NugComboBarDB.x or 0
@@ -290,8 +289,8 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
         if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
         if NugComboBarDB.hideSlowly == nil then NugComboBarDB.hideSlowly = true end
         if NugComboBarDB.disableBlizz == nil then NugComboBarDB.disableBlizz = false end
-        NugComboBarDB.colors = NugComboBarDB.colors or { {0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.6,0,0.96},{0.79,0,0.96} }
-        NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.6,0,0.96}
+        NugComboBarDB.colors = NugComboBarDB.colors or { {0.77,0.26,0.29},{0.77,0.26,0.29},{0.77,0.26,0.29},{0.77,0.26,0.29},{0.77,0.26,0.29} }
+        NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.77,0.26,0.29}
 
         self:RegisterEvent("PLAYER_LOGIN")
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -306,14 +305,19 @@ function NugComboBar.ADDON_LOADED(self,event,arg1)
 --~         self.PLAYER_REGEN_DISABLED = self.UPDATE_STEALTH
     end
 end
-function NugComboBar.PLAYER_LOGIN(self, event)
-    self:Create()
+function NugComboBar.PLAYER_LOGIN(self, event, forced)
+    if not forced then self:Create() end
     self:LoadClassSettings()
     if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
     if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
     self:SetAlpha(0)
     self:SetScale(NugComboBarDB.scale)
-    self:CreateAnchor()
+    if not forced then
+        self:CreateAnchor()
+    else
+        self.anchor:ClearAllPoints()
+        self.anchor:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+    end
 
     NugComboBar.toggleBlizz()
 
@@ -375,7 +379,6 @@ end
 --     self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
 --     if self.OnUpdateCounter < 0 then return end
 --     self.OnUpdateCounter = 0
---     print("haaai")
 
 --     OldFunc = GetComboPoints
 --     local ptype = self.ptype
@@ -449,8 +452,8 @@ function NugComboBar.SetColor(point, r, g, b)
     --if point == 6 and NugComboBar.allowBGColor then
     --    NugComboBar.bg:SetVertexColor(r,g,b)
     --else
-    local offset = NugComboBar.MAX_POINTS - 5
-    NugComboBar.p[point+offset]:SetColor(r,g,b)
+    --local offset = NugComboBar.MAX_POINTS - 5
+    NugComboBar.p[point]:SetColor(r,g,b)
     --end
 end
 
@@ -528,46 +531,23 @@ function NugComboBar.ShowColorPicker(self,color)
 end
 
 
--- local Commands = {
-    
--- }
-
-function NugComboBar.SlashCmd(msg)
-    local NCBString = "|cffff7777NCB: |r"
-    k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
-    if not k or k == "help" then 
-    if NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] then
-        print("|cffffaaaaNCB is disabled for this class!|r")
-    end
-    print([[Usage:
-      |cff55ff55/ncb charspec|r
-      |cff55ff55/ncb lock|r
-      |cff55ff55/ncb unlock|r
-      |cff55ff55/ncb scale|r <0.3 - 2.0>
-      |cff55ff55/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
-      |cff55ff55/ncb anchorpoint|r <left | right>
-      |cff55ff55/ncb showempty|r
-      |cff55ff55/ncb hideslowly|r
-      |cff55ff55/ncb toggleblizz|r
-      |cff55ff55/ncb disable|enable|r (for current class)
-      |cff55ff55/ncb reset|r]]
-    )end
-    if k == "unlock" then
+NugComboBar.Commands = {
+    ["unlock"] = function(v)
         NugComboBar.anchor:Show()
         NugComboBar:SetAlpha(1)
-        for i=1,#NugComboBar.p do
+        for i=1,NugComboBar.MAX_POINTS do
             NugComboBar.p[i]:Activate()
         end
-    end
-    if k == "lock" then
+    end,
+    ["lock"] = function(v)
         NugComboBar.anchor:Hide()
         NugComboBar:UNIT_COMBO_POINTS(nil, allowedUnit)
-    end
-    if k == "reset" then
+    end,
+    ["reset"] = function(v)
         NugComboBar.anchor:ClearAllPoints()
         NugComboBar.anchor:SetPoint("CENTER",UIParent,"CENTER",0,0)
-    end
-    if k == "anchorpoint" then
+    end,
+    ["anchorpoint"] = function(v)
         local ap = v:upper()
         if ap ~= "RIGHT" and ap ~="LEFT" then print ("Current anchor point is: "..NugComboBarDB.anchorpoint); return end
         NugComboBarDB.anchorpoint = ap
@@ -575,20 +555,79 @@ function NugComboBar.SlashCmd(msg)
         local p2 = (p1 == "LEFT") and "RIGHT" or "LEFT"
         NugComboBar:ClearAllPoints()
         NugComboBar:SetPoint("TOP"..p1,NugComboBar.anchor,"TOP"..p2,0,0)
-    end
-    if k == "showempty" then
+    end,
+    ["showempty"] = function(v)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
         showEmpty = NugComboBarDB.showEmpty
         NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
-    end
-    if k == "hideslowly" then
+    end,
+    ["hideslowly"] = function(v)
         NugComboBarDB.hideSlowly = not NugComboBarDB.hideSlowly
         hideSlowly = NugComboBarDB.hideSlowly
-    end
-    if k == "toggleblizz" then
+    end,
+    ["toggleblizz"] = function(v)
         NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
         NugComboBar.toggleBlizz()
+    end,
+    ["scale"] = function(v)
+        local num = tonumber(v)
+        if num then 
+            NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
+        else print ("Current scale is: ".. NugComboBarDB.scale)
+        end
+    end,
+    ["disable"] = function(v)
+        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = true
+        print ("NCB> Disabled for current class. Changes will take effect after /reload")
+    end,
+    ["enable"] = function(v)
+        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = nil
+        print ("NCB> Enabled for current class. Changes will take effect after /reload")
+    end,
+    ["changecolor"] = function(v)
+        local num = tonumber(v)
+        if num then 
+            NugComboBar:ShowColorPicker(num)
+        end
+    end,
+    ["charspec"] = function(v)
+        if NugComboBarDB_Global.charspec[user] then NugComboBarDB_Global.charspec[user] = nil
+        else NugComboBarDB_Global.charspec[user] = true
+        end
+--~         ReloadUI()
+        NugComboBar:ADDON_LOADED(nil, "NugComboBar")
+        NugComboBar:PLAYER_LOGIN(nil, true)
+        NugComboBar:PLAYER_ENTERING_WORLD(nil)
+        if NugComboBar.anchor:IsVisible() then
+            NugComboBar.Commands.unlock()
+        end
+    end,
+}
+
+function NugComboBar.SlashCmd(msg)
+    k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
+    if not k or k == "help" then 
+        if NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] then
+            print("|cffffaaaaNCB is disabled for this class!|r")
+        end
+        print([[Usage:
+          |cff55ff55/ncb charspec|r
+          |cff55ff55/ncb lock|r
+          |cff55ff55/ncb unlock|r
+          |cff55ff55/ncb scale|r <0.3 - 2.0>
+          |cff55ff55/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
+          |cff55ff55/ncb anchorpoint|r <left | right>
+          |cff55ff55/ncb showempty|r
+          |cff55ff55/ncb hideslowly|r
+          |cff55ff55/ncb toggleblizz|r
+          |cff55ff55/ncb disable|enable|r (for current class)
+          |cff55ff55/ncb reset|r]]
+        )
     end
+    if NugComboBar.Commands[k] then
+        NugComboBar.Commands[k](v)
+    end
+
 --~     if k == "rotation" then
 --~         local ag = name:CreateAnimationGroup()
 --~     local a1 = ag:CreateAnimation("Rotation")
@@ -600,34 +639,7 @@ function NugComboBar.SlashCmd(msg)
 --~         self.ag:Pause();
 --~     end)
 --~     end
-    if k == "disable" then
-        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = true
-        print ("NCB> Disabled for current class. Changes will take effect after /reload")
-    end
-    if k == "enable" then
-        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = nil
-        print ("NCB> Enabled for current class. Changes will take effect after /reload")
-    end
-    if k == "scale" then
-        local num = tonumber(v)
-        if num then 
-            NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
-        else print ("Current scale is: ".. NugComboBarDB.scale)
-        end
-    end
-    if k == "changecolor" then
-        local num = tonumber(v)
-        if num then 
-            NugComboBar:ShowColorPicker(num)
-        end
-    end
-    if k == "charspec" then
-        if NugComboBarDB_Global.charspec[user] then NugComboBarDB_Global.charspec[user] = nil
-        else NugComboBarDB_Global.charspec[user] = true
-        end
---~         ReloadUI()
-        print (NCBString..(NugComboBarDB_Global.charspec[user] and "Enabled" or "Disabled").." character specific options for this toon. Will take effect after ui reload.",0.7,1,0.7)
-    end
+    
 end
 
 
@@ -650,6 +662,18 @@ function NugComboBar.toggleBlizz()
             PaladinPowerBar._Show = PaladinPowerBar.Show
             PaladinPowerBar.Show = PaladinPowerBar.Hide
         end
+        if class == "PRIEST" then
+            PriestBarFrame:UnregisterAllEvents()
+            PriestBarFrame:Hide()
+            PriestBarFrame._Show = PriestBarFrame.Show
+            PriestBarFrame.Show = PriestBarFrame.Hide
+        end
+        if class == "MONK" then
+            MonkHarmonyBar:UnregisterAllEvents()
+            MonkHarmonyBar:Hide()
+            MonkHarmonyBar._Show = MonkHarmonyBar.Show
+            MonkHarmonyBar.Show = MonkHarmonyBar.Hide
+        end
     else
         if class == "ROGUE" or class == "DRUID" then
             ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -667,6 +691,17 @@ function NugComboBar.toggleBlizz()
             PaladinPowerBar:Show()
             PaladinPowerBar_OnLoad(PaladinPowerBar)
             PaladinPowerBar_Update(PaladinPowerBar)
+        end
+        if class == "PRIEST" then
+            PriestBarFrame.Show = PriestBarFrame._Show
+            PriestBarFrame:Show()
+            PriestBarFrame.spec = nil
+            PriestBarFrame_OnLoad(PriestBarFrame)
+        end
+        if class == "MONK" then
+            MonkHarmonyBar.Show = MonkHarmonyBar._Show
+            MonkHarmonyBar:Show()
+            MonkHarmonyBar_OnLoad(MonkHarmonyBar)
         end
     end
 end
