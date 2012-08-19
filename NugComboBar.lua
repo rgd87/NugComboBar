@@ -256,10 +256,46 @@ function NugComboBar:LoadClassSettings()
         end
 end
 
+local defaults = {
+    point = "CENTER",
+    x = 0, y = 0,
+    anchorpoint = "LEFT",
+    scale = 1.0,
+    showEmpty = false,
+    hideSlowly = true,
+    disableBlizz = false,
+    colors = {
+        {0.77,0.26,0.29},
+        {0.77,0.26,0.29},
+        {0.77,0.26,0.29},
+        {0.77,0.26,0.29},
+        {0.77,0.26,0.29},
+        {0.77,0.26,0.29},
+    },
+    enable3d = true,
+    preset3d = "glow_funnelPurple",
+}
+
+local function SetupDefaults(t, defaults)
+    for k,v in pairs(defaults) do
+        if type(v) == "table" then
+            if t[k] == nil then
+                t[k] = CopyTable(v)
+            else
+                SetupDefaults(t[k], v)
+            end
+        else
+            if t[k] == nil then t[k] = v end
+        end
+    end
+end
+
+
 function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
     if arg1 == "NugComboBar" then
         SLASH_NCBSLASH1 = "/ncb";
         SLASH_NCBSLASH2 = "/nugcombobar";
+        SLASH_NCBSLASH3 = "/NugComboBar";
         SlashCmdList["NCBSLASH"] = NugComboBar.SlashCmd
         
         NugComboBarDB_Global = NugComboBarDB_Global or {}
@@ -271,26 +307,12 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
         user = UnitName("player").."@"..GetRealmName()
 
         if NugComboBarDB_Global.charspec[user] then
-            NugComboBarDB._db = NugComboBarDB_Character
+            NugComboBarDB = NugComboBarDB_Character
         else
-            NugComboBarDB._db = NugComboBarDB_Global
+            NugComboBarDB = NugComboBarDB_Global
         end
-        setmetatable(NugComboBarDB,{
-            __index = function(t,k) return t._db[k] end,
-            __newindex = function(t,k,v) t._db[k] = v end
-        })
-        
-        NugComboBarDB.point = NugComboBarDB.point or "CENTER"
-        NugComboBarDB.x = NugComboBarDB.x or 0
-        NugComboBarDB.y = NugComboBarDB.y or 0
-        NugComboBarDB.anchorpoint = NugComboBarDB.anchorpoint or "LEFT"
-        NugComboBarDB.scale = NugComboBarDB.scale or 1
-        if NugComboBarDB.animation == nil then NugComboBarDB.animation = false end
-        if NugComboBarDB.showEmpty == nil then NugComboBarDB.showEmpty = false end
-        if NugComboBarDB.hideSlowly == nil then NugComboBarDB.hideSlowly = true end
-        if NugComboBarDB.disableBlizz == nil then NugComboBarDB.disableBlizz = false end
-        NugComboBarDB.colors = NugComboBarDB.colors or { {0.77,0.26,0.29},{0.77,0.26,0.29},{0.77,0.26,0.29},{0.77,0.26,0.29},{0.77,0.26,0.29} }
-        NugComboBarDB.colors[6] = NugComboBarDB.colors[6] or {0.77,0.26,0.29}
+
+        SetupDefaults(NugComboBarDB, defaults)
 
         self:RegisterEvent("PLAYER_LOGIN")
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -530,6 +552,11 @@ function NugComboBar.ShowColorPicker(self,color)
     ColorPickerFrame:Show()
 end
 
+function NugComboBar.Set3DPreset(self, preset)
+    for _, point in pairs(self.point) do
+        point:SetPreset(preset)
+    end
+end
 
 NugComboBar.Commands = {
     ["unlock"] = function(v)
@@ -602,6 +629,20 @@ NugComboBar.Commands = {
             NugComboBar.Commands.unlock()
         end
     end,
+    ["toggle3d"] = function(v)
+        NugComboBarDB.enable3d = not NugComboBarDB.enable3d
+        print (string.format("NCB> 3D mode is %s, it will take effect after /reload", NugComboBarDB.enable3d and "enabled" or "disabled"))
+    end,
+    ["preset3d"] = function(v)
+        if not NugComboBar.presets[v] then
+            return print(string.format("Preset '%s' does not exist", v))
+        end
+        NugComboBarDB.preset3d = v
+        NugComboBar:Set3DPreset(v)
+    end,
+    ["gui"] = function(v)
+        InterfaceOptionsFrame_OpenToCategory("NugComboBar")
+    end
 }
 
 function NugComboBar.SlashCmd(msg)

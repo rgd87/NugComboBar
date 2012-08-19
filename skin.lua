@@ -1,8 +1,120 @@
+-- function NugComboBar.Skin3DAdjustOffset(self, newoffset)
+--     local prev
+--     for i=1,NugComboBar.MAX_POINTS do
+--         local point = self.p[i]
+--         point:Show()
+--         if prev
+--             then f:SetPoint("CENTER", prev, "CENTER", 50+newoffset, 0)
+--             else f:SetPoint("LEFT", self, "LEFT", 0, 0)
+--         end
+--         prev = point
+--     end 
+-- end
+
+-- local spells = {
+--         purple1 = { model = "spells\\seedofcorruption_state.mdx", scale = 1 },
+--         purple2 = { model = "spells\\gouge_precast_state_hand.mdx", scale = 3 }, -- good, warlock, rogue
+
+--         funnel1 = { model = "spells\\manafunnel_impact_chest.mdx", scale = 1.8 }, -- monk
+--         funnel2 = { model = "lifetap_state_chest.mdx      funnel3 = { model = "spells\\soulfunnel_impact_chest.mdx", scale = 3 },
+--         funnel4 = { model = "spells\\healrag_state_chest.mdx", scale = 1.8 },
+
+--         green1 = { model = "spells\\nature_precast_chest.mdx", scale = 2.5 },
+--         spark1 = { model = "spells\\dispel_low_recursive.mdx", scale = 30 }, 
+--         spark2 = { model = "spells\\detectmagic_recursive.mdx", scale = 30 },
+--         fire1 = { model = "spells\\fire_blue_precast_uber_hand.mdx", scale = 5 }, --blue
+--         fire2 = { model = "spells\\fire_precast_uber_hand.mdx", scale = 5 }, --orange
+--         fire3 = { model = "spells\\fel_fire_precast_hand.mdx", scale = 5 }, --green
+
+        -- electric1 = { model = "spells\\lightningboltivus_missile.mdx", scale = .3 }, --blue long
+        -- electric2 = { model = "spells\\lightning_precast_low_hand.mdx", scale = 6 }, --blue
+        -- electric3 = { model = "spells\\lightning_fel_precast_low_hand.mdx", scale = 6 }, --green
+        -- electric4 = { model = "spells\\wrath_precast_hand.mdx", scale = 6 }, --green long
+
+        -- spin1 = { model = "spells\\blessingoffreedom_state.mdx", scale = 1 }, --paladin
+    -- }
+NugComboBar.presets = {
+    ["glowPurple"] = {
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 5 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+    },
+    ["funnelPurple"] = {
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.mdx", 3 },
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+    },
+    ["glow_funnelPurple"] = {
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\soulfunnel_impact_chest.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+    },
+    ["funnelRed"] = {
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.mdx", 3 },
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.mdx", 1.7 },
+    },
+    ["funnelGreen"] = {
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.mdx", 3 },
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.mdx", 1.7 },
+    },
+    ["funnelBlue"] = {
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.mdx", 3 },
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+    },
+    ["glowFreedom"] = {
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\blessingoffreedom_state.mdx", 1 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.mdx", 3 },
+
+    },
+}
+
+
+local barBottom = false
+
 local ActivateFunc = function(self)
     if self:GetAlpha() == 1 then return end
     if self.dag:IsPlaying() then self.dag:Stop() end
     self.aag:Play()
-    self.glow2:Play()
+    if self.glow2 then self.glow2:Play() end
 end
 local DeactivateFunc = function(self)
     if self:GetAlpha() == 0 then return end
@@ -11,125 +123,232 @@ local DeactivateFunc = function(self)
 end
 local SetColorFunc = function(self,r,g,b)
     self.t:SetVertexColor(r,g,b)
-    self.g:SetVertexColor(r,g,b)
-    self.g2:SetVertexColor(r,g,b)
+    if self.ani then self.ani.tex:SetVertexColor(r,g,b) end
 end
-function NugComboBar.ConvertTo3(self)
-    if NugComboBar.MAX_POINTS == 3 then return end
-    NugComboBar.MAX_POINTS = 3
-    local p1 = self.p[1]
-    local point,parent,to,x,y = p1:GetPoint(1)
-    x = x - 34.5*2
-    p1:SetPoint(point,parent,to,x,y)
-    local w = 256-70-30
-    self:SetWidth(w)
-    self.bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg3")
-    for i=1,5 do
-        self.p[i]:Deactivate()
-        self.p[i-2] = self.p[i]
+local SetPresetFunc = function ( self, name )
+    local ps = NugComboBar.presets[name]
+    if not ps then return end
+    local settings = ps[self.id]
+    local model, scale = unpack(settings)
+    self:SetModel(model)
+    self:SetModelScale(0.01*scale)
+end
+
+local pointtex = {
+    [1] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {0, 26/256, 0, 1},
+        width = 26, height = 32,
+        psize = 14,
+        poffset_x = 19, poffset_y = -14,
+    },
+    [2] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {26/256, 50/256, 0, 1},
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [3] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {50/256, 74/256, 0, 1},
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [4] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {74/256, 98/256, 0, 1},
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [5] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {26/256, 50/256, 0, 1},
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [6] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {98/256, 140/256, 0, 1},
+        width = 42, height = 32,
+        psize = 18,
+        poffset_x = 20, poffset_y = -14,
+    },
+
+    --reversed textures for paladin
+    [7] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {196/256, 221/256, 0, 1},
+        width = 25, height = 32,
+        offset_x = -13, drawlayer = 1,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+
+    [8] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {221/256, 1, 0, 1},
+        width = 35, height = 32,
+        psize = 14,
+        poffset_x = 16, poffset_y = -14,
+    },
+
+    ["bar"] = {
+        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        coords = {140/256, 190/256, 0, 1},
+        width = 50, height = 32,
+    },
+}
+
+local mappings = {
+    [2] = { 1, 6 },
+    [3] = { 1, 2, 6 },
+    [4] = { 1, 2, 3, 6 },
+    [5] = { 1, 2, 3, 4, 6 },
+    [6] = { 1, 2, 3, 4, 5, 6 },
+    ["PALADIN"] = { 1, 2, 6, 7, 8 },
+    ["ARCANE"] = { 1, 2, 3, 6, 7, 8 },
+}
+
+
+function NugComboBar.SetMaxPoints(self, n, special)
+    if NugComboBar.MAX_POINTS == n then return end
+    NugComboBar.MAX_POINTS = n
+
+    for _, point in pairs(self.point) do
+        point:SetAlpha(0)
+        point:Hide()
+        point.bg:Hide()
+        point.bg:ClearAllPoints()
     end
-    self.p[5] = nil
-    self.p[4] = nil
-end
-function NugComboBar.ConvertTo5(self)
-    if NugComboBar.MAX_POINTS == 5 then return end
-    NugComboBar.MAX_POINTS = 5
-    local p1 = self.p[-1]
-    local point,parent,to,x,y = p1:GetPoint(1)
-    x = x + 34.5*2
-    p1:SetPoint(point,parent,to,x,y)
-    local w = 256-30
-    self:SetWidth(w)
-    self.bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg5")
-    for i=5,1,-1 do
-        self.p[i] = self.p[i-2]
-        self.p[i]:Deactivate()
+
+    self.point_map = mappings[special or n]
+
+    local prevt
+    for i=1,NugComboBar.MAX_POINTS do
+        local point = self.p[i]
+        point:Show()
+        point.bg:Show()
+        point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", point.bg.settings.offset_x or 0, 0)
+        prevt = point.bg
+
+        point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
+        point:SetPreset(NugComboBarDB.preset3d)
     end
-    self.p[0] = nil
-    self.p[-1] = nil
 end
-function NugComboBar.Create(self)
-    local MAX_POINTS = 5
+
+
+
+function NugComboBar.Create2DPoint(self, id, opts)
+    local size = opts.psize
+    local tex = [[Interface\Addons\NugComboBarClassic\tex\ncbc_point]]
+    local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
+    f:SetHeight(size); f:SetWidth(size);
+    
+    local t1 = f:CreateTexture(nil,"ARTWORK")
+    t1:SetTexture(tex)
+    t1:SetAllPoints(f)
+    f.t = t1
+
+
+
+    local f2 = CreateFrame("Frame",nil,f)
+    f2:SetHeight(size+3); f2:SetWidth(size+3);
+    local g2 = f2:CreateTexture(nil,"OVERLAY")
+    g2:SetAllPoints(f2)
+    g2:SetTexture[[Interface\Addons\NugComboBarClassic\tex\ncbc_point_shine]]
+    f2:SetPoint("CENTER",f,"CENTER",3,2)
+    
+    f2:SetAlpha(0)
+    
+    local g2aag = f2:CreateAnimationGroup()
+    local g2a = g2aag:CreateAnimation("Alpha")
+    g2a:SetStartDelay(0.18)
+    g2a:SetChange(1)
+    g2a:SetDuration(0.3)
+    g2a:SetOrder(1)
+    local g2d = g2aag:CreateAnimation("Alpha")
+    g2d:SetChange(-1)
+    g2d:SetDuration(0.4)
+    g2d:SetOrder(2)
+    --Required for 4.2
+    g2aag:SetScript("OnFinished",function(self)
+        self:GetParent():SetAlpha(0)
+    end)
+
+    f.glow2 = g2aag
+    f.SetColor = SetColorFunc
+    f.SetPreset = function() end
+
+    return f
+end
+
+function NugComboBar.Create3DPoint(self, id, opts)
+    local size = 64
+    local f = CreateFrame("Model","NugComboBarPoint"..id,self)
+    f:SetHeight(size); f:SetWidth(size);
+    f.SetPreset = PointSetModelFunc
+    f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+    f:SetPosition(0.0205,0.021,0)
+    f:SetFacing(0)
+
+    -- if prev
+        -- then f:SetPoint("CENTER", prev, "CENTER", 50, 0)
+        -- else f:SetPoint("LEFT", self, "LEFT", 0, 0)
+    -- end
+
+    -- local backdrop = {
+    --     bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+    --     tile = true, tileSize = 0,
+    --     insets = {left = 0, right = 0, top = 0, bottom = 0},
+    -- }   
+    -- f:SetBackdrop(backdrop)
+    -- f:SetBackdropColor(0, 0, 0, 0.7)
+
+    f.SetColor = function() end
+    f.SetPreset = SetPresetFunc
+
+    return f
+end
+
+
+NugComboBar.Create = function(self)
+    local MAX_POINTS = #pointtex
     self:SetFrameStrata("MEDIUM")
-    local w = (MAX_POINTS == 3) and 256-70-30 or 256-30
-    local h = 64
-    self:SetWidth(w)
-    self:SetHeight(h)
-    self:SetPoint("CENTER",UIParent,"CENTER",0,0)
-    
-    local bgt = self:CreateTexture(nil,"BACKGROUND")
-    bgt:SetTexture("Interface\\Addons\\NugComboBar\\tex\\ncbu_bg"..MAX_POINTS)
-    bgt:SetPoint("TOPLEFT",self,"TOPLEFT",0,0)
-    bgt:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",256,-64)
-    self.bgt = bgt
-    
-    local prev = self
-    local offsetX = 35
-    local offsetY = 3.2
-    local color_offset = 5 - MAX_POINTS
-    self.p = {}
+    self:SetWidth(164)
+    self:SetHeight(32)
+
+
+    self.point = {}
+    self.point_map = mappings[6]
+    self.p = setmetatable({}, { __index = function(t,k)
+        return self.point[self.point_map[k]]
+    end})
+
+    local prevt
     for i=1,MAX_POINTS do
-        local size = (MAX_POINTS == i) and 32 or 23
-        local tex = (MAX_POINTS == i) and [[Interface\Addons\NugComboBar\tex\ncbu_point5]] or [[Interface\Addons\NugComboBar\tex\ncbu_point]]
-        local mul = (MAX_POINTS == i) and 1.8 or 1.55
-        local mul2 = (MAX_POINTS == i) and 2 or 2
-        local glowAlpha = (MAX_POINTS == i) and 0.85 or 0.85
-        local f = CreateFrame("Frame","NugComboBarPoint"..i,self)
-        f:SetHeight(size); f:SetWidth(size);
-        local t = f:CreateTexture(nil,"ARTWORK")
-        t:SetTexture(tex)
-        t:SetAllPoints(f)
-        f.t = t
-        
-        if i == 1 then
-            f:SetPoint("CENTER",prev,"LEFT",offsetX,offsetY)
-            --f:SetPoint("TOPLEFT",prev,"TOPLEFT",offsetX,offsetY-(h-size)/2)
-            --f:SetPoint("BOTTOMRIGHT",prev,"BOTTOMRIGHT",0,0)---w+offsetX+size,offsetY+(h-size)/2)
-            --/dump NugComboBar.p[-1]:SetAlpha(1)
-        else
-            f:SetPoint("CENTER",prev,"CENTER",offsetX,offsetY)
-        end
-        offsetX = (MAX_POINTS == i+1) and 46 or 34.5
-        offsetY = (MAX_POINTS == i+1) and -3 or 0
-        
-        local g = f:CreateTexture(nil,"OVERLAY")
-        g:SetHeight(size*mul); g:SetWidth(size*mul);
-        g:SetTexture[[Interface\Addons\NugComboBar\tex\ncbu_point_glow]]
-        g:SetPoint("CENTER",f,"CENTER",0,0)
-        g:SetAlpha(glowAlpha)
-        f.g = g
-        
-        local f2 = CreateFrame("Frame",nil,f)
-        f2:SetHeight(size*mul2); f2:SetWidth(size*mul2);
-        local g2 = f2:CreateTexture(nil,"OVERLAY")
-        g2:SetAllPoints(f2)
-        g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbu_glow2]]
-        f2:SetPoint("CENTER",f,"CENTER",0,0)
-        f.g2 = g2
-        
-        f2:SetAlpha(0)
+        local ts = pointtex[i]
+        local t = self:CreateTexture("NugComboBarBackgroundTexture"..i,"BACKGROUND",nil, ts.drawlayer)
+        t:SetTexture(ts.texture)
+        t:SetTexCoord(unpack(ts.coords))
+        t:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", 0, 0)
+        --t:SetPoint("BOTTOMRIGHT", prevt or self, prevt and "BOTTOMRIGHT" or "BOTTOMLEFT", ts.width, ts.height)
+        t:SetWidth(ts.width)
+        t:SetHeight(ts.height)
+        t.settings = ts
+        prevt = t
+
+        local f = NugComboBarDB.enable3d  and self:Create3DPoint(i, ts) or self:Create2DPoint(i, ts)
+
         f:SetAlpha(0)
-        
-        local g2aag = f2:CreateAnimationGroup()
-        local g2a = g2aag:CreateAnimation("Alpha")
-        g2a:SetStartDelay(0.2)
-        g2a:SetChange(1)
-        g2a:SetDuration(0.3)
-        g2a:SetOrder(1)
-        local g2d = g2aag:CreateAnimation("Alpha")
-        g2d:SetChange(-1)
-        g2d:SetDuration(0.7)
-        g2d:SetOrder(2)
-        f.glow2 = g2aag
-        --Required for 4.2
-        g2aag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(0)
-        end)
-        
-        f.SetColor = SetColorFunc
-        f:SetColor(unpack(NugComboBarDB.colors[i+color_offset]))
-        
-        prev = f
+        f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
+
+        f.bg = t
+        f.id = i
+        self.point[i] = f
         
         local aag = f:CreateAnimationGroup()
         f.aag = aag
@@ -140,8 +359,7 @@ function NugComboBar.Create(self)
         aag:SetScript("OnFinished",function(self)
             self:GetParent():SetAlpha(1)
         end)
-
-
+        
         local dag = f:CreateAnimationGroup()
         f.dag = dag
         local d1 = dag:CreateAnimation("Alpha")
@@ -155,7 +373,39 @@ function NugComboBar.Create(self)
         
         f.Activate = ActivateFunc
         f.Deactivate = DeactivateFunc
-        self.p[i] = f
-    end    
+    end
+
+
+    local bar = CreateFrame("StatusBar",nil, self)
+    local ts = pointtex["bar"]
+    bar:SetWidth(33); bar:SetHeight(2)
+    bar:SetStatusBarTexture([[Interface\Addons\NugComboBarClassic\tex\white]], "BACKGROUND")
+    bar:SetMinMaxValues(0,100)
+    bar:SetStatusBarColor(1,0,0)
+    bar:SetValue(50)
+
+    local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, -1)
+    barbg:SetTexture[[Interface\Addons\NugComboBarClassic\tex\white]]
+    barbg:SetVertexColor(1*.3, 0*.3, 0*.3)
+    barbg:SetAllPoints(bar)
+    bar.bg = barbg
+
+    local tb = bar:CreateTexture(nil, "BACKGROUND", nil, 1)
+    tb:SetWidth(ts.width); tb:SetHeight(ts.height)
+    tb:SetTexture(ts.texture)
+    tb:SetTexCoord(unpack(ts.coords))
+    tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -10, 14)
+
+    bar.t = tb
+    self.bar = bar
+
+    if barBottom then 
+        bar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 14, 4)
+    else
+        bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 14, 0)
+    end
+    bar:Hide()
+
+    
     return self
 end
