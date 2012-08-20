@@ -103,7 +103,56 @@ NugComboBar.presets = {
         { "spells\\blessingoffreedom_state.mdx", 1 },
         { "spells\\gouge_precast_state_hand.mdx", 3 },
         { "spells\\gouge_precast_state_hand.mdx", 3 },
-
+    },
+    ["fogPink"] = {
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+        { "spells\\spells\\seedofcorruption_state.mdx", 1 },
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
+    },
+    ["fireBlue"] = {
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 5.5, 0, 0.0017 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+    },
+    ["fireOrange"] = {
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.mdx", 5.5, 0, 0.0017 },
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+    },
+    ["fireGreen"] = {
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.mdx", 5.5, 0, 0.0017 },
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+    },
+    ["electricBlue"] = {
+        { "spells\\lightningboltivus_missile.mdx", .25 },
+        { "spells\\lightningboltivus_missile.mdx", .25 },
+        { "spells\\lightningboltivus_missile.mdx", .25 },
+        { "spells\\lightningboltivus_missile.mdx", .25 },
+        { "spells\\lightningboltivus_missile.mdx", .25 },
+        { "spells\\lightningboltivus_missile.mdx", .4 },
+        { "spells\\lightningboltivus_missile.mdx", .25 },
+        { "spells\\lightningboltivus_missile.mdx", .25 },
     },
 }
 
@@ -129,9 +178,13 @@ local SetPresetFunc = function ( self, name )
     local ps = NugComboBar.presets[name]
     if not ps then return end
     local settings = ps[self.id]
-    local model, scale = unpack(settings)
+    local model, scale, ox, oy = unpack(settings)
     self:SetModel(model)
     self:SetModelScale(0.01*scale)
+    ox = ox or 0
+    oy = oy or 0
+    local x,y,z = unpack(self.position)
+    self:SetPosition(x+ox, y+oy, z)
 end
 
 local pointtex = {
@@ -292,7 +345,8 @@ function NugComboBar.Create3DPoint(self, id, opts)
     f:SetHeight(size); f:SetWidth(size);
     f.SetPreset = PointSetModelFunc
     f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
-    f:SetPosition(0.0205,0.021,0)
+    f.position = { 0.0205,0.021,0 }
+    f:SetPosition(unpack(f.position))
     f:SetFacing(0)
 
     -- if prev
