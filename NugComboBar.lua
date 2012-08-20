@@ -252,6 +252,7 @@ function NugComboBar:LoadClassSettings()
             allowedUnit = "player" 
             GetComboPoints = GetAuraStack
         else
+            self:SetMaxPoints(2)
             return
         end
 end
@@ -541,7 +542,7 @@ function NugComboBar.ShowColorPicker(self,color)
             r,g,b = ColorPickerFrame:GetColorRGB();
         end
         if color == 0 then
-            for i=1,5 do
+            for i=1,#self.points do
                 NugComboBar.SetColor(i,r,g,b)
             end
         else
@@ -652,11 +653,14 @@ function NugComboBar.SlashCmd(msg)
             print("|cffffaaaaNCB is disabled for this class!|r")
         end
         print([[Usage:
+          |cff55ffff/ncb gui|r
           |cff55ff55/ncb charspec|r
           |cff55ff55/ncb lock|r
           |cff55ff55/ncb unlock|r
+          |cff55ff55/ncb toggle3d|r
+          |cff55ff55/ncb preset3d <preset>|r
           |cff55ff55/ncb scale|r <0.3 - 2.0>
-          |cff55ff55/ncb changecolor|r <1-5, 0 = all> (in 3pt mode use 3-5)
+          |cff55ff55/ncb changecolor|r <1-6, 0 = all>
           |cff55ff55/ncb anchorpoint|r <left | right>
           |cff55ff55/ncb showempty|r
           |cff55ff55/ncb hideslowly|r
