@@ -1,8 +1,6 @@
 NugComboBar = CreateFrame("Frame",nil, UIParent)
 
 local user
-NugComboBarDB = {}
-
 local OriginalGetComboPoints = GetComboPoints
 local GetComboPoints = OriginalGetComboPoints
 local allowedUnit = "player"
@@ -15,6 +13,17 @@ NugComboBar:SetScript("OnEvent", function(self, event, ...)
 end)
 
 NugComboBar:RegisterEvent("ADDON_LOADED")
+
+local L = setmetatable({}, {
+    __index = function(t, k)
+        t[k] = k
+        return k
+    end,
+    __call = function(t,k)
+        return t[k]
+    end,
+})
+NugComboBar.L = L
 
 local scanAura
 local filter = "HELPFUL"
