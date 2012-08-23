@@ -108,17 +108,16 @@ function NugComboBar:LoadClassSettings()
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetChi
-            self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-            self:RegisterEvent("PLAYER_TALENT_UPDATE")
-            self.ACTIVE_TALENT_GROUP_CHANGED = function(self, event)
+
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self, event)
                 if IsSpellKnown(115396)  -- Ascension
                     then self:SetMaxPoints(5)
                     else self:SetMaxPoints(4)
                 end
                 self:UNIT_COMBO_POINTS(nil,"player")
             end
-            self.PLAYER_TALENT_UPDATE = self.ACTIVE_TALENT_GROUP_CHANGED
-            self:ACTIVE_TALENT_GROUP_CHANGED()
+            self:SPELLS_CHANGED()
         elseif class == "SHAMAN" then
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_AURA")
@@ -148,7 +147,6 @@ function NugComboBar:LoadClassSettings()
                 end
             end
             GetComboPoints = GetShards
-            showEmpty = true
             self:RegisterEvent("GLYPH_UPDATED")
             self:RegisterEvent("GLYPH_ADDED")
             self:RegisterEvent("GLYPH_REMOVED")
@@ -156,12 +154,14 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
                 if      spec == SPEC_WARLOCK_DESTRUCTION then
+                    showEmpty = NugComboBarDB.showEmpty
                     self:EnableBar(0,10)
                     self:SetMaxPoints(3)
                     GetComboPoints = GetBurningEmbers
                     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
                 elseif  spec == SPEC_WARLOCK_AFFLICTION and IsPlayerSpell(WARLOCK_SOULBURN) then
                     self:DisableBar()
+                    showEmpty = true
                     local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
                     self:SetMaxPoints(maxshards)
                     GetComboPoints = GetShards
@@ -200,6 +200,8 @@ function NugComboBar:LoadClassSettings()
                     return (count or 0)
                 end
             end
+
+
             local bm = function()
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_AURA")
@@ -208,22 +210,34 @@ function NugComboBar:LoadClassSettings()
                 allowedCaster = "pet"
                 GetComboPoints = GetAuraStack
             end
-            self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
-                if IsSpellKnown(19434) then return mm() end -- Aimed Shot
-                if IsSpellKnown(19577) then return bm() end -- Intimidation
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self)
+                local spec = GetSpecialization()
+                if spec == 2 then return mm() end
+                if spec == 1 then return bm() end
                 self:UnregisterEvent("UNIT_AURA")
             end
-            self:ACTIVE_TALENT_GROUP_CHANGED()
+            self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(91342) -- Shadow Infusion
             filter = "HELPFUL"
-            allowedUnit = "pet"
             allowedCaster = "player"
             GetComboPoints = GetAuraStack
+            
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self, event)
+                local spec = GetSpecialization()
+                if      spec == 3 then -- unholy
+                    allowedUnit = "pet"
+                    scanAura = GetSpellInfo(91342) -- Shadow Infusion
+                elseif  spec == 1 then
+                    allowedUnit = "player"
+                    scanAura = GetSpellInfo(50421) -- Scent of Blood
+                end
+            end
+            self:SPELLS_CHANGED()
         elseif class == "PRIEST" then
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self.UNIT_POWER = function(self,event,unit,ptype)
