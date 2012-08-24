@@ -34,26 +34,6 @@ local GetAuraStack = function(unit)
     return (count or 0)
 end
 
-local GetShards = function(unit)
-    return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
-end
-local GetBurningEmbers = function(unit)
-    local maxPower = UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true)
-    local power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)
-    local numEmbers = floor(power / MAX_POWER_PER_EMBER)
-    local progress = math.fmod(power, MAX_POWER_PER_EMBER)
-    return numEmbers, progress
-end
-local GetChi = function(unit)
-    return UnitPower(unit, SPELL_POWER_LIGHT_FORCE)
-end
-local GetHolyPower = function(unit)
-    return UnitPower(unit, SPELL_POWER_HOLY_POWER)
-end
-local GetShadowOrbs = function(unit)
-    return UnitPower(unit, SPELL_POWER_SHADOW_ORBS)
-end
-
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
@@ -93,14 +73,27 @@ function NugComboBar:LoadClassSettings()
             end
             self:UPDATE_SHAPESHIFT_FORM()
         elseif class == "PALADIN" then
-            self:SetMaxPoints(5, "PALADIN")
+            local GetHolyPower = function(unit)
+                return UnitPower(unit, SPELL_POWER_HOLY_POWER)
+            end
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetHolyPower
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self, event)
+                if IsSpellKnown(115675)  -- Boundless Conviction
+                    then self:SetMaxPoints(5, "PALADIN")
+                    else self:SetMaxPoints(3)
+                end
+            end
+            self:SPELLS_CHANGED()
         elseif class == "MONK" then
+            local GetChi = function(unit)
+                return UnitPower(unit, SPELL_POWER_LIGHT_FORCE)
+            end
             self:SetMaxPoints(4)
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -122,22 +115,37 @@ function NugComboBar:LoadClassSettings()
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
             allowedUnit = "player"
             local LShield = GetSpellInfo(324) -- Lightning Shield
             local GetLightningShield = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
-                return (count and count - 4 or 0)
+                return (count and count - 1 or 0)
             end
-            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
-                if IsSpellKnown(51490) -- Thunderstorm
-                then GetComboPoints = GetLightningShield
-                else GetComboPoints = GetAuraStack
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self)
+                local spec = GetSpecialization()
+                if spec == 1 then
+                    self:SetMaxPoints(6)
+                    GetComboPoints = GetLightningShield
+                else
+                    self:SetMaxPoints(5)
+                    scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
+                    GetComboPoints = GetAuraStack
                 end
                 self:UNIT_AURA(nil,allowedUnit)
             end
-            self:ACTIVE_TALENT_GROUP_CHANGED()
+            self:SPELLS_CHANGED()
         elseif class == "WARLOCK" then
+            local GetShards = function(unit)
+                return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
+            end
+            local GetBurningEmbers = function(unit)
+                local maxPower = UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true)
+                local power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)
+                local numEmbers = floor(power / MAX_POWER_PER_EMBER)
+                local progress = math.fmod(power, MAX_POWER_PER_EMBER)
+                return numEmbers, progress
+            end
             self:SetMaxPoints(3)
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -165,6 +173,10 @@ function NugComboBar:LoadClassSettings()
                     local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
                     self:SetMaxPoints(maxshards)
                     GetComboPoints = GetShards
+                    self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
+                else
+                    showEmpty = NugComboBarDB.showEmpty
+                    GetComboPoints = GetAuraStack -- to make sure it will be 0 on next call
                     self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
                 end
             end
@@ -239,6 +251,10 @@ function NugComboBar:LoadClassSettings()
             end
             self:SPELLS_CHANGED()
         elseif class == "PRIEST" then
+            local GetShadowOrbs = function(unit)
+                return UnitPower(unit, SPELL_POWER_SHADOW_ORBS)
+            end
+            
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "SHADOW_ORBS" or unit ~= "player" then return end
