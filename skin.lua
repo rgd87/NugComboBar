@@ -189,42 +189,42 @@ end
 
 local pointtex = {
     [1] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {0, 26/256, 0, 1},
         width = 26, height = 32,
         psize = 14,
         poffset_x = 19, poffset_y = -14,
     },
     [2] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
     },
     [3] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {50/256, 74/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
     },
     [4] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {74/256, 98/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
     },
     [5] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
     },
     [6] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {98/256, 140/256, 0, 1},
         width = 42, height = 32,
         psize = 18,
@@ -233,7 +233,7 @@ local pointtex = {
 
     --reversed textures for paladin
     [7] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {196/256, 221/256, 0, 1},
         width = 25, height = 32,
         offset_x = -13, drawlayer = 1,
@@ -242,7 +242,7 @@ local pointtex = {
     },
 
     [8] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {221/256, 1, 0, 1},
         width = 35, height = 32,
         psize = 14,
@@ -250,7 +250,7 @@ local pointtex = {
     },
 
     ["bar"] = {
-        texture = "Interface\\Addons\\NugComboBarClassic\\tex\\ncbc_bg5",
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {140/256, 190/256, 0, 1},
         width = 50, height = 32,
     },
@@ -297,7 +297,7 @@ end
 
 function NugComboBar.Create2DPoint(self, id, opts)
     local size = opts.psize
-    local tex = [[Interface\Addons\NugComboBarClassic\tex\ncbc_point]]
+    local tex = [[Interface\Addons\NugComboBar\tex\ncbc_point]]
     local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
     f:SetHeight(size); f:SetWidth(size);
     
@@ -312,7 +312,7 @@ function NugComboBar.Create2DPoint(self, id, opts)
     f2:SetHeight(size+3); f2:SetWidth(size+3);
     local g2 = f2:CreateTexture(nil,"OVERLAY")
     g2:SetAllPoints(f2)
-    g2:SetTexture[[Interface\Addons\NugComboBarClassic\tex\ncbc_point_shine]]
+    g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbc_point_shine]]
     f2:SetPoint("CENTER",f,"CENTER",3,2)
     
     f2:SetAlpha(0)
@@ -433,13 +433,13 @@ NugComboBar.Create = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
     local ts = pointtex["bar"]
     bar:SetWidth(33); bar:SetHeight(2)
-    bar:SetStatusBarTexture([[Interface\Addons\NugComboBarClassic\tex\white]], "BACKGROUND")
+    bar:SetStatusBarTexture([[Interface\Addons\NugComboBar\tex\white]], "BACKGROUND")
     bar:SetMinMaxValues(0,100)
     bar:SetStatusBarColor(1,0,0)
     bar:SetValue(50)
 
     local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, -1)
-    barbg:SetTexture[[Interface\Addons\NugComboBarClassic\tex\white]]
+    barbg:SetTexture[[Interface\Addons\NugComboBar\tex\white]]
     barbg:SetVertexColor(1*.3, 0*.3, 0*.3)
     barbg:SetAllPoints(bar)
     bar.bg = barbg
