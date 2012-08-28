@@ -1,8 +1,8 @@
 NugComboBar = CreateFrame("Frame",nil, UIParent)
 
 local user
-local OriginalGetComboPoints = GetComboPoints
-local GetComboPoints = OriginalGetComboPoints
+local RogueGetComboPoints = GetComboPoints
+local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty
@@ -41,14 +41,14 @@ function NugComboBar:LoadClassSettings()
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            local GetComboPoints = OriginalGetComboPoints
+            local GetComboPoints = RogueGetComboPoints
         elseif class == "DRUID" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             local cat = function()
                 self:UnregisterEvent("UNIT_AURA")
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_COMBO_POINTS")
-                GetComboPoints = OriginalGetComboPoints
+                GetComboPoints = RogueGetComboPoints
                 allowedUnit = "player"
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
@@ -357,6 +357,12 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
         self:RegisterEvent("PLAYER_LOGIN")
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
         self.PLAYER_ENTERING_WORLD = self.PLAYER_TARGET_CHANGED -- Update on looading screen to clear after battlegrounds
+
+        local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
+        f:SetScript('OnShow', function(self)
+            self:SetScript('OnShow', nil)
+            LoadAddOn('NugComboBarGUI')
+        end)
         
 --~         self:RegisterEvent("UPDATE_STEALTH")
 --~         self:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -681,6 +687,7 @@ NugComboBar.Commands = {
         NugComboBar:Set3DPreset(v)
     end,
     ["gui"] = function(v)
+        LoadAddOn('NugComboBarGUI')
         InterfaceOptionsFrame_OpenToCategory("NugComboBar")
     end
 }
