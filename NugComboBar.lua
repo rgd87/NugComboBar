@@ -164,7 +164,8 @@ function NugComboBar:LoadClassSettings()
                 if      spec == SPEC_WARLOCK_DESTRUCTION then
                     showEmpty = NugComboBarDB.showEmpty
                     self:EnableBar(0,10)
-                    self:SetMaxPoints(3)
+                    local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
+                    self:SetMaxPoints(maxembers)
                     GetComboPoints = GetBurningEmbers
                     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
                 elseif  spec == SPEC_WARLOCK_AFFLICTION and IsPlayerSpell(WARLOCK_SOULBURN) then
@@ -330,7 +331,7 @@ local function SetupDefaults(t, defaults)
     end
 end
 
-
+NugComboBar.SkinVersion = 500
 function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
     if arg1 == "NugComboBar" then
         SLASH_NCBSLASH1 = "/ncb";
