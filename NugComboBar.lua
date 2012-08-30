@@ -162,7 +162,7 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
                 if      spec == SPEC_WARLOCK_DESTRUCTION then
-                    showEmpty = NugComboBarDB.showEmpty
+                    showEmpty = true
                     self:EnableBar(0,10)
                     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
                     self:SetMaxPoints(maxembers)
@@ -522,7 +522,8 @@ function NugComboBar.SetColor(point, r, g, b)
     --    NugComboBar.bg:SetVertexColor(r,g,b)
     --else
     --local offset = NugComboBar.MAX_POINTS - 5
-    NugComboBar.p[point]:SetColor(r,g,b)
+    local p = NugComboBar.p[point]
+    if p then p:SetColor(r,g,b) end
     --end
 end
 
