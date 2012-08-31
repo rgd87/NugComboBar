@@ -177,10 +177,10 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self, event)
                 showEmpty = true
                 self:UnregisterEvent("UNIT_AURA")
+                self.bar:SetColor(unpack(NugComboBarDB.colors.bar1))
                 local spec = GetSpecialization()
                 if      spec == 3 then
                     self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
-                    self.bar:SetColor(unpack(NugComboBarDB.colors.bar1))
                     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
                     self:SetMaxPoints(maxembers)
                     GetComboPoints = GetBurningEmbers
@@ -196,6 +196,8 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetDemonicFury
                     self:RegisterEvent("UNIT_AURA")
                     self:UNIT_POWER(nil,allowedUnit, "DEMONIC_FURY" )
+                    metaStatus = nil
+                    self.UNIT_AURA(nil, allowedUnit)
                 end
             end
             self.GLYPH_UPDATED = self.SPELLS_CHANGED

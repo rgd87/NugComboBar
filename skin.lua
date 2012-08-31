@@ -486,7 +486,7 @@ NugComboBar.Create = function(self)
 
     bar:Small()
     bar:Big()
-    bar:SetColor(1,0,0)
+    bar:SetColor(0.6,0,0)
     -- bar.t = tb
     self.bar = bar
     bar:Hide()
