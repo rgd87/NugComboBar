@@ -250,9 +250,9 @@ local pointtex = {
     },
 
     ["bar"] = {
-        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
-        coords = {140/256, 190/256, 0, 1},
-        width = 50, height = 32,
+        texture = "Interface\\Addons\\NugComboBar\\tex\\UI-CastingBar-Border-Small",
+        coords = {11/128, 92/128, 7/32, 24/32},
+        width = 81, height = 17,
     },
 }
 
@@ -432,32 +432,63 @@ NugComboBar.Create = function(self)
 
     local bar = CreateFrame("StatusBar",nil, self)
     local ts = pointtex["bar"]
-    bar:SetWidth(33); bar:SetHeight(2)
-    bar:SetStatusBarTexture([[Interface\Addons\NugComboBar\tex\white]], "BACKGROUND")
+    bar:SetWidth(45); bar:SetHeight(7)
+    bar:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
     bar:SetMinMaxValues(0,100)
-    bar:SetStatusBarColor(1,0,0)
     bar:SetValue(50)
 
     local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, -1)
-    barbg:SetTexture[[Interface\Addons\NugComboBar\tex\white]]
-    barbg:SetVertexColor(1*.3, 0*.3, 0*.3)
+    barbg:SetTexture[[Interface\AddOns\NugComboBar\tex\statusbar]]
+    --[[Interface\TargetingFrame\UI-StatusBar]]
+    --[[Interface\Addons\NugComboBar\tex\white]]
     barbg:SetAllPoints(bar)
     bar.bg = barbg
 
-    local tb = bar:CreateTexture(nil, "BACKGROUND", nil, 1)
-    tb:SetWidth(ts.width); tb:SetHeight(ts.height)
-    tb:SetTexture(ts.texture)
-    tb:SetTexCoord(unpack(ts.coords))
-    tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -10, 14)
 
-    bar.t = tb
-    self.bar = bar
+    local backdrop = {
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        tile = true, tileSize = 0,
+        insets = {left = -2, right = -2, top = -2, bottom = -2},
+    }    
+    bar:SetBackdrop(backdrop)
+    bar:SetBackdropColor(0, 0, 0, 0.7)
 
-    if barBottom then 
-        bar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 14, 4)
-    else
-        bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 14, 0)
+    bar.SetColor = function(self, r,g,b)
+        self:SetStatusBarColor(r,g,b)
+        self.bg:SetVertexColor(r*.5,g*.5,b*.5)
     end
+
+    bar.Small = function(self)
+        self:SetWidth(45); self:SetHeight(7);
+        self:SetParent(NugComboBar)
+        self:ClearAllPoints()
+        if barBottom then 
+            self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
+        else
+            self:SetPoint("BOTTOMLEFT", NugComboBar, "TOPLEFT", 14, 0)
+        end
+        NugComboBar:Show()
+    end
+
+    bar.Big = function(self)
+        self:SetWidth(80); self:SetHeight(20);
+        self:SetParent(UIParent)
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
+        NugComboBar:Hide()
+    end
+
+    -- local tb = bar:CreateTexture(nil, "BACKGROUND", nil, 1)
+    -- tb:SetWidth(ts.width); tb:SetHeight(ts.height)
+    -- tb:SetTexture(ts.texture)
+    -- tb:SetTexCoord(unpack(ts.coords))
+    -- tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -5, 4)
+
+    bar:Small()
+    bar:Big()
+    bar:SetColor(1,0,0)
+    -- bar.t = tb
+    self.bar = bar
     bar:Hide()
 
     

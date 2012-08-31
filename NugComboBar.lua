@@ -139,6 +139,9 @@ function NugComboBar:LoadClassSettings()
             local GetShards = function(unit)
                 return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
             end
+            local GetDemonicFury = function(unit)
+                return 0, UnitPower(unit, SPELL_POWER_DEMONIC_FURY)
+            end
             local GetBurningEmbers = function(unit)
                 local maxPower = UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true)
                 local power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)
@@ -146,51 +149,66 @@ function NugComboBar:LoadClassSettings()
                 local progress = math.fmod(power, MAX_POWER_PER_EMBER)
                 return numEmbers, progress
             end
-            self:SetMaxPoints(3)
-            self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if unit ~= "player" then return end
-                if ptype == "SOUL_SHARDS" or ptype == "BURNING_EMBERS" then
-                    self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+                if ptype == "SOUL_SHARDS" or ptype == "BURNING_EMBERS" or ptype == "DEMONIC_FURY" then
+                    return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
                 end
             end
-            GetComboPoints = GetShards
+
+            local metaStatus
+            self.UNIT_AURA = function(self, event, unit)
+                if unit ~= "player" then return end
+                local current = ( UnitAura("player", GetSpellInfo(WARLOCK_METAMORPHOSIS), nil, "HELPFUL") ~= nil)
+                if metaStatus == current  then return end
+                metaStatus = current
+                if current then
+                    self.bar:SetColor(unpack(NugComboBarDB.colors.bar2))
+                else
+                    self.bar:SetColor(unpack(NugComboBarDB.colors.bar1))
+                end
+            end
             self:RegisterEvent("GLYPH_UPDATED")
             self:RegisterEvent("GLYPH_ADDED")
             self:RegisterEvent("GLYPH_REMOVED")
             self:RegisterEvent("SPELLS_CHANGED")
+            self:RegisterEvent("UNIT_POWER")
+            self:SetMaxPoints(3); GetComboPoints = GetShards
             self.SPELLS_CHANGED = function(self, event)
+                showEmpty = true
+                self:UnregisterEvent("UNIT_AURA")
                 local spec = GetSpecialization()
-                if      spec == SPEC_WARLOCK_DESTRUCTION then
-                    showEmpty = true
-                    self:EnableBar(0,10)
+                if      spec == 3 then
+                    self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
+                    self.bar:SetColor(unpack(NugComboBarDB.colors.bar1))
                     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
                     self:SetMaxPoints(maxembers)
                     GetComboPoints = GetBurningEmbers
                     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
-                elseif  spec == SPEC_WARLOCK_AFFLICTION and IsPlayerSpell(WARLOCK_SOULBURN) then
+                elseif  spec == 1 and IsPlayerSpell(WARLOCK_SOULBURN) then
                     self:DisableBar()
-                    showEmpty = true
                     local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
                     self:SetMaxPoints(maxshards)
                     GetComboPoints = GetShards
                     self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
-                else
-                    showEmpty = NugComboBarDB.showEmpty
-                    GetComboPoints = GetAuraStack -- to make sure it will be 0 on next call
-                    self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
+                elseif spec == 2 then
+                    self:EnableBar(0, UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY), "Big")
+                    GetComboPoints = GetDemonicFury
+                    self:RegisterEvent("UNIT_AURA")
+                    self:UNIT_POWER(nil,allowedUnit, "DEMONIC_FURY" )
                 end
             end
             self.GLYPH_UPDATED = self.SPELLS_CHANGED
             self.GLYPH_ADDED = self.GLYPH_UPDATED
             self.GLYPH_REMOVED = self.GLYPH_UPDATED
             self:SPELLS_CHANGED()
-        --elseif class == "WARRIOR" then     -- example of how to add harmful stacking spell display for target
+
+        --elseif class == "WARRIOR" then     -- how to add harmful stacking spell display for target
         --    self:SetMaxPoints(3)
         --    self:RegisterEvent("UNIT_AURA")
         --    self:RegisterEvent("PLAYER_TARGET_CHANGED")
         --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
-        --    scanAura = GetSpellInfo(7386) -- Sunder Armor
+        --    scanAura = GetSpellInfo(113746) -- Weak Armor
         --    filter = "HARMFUL"
         --    allowedUnit = "target"
         --    allowedCaster = nil
@@ -306,12 +324,14 @@ local defaults = {
     hideSlowly = true,
     disableBlizz = false,
     colors = {
-        {0.77,0.26,0.29},
-        {0.77,0.26,0.29},
-        {0.77,0.26,0.29},
-        {0.77,0.26,0.29},
-        {0.77,0.26,0.29},
-        {0.77,0.26,0.29},
+        [1] = {0.77,0.26,0.29},
+        [2] = {0.77,0.26,0.29},
+        [3] = {0.77,0.26,0.29},
+        [4] = {0.77,0.26,0.29},
+        [5] = {0.77,0.26,0.29},
+        [6] = {0.77,0.26,0.29},
+        ["bar1"] = { 0.9,0.1,0.1 },
+        ["bar2"] = { .9,0.1,0.4 },
     },
     enable3d = true,
     preset3d = "glow_funnelPurple",
@@ -460,9 +480,10 @@ end
 --     self:SetScript("OnUpdate", nil) 
 -- end
 
-function NugComboBar.EnableBar(self, min, max)
+function NugComboBar.EnableBar(self, min, max, btype)
     if not self.bar then return end
     if min and max then self.bar:SetMinMaxValues(min, max) end
+    if btype and self.bar[btype] then self.bar[btype](self.bar) end
     self.bar:Show()
 end
 
@@ -518,13 +539,14 @@ end
 
 function NugComboBar.SetColor(point, r, g, b)
     NugComboBarDB.colors[point] = {r,g,b}
-    --if point == 6 and NugComboBar.allowBGColor then
-    --    NugComboBar.bg:SetVertexColor(r,g,b)
-    --else
-    --local offset = NugComboBar.MAX_POINTS - 5
+    if NugComboBar.bar and point == "bar1" then
+        return NugComboBar.bar:SetColor(r,g,b)
+    end
+
     local p = NugComboBar.p[point]
-    if p then p:SetColor(r,g,b) end
-    --end
+    if p then
+        return p:SetColor(r,g,b)
+    end
 end
 
 --~ function NugComboBar.AttachAnimationGroup(self)
