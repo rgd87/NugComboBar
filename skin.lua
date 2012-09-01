@@ -437,7 +437,7 @@ NugComboBar.Create = function(self)
     bar:SetMinMaxValues(0,100)
     bar:SetValue(50)
 
-    local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, -1)
+    local barbg = bar:CreateTexture(nil, "BACKGROUND")
     barbg:SetTexture[[Interface\AddOns\NugComboBar\tex\statusbar]]
     --[[Interface\TargetingFrame\UI-StatusBar]]
     --[[Interface\Addons\NugComboBar\tex\white]]
@@ -458,8 +458,26 @@ NugComboBar.Create = function(self)
         self.bg:SetVertexColor(r*.5,g*.5,b*.5)
     end
 
+    local text = bar:CreateFontString(nil, "OVERLAY")
+    text:SetFont([[Interface\AddOns\NugComboBar\tex\Emblem.ttf]],15)
+    text:SetPoint("TOPLEFT",bar,"TOPLEFT", 0,0)
+    text:SetPoint("BOTTOMRIGHT",bar,"BOTTOMRIGHT", -10,0)
+    text:SetJustifyH("RIGHT")
+    text:SetTextColor(1,1,1,0.2)
+    -- text:SetVertexColor(1,1,1)   
+    bar.text = text
+
+    bar.SetValue1 = bar.SetValue -- text should only be visible for demonology
+    bar.SetValue = function(self, v)
+        self:SetValue1(v)
+        if self.text:IsVisible() then
+            self.text:SetText(v)
+        end
+    end
+
     bar.Small = function(self)
         self:SetWidth(45); self:SetHeight(7);
+        self.text:Hide()
         self:SetParent(NugComboBar)
         self:ClearAllPoints()
         if barBottom then 
@@ -480,6 +498,7 @@ NugComboBar.Create = function(self)
         self:SetParent(UIParent)
         self:ClearAllPoints()
         self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
+        self.text:Show()
         NugComboBar:Hide()
     end
 

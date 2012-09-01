@@ -39,6 +39,7 @@ end
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
+        if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_COMBO_POINTS")
@@ -382,7 +383,6 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
         NugComboBarDB_Character = NugComboBarDB_Character or {}
         local _,class = UnitClass("player")
         NugComboBarDB_Global.disabled = NugComboBarDB_Global.disabled or {}
-        if NugComboBarDB_Global.disabled[class] then return end
         NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
         user = UnitName("player").."@"..GetRealmName()
 
@@ -393,6 +393,8 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
         end
 
         SetupDefaults(NugComboBarDB, defaults)
+
+        if NugComboBarDB_Global.disabled[class] then return end
 
         self:RegisterEvent("PLAYER_LOGIN")
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
