@@ -470,6 +470,11 @@ NugComboBar.Create = function(self)
         NugComboBar:Show()
     end
 
+    bar.Long = function(self)
+        self:Small()
+        self:SetWidth(83); self:SetHeight(4);
+    end
+
     bar.Big = function(self)
         self:SetWidth(80); self:SetHeight(20);
         self:SetParent(UIParent)
@@ -485,7 +490,6 @@ NugComboBar.Create = function(self)
     -- tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -5, 4)
 
     bar:Small()
-    bar:Big()
     bar:SetColor(0.6,0,0)
     -- bar.t = tb
     self.bar = bar

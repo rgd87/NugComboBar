@@ -30,8 +30,10 @@ local filter = "HELPFUL"
 local GetAuraStack = function(unit)
     if not scanAura then return 0 end
     local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
-    if allowedCaster and caster ~= allowedCaster then count = 0 end
-    return (count or 0)
+    if allowedCaster and caster ~= allowedCaster then count = nil end
+    if count then
+        return count, expirationTime-duration, duration
+    else return 0,0,0 end
 end
 
 function NugComboBar:LoadClassSettings()
@@ -210,17 +212,25 @@ function NugComboBar:LoadClassSettings()
             self.GLYPH_ADDED = self.GLYPH_UPDATED
             self.GLYPH_REMOVED = self.GLYPH_UPDATED
             self:SPELLS_CHANGED()
+        elseif class == "WARRIOR" then
+            self:EnableBar(0, 15, "Long")
+            if self.bar then
+                self.bar:SetScript("OnUpdate", function(self, time)
+                    self._elapsed = (self._elapsed or 0) + time
+                    if self._elapsed < 0.03 then return end
+                    self._elapsed = 0
 
-        --elseif class == "WARRIOR" then     -- how to add harmful stacking spell display for target
-        --    self:SetMaxPoints(3)
-        --    self:RegisterEvent("UNIT_AURA")
-        --    self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        --    self.UNIT_AURA = self.UNIT_COMBO_POINTS
-        --    scanAura = GetSpellInfo(113746) -- Weak Armor
-        --    filter = "HARMFUL"
-        --    allowedUnit = "target"
-        --    allowedCaster = nil
-        --    GetComboPoints = GetAuraStack
+                    if not self.startTime then return end
+                    local progress = self.duration - (GetTime() - self.startTime)
+                    self:SetValue(progress)
+                end)
+            end
+            self:SetMaxPoints(5)
+            self:RegisterEvent("UNIT_AURA")
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+            scanAura = GetSpellInfo(125831)
+            allowedUnit = "player"
+            GetComboPoints = GetAuraStack
         elseif class == "HUNTER" then
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             GetComboPoints = GetAuraStack
@@ -490,6 +500,7 @@ end
 
 function NugComboBar.EnableBar(self, min, max, btype)
     if not self.bar then return end
+    self.bar.enabled = true
     if min and max then self.bar:SetMinMaxValues(min, max) end
     if btype and self.bar[btype] then self.bar[btype](self.bar) end
     self.bar:Show()
@@ -497,6 +508,8 @@ end
 
 function NugComboBar.DisableBar(self)
     if not self.bar then return end
+    self.bar.enabled = false
+    self.bar:Small()
     self.bar:Hide()
 end
 
@@ -504,9 +517,16 @@ end
 local comboPointsBefore = 0
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     if unit ~= allowedUnit then return end     
-    local comboPoints, barProgress = GetComboPoints(unit);
-    if barProgress and self.bar then
-        self.bar:SetValue(barProgress)
+    local comboPoints, arg1, arg2 = GetComboPoints(unit);
+    if arg1 and self.bar and self.bar.enabled then
+        if arg2 then
+            local startTime, duration = arg1, arg2
+            self.bar.startTime = startTime
+            self.bar.duration = duration
+        else
+            local progress = arg1
+            self.bar:SetValue(progress)
+        end
     end
 
 
