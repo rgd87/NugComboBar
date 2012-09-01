@@ -46,6 +46,7 @@ function NugComboBar:LoadClassSettings()
             local GetComboPoints = RogueGetComboPoints
         elseif class == "DRUID" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
+            self:SetMaxPoints(5)
             local cat = function()
                 self:UnregisterEvent("UNIT_AURA")
                 self:SetMaxPoints(5)
@@ -78,6 +79,7 @@ function NugComboBar:LoadClassSettings()
             local GetHolyPower = function(unit)
                 return UnitPower(unit, SPELL_POWER_HOLY_POWER)
             end
+            self:SetMaxPoints(3)
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
@@ -234,6 +236,7 @@ function NugComboBar:LoadClassSettings()
         elseif class == "HUNTER" then
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             GetComboPoints = GetAuraStack
+            self:SetMaxPoints(5)
             filter = "HELPFUL"
             local mm = function()
                 self:SetMaxPoints(3)
@@ -249,8 +252,6 @@ function NugComboBar:LoadClassSettings()
                     return (count or 0)
                 end
             end
-
-
             local bm = function()
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_AURA")
@@ -291,7 +292,7 @@ function NugComboBar:LoadClassSettings()
             local GetShadowOrbs = function(unit)
                 return UnitPower(unit, SPELL_POWER_SHADOW_ORBS)
             end
-            
+            self:SetMaxPoints(3)
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "SHADOW_ORBS" or unit ~= "player" then return end
