@@ -70,9 +70,11 @@ function NugComboBar:LoadClassSettings()
             end
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
             self.UPDATE_SHAPESHIFT_FORM = function(self)
-                if GetShapeshiftFormID() == BEAR_FORM
-                then bear()
-                else cat()
+                local form = GetShapeshiftFormID()
+                if form == BEAR_FORM then bear()
+                elseif form == CAT_FORM then cat()
+                else
+                    bear()
                 end
             end
             self:UPDATE_SHAPESHIFT_FORM()
