@@ -281,16 +281,20 @@ function NugComboBar.SetMaxPoints(self, n, special)
     self.point_map = mappings[special or n]
 
     local prevt
+    local framesize = 0
     for i=1,NugComboBar.MAX_POINTS do
         local point = self.p[i]
+        local popts = point.bg.settings
         point:Show()
         point.bg:Show()
-        point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", point.bg.settings.offset_x or 0, 0)
+        framesize = framesize + popts.width
+        point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.offset_x or 0, 0)
         prevt = point.bg
 
         point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
         point:SetPreset(NugComboBarDB.preset3d)
     end
+    self:SetWidth(framesize)
 end
 
 

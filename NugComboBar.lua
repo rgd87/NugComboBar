@@ -7,6 +7,9 @@ local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty
 local hideSlowly
+local fadeAfter = 4
+local combatFade = true -- whether to fade in combat
+local defaultValue = 0
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -186,6 +189,7 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_AURA")
                 local spec = GetSpecialization()
                 if      spec == 3 then
+                    defaultValue = 1
                     self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
                     if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
                     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
@@ -193,12 +197,14 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetBurningEmbers
                     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
                 elseif  spec == 1 and IsPlayerSpell(WARLOCK_SOULBURN) then
+                    defaultValue = 3
                     self:DisableBar()
                     local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
                     self:SetMaxPoints(maxshards)
                     GetComboPoints = GetShards
                     self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
                 elseif spec == 2 then
+                    defaultValue = 200
                     if self.bar then
                         self:EnableBar(0, UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY), "Big")
                         GetComboPoints = GetDemonicFury
@@ -356,7 +362,9 @@ local defaults = {
         ["bar2"] = { .9,0.1,0.4 },
     },
     enable3d = true,
-    preset3d = "glow_funnelPurple",
+    preset3d = "glowPurple",
+    combatFade = true,
+    fadeAfter = 4
 }
 
 local function SetupDefaults(t, defaults)
@@ -400,7 +408,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
 
         self:RegisterEvent("PLAYER_LOGIN")
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
-        self.PLAYER_ENTERING_WORLD = self.PLAYER_TARGET_CHANGED -- Update on looading screen to clear after battlegrounds
+        self.PLAYER_ENTERING_WORLD = self.PLAYER_REGEN_ENABLED -- Update on looading screen to clear after battlegrounds
 
         local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
         f:SetScript('OnShow', function(self)
@@ -409,12 +417,10 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
         end)
         
 --~         self:RegisterEvent("UPDATE_STEALTH")
---~         self:RegisterEvent("PLAYER_REGEN_ENABLED")
---~         self:RegisterEvent("PLAYER_REGEN_DISABLED")
+        self:RegisterEvent("PLAYER_REGEN_ENABLED")
+        self:RegisterEvent("PLAYER_REGEN_DISABLED")
 --~         self:RegisterEvent("UNIT_DISPLAYPOWER")
 --~         self.UNIT_DISPLAYPOWER = self.UPDATE_STEALTH
---~         self.PLAYER_REGEN_ENABLED = self.UPDATE_STEALTH
---~         self.PLAYER_REGEN_DISABLED = self.UPDATE_STEALTH
     end
 end
 function NugComboBar.PLAYER_LOGIN(self, event, forced)
@@ -434,7 +440,7 @@ function NugComboBar.PLAYER_LOGIN(self, event, forced)
     NugComboBar.toggleBlizz()
 
     --self:AttachAnimationGroup()
-    self:UNIT_COMBO_POINTS("INIT","player")
+    -- self:UNIT_COMBO_POINTS("INIT", allowedUnit, nil, true)
 end
 
 --~ function NugComboBar.UPDATE_STEALTH(self)
@@ -467,13 +473,14 @@ end
 --         self:GetParent():SetAlpha(0)
 --     end)
 -- endir
+local fadeTime = 1
 local HideTimer = function(self, time)
     self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
-    if self.OnUpdateCounter < 4 then return end
+    if self.OnUpdateCounter < fadeAfter then return end
 
-    local a = 5 - self.OnUpdateCounter
+    local a = fadeAfter + fadeTime - self.OnUpdateCounter
     self:SetAlpha(a)
-    if self.OnUpdateCounter >= 5 then
+    if self.OnUpdateCounter >= fadeAfter + fadeTime then
         self:SetScript("OnUpdate",nil)
         self:SetAlpha(0)
         self.Hiding = false
@@ -484,6 +491,12 @@ end
 
 function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     self:UNIT_COMBO_POINTS(event, allowedUnit)
+end
+function NugComboBar.PLAYER_REGEN_ENABLED(self)
+    self:UNIT_COMBO_POINTS(event, allowedUnit, nil, true)
+end
+function NugComboBar.PLAYER_REGEN_DISABLED(self)
+    self:UNIT_COMBO_POINTS(event, allowedUnit, nil)
 end
 
 -- local frame = CreateFrame("Frame")
@@ -520,8 +533,10 @@ end
 
 
 local comboPointsBefore = 0
-function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
-    if unit ~= allowedUnit then return end     
+-- local comboPoints = 0
+function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
+    if unit ~= allowedUnit then return end
+    -- local arg1, arg2
     local comboPoints, arg1, arg2 = GetComboPoints(unit);
     if arg1 and self.bar and self.bar.enabled then
         if arg2 then
@@ -543,11 +558,12 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
             self.p[i]:Deactivate()
         end
     end
-    
-    if comboPoints == 0 and not showEmpty then
-        if comboPointsBefore ~= 0 and hideSlowly then
-            self:SetScript("OnUpdate", HideTimer)
-            self.Hiding = true
+    if comboPoints == defaultValue and (not UnitAffectingCombat("player") or not showEmpty) then
+        if (comboPointsBefore ~= defaultValue or forced) and hideSlowly then
+            if self:GetAlpha() ~= 0 then 
+                self:SetScript("OnUpdate", HideTimer)
+                self.Hiding = true
+            end
             -- if not self.HideAnim:IsPlaying() then self.HideAnim:Play() end
         else
             if not self.Hiding then self:SetAlpha(0) end
