@@ -7,7 +7,7 @@ local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty
 local hideSlowly
-local fadeAfter = 4
+local fadeAfter = 6
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 
@@ -189,17 +189,17 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_AURA")
                 local spec = GetSpecialization()
                 if      spec == 3 then
-                    defaultValue = 1
                     self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
                     if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
                     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
+                    defaultValue = 1
                     self:SetMaxPoints(maxembers)
                     GetComboPoints = GetBurningEmbers
                     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
                 elseif  spec == 1 and IsPlayerSpell(WARLOCK_SOULBURN) then
-                    defaultValue = 3
                     self:DisableBar()
                     local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
+                    defaultValue = maxshards
                     self:SetMaxPoints(maxshards)
                     GetComboPoints = GetShards
                     self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
@@ -363,8 +363,6 @@ local defaults = {
     },
     enable3d = true,
     preset3d = "glowPurple",
-    combatFade = true,
-    fadeAfter = 4
 }
 
 local function SetupDefaults(t, defaults)
@@ -380,6 +378,7 @@ local function SetupDefaults(t, defaults)
         end
     end
 end
+
 
 NugComboBar.SkinVersion = 500
 function NugComboBar.ADDON_LOADED(self,event,arg1, forced)

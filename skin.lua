@@ -479,11 +479,13 @@ NugComboBar.Create = function(self)
         end
     end
 
+    local normalSetScale = self.SetScale
     bar.Small = function(self)
         self:SetWidth(45); self:SetHeight(7);
         self.text:Hide()
         self:SetParent(NugComboBar)
         self:ClearAllPoints()
+        NugComboBar.SetScale = normalSetScale
         if barBottom then 
             self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
         else
@@ -500,6 +502,13 @@ NugComboBar.Create = function(self)
     bar.Big = function(self)
         self:SetWidth(80); self:SetHeight(20);
         self:SetParent(UIParent)
+        self:SetScale(NugComboBar:GetScale())
+        NugComboBar.SetScale = function(self, scale)
+            -- I don't want to rewrite everything
+            -- just to make them siblings
+            self.bar:SetScale(scale)
+            normalSetScale(NugComboBar, scale)
+        end
         self:ClearAllPoints()
         self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
         self.text:Show()
