@@ -246,6 +246,7 @@ function NugComboBar:LoadClassSettings()
             scanAura = GetSpellInfo(125831)
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
+            hideSlowly = false
         elseif class == "HUNTER" then
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             GetComboPoints = GetAuraStack
