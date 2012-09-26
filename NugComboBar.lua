@@ -1,4 +1,5 @@
 NugComboBar = CreateFrame("Frame",nil, UIParent)
+local NugComboBar = NugComboBar
 
 local user
 local RogueGetComboPoints = GetComboPoints
@@ -10,6 +11,7 @@ local hideSlowly
 local fadeAfter = 6
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
+local defaultProgress = 0
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -193,6 +195,7 @@ function NugComboBar:LoadClassSettings()
                     if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
                     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
                     defaultValue = 1
+                    defaultProgress = 0
                     self:SetMaxPoints(maxembers)
                     GetComboPoints = GetBurningEmbers
                     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
@@ -204,7 +207,8 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetShards
                     self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
                 elseif spec == 2 then
-                    defaultValue = 200
+                    defaultValue = 0
+                    defaultProgress = 200
                     if self.bar then
                         self:EnableBar(0, UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY), "Big")
                         GetComboPoints = GetDemonicFury
@@ -473,16 +477,18 @@ end
 --     end)
 -- endir
 local fadeTime = 1
+local fader = CreateFrame("Frame")
 local HideTimer = function(self, time)
     self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
     if self.OnUpdateCounter < fadeAfter then return end
 
+    local ncb = NugComboBar
     local a = fadeAfter + fadeTime - self.OnUpdateCounter
-    self:SetAlpha(a)
+    ncb:SetAlpha(a)
     if self.OnUpdateCounter >= fadeAfter + fadeTime then
         self:SetScript("OnUpdate",nil)
-        self:SetAlpha(0)
-        self.Hiding = false
+        ncb:SetAlpha(0)
+        ncb.hiding = false
         self.OnUpdateCounter = 0
     end
 end
@@ -532,18 +538,17 @@ end
 
 
 local comboPointsBefore = 0
--- local comboPoints = 0
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     if unit ~= allowedUnit then return end
     -- local arg1, arg2
     local comboPoints, arg1, arg2 = GetComboPoints(unit);
+    local progress = not arg2 and arg1 or nil
     if arg1 and self.bar and self.bar.enabled then
         if arg2 then
             local startTime, duration = arg1, arg2
             self.bar.startTime = startTime
             self.bar.duration = duration
         else
-            local progress = arg1
             self.bar:SetValue(progress)
         end
     end
@@ -557,21 +562,24 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
             self.p[i]:Deactivate()
         end
     end
-    if comboPoints == defaultValue and (not UnitAffectingCombat("player") or not showEmpty) then
-        if (comboPointsBefore ~= defaultValue or forced) and hideSlowly then
-            if self:GetAlpha() ~= 0 then 
-                self:SetScript("OnUpdate", HideTimer)
-                self.Hiding = true
+    -- print("progress", progress)
+    -- print (comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
+    if comboPoints == defaultValue and (progress == nil or progress == defaultProgress) and (not UnitAffectingCombat("player") or not showEmpty) then
+            local hidden = self:GetAlpha() == 0
+            if hideSlowly then
+                -- print("hiding, hidden:", self.hiding, hidden)
+                if (not self.hiding and not hidden)  then
+                    -- print("start hiding")
+                    fader:SetScript("OnUpdate", HideTimer)
+                    fader.OnUpdateCounter = 0
+                    self.hiding = true
+                end
+            else
+                self:SetAlpha(0)
             end
-            -- if not self.HideAnim:IsPlaying() then self.HideAnim:Play() end
-        else
-            if not self.Hiding then self:SetAlpha(0) end
-        end
     else
-        if hideSlowly then
-            self:SetScript("OnUpdate", nil)
-            self.Hiding = false
-        end
+        fader:SetScript("OnUpdate", nil)
+        self.hiding = false
         self:SetAlpha(1)
     end
 
