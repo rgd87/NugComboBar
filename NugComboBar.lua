@@ -6,7 +6,7 @@ local RogueGetComboPoints = GetComboPoints
 local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
-local showEmpty
+local showEmpty, showAlways
 local hideSlowly
 local fadeAfter = 6
 local combatFade = true -- whether to fade in combat
@@ -368,6 +368,7 @@ local defaults = {
     },
     enable3d = true,
     preset3d = "glowPurple",
+    showAlways = false,
 }
 
 local function SetupDefaults(t, defaults)
@@ -565,7 +566,11 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     end
     -- print("progress", progress)
     -- print (comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
-    if comboPoints == defaultValue and (progress == nil or progress == defaultProgress) and (not UnitAffectingCombat("player") or not showEmpty) then
+    if  not showAlways and
+        comboPoints == defaultValue and
+        (progress == nil or progress == defaultProgress) and
+        (not UnitAffectingCombat("player") or not showEmpty)
+        then
             local hidden = self:GetAlpha() == 0
             if hideSlowly then
                 -- print("hiding, hidden:", self.hiding, hidden)
@@ -713,6 +718,11 @@ NugComboBar.Commands = {
     ["showempty"] = function(v)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
         showEmpty = NugComboBarDB.showEmpty
+        NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
+    end,
+    ["showalways"] = function(v)
+        NugComboBarDB.showAlways = not NugComboBarDB.showAlways
+        showAlways = NugComboBarDB.showAlways
         NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
     end,
     ["hideslowly"] = function(v)
