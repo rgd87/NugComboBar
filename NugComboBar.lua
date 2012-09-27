@@ -432,6 +432,7 @@ function NugComboBar.PLAYER_LOGIN(self, event, forced)
     if not forced then self:Create() end
     self:LoadClassSettings()
     if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
+    if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
     if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
     self:SetAlpha(0)
     self:SetScale(NugComboBarDB.scale)
