@@ -53,6 +53,7 @@ function NugComboBar:LoadClassSettings()
         elseif class == "DRUID" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             self:SetMaxPoints(5)
+            local dummy = function() return 0 end
             local cat = function()
                 self:UnregisterEvent("UNIT_AURA")
                 self:SetMaxPoints(5)
@@ -63,15 +64,18 @@ function NugComboBar:LoadClassSettings()
             end
             local bear = function()
                 self:UnregisterEvent("UNIT_COMBO_POINTS")
-                self:SetMaxPoints(3)
-                self:RegisterEvent("UNIT_AURA")
+                -- self:SetMaxPoints(3)
+                -- self:RegisterEvent("UNIT_AURA")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
-                scanAura = GetSpellInfo(33745) -- Lacerate
-                filter = "HARMFUL"
-                allowedUnit = "target"
-                allowedCaster = "player"
-                GetComboPoints = GetAuraStack
-                self:UNIT_AURA(nil,allowedUnit)
+                -- scanAura = GetSpellInfo(33745) -- Lacerate
+                -- filter = "HARMFUL"
+                -- allowedUnit = "target"
+                -- allowedCaster = "player"
+                GetComboPoints = dummy -- disable 
+                local old = hideSlowly
+                hideSlowly = false
+                self:UNIT_COMBO_POINTS(nil,allowedUnit)
+                hideSlowly = old
             end
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
             self.UPDATE_SHAPESHIFT_FORM = function(self)
@@ -228,25 +232,43 @@ function NugComboBar:LoadClassSettings()
             self.GLYPH_REMOVED = self.GLYPH_UPDATED
             self:SPELLS_CHANGED()
         elseif class == "WARRIOR" then
-            self:EnableBar(0, 15, "Long")
-            if self.bar then
-                self.bar:SetScript("OnUpdate", function(self, time)
-                    self._elapsed = (self._elapsed or 0) + time
-                    if self._elapsed < 0.03 then return end
-                    self._elapsed = 0
+            local tfb_bar = function(self)
+                self:EnableBar(0, 15, "Long")
+                if self.bar then
+                    self.bar:SetScript("OnUpdate", function(self, time)
+                        self._elapsed = (self._elapsed or 0) + time
+                        if self._elapsed < 0.03 then return end
+                        self._elapsed = 0
 
-                    if not self.startTime then return end
-                    local progress = self.duration - (GetTime() - self.startTime)
-                    self:SetValue(progress)
-                end)
+                        if not self.startTime then return end
+                        local progress = self.duration - (GetTime() - self.startTime)
+                        self:SetValue(progress)
+                    end)
+                end
             end
             self:SetMaxPoints(5)
-            self:RegisterEvent("UNIT_AURA")
+            -- self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            scanAura = GetSpellInfo(125831)
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
             hideSlowly = false
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self)
+                local spec = GetSpecialization()
+                self:RegisterEvent("UNIT_AURA")
+                if spec == 2 then 
+                    self:DisableBar()
+                    self:SetMaxPoints(3)
+                    scanAura = GetSpellInfo(85739) -- Meatcleaver
+                elseif spec == 1 then
+                    tfb_bar(self) 
+                    self:SetMaxPoints(5)
+                    scanAura = GetSpellInfo(125831) -- Taste for blood
+                else
+                    self:UnregisterEvent("UNIT_AURA")
+                end
+            end
+            self:SPELLS_CHANGED()
         elseif class == "HUNTER" then
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             GetComboPoints = GetAuraStack
