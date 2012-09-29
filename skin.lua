@@ -1,3 +1,34 @@
+local aX, aY = 0,0-- values to fix model display on different aspect ratios 
+--default aspect ratio is 16:9
+local resolution4x3 = {
+    ["800x600"] = true,
+    ["1024x768"] = true,
+    ["1280x960"] = true,
+    ["1440x1080"] = true,
+    ["1600x1200"] = true,
+}
+local resolution16x10 = {
+    ["1280x800"] = true,
+    ["1440x900"] = true,
+    ["1920x1200"] = true,
+    ["1680x1050"] = true,
+    ["2560x1600"] = true,
+}
+local resolution5x4 = {
+    ["1280x1024"] = true,
+    ["2560x2048"] = true,
+}
+local res = GetCVar("gxResolution")
+if res then
+    if resolution4x3[res] then
+        aX, aY = 6, 6
+    elseif resolution16x10[res] then
+        aX, aY = 2, 2
+    elseif resolution5x4[res] then
+        aX, aY = 7, 7
+    end
+end
+
 -- function NugComboBar.Skin3DAdjustOffset(self, newoffset)
 --     local prev
 --     for i=1,NugComboBar.MAX_POINTS do
@@ -193,42 +224,42 @@ local pointtex = {
         coords = {0, 26/256, 0, 1},
         width = 26, height = 32,
         psize = 14,
-        poffset_x = 19, poffset_y = -14,
+        poffset_x = 19 +aX, poffset_y = -14 +aY,
     },
     [2] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17, poffset_y = -14,
+        poffset_x = 17 +aX, poffset_y = -14 +aY,
     },
     [3] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {50/256, 74/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17, poffset_y = -14,
+        poffset_x = 17 +aX, poffset_y = -14 +aY,
     },
     [4] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {74/256, 98/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17, poffset_y = -14,
+        poffset_x = 17 +aX, poffset_y = -14 +aY,
     },
     [5] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17, poffset_y = -14,
+        poffset_x = 17 +aX, poffset_y = -14 +aY,
     },
     [6] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {98/256, 140/256, 0, 1},
         width = 42, height = 32,
         psize = 18,
-        poffset_x = 20, poffset_y = -14,
+        poffset_x = 20 +aX, poffset_y = -14 +aY,
     },
 
     --reversed textures for paladin
@@ -238,7 +269,7 @@ local pointtex = {
         width = 25, height = 32,
         offset_x = -13, drawlayer = 1,
         psize = 14,
-        poffset_x = 17, poffset_y = -14,
+        poffset_x = 17 +aX, poffset_y = -14 +aY,
     },
 
     [8] = {
@@ -246,7 +277,7 @@ local pointtex = {
         coords = {221/256, 1, 0, 1},
         width = 35, height = 32,
         psize = 14,
-        poffset_x = 16, poffset_y = -14,
+        poffset_x = 16 +aX, poffset_y = -14 +aY,
     },
 
     ["bar"] = {
