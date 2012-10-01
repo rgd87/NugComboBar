@@ -661,8 +661,12 @@ function NugComboBar.CreateAnchor(frame)
     
     self:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
     local p1 = NugComboBarDB.anchorpoint
-    local p2 = (p1 == "LEFT") and "RIGHT" or "LEFT"
-    frame:SetPoint("TOP"..p1,self,"TOP"..p2,0,0)
+    local p2
+    if      p1 == "LEFT" then p2 = "RIGHT"
+    elseif  p1 == "RIGHT" then p2 = "LEFT"
+    elseif  p1 == "TOP" then p2 = "BOTTOM"
+    end
+    frame:SetPoint(p1,self,p2,0,0)
     
     
     self:EnableMouse(true)
@@ -731,12 +735,16 @@ NugComboBar.Commands = {
     end,
     ["anchorpoint"] = function(v)
         local ap = v:upper()
-        if ap ~= "RIGHT" and ap ~="LEFT" then print ("Current anchor point is: "..NugComboBarDB.anchorpoint); return end
+        if ap ~= "RIGHT" and ap ~="LEFT" and ap ~= "TOP" then print ("Current anchor point is: "..NugComboBarDB.anchorpoint); return end
         NugComboBarDB.anchorpoint = ap
         local p1 = NugComboBarDB.anchorpoint
-        local p2 = (p1 == "LEFT") and "RIGHT" or "LEFT"
+        local p2
+        if      p1 == "LEFT" then p2 = "RIGHT"
+        elseif  p1 == "RIGHT" then p2 = "LEFT"
+        elseif  p1 == "TOP" then p2 = "BOTTOM"
+        end
         NugComboBar:ClearAllPoints()
-        NugComboBar:SetPoint("TOP"..p1,NugComboBar.anchor,"TOP"..p2,0,0)
+        NugComboBar:SetPoint(p1,NugComboBar.anchor,p2,0,0)
     end,
     ["showempty"] = function(v)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
