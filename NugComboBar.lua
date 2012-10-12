@@ -46,10 +46,26 @@ function NugComboBar:LoadClassSettings()
         self.MAX_POINTS = nil
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
+            local anticipationBuffName = GetSpellInfo(115189)
+            local ComboPointsWithAnticipation = function(unit)
+                local name, _,_, count = UnitBuff("player", anticipationBuffName, nil)
+                return RogueGetComboPoints(unit), count
+            end
             self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
             local GetComboPoints = RogueGetComboPoints
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self, event)
+                if IsPlayerSpell(114015) then -- Anticipation
+                    self:EnableBar(0, 5, "Long")
+                    GetComboPoints = ComboPointsWithAnticipation
+                else
+                    self:DisableBar()
+                    GetComboPoints = RogueGetComboPoints
+                end
+            end
+            self:SPELLS_CHANGED()
         elseif class == "DRUID" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             self:SetMaxPoints(5)
@@ -100,7 +116,7 @@ function NugComboBar:LoadClassSettings()
             GetComboPoints = GetHolyPower
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
-                if IsSpellKnown(115675)  -- Boundless Conviction
+                if IsPlayerSpell(115675)  -- Boundless Conviction
                     then self:SetMaxPoints(5, "PALADIN")
                     else self:SetMaxPoints(3)
                 end
@@ -568,13 +584,18 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     -- local arg1, arg2
     local comboPoints, arg1, arg2 = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
-    if arg1 and self.bar and self.bar.enabled then
-        if arg2 then
-            local startTime, duration = arg1, arg2
-            self.bar.startTime = startTime
-            self.bar.duration = duration
+    if self.bar and self.bar.enabled then
+        if arg1 then
+            self.bar:Show()
+            if arg2 then
+                local startTime, duration = arg1, arg2
+                self.bar.startTime = startTime
+                self.bar.duration = duration
+            else
+                self.bar:SetValue(progress)
+            end
         else
-            self.bar:SetValue(progress)
+            self.bar:Hide()
         end
     end
 
