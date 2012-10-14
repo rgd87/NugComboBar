@@ -41,6 +41,16 @@ local GetAuraStack = function(unit)
     else return 0,0,0 end
 end
 
+local AuraTimerOnUpdate = function(self, time)
+    self._elapsed = (self._elapsed or 0) + time
+    if self._elapsed < 0.03 then return end
+    self._elapsed = 0
+
+    if not self.startTime then return end
+    local progress = self.duration - (GetTime() - self.startTime)
+    self:SetValue(progress)
+end
+
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
@@ -52,6 +62,7 @@ function NugComboBar:LoadClassSettings()
                 return RogueGetComboPoints(unit), count
             end
             self:SetMaxPoints(5)
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
             local GetComboPoints = RogueGetComboPoints
@@ -59,9 +70,11 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self, event)
                 if IsPlayerSpell(114015) then -- Anticipation
                     self:EnableBar(0, 5, "Long")
+                    self:RegisterEvent("UNIT_AURA")
                     GetComboPoints = ComboPointsWithAnticipation
                 else
                     self:DisableBar()
+                    self:UnregisterEvent("UNIT_AURA")
                     GetComboPoints = RogueGetComboPoints
                 end
             end
@@ -250,17 +263,7 @@ function NugComboBar:LoadClassSettings()
         elseif class == "WARRIOR" then
             local tfb_bar = function(self)
                 self:EnableBar(0, 15, "Long")
-                if self.bar then
-                    self.bar:SetScript("OnUpdate", function(self, time)
-                        self._elapsed = (self._elapsed or 0) + time
-                        if self._elapsed < 0.03 then return end
-                        self._elapsed = 0
-
-                        if not self.startTime then return end
-                        local progress = self.duration - (GetTime() - self.startTime)
-                        self:SetValue(progress)
-                    end)
-                end
+                if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
             end
             self:SetMaxPoints(5)
             -- self:RegisterEvent("UNIT_AURA")
@@ -273,11 +276,13 @@ function NugComboBar:LoadClassSettings()
                 local spec = GetSpecialization()
                 self:RegisterEvent("UNIT_AURA")
                 if spec == 2 then 
-                    self:DisableBar()
+                    self:EnableBar(0, 10, "Small")
+                    if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                     self:SetMaxPoints(3)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
                 elseif spec == 1 then
-                    tfb_bar(self) 
+                    self:EnableBar(0, 15, "Long")
+                    if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                     self:SetMaxPoints(5)
                     scanAura = GetSpellInfo(125831) -- Taste for blood
                 else
