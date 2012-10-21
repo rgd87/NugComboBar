@@ -881,6 +881,7 @@ function NugComboBar.SlashCmd(msg)
           |cff55ff55/ncb hideslowly|r
           |cff55ff55/ncb toggleblizz|r
           |cff55ff55/ncb disable|enable|r (for current class)
+          |cff55ff55/ncb setpos|r point=CENTER parent=UIParent to=CENTER x=0 y=0
           |cff55ff55/ncb reset|r]]
         )
     end
