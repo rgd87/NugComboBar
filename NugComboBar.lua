@@ -392,7 +392,9 @@ function NugComboBar:LoadClassSettings()
 end
 
 local defaults = {
-    point = "CENTER",
+    apoint = "CENTER",
+    parent = "UIParent",
+    point = "CENTER", --to
     x = 0, y = 0,
     anchorpoint = "LEFT",
     scale = 1.0,
@@ -450,6 +452,7 @@ function NugComboBar.ADDON_LOADED(self,event,arg1, forced)
             NugComboBarDB = NugComboBarDB_Global
         end
 
+        if not NugComboBarDB.apoint then NugComboBarDB.apoint = NugComboBarDB.point end
         SetupDefaults(NugComboBarDB, defaults)
 
         if NugComboBarDB_Global.disabled[class] then return end
@@ -483,7 +486,7 @@ function NugComboBar.PLAYER_LOGIN(self, event, forced)
         self:CreateAnchor()
     else
         self.anchor:ClearAllPoints()
-        self.anchor:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+        self.anchor:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
     end
 
     NugComboBar.toggleBlizz()
@@ -685,7 +688,7 @@ function NugComboBar.CreateAnchor(frame)
 	self:SetBackdropColor(1, 0, 0, 0.8)
     self:SetFrameStrata("HIGH")
     
-    self:SetPoint(NugComboBarDB.point,UIParent,NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+    self:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
     local p1 = NugComboBarDB.anchorpoint
     local p2
     if      p1 == "LEFT" then p2 = "RIGHT"
@@ -701,7 +704,8 @@ function NugComboBar.CreateAnchor(frame)
     self:SetScript("OnDragStart",function(self) self:StartMoving() end)
     self:SetScript("OnDragStop",function(self)
         self:StopMovingOrSizing();
-        _,_, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
+        NugComboBarDB.apoint, _, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
+        NugComboBarDB.parent = "UIParent"
     end)
     
     self:Hide()
@@ -743,6 +747,13 @@ function NugComboBar.Set3DPreset(self, preset)
     end
 end
 
+local ParseOpts = function(str)
+    local fields = {}
+    for opt,args in string.gmatch(str,"(%w*)%s*=%s*([%w%,%-%_%.%:%\\%']+)") do
+        fields[opt:lower()] = tonumber(args) or args
+    end
+    return fields
+end
 NugComboBar.Commands = {
     ["unlock"] = function(v)
         NugComboBar.anchor:Show()
@@ -837,7 +848,17 @@ NugComboBar.Commands = {
     ["gui"] = function(v)
         LoadAddOn('NugComboBarGUI')
         InterfaceOptionsFrame_OpenToCategory("NugComboBar")
-    end
+    end,
+    ["setpos"] = function(v)
+        local p = ParseOpts(v)
+        NugComboBarDB.apoint = p["point"] or NugComboBarDB.apoint
+        NugComboBarDB.parent = p["parent"] or NugComboBarDB.parent
+        NugComboBarDB.point = p["to"] or NugComboBarDB.point
+        NugComboBarDB.x = p["x"] or NugComboBarDB.x
+        NugComboBarDB.y = p["y"] or NugComboBarDB.y
+        local pos = NugComboBarDB
+        NugComboBar.anchor:SetPoint(pos.apoint, pos.parent, pos.point, pos.x, pos.y)
+    end,
 }
 
 function NugComboBar.SlashCmd(msg)
