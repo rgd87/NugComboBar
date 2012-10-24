@@ -65,7 +65,6 @@ function NugComboBar:LoadClassSettings()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            local GetComboPoints = RogueGetComboPoints
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 if IsPlayerSpell(114015) then -- Anticipation
@@ -663,19 +662,19 @@ function NugComboBar.SetColor(point, r, g, b)
     end
 end
 
---~ function NugComboBar.AttachAnimationGroup(self)
---~     local ag = self:CreateAnimationGroup()
---~     local a1 = ag:CreateAnimation("Rotation")
---~     a1:SetDegrees(90)
---~     a1:SetDuration(0.1)
---~     a1:SetOrder(1)
---~     a1.ag = ag
---~     a1:SetScript("OnFinished",function(self)
---~         self.ag:Pause();
---~     end)
---~     self.rag = ag
---~     ag:Play()
---~ end
+-- function NugComboBar.AttachAnimationGroup(self)
+--     local ag = self:CreateAnimationGroup()
+--     local a1 = ag:CreateAnimation("Rotation")
+--     a1:SetDegrees(90)
+--     a1:SetDuration(0.1)
+--     a1:SetOrder(1)
+--     a1.ag = ag
+--     a1:SetScript("OnFinished",function(self)
+--         self.ag:Pause();
+--     end)
+--     self.rag = ag
+--     ag:Play()
+-- end
 
 function NugComboBar.CreateAnchor(frame)
     local self = CreateFrame("Frame",nil,UIParent)
