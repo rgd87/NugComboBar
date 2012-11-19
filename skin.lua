@@ -135,16 +135,6 @@ NugComboBar.presets = {
         { "spells\\gouge_precast_state_hand.mdx", 3 },
         { "spells\\gouge_precast_state_hand.mdx", 3 },
     },
-    ["fogPink"] = {
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-        { "spells\\spells\\seedofcorruption_state.mdx", 1 },
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-        { "spells\\spells\\seedofcorruption_state.mdx", .7 },
-    },
     ["fireBlue"] = {
         { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
         { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
