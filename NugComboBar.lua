@@ -528,7 +528,6 @@ do
     function NugComboBar.PLAYER_LOGIN(self, event)
         if initial then self:Create() end
         self:LoadClassSettings()
-        print("MAX_POINTS", self.MAX_POINTS)
         if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
         if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
         if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
@@ -607,7 +606,6 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     self:UNIT_COMBO_POINTS(event, allowedUnit)
 end
 function NugComboBar.PLAYER_REGEN_ENABLED(self)
-    print("PLAYER_REGEN_ENABLED")
     self:UNIT_COMBO_POINTS(event, allowedUnit, nil, true)
 end
 function NugComboBar.PLAYER_REGEN_DISABLED(self)
