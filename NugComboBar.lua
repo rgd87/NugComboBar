@@ -83,16 +83,36 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             self:SetMaxPoints(5)
             local dummy = function() return 0 end
+
+            local mushrooms_icon = "INTERFACE\\ICONS\\druid_ability_wildmushroom_a"
+            local GetMushrooms = function()
+                local mushrooms = 0
+                for i=1,4 do
+                    local haveTotem, name, startTime, duration, icon = GetTotemInfo(i)
+                    if icon == mushrooms_icon then mushrooms = mushrooms + 1 end
+                end
+                return mushrooms
+            end
+            local moonkin = function()
+                self:SetMaxPoints(3)
+                self:RegisterEvent("PLAYER_TOTEM_UPDATE")
+                GetComboPoints = GetMushrooms
+                self.PLAYER_TOTEM_UPDATE = function(self, event, totemID)
+                    self:UNIT_COMBO_POINTS(nil, allowedUnit)
+                end
+                self:PLAYER_TOTEM_UPDATE()
+            end
+
             local cat = function()
-                self:UnregisterEvent("UNIT_AURA")
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_COMBO_POINTS")
+                self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 GetComboPoints = RogueGetComboPoints
                 allowedUnit = "player"
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
+
             local bear = function()
-                self:UnregisterEvent("UNIT_COMBO_POINTS")
                 -- self:SetMaxPoints(3)
                 -- self:RegisterEvent("UNIT_AURA")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -108,8 +128,12 @@ function NugComboBar:LoadClassSettings()
             end
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
             self.UPDATE_SHAPESHIFT_FORM = function(self)
+                self:UnregisterEvent("UNIT_AURA")
+                self:UnregisterEvent("UNIT_COMBO_POINTS")
+                self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
                 local form = GetShapeshiftFormID()
                 if form == BEAR_FORM then bear()
+                elseif form == MOONKIN_FORM then moonkin()
                 elseif form == CAT_FORM then cat()
                 else
                     bear()
@@ -809,7 +833,7 @@ end
 
 function NugComboBar.Reinitialize(self)
     NugComboBar:ADDON_LOADED(nil, "NugComboBar")
-    local cfgreg = LibStub("AceConfigRegistry-3.0")
+    local cfgreg = LibStub("AceConfigRegistry-3.0", true)
     if cfgreg then cfgreg:NotifyChange("NugComboBar-General") end
     if not NugComboBar.isDisabled then
         NugComboBar:PLAYER_LOGIN(nil)
