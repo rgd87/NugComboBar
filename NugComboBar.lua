@@ -491,6 +491,7 @@ do
             SetupDefaults(NugComboBarDB, defaults)
 
             NugComboBar.isDisabled = nil
+            if type(NugComboBarDB.disabled) == "table" then NugComboBarDB.disabled = nil end --old format bugfix
             if NugComboBarDB.disabled then
                 NugComboBar.isDisabled = true
                 NugComboBar:SuperDisable()
@@ -667,7 +668,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     end
 
 
-    for i = 1,self.MAX_POINTS do
+    for i = 1, self.MAX_POINTS do
         if i <= comboPoints then
             self.p[i]:Activate()
         end
