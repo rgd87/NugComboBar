@@ -95,6 +95,7 @@ function NugComboBar:LoadClassSettings()
             end
             local shrooms = function()
                 self:SetMaxPoints(3)
+                hideSlowly = false
                 self:RegisterEvent("PLAYER_TOTEM_UPDATE")
                 GetComboPoints = GetMushrooms
                 self.PLAYER_TOTEM_UPDATE = function(self, event, totemID)
@@ -105,6 +106,7 @@ function NugComboBar:LoadClassSettings()
 
             local cat = function()
                 self:SetMaxPoints(5)
+                hideSlowly = NugComboBarDB.hideSlowly
                 self:RegisterEvent("UNIT_COMBO_POINTS")
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 GetComboPoints = RogueGetComboPoints
