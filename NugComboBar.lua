@@ -93,7 +93,7 @@ function NugComboBar:LoadClassSettings()
                 end
                 return mushrooms
             end
-            local moonkin = function()
+            local shrooms = function()
                 self:SetMaxPoints(3)
                 self:RegisterEvent("PLAYER_TOTEM_UPDATE")
                 GetComboPoints = GetMushrooms
@@ -133,10 +133,9 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
                 local form = GetShapeshiftFormID()
                 if form == BEAR_FORM then bear()
-                elseif form == MOONKIN_FORM then moonkin()
                 elseif form == CAT_FORM then cat()
                 else
-                    bear()
+                    shrooms()
                 end
             end
             self:UPDATE_SHAPESHIFT_FORM()
