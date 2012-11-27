@@ -162,12 +162,12 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         elseif class == "MONK" then
             local GetChi = function(unit)
-                return UnitPower(unit, SPELL_POWER_LIGHT_FORCE)
+                return UnitPower(unit, SPELL_POWER_CHI)
             end
             self:SetMaxPoints(4)
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
-                if ptype ~= "LIGHT_FORCE" or ptype == "DARK_FORCE" or unit ~= "player" then return end
+                if ptype ~= "CHI" or unit ~= "player" then return end
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
             GetComboPoints = GetChi
