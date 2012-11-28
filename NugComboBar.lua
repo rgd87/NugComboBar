@@ -517,6 +517,7 @@ do
 
             NugComboBar.isDisabled = nil
             if type(NugComboBarDB.disabled) == "table" then NugComboBarDB.disabled = nil end --old format bugfix
+            NugComboBarDB_Global.disabled = nil
             if NugComboBarDB.disabled then
                 NugComboBar.isDisabled = true
                 NugComboBar:SuperDisable()
@@ -976,10 +977,7 @@ NugComboBar.Commands = {
 
 function NugComboBar.SlashCmd(msg)
     k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
-    if not k or k == "help" then 
-        if NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] then
-            print("|cffffaaaaNCB is disabled for this class!|r")
-        end
+    if not k or k == "help" then
         print([[Usage:
           |cff55ffff/ncb gui|r
           |cff55ff55/ncb charspec|r
