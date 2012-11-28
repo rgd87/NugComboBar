@@ -485,7 +485,6 @@ do
             NugComboBarDB_Character = NugComboBarDB_Character or {}
             NugComboBarDB_Character.specspec = NugComboBarDB_Character.specspec or {}
             local _,class = UnitClass("player")
-            NugComboBarDB_Global.disabled = NugComboBarDB_Global.disabled or {}
             NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
             user = UnitName("player").."@"..GetRealmName()
 
@@ -525,6 +524,8 @@ do
 
             -- self:RegisterEvent("PLAYER_LOGIN")
             self:RegisterEvent("PLAYER_LOGOUT")
+
+            NugComboBar.toggleBlizz() --even if disabled
 
             if initial then
                 local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
@@ -572,8 +573,6 @@ do
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
         self.PLAYER_ENTERING_WORLD = self.PLAYER_REGEN_ENABLED -- Update on looading screen to clear after battlegrounds
-
-        NugComboBar.toggleBlizz()
 
         initial = false
         --self:AttachAnimationGroup()
