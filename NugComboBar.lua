@@ -138,7 +138,7 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
                 local spec = GetSpecialization()
                 local form = GetShapeshiftFormID()
-                if form == BEAR_FORM then bear()
+                if form == BEAR_FORM then disable()
                 elseif form == CAT_FORM then cat()
                 elseif spec == 1 or spec == 4 then
                     shrooms()
