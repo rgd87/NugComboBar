@@ -96,6 +96,7 @@ function NugComboBar:LoadClassSettings()
             local shrooms = function()
                 self:SetMaxPoints(3)
                 hideSlowly = false
+                showEmpty = NugComboBarDB.showEmpty
                 self:RegisterEvent("PLAYER_TOTEM_UPDATE")
                 GetComboPoints = GetMushrooms
                 self.PLAYER_TOTEM_UPDATE = function(self, event, totemID)
@@ -107,6 +108,7 @@ function NugComboBar:LoadClassSettings()
             local cat = function()
                 self:SetMaxPoints(5)
                 hideSlowly = NugComboBarDB.hideSlowly
+                showEmpty = NugComboBarDB.showEmpty
                 self:RegisterEvent("UNIT_COMBO_POINTS")
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 GetComboPoints = RogueGetComboPoints
@@ -114,7 +116,7 @@ function NugComboBar:LoadClassSettings()
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
 
-            local bear = function()
+            local disable = function()
                 -- self:SetMaxPoints(3)
                 -- self:RegisterEvent("UNIT_AURA")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -124,6 +126,7 @@ function NugComboBar:LoadClassSettings()
                 -- allowedCaster = "player"
                 GetComboPoints = dummy -- disable 
                 local old = hideSlowly
+                showEmpty = false
                 hideSlowly = false
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
                 hideSlowly = old
@@ -133,11 +136,14 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_AURA")
                 self:UnregisterEvent("UNIT_COMBO_POINTS")
                 self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
+                local spec = GetSpecialization()
                 local form = GetShapeshiftFormID()
                 if form == BEAR_FORM then bear()
                 elseif form == CAT_FORM then cat()
-                else
+                elseif spec == 1 or spec == 4 then
                     shrooms()
+                else
+                    disable()
                 end
             end
             self:UPDATE_SHAPESHIFT_FORM()
