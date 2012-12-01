@@ -197,16 +197,32 @@ function NugComboBar:LoadClassSettings()
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
                 return (count and count - 1 or 0)
             end
+
+            local show_searing_flames = false
+            local searing_totem_buff = GetSpellInfo(77661)
+            local maelstrom_weapon_buff = GetSpellInfo(53817)
+            local function mael_searing(unit)
+                local _,_,_, count1 = UnitAura("player", maelstrom_weapon_buff, nil, "HELPFUL")
+                local _,_,_, count2 = UnitAura("player", searing_totem_buff, nil, "HELPFUL")
+                return count1 or 0, count2 or 0
+            end
+
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
                 if spec == 1 then
+                    self:DisableBar()
                     self:SetMaxPoints(6)
                     GetComboPoints = GetLightningShield
                 else
                     self:SetMaxPoints(5)
-                    scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
-                    GetComboPoints = GetAuraStack
+                    if show_searing_flames then
+                        self:EnableBar(0, 5,"Long")
+                        GetComboPoints = mael_searing
+                    else
+                        scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
+                        GetComboPoints = GetAuraStack
+                    end
                 end
                 self:UNIT_AURA(nil,allowedUnit)
             end
