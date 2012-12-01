@@ -214,42 +214,42 @@ local pointtex = {
         coords = {0, 26/256, 0, 1},
         width = 26, height = 32,
         psize = 14,
-        poffset_x = 19 +aX, poffset_y = -14 +aY,
+        poffset_x = 19, poffset_y = -14,
     },
     [2] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17 +aX, poffset_y = -14 +aY,
+        poffset_x = 17, poffset_y = -14,
     },
     [3] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {50/256, 74/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17 +aX, poffset_y = -14 +aY,
+        poffset_x = 17, poffset_y = -14,
     },
     [4] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {74/256, 98/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17 +aX, poffset_y = -14 +aY,
+        poffset_x = 17, poffset_y = -14,
     },
     [5] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
         width = 24, height = 32,
         psize = 14,
-        poffset_x = 17 +aX, poffset_y = -14 +aY,
+        poffset_x = 17, poffset_y = -14,
     },
     [6] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {98/256, 140/256, 0, 1},
         width = 42, height = 32,
         psize = 18,
-        poffset_x = 20 +aX, poffset_y = -14 +aY,
+        poffset_x = 20, poffset_y = -14,
     },
 
     --reversed textures for paladin
@@ -259,7 +259,7 @@ local pointtex = {
         width = 25, height = 32,
         offset_x = -13, drawlayer = 1,
         psize = 14,
-        poffset_x = 17 +aX, poffset_y = -14 +aY,
+        poffset_x = 17, poffset_y = -14,
     },
 
     [8] = {
@@ -267,7 +267,7 @@ local pointtex = {
         coords = {221/256, 1, 0, 1},
         width = 35, height = 32,
         psize = 14,
-        poffset_x = 16 +aX, poffset_y = -14 +aY,
+        poffset_x = 16, poffset_y = -14,
     },
 
     ["bar"] = {
@@ -420,7 +420,12 @@ NugComboBar.Create = function(self)
         t.settings = ts
         prevt = t
 
-        local f = NugComboBarDB.enable3d  and self:Create3DPoint(i, ts) or self:Create2DPoint(i, ts)
+        local is3D = NugComboBarDB.enable3d
+        local f = is3D  and self:Create3DPoint(i, ts) or self:Create2DPoint(i, ts)
+        if is3D then
+            ts.poffset_x = ts.poffset_x + aX
+            ts.poffset_y = ts.poffset_y + aY
+        end
 
         f:SetAlpha(0)
         f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
