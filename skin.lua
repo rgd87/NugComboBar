@@ -507,6 +507,8 @@ NugComboBar.Create = function(self)
 
     local normalSetScale = self.SetScale
     local normalSetAlpha = self.SetAlpha
+    local normalShow = self.Show
+    local normalHide = self.Hide
     bar.Small = function(self)
         self:SetWidth(45); self:SetHeight(7);
         self.text:Hide()
@@ -514,6 +516,8 @@ NugComboBar.Create = function(self)
         self:ClearAllPoints()
         NugComboBar.SetScale = normalSetScale
         NugComboBar.SetAlpha = normalSetAlpha
+        NugComboBar.Show = nil -- return to normal
+        NugComboBar.Hide = nil
         if barBottom then 
             self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
         else
@@ -542,10 +546,18 @@ NugComboBar.Create = function(self)
             self.bar:SetAlpha(alpha)
             normalSetAlpha(NugComboBar, alpha)
         end
+
+        NugComboBar.Hide = function(self)
+            self.bar:Hide()
+        end
+        NugComboBar.Show = function(self)
+            self.bar:Show()
+        end
+        normalHide(NugComboBar)
+
         self:ClearAllPoints()
         self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
         self.text:Show()
-        NugComboBar:Hide()
     end
 
     -- local tb = bar:CreateTexture(nil, "BACKGROUND", nil, 1)

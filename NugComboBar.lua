@@ -6,7 +6,7 @@ local RogueGetComboPoints = GetComboPoints
 local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
-local showEmpty, showAlways
+local showEmpty, showAlways, onlyCombat
 local hideSlowly
 local fadeAfter = 6
 local combatFade = true -- whether to fade in combat
@@ -461,6 +461,7 @@ local defaults = {
     enable3d = true,
     preset3d = "glowPurple",
     showAlways = false,
+    onlyCombat = false,
 }
 
 local function SetupDefaults(t, defaults)
@@ -580,6 +581,7 @@ do
         self:LoadClassSettings()
         if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
         if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
+        if onlyCombat == nil then onlyCombat = NugComboBarDB.onlyCombat end;
         if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
         self:SetAlpha(0)
         self:SetScale(NugComboBarDB.scale)
@@ -696,6 +698,8 @@ end
 local comboPointsBefore = 0
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     if unit ~= allowedUnit then return end
+
+    if onlyCombat and not UnitAffectingCombat("player") then return self:Hide() else self:Show() end -- usually frame is set to 0 alpha
     -- local arg1, arg2
     local comboPoints, arg1, arg2 = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
@@ -906,12 +910,17 @@ NugComboBar.Commands = {
     ["showempty"] = function(v)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
         showEmpty = NugComboBarDB.showEmpty
-        NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
+        NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["showalways"] = function(v)
         NugComboBarDB.showAlways = not NugComboBarDB.showAlways
         showAlways = NugComboBarDB.showAlways
-        NugComboBar:UNIT_COMBO_POINTS("SETTINGS_CHANGED","player")
+        NugComboBar:PLAYER_TARGET_CHANGED()
+    end,
+    ["onlycombat"] = function(v)
+        NugComboBarDB.onlyCombat = not NugComboBarDB.onlyCombat
+        onlyCombat = NugComboBarDB.onlyCombat
+        NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["hideslowly"] = function(v)
         NugComboBarDB.hideSlowly = not NugComboBarDB.hideSlowly
@@ -1111,5 +1120,5 @@ function NugComboBar:SuperDisable()
     self:UnregisterAllEvents()
     self:DisableBar()
     if self.anchor then self.anchor:Hide() end
-    self:Hide()
+    self:SetAlpha(0)
 end
