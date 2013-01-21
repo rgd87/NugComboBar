@@ -18,6 +18,10 @@ local resolution5x4 = {
     ["1280x1024"] = true,
     ["2560x2048"] = true,
 }
+local resolution5x2 = {
+ ["2560x1024"] = true,
+}
+
 local res = GetCVar("gxResolution")
 if res then
     if resolution4x3[res] then
@@ -26,6 +30,8 @@ if res then
         aX, aY = 2, 2
     elseif resolution5x4[res] then
         aX, aY = 7, 7
+    elseif resolution5x2[res] then
+        aX, aY = -11, -5
     end
 end
 

@@ -404,6 +404,7 @@ function NugComboBar:LoadClassSettings()
             end
             allowedUnit = "player"
             local shadow_orbs = function()
+                self:DisableBar()
                 self:RegisterEvent("UNIT_POWER")
                 self:UnregisterEvent("UNIT_AURA")
                 self:SetMaxPoints(3)
@@ -411,6 +412,8 @@ function NugComboBar:LoadClassSettings()
             end
             local evangelism = function()
                 self:SetMaxPoints(5)
+                self:EnableBar(0, 15, "Long")
+                if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                 self:RegisterEvent("UNIT_AURA")
                 self:UnregisterEvent("UNIT_POWER")
                 GetComboPoints = GetAuraStack
@@ -860,8 +863,10 @@ end
 
 function NugComboBar.Reinitialize(self)
     NugComboBar:ADDON_LOADED(nil, "NugComboBar")
-    local cfgreg = LibStub("AceConfigRegistry-3.0", true)
-    if cfgreg then cfgreg:NotifyChange("NugComboBar-General") end
+    if LibStub then
+        local cfgreg = LibStub("AceConfigRegistry-3.0", true)
+        if cfgreg then cfgreg:NotifyChange("NugComboBar-General") end
+    end
     if not NugComboBar.isDisabled then
         NugComboBar:PLAYER_LOGIN(nil)
         NugComboBar:PLAYER_ENTERING_WORLD(nil)
