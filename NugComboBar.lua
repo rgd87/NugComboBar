@@ -214,6 +214,11 @@ function NugComboBar:LoadClassSettings()
                     self:DisableBar()
                     self:SetMaxPoints(6)
                     GetComboPoints = GetLightningShield
+                elseif spec == 3 then
+                    self:DisableBar()
+                    self:SetMaxPoints(2)
+                    scanAura = GetSpellInfo(51564) -- Tidal Waves
+                    GetComboPoints = GetAuraStack
                 else
                     self:SetMaxPoints(5)
                     if show_searing_flames then
@@ -411,7 +416,7 @@ function NugComboBar:LoadClassSettings()
                 GetComboPoints = GetShadowOrbs
             end
             local evangelism = function()
-                self:SetMaxPoints(5)
+                self:SetMaxPoints(3)
                 self:EnableBar(0, 15, "Long")
                 if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                 self:RegisterEvent("UNIT_AURA")
@@ -419,16 +424,30 @@ function NugComboBar:LoadClassSettings()
                 GetComboPoints = GetAuraStack
                 scanAura = GetSpellInfo(81661) -- Evangelism
             end
+            local serendipity = function()
+                self:SetMaxPoints(2)
+                self:DisableBar()
+                -- self:EnableBar(0, 20,"Small")
+                -- if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
+                self:RegisterEvent("UNIT_AURA")
+                self:UnregisterEvent("UNIT_POWER")
+                GetComboPoints = GetAuraStack
+                scanAura = GetSpellInfo(63735) -- Serendipity
+            end
             self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
             self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
-                if GetSpecialization() == 3 -- MF
-                then shadow_orbs()
-                else evangelism()
+                local spec = GetSpecialization()
+                if spec == 3 then
+                    shadow_orbs()
+                elseif spec == 2 then
+                    serendipity()
+                else
+                    evangelism()
                 end
             end
             self:ACTIVE_TALENT_GROUP_CHANGED()
         elseif class == "MAGE" then 
-            self:SetMaxPoints(6, "ARCANE")
+            self:SetMaxPoints(4)
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
             scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
@@ -466,6 +485,7 @@ local defaults = {
     showAlways = false,
     onlyCombat = false,
 }
+NugComboBar.defaults = defaults
 
 local function SetupDefaults(t, defaults)
     for k,v in pairs(defaults) do

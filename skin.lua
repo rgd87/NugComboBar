@@ -171,16 +171,16 @@ NugComboBar.presets = {
         { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
         { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
     },
-    ["electricBlue"] = {
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-        { "spells\\lightningboltivus_missile.mdx", .4 },
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-        { "spells\\lightningboltivus_missile.mdx", .25 },
-    },
+    -- ["electricBlue"] = {
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.mdx", .4 },
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    -- },
 }
 
 
@@ -203,7 +203,7 @@ local SetColorFunc = function(self,r,g,b)
 end
 local SetPresetFunc = function ( self, name )
     local ps = NugComboBar.presets[name]
-    if not ps then return end
+    if not ps then return false end
     local settings = ps[self.id]
     local model, scale, ox, oy = unpack(settings)
     self:SetModel(model)
@@ -212,6 +212,7 @@ local SetPresetFunc = function ( self, name )
     oy = oy or 0
     local x,y,z = unpack(self.position)
     self:SetPosition(x+ox, y+oy, z)
+    return true
 end
 
 local pointtex = {
@@ -319,7 +320,10 @@ function NugComboBar.SetMaxPoints(self, n, special)
         prevt = point.bg
 
         point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
-        point:SetPreset(NugComboBarDB.preset3d)
+        if not (point:SetPreset(NugComboBarDB.preset3d)) then
+            NugComboBarDB.preset3d = NugComboBar.defaults.preset3d
+            point:SetPreset(NugComboBarDB.preset3d)
+        end
     end
     self:SetWidth(framesize)
 end
