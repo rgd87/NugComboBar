@@ -1,0 +1,115 @@
+5.2.0a:
+ - Arcane Mage now using 4 point layout
+
+5.2.0:
+ - ToC updated to 50200
+ - removed broken electricBlue preset
+ - Show Always now appears in options menu
+
+5.1.2a:
+ - fixed a error when LibStub wasn't loaded
+
+5.1.2:
+ - fixed a bug with addon stuck being hidden after swapping to disabled spec
+ - Hide out of combat option
+
+5.1.1a:
+ - druid bearform bugfix
+
+5.1.1:
+ - console commands list bug fixed
+ - not showing mushrooms in feral specs
+ - toggleblizz works even if disabled
+ - localization updated
+
+5.1.0a:
+ - Monk update for 5.1
+
+5.1.0:
+ - ToC Updated
+ - Wild Mushrooms
+ - Specialization-level configuration, i.e. you can now disable addon for some specs or change visuals/position for each spec
+
+5.0.9:
+ - fixed Anticipation (I finally got to 90 lvl rogue on ptr)
+
+5.0.8:
+ - Meatcleaver duration
+ - Anticipation support for rogues. I haven't tested it.
+
+5.0.7:
+ - fixed issue with displaced points in 3d mode.
+ It was caused by different aspect ratio of game resolution.
+ Fix basically detects what resolution you have and if it's not something rare (eyefinity) then it'll probably compensate for this offset.
+ - Removed Lacerate. It's useless now that Pulverize is gone
+ - Added meat cleaver for warriors.
+
+5.0.6a:
+ - zhCN localization
+ - bugfix for Show Always
+ 5.0.6:
+ - Demonic Fury bar now fading as shards and embers
+ - Show Always option
+ - Small bugfixes
+
+5.0.5a: Forgot to pack Options module
+ 5.0.5:
+ - Better fading, mostly for warlocks.
+ - Also showEmpty now works only inside combat
+ - Demonic Fury bar now scales with main addon frame
+
+5.0.4:
+ - Numeric display for demonic fury
+ - Small bugfixes
+
+5.0.3:
+ - Bugfix, nothing was working when on class other than warlock
+ - zhTW localization
+ - Taste for blood added
+ - Fixed "Disabled" checkbox
+
+5.0.2:
+ - Demonic Fury support
+
+5.0.1b:
+ - Fixed bug when attempting to change color for 6th point
+
+5.0.1a:
+ - ToC Updated to 50001
+ - Added support for glyph of burning embers
+
+5.0.1:
+ - Russian localization
+ - Bugfixes
+
+5.0b2:
+ - Added several new presets
+ - Bugfix for classes without configuration
+
+5.0b1:
+ - GUI Options module
+ - Updated skin 
+ - Dynamic Class-specific switching
+ - Support for 2-6 points instead of old 3/5.
+
+4.2.3:
+ - TOC Update
+ - Fixed Ready Set Aim for MM hunters
+ 4.2.2:
+ - When CPs drop to 0, bar will fade only after few seconds, /ncb hideslowly to toggle it
+ - Option to disable blizzard holypower bar, shard bar and combo bar
+ - Arena/bg leaving bug should be fixed
+4.2:
+ - WoW 4.2 animation issue fixed
+ - TOC updated
+ - Classic skin is also updated on wowinterface
+4.1.5:
+ - Tracking only your Lacerate debuff
+ - Shadow Infusion enabled by default
+4.1.4:
+ - fixed typo with scaling
+ - /ncb disable command
+ - TOC bumped to 40100
+4.1.3:
+ - showempty option
+ - ready set aim and frenzy for hunters (not tested)
