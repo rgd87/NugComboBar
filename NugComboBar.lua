@@ -1116,6 +1116,12 @@ function NugComboBar.toggleBlizz()
         if class == "PALADIN" then
             PaladinPowerBar.Show = PaladinPowerBar._Show
             PaladinPowerBar:Show()
+            if not PaladinPowerBar:GetParent().unit then
+                PaladinPowerBar:GetParent().unit = "player"
+            end
+            if not PaladinPowerBar:GetParent():IsVisible() then
+                return
+            end
             PaladinPowerBar_OnLoad(PaladinPowerBar)
             PaladinPowerBar_Update(PaladinPowerBar)
         end
