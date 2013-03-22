@@ -1,0 +1,7 @@
+## Interface: 50100
+## Title: NugComboBarGUI
+## Notes: NugComboBar Configuration Panel
+## Dependencies: NugComboBar
+## Author: d87
+## LoadOnDemand: 1
+gui.xml

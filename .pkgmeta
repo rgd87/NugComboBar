@@ -1,0 +1,4 @@
+package-as: NugComboBar
+
+move-folders:
+    NugComboBar/gui: NugComboBarGUI
