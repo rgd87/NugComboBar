@@ -1,4 +1,4 @@
---Credits: srBaBy
+--Credits: Awaited (凶灵再现@CN-燃烧平原)
 
 if GetLocale() ~= "zhCN" then return end
 
@@ -8,7 +8,7 @@ L["Specialization-specific"] = "专精限定"
 L["Character-specific"] = "角色限定"
 L["Switch between global/character configuration"] = "选择角色限定或全局设定"
 L["Scale"] = "大小"
-L["Anchorpoint"] = "瞄点"
+L["Anchorpoint"] = "锚点"
 L["Unlock"] = "解锁"
 L["Unlock dragging anchor"] = "解锁"
 L["Lock"] = "锁定"
@@ -19,6 +19,8 @@ L["Show Always"] = "始终显示"
 L["Don't hide at all"] = "不再隐藏"
 L["Keep when there's no points IN COMBAT"] = "战斗中无资源时显示"
 L["Fade out"] = "淡出"
+L["Hide OOC"] = "仅战斗中显示"
+L["Always hide out of combat"] = "仅战斗中显示"
 L["Disable Default"] = "停用游戏默认显示"
 L["Hides default combat point (and other) frames"] = "隐藏游戏默认(以及其他)显示"
 L["(Color settings only available in 2D mode)"] = "(自定义颜色只适用于2D模式)"
