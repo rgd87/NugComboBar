@@ -49,137 +49,158 @@ end
 -- end
 
 -- local spells = {
---         purple1 = { model = "spells\\seedofcorruption_state.mdx", scale = 1 },
---         purple2 = { model = "spells\\gouge_precast_state_hand.mdx", scale = 3 }, -- good, warlock, rogue
+--         purple1 = { model = "spells\\seedofcorruption_state.m2", scale = 1 },
+--         purple2 = { model = "spells\\gouge_precast_state_hand.m2", scale = 3 }, -- good, warlock, rogue
 
---         funnel1 = { model = "spells\\manafunnel_impact_chest.mdx", scale = 1.8 }, -- monk
---         funnel2 = { model = "lifetap_state_chest.mdx      funnel3 = { model = "spells\\soulfunnel_impact_chest.mdx", scale = 3 },
---         funnel4 = { model = "spells\\healrag_state_chest.mdx", scale = 1.8 },
+--         funnel1 = { model = "spells\\manafunnel_impact_chest.m2", scale = 1.8 }, -- monk
+--         funnel2 = { model = "lifetap_state_chest.m2      funnel3 = { model = "spells\\soulfunnel_impact_chest.m2", scale = 3 },
+--         funnel4 = { model = "spells\\healrag_state_chest.m2", scale = 1.8 },
 
---         green1 = { model = "spells\\nature_precast_chest.mdx", scale = 2.5 },
---         spark1 = { model = "spells\\dispel_low_recursive.mdx", scale = 30 }, 
---         spark2 = { model = "spells\\detectmagic_recursive.mdx", scale = 30 },
---         fire1 = { model = "spells\\fire_blue_precast_uber_hand.mdx", scale = 5 }, --blue
---         fire2 = { model = "spells\\fire_precast_uber_hand.mdx", scale = 5 }, --orange
---         fire3 = { model = "spells\\fel_fire_precast_hand.mdx", scale = 5 }, --green
+--         green1 = { model = "spells\\nature_precast_chest.m2", scale = 2.5 },
+--         spark1 = { model = "spells\\dispel_low_recursive.m2", scale = 30 }, 
+--         spark2 = { model = "spells\\detectmagic_recursive.m2", scale = 30 },
+--         fire1 = { model = "spells\\fire_blue_precast_uber_hand.m2", scale = 5 }, --blue
+--         fire2 = { model = "spells\\fire_precast_uber_hand.m2", scale = 5 }, --orange
+--         fire3 = { model = "spells\\fel_fire_precast_hand.m2", scale = 5 }, --green
 
-        -- electric1 = { model = "spells\\lightningboltivus_missile.mdx", scale = .3 }, --blue long
-        -- electric2 = { model = "spells\\lightning_precast_low_hand.mdx", scale = 6 }, --blue
-        -- electric3 = { model = "spells\\lightning_fel_precast_low_hand.mdx", scale = 6 }, --green
-        -- electric4 = { model = "spells\\wrath_precast_hand.mdx", scale = 6 }, --green long
+        -- electric1 = { model = "spells\\lightningboltivus_missile.m2", scale = .3 }, --blue long
+        -- electric2 = { model = "spells\\lightning_precast_low_hand.m2", scale = 6 }, --blue
+        -- electric3 = { model = "spells\\lightning_fel_precast_low_hand.m2", scale = 6 }, --green
+        -- electric4 = { model = "spells\\wrath_precast_hand.m2", scale = 6 }, --green long
 
-        -- spin1 = { model = "spells\\blessingoffreedom_state.mdx", scale = 1 }, --paladin
+        -- spin1 = { model = "spells\\blessingoffreedom_state.m2", scale = 1 }, --paladin
     -- }
 NugComboBar.presets = {
+    --- model, cameraReset, scale, xOffset, yOffset
     ["glowPurple"] = {
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 5 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.7, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
     },
     ["funnelPurple"] = {
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
-        { "spells\\soulfunnel_impact_chest.mdx", 3 },
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
-        { "spells\\soulfunnel_impact_chest.mdx", 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 3 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
     },
     ["glow_funnelPurple"] = {
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\soulfunnel_impact_chest.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\soulfunnel_impact_chest.m2", true, 3, 0,0,0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
     },
     ["funnelRed"] = {
-        { "spells\\healrag_state_chest.mdx", 1.7 },
-        { "spells\\healrag_state_chest.mdx", 1.7 },
-        { "spells\\healrag_state_chest.mdx", 1.7 },
-        { "spells\\healrag_state_chest.mdx", 1.7 },
-        { "spells\\healrag_state_chest.mdx", 1.7 },
-        { "spells\\healrag_state_chest.mdx", 3 },
-        { "spells\\healrag_state_chest.mdx", 1.7 },
-        { "spells\\healrag_state_chest.mdx", 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 3 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        { "spells\\healrag_state_chest.m2", true, 1.7 },
     },
     ["funnelGreen"] = {
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
-        { "spells\\lifetap_state_chest.mdx", 3 },
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
-        { "spells\\lifetap_state_chest.mdx", 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 3 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        { "spells\\lifetap_state_chest.m2", true, 1.7 },
     },
     ["funnelBlue"] = {
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
-        { "spells\\manafunnel_impact_chest.mdx", 3 },
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
-        { "spells\\manafunnel_impact_chest.mdx", 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 3 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
     },
     ["glowFreedom"] = {
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\blessingoffreedom_state.mdx", 1 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
-        { "spells\\gouge_precast_state_hand.mdx", 3 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.003,0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
     },
     ["fireBlue"] = {
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 5.5, 0, 0.0017 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 5.5, 0, 0.0017 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
     },
     ["fireOrange"] = {
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.mdx", 5.5, 0, 0.0017 },
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 5.5, 0, 0.0017 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
     },
     ["fireGreen"] = {
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.mdx", 5.5, 0, 0.0017 },
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.mdx", 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 5.5, 0, 0.0017 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+    },
+    ["SnowFlake"] = {
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 1, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
+    },
+    ["Shadowflame"] = {
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 4, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
     },
     -- ["electricBlue"] = {
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
-    --     { "spells\\lightningboltivus_missile.mdx", .4 },
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
-    --     { "spells\\lightningboltivus_missile.mdx", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .4 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    --     { "spells\\lightningboltivus_missile.m2", .25 },
     -- },
 }
 
@@ -331,8 +352,6 @@ function NugComboBar.Create2DPoint(self, id, opts)
     t1:SetAllPoints(f)
     f.t = t1
 
-
-
     local f2 = CreateFrame("Frame",nil,f)
     f2:SetHeight(size+3); f2:SetWidth(size+3);
     local g2 = f2:CreateTexture(nil,"OVERLAY")
@@ -372,25 +391,53 @@ local SetPresetFunc = function ( self, name )
     local ps = NugComboBar.presets[name]
     if not ps then return false end
     local settings = ps[self.id]
-    local model, scale, ox, oy = unpack(settings)
+    local model, cameraReset, scale, ox, oy, oz = unpack(settings)
+
+    -- print(">>>>", self:GetModelScale(), "POS>", self:GetPosition(), "LIGHT>",self:GetLight())
+
+    self:SetModelScale(1)
+    self:SetPosition(0,0,0)
+    -- self:ClearModel()
+    -- self:ClearFog()
+    -- self:RefreshCamera()
     self:SetModel(model)
-    self:SetModelScale(0.01*scale)
+    self:SetSequence(1)
+    if cameraReset then
+        self:SetCamera(0)
+        self:SetModelScale(0.01*scale)
+    else
+        self:SetModelScale(1*scale)
+    end
     ox = ox or 0
     oy = oy or 0
+    oz = oz or 0
     local x,y,z = unpack(self.position)
-    self:SetPosition(x+ox, y+oy, z)
+    if cameraReset then
+        self:SetPosition(x+ox, y+oy, z)
+    else
+        self:SetPosition(0+oz,0+ox,0+oz)
+    end
     return true
 end
 
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64
-    local f = CreateFrame("Model","NugComboBarPoint"..id,self)
+    local f = CreateFrame("PlayerModel","NugComboBarPoint"..id,self)
     f:SetHeight(size); f:SetWidth(size);
 
-    f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+    -- f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+    local enabled, omni, dirX, dirY, dirZ,
+          ambIntensity, ambR, ambG, ambB,
+          dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
+          -- dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 1.0, 0.0, 0.0, 1, 1.0, 1.0, 1.0
+
+    f:SetLight( enabled, omni, dirX, dirY, dirZ,
+          ambIntensity, ambR, ambG, ambB,
+          dirIntensity, dirR, dirG, dirB );
     f.position = { 0.0205,0.021,0 }
     f:SetPosition(unpack(f.position))
     f:SetFacing(0)
+
 
     -- if prev
         -- then f:SetPoint("CENTER", prev, "CENTER", 50, 0)
@@ -411,21 +458,21 @@ function NugComboBar.Create3DPoint(self, id, opts)
     return f
 end
 
--------------------------------------
--- 3D Point (PlayerModel Frame Type)
--------------------------------------
+-- -------------------------------------
+-- -- 3D Point (PlayerModel Frame Type)
+-- -------------------------------------
 
 -- local SetPresetFunc_PlayerModel = function ( self, name )
---     local ps = NugComboBar.presets[name]
---     if not ps then return false end
---     local settings = ps[self.id]
---     local model, scale, ox, oy = unpack(settings)
---     self:SetModel(model)
---     self:SetModelScale(0.01*scale)
---     ox = ox or 0
---     oy = oy or 0
---     local x,y,z = unpack(self.position)
---     self:SetPosition(x+ox, y+oy, z)
+--     -- local ps = NugComboBar.presets[name]
+--     -- if not ps then return false end
+--     -- local settings = ps[self.id]
+--     -- local model, scale, ox, oy = unpack(settings)
+--     -- self:SetModel(model)
+--     -- self:SetModelScale(0.01*scale)
+--     -- ox = ox or 0
+--     -- oy = oy or 0
+--     -- local x,y,z = unpack(self.position)
+--     -- self:SetPosition(x+ox, y+oy, z)
 --     return true
 -- end
 
@@ -434,8 +481,12 @@ end
 --     local f = CreateFrame("Model","NugComboBarPointPM"..id,self)
 --     f:SetHeight(size); f:SetWidth(size);
 --     -- f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
---     -- f.position = { 0.0205,0.021,0 }
---     -- f:SetPosition(unpack(f.position))
+--     f:SetLight( 1, 0, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999 );
+--     f:SetModel([[SPELLS/SnowFlakeCreature_Var1_Missile.m2]])
+--     f:SetModelScale(0.01)
+
+--     f.position = { 0.0205,0.021,0 }
+--     f:SetPosition(unpack(f.position))
 --     f:SetFacing(0)
 
 --     f.SetColor = function() end
