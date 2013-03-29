@@ -19,7 +19,7 @@ local resolution5x4 = {
     ["2560x2048"] = true,
 }
 local resolution5x2 = {
- ["2560x1024"] = true,
+    ["2560x1024"] = true,
 }
 
 local res = GetCVar("gxResolution")
@@ -187,32 +187,15 @@ NugComboBar.presets = {
 local barBottom = false
 
 local ActivateFunc = function(self)
-    if self:GetAlpha() == 1 then return end
     if self.dag:IsPlaying() then self.dag:Stop() end
+    if self:GetAlpha() == 1 then return end
     self.aag:Play()
     if self.glow2 then self.glow2:Play() end
 end
 local DeactivateFunc = function(self)
-    if self:GetAlpha() == 0 then return end
     if self.aag:IsPlaying() then self.aag:Stop() end
+    if self:GetAlpha() == 0 then return end
     self.dag:Play()
-end
-local SetColorFunc = function(self,r,g,b)
-    self.t:SetVertexColor(r,g,b)
-    if self.ani then self.ani.tex:SetVertexColor(r,g,b) end
-end
-local SetPresetFunc = function ( self, name )
-    local ps = NugComboBar.presets[name]
-    if not ps then return false end
-    local settings = ps[self.id]
-    local model, scale, ox, oy = unpack(settings)
-    self:SetModel(model)
-    self:SetModelScale(0.01*scale)
-    ox = ox or 0
-    oy = oy or 0
-    local x,y,z = unpack(self.position)
-    self:SetPosition(x+ox, y+oy, z)
-    return true
 end
 
 local pointtex = {
@@ -329,6 +312,13 @@ function NugComboBar.SetMaxPoints(self, n, special)
 end
 
 
+-------------------------
+-- 2D Point
+-------------------------
+local SetColorFunc = function(self,r,g,b)
+    self.t:SetVertexColor(r,g,b)
+    if self.ani then self.ani.tex:SetVertexColor(r,g,b) end
+end
 
 function NugComboBar.Create2DPoint(self, id, opts)
     local size = opts.psize
@@ -374,11 +364,29 @@ function NugComboBar.Create2DPoint(self, id, opts)
     return f
 end
 
+------------------------------
+-- 3D Point (Model Frame Type)
+------------------------------
+
+local SetPresetFunc = function ( self, name )
+    local ps = NugComboBar.presets[name]
+    if not ps then return false end
+    local settings = ps[self.id]
+    local model, scale, ox, oy = unpack(settings)
+    self:SetModel(model)
+    self:SetModelScale(0.01*scale)
+    ox = ox or 0
+    oy = oy or 0
+    local x,y,z = unpack(self.position)
+    self:SetPosition(x+ox, y+oy, z)
+    return true
+end
+
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64
     local f = CreateFrame("Model","NugComboBarPoint"..id,self)
     f:SetHeight(size); f:SetWidth(size);
-    f.SetPreset = PointSetModelFunc
+
     f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
     f.position = { 0.0205,0.021,0 }
     f:SetPosition(unpack(f.position))
@@ -402,6 +410,39 @@ function NugComboBar.Create3DPoint(self, id, opts)
 
     return f
 end
+
+-------------------------------------
+-- 3D Point (PlayerModel Frame Type)
+-------------------------------------
+
+-- local SetPresetFunc_PlayerModel = function ( self, name )
+--     local ps = NugComboBar.presets[name]
+--     if not ps then return false end
+--     local settings = ps[self.id]
+--     local model, scale, ox, oy = unpack(settings)
+--     self:SetModel(model)
+--     self:SetModelScale(0.01*scale)
+--     ox = ox or 0
+--     oy = oy or 0
+--     local x,y,z = unpack(self.position)
+--     self:SetPosition(x+ox, y+oy, z)
+--     return true
+-- end
+
+-- function NugComboBar.Create3DPoint_PlayerModel(self, id, opts)
+--     local size = 64
+--     local f = CreateFrame("Model","NugComboBarPointPM"..id,self)
+--     f:SetHeight(size); f:SetWidth(size);
+--     -- f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+--     -- f.position = { 0.0205,0.021,0 }
+--     -- f:SetPosition(unpack(f.position))
+--     f:SetFacing(0)
+
+--     f.SetColor = function() end
+--     f.SetPreset = SetPresetFunc_PlayerModel
+
+--     return f
+-- end
 
 
 NugComboBar.Create = function(self)
