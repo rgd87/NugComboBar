@@ -208,14 +208,14 @@ NugComboBar.presets = {
 local barBottom = false
 
 local ActivateFunc = function(self)
-    if self.dag:IsPlaying() then self.dag:Stop() end
     if self:GetAlpha() == 1 then return end
+    if self.dag:IsPlaying() then self.dag:Stop() end
     self.aag:Play()
     if self.glow2 then self.glow2:Play() end
 end
 local DeactivateFunc = function(self)
-    if self.aag:IsPlaying() then self.aag:Stop() end
     if self:GetAlpha() == 0 then return end
+    if self.aag:IsPlaying() then self.aag:Stop() end
     self.dag:Play()
 end
 
@@ -400,32 +400,58 @@ local SetPresetFunc = function ( self, name )
     -- self:ClearModel()
     -- self:ClearFog()
     -- self:RefreshCamera()
+    print('reconf')
     ox = ox or 0
     oy = oy or 0
     oz = oz or 0
     if cameraReset then
         -- self:SetCamera(0)
+        self.playermodel:Hide()
+        self.model:Show()
         self.model:SetModel(model)
         self.model:SetModelScale(0.01*scale)
-        self.model:Show()
+        
 
         local x,y,z = unpack(self.model.position)
         self.model:SetPosition(x+ox, y+oy, z)
 
-        self.playermodel:ClearModel()
-        self.playermodel:Hide()
+        -- self.playermodel:ClearModel()
+        
     else
+        self.playermodel:Show()
+        self.model:Hide()
         self.playermodel:SetModel(model)
         self.playermodel:SetModelScale(1*scale)
-        self.playermodel:Show()
+        
 
         self.playermodel:SetPosition(0+oz,0+ox,0+oz)
 
-        self.model:ClearModel()
-        self.model:Hide()
+        -- self.model:ClearModel()
+        
     end
     return true
 end
+
+local SetColor3DFunc = function(self, r,g,b)
+    local enabled, omni, dirX, dirY, dirZ,
+          ambIntensity, ambR, ambG, ambB,
+          dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, r,g,b, 1, r,g,b
+    self.model:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+    self.playermodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+end
+
+-- local f1 = CreateFrame("Frame")
+-- f1:SetScript("OnUpdate", function(self)
+--     if NugComboBar.p[3].playermodel:GetModel() == "" then
+--         print("MODEL DIED!!!")
+--         print("MODEL DIED!!!")
+
+--         print("MODEL DIED!!!")
+
+--         print("MODEL DIED!!!")
+
+--     end
+-- end)
 
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64
@@ -440,9 +466,11 @@ function NugComboBar.Create3DPoint(self, id, opts)
 
     local pm = CreateFrame("PlayerModel","NugComboBarPointPlayerModel"..id,f)
     pm:SetAllPoints(f)
+    -- pm:SetScript("OnUpdateModel", function() print("PM model update")     end)
     pm:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
     local m = CreateFrame("Model","NugComboBarPointModel"..id,f)
+    -- pm:SetScript("OnUpdateModel", function() print("M model update") end)
     m:SetAllPoints(f)
     m:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
@@ -466,7 +494,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
     -- f:SetBackdrop(backdrop)
     -- f:SetBackdropColor(0, 0, 0, 0.7)
 
-    f.SetColor = function() end
+    f.SetColor = SetColor3DFunc --function() end
     f.SetPreset = SetPresetFunc
 
     return f
