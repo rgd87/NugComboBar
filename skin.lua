@@ -138,7 +138,7 @@ NugComboBar.presets = {
         { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
         { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
         { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.003,0 },
+        { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.0004,0 },
         { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
         { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
     },
@@ -395,49 +395,63 @@ local SetPresetFunc = function ( self, name )
 
     -- print(">>>>", self:GetModelScale(), "POS>", self:GetPosition(), "LIGHT>",self:GetLight())
 
-    self:SetModelScale(1)
-    self:SetPosition(0,0,0)
+    -- self:SetModelScale(1)
+    -- self:SetPosition(0,0,0)
     -- self:ClearModel()
     -- self:ClearFog()
     -- self:RefreshCamera()
-    self:SetModel(model)
-    self:SetSequence(1)
-    if cameraReset then
-        self:SetCamera(0)
-        self:SetModelScale(0.01*scale)
-    else
-        self:SetModelScale(1*scale)
-    end
     ox = ox or 0
     oy = oy or 0
     oz = oz or 0
-    local x,y,z = unpack(self.position)
     if cameraReset then
-        self:SetPosition(x+ox, y+oy, z)
+        -- self:SetCamera(0)
+        self.model:SetModel(model)
+        self.model:SetModelScale(0.01*scale)
+        self.model:Show()
+
+        local x,y,z = unpack(self.model.position)
+        self.model:SetPosition(x+ox, y+oy, z)
+
+        self.playermodel:ClearModel()
+        self.playermodel:Hide()
     else
-        self:SetPosition(0+oz,0+ox,0+oz)
+        self.playermodel:SetModel(model)
+        self.playermodel:SetModelScale(1*scale)
+        self.playermodel:Show()
+
+        self.playermodel:SetPosition(0+oz,0+ox,0+oz)
+
+        self.model:ClearModel()
+        self.model:Hide()
     end
     return true
 end
 
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64
-    local f = CreateFrame("PlayerModel","NugComboBarPoint"..id,self)
+    local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
     f:SetHeight(size); f:SetWidth(size);
 
-    -- f:SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+    -- :SetLight( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
     local enabled, omni, dirX, dirY, dirZ,
           ambIntensity, ambR, ambG, ambB,
           dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
           -- dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 1.0, 0.0, 0.0, 1, 1.0, 1.0, 1.0
 
-    f:SetLight( enabled, omni, dirX, dirY, dirZ,
-          ambIntensity, ambR, ambG, ambB,
-          dirIntensity, dirR, dirG, dirB );
-    f.position = { 0.0205,0.021,0 }
-    f:SetPosition(unpack(f.position))
-    f:SetFacing(0)
+    local pm = CreateFrame("PlayerModel","NugComboBarPointPlayerModel"..id,f)
+    pm:SetAllPoints(f)
+    pm:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
+    local m = CreateFrame("Model","NugComboBarPointModel"..id,f)
+    m:SetAllPoints(f)
+    m:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+
+    m.position = { 0.0205,0.021,0 }
+    m:SetPosition(unpack(m.position))
+
+
+    f.playermodel = pm
+    f.model = m
 
     -- if prev
         -- then f:SetPoint("CENTER", prev, "CENTER", 50, 0)
