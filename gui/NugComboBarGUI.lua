@@ -267,9 +267,9 @@ do
                         end,
                         set = function(info, r, g, b)
                             local tbl = NugComboBarDB.colors["layer2"]
-                            tbl.r = r
-                            tbl.g = g
-                            tbl.b = b
+                            tbl[1] = r
+                            tbl[2] = g
+                            tbl[3] = b
                         end,
                     },
                 },

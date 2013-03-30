@@ -443,25 +443,15 @@ local SetPresetFunc = function ( self, name, noreset )
 end
 
 local SetColor3DFunc = function(self, r,g,b)
-    local enabled, omni, dirX, dirY, dirZ,
-          ambIntensity, ambR, ambG, ambB,
-          dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, r,g,b, 1, r,g,b
+    local enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB
+    if NugComboBarDB.colors3d then
+        enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, r,g,b, 1, r,g,b
+    else
+        enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
+    end
     self.model:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
     self.playermodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 end
-
--- local f1 = CreateFrame("Frame")
--- f1:SetScript("OnUpdate", function(self)
---     if NugComboBar.p[3].playermodel:GetModel() == "" then
---         print("MODEL DIED!!!")
---         print("MODEL DIED!!!")
-
---         print("MODEL DIED!!!")
-
---         print("MODEL DIED!!!")
-
---     end
--- end)
 
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64

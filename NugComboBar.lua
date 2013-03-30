@@ -490,11 +490,11 @@ local defaults = {
         [6] = {0.77,0.26,0.29},
         ["bar1"] = { 0.9,0.1,0.1 },
         ["bar2"] = { .9,0.1,0.4 },
-        ["layer2"] = { 1, 0.2, 0.2 },
+        ["layer2"] = { 0.80, 0.23, 0.79 },
     },
     enable3d = true,
     preset3d = "glowPurple",
-    preset3dlayer2 = "funnelRed",
+    preset3dlayer2 = "fireOrange",
     colors3d = true,
     showAlways = false,
     onlyCombat = false,
@@ -843,7 +843,9 @@ function NugComboBar.SetColor(point, r, g, b)
     if b then
         NugComboBarDB.colors[point] = {r,g,b}
     else
-        r,g,b = NugComboBarDB.colors[point]
+        local clr = NugComboBarDB.colors[point]
+        if not clr then return end
+        r,g,b = unpack(clr)
     end
     if NugComboBar.bar and point == "bar1" then
         return NugComboBar.bar:SetColor(r,g,b)
@@ -922,7 +924,7 @@ function NugComboBar.ShowColorPicker(self,color)
             r,g,b = ColorPickerFrame:GetColorRGB();
         end
         if color == 0 then
-            for i=1,#self.points do
+            for i=1,#self.point do
                 NugComboBar.SetColor(i,r,g,b)
             end
         else
@@ -1080,7 +1082,7 @@ NugComboBar.Commands = {
     end,
     ["colors3d"] = function(v)
         NugComboBarDB.colors3d = not NugComboBarDB.colors3d
-        for i=1,#NugComboBar.points do
+        for i=1,#NugComboBar.point do
             NugComboBar.SetColor(i)
         end
     end,
