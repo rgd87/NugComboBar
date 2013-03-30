@@ -52,6 +52,8 @@ local AuraTimerOnUpdate = function(self, time)
     self:SetValue(progress)
 end
 
+-- local min = math.min
+-- local max = math.max
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
@@ -59,8 +61,11 @@ function NugComboBar:LoadClassSettings()
         if class == "ROGUE" then
             local anticipationBuffName = GetSpellInfo(115189)
             local ComboPointsWithAnticipation = function(unit)
-                local name, _,_, count = UnitBuff("player", anticipationBuffName, nil)
-                return RogueGetComboPoints(unit), count
+                local name, _,_, anticipation = UnitBuff("player", anticipationBuffName, nil)
+                local cp = RogueGetComboPoints(unit)
+                -- local total = cp+(anticipation or 0)
+                -- return min(5,total), nil, nil, max(total-5,0)
+                return cp, nil,nil, anticipation
             end
             self:SetMaxPoints(5)
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -416,7 +421,7 @@ function NugComboBar:LoadClassSettings()
                 GetComboPoints = GetShadowOrbs
             end
             local evangelism = function()
-                self:SetMaxPoints(3)
+                self:SetMaxPoints(5)
                 self:EnableBar(0, 15, "Long")
                 if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                 self:RegisterEvent("UNIT_AURA")
@@ -479,9 +484,11 @@ local defaults = {
         [6] = {0.77,0.26,0.29},
         ["bar1"] = { 0.9,0.1,0.1 },
         ["bar2"] = { .9,0.1,0.4 },
+        ["layer2"] = { 1, 0.2, 0.2 },
     },
     enable3d = true,
     preset3d = "glowPurple",
+    preset3dlayer2 = "funnelRed",
     showAlways = false,
     onlyCombat = false,
 }
@@ -724,7 +731,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
 
     if onlyCombat and not UnitAffectingCombat("player") then return self:Hide() else self:Show() end -- usually frame is set to 0 alpha
     -- local arg1, arg2
-    local comboPoints, arg1, arg2 = GetComboPoints(unit);
+    local comboPoints, arg1, arg2, secondLayerPoints = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
     if self.bar and self.bar.enabled then
         if arg1 then
@@ -741,15 +748,35 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
         end
     end
 
-
     for i = 1, self.MAX_POINTS do
+        local point = self.p[i]
         if i <= comboPoints then
-            self.p[i]:Activate()
+            point:Activate()
         end
         if i > comboPoints then
-            self.p[i]:Deactivate()
+            point:Deactivate()
+        end
+
+        if secondLayerPoints and i <= secondLayerPoints then
+            local r,g,b = unpack(NugComboBarDB.colors["layer2"])
+            point:SetColor(r,g,b)
+            
+            if point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2 then
+                point:Reappear(function()
+                    point:SetPreset(NugComboBarDB.preset3dlayer2)
+                end)
+            end
+        else
+            local r,g,b = unpack(NugComboBarDB.colors[i])
+            point:SetColor(r,g,b)
+            if point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d then
+                point:Reappear(function()
+                    point:SetPreset(NugComboBarDB.preset3d)
+                end)
+            end
         end
     end
+
     -- print("progress", progress)
     -- print (comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
     if  not showAlways and

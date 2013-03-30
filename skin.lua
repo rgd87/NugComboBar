@@ -73,14 +73,14 @@ end
 NugComboBar.presets = {
     --- model, cameraReset, scale, xOffset, yOffset
     ["glowPurple"] = {
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.7, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 4, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
     },
     ["funnelPurple"] = {
         { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
@@ -93,14 +93,14 @@ NugComboBar.presets = {
         { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
     },
     ["glow_funnelPurple"] = {
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
         { "spells\\soulfunnel_impact_chest.m2", true, 3, 0,0,0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
     },
     ["funnelRed"] = {
         { "spells\\healrag_state_chest.m2", true, 1.7 },
@@ -133,14 +133,14 @@ NugComboBar.presets = {
         { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
     },
     ["glowFreedom"] = {
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
         { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.0004,0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", false, 2.1, -0.003, -0.003, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
     },
     ["fireBlue"] = {
         { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
@@ -172,25 +172,15 @@ NugComboBar.presets = {
         { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
         { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
     },
-    ["SnowFlake"] = {
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 1, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-        { "SPELLS/SnowFlakeCreature_Var1_Missile.m2", false, 0.85, 0, 0 },
-    },
     ["Shadowflame"] = {
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 4, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", false, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 4, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
     },
     -- ["electricBlue"] = {
     --     { "spells\\lightningboltivus_missile.m2", .25 },
@@ -208,15 +198,30 @@ NugComboBar.presets = {
 local barBottom = false
 
 local ActivateFunc = function(self)
-    if self:GetAlpha() == 1 then return end
     if self.dag:IsPlaying() then self.dag:Stop() end
+    if self.rag:IsPlaying() then self.rag:Stop() end
+    if self:GetAlpha() == 1 then return end
     self.aag:Play()
     if self.glow2 then self.glow2:Play() end
 end
 local DeactivateFunc = function(self)
-    if self:GetAlpha() == 0 then return end
     if self.aag:IsPlaying() then self.aag:Stop() end
+    if self.rag:IsPlaying() then self.rag:Stop() end
+    if self:GetAlpha() == 0 then return end
     self.dag:Play()
+end
+    local OnFinishedScript = function(self)
+        local f = self:GetParent()
+        f:dagfunc()
+        f:Activate()
+        f.dagfunc = nil
+        self:SetScript("OnFinished", nil)
+    end
+local ReappearFunc = function(self, func)
+    if self.aag:IsPlaying() then self.aag:Stop() end
+    if self.dag:IsPlaying() then self.dag:Stop() end
+    self.ragfunc = func
+    self.rag:Play()
 end
 
 local pointtex = {
@@ -387,7 +392,7 @@ end
 -- 3D Point (Model Frame Type)
 ------------------------------
 
-local SetPresetFunc = function ( self, name )
+local SetPresetFunc = function ( self, name, noreset )
     local ps = NugComboBar.presets[name]
     if not ps then return false end
     local settings = ps[self.id]
@@ -400,7 +405,11 @@ local SetPresetFunc = function ( self, name )
     -- self:ClearModel()
     -- self:ClearFog()
     -- self:RefreshCamera()
-    print('reconf')
+    -- if notreset and cameraReset then -- cameraReset here simply means Model frame type
+        -- if self.model:GetModel() == model then return end
+    -- end
+    self.currentPreset = name
+
     ox = ox or 0
     oy = oy or 0
     oz = oz or 0
@@ -463,6 +472,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
           ambIntensity, ambR, ambG, ambB,
           dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
           -- dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 1.0, 0.0, 0.0, 1, 1.0, 1.0, 1.0
+
 
     local pm = CreateFrame("PlayerModel","NugComboBarPointPlayerModel"..id,f)
     pm:SetAllPoints(f)
@@ -598,9 +608,28 @@ NugComboBar.Create = function(self)
             self:GetParent():SetAlpha(0)
         end)
         
+
+        local rag = f:CreateAnimationGroup()
+        f.rag = rag
+        local r1 = rag:CreateAnimation("Alpha")
+        r1:SetChange(-0.7)
+        r1:SetDuration(0.30)
+        r1:SetOrder(1)
+        r1:SetScript("OnFinished", function(self)
+            local p = self:GetParent():GetParent()
+            p:ragfunc()
+        end)
+        local r2 = rag:CreateAnimation("Alpha")
+        r2:SetChange(0.7)
+        r2:SetDuration(0.50)
+        r2:SetOrder(2)
+        rag:SetScript("OnFinished",function(self)
+            self:GetParent():SetAlpha(1)
+        end)
         
         f.Activate = ActivateFunc
         f.Deactivate = DeactivateFunc
+        f.Reappear = ReappearFunc
     end
 
 
