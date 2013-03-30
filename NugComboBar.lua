@@ -60,13 +60,19 @@ function NugComboBar:LoadClassSettings()
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
             local anticipationBuffName = GetSpellInfo(115189)
+            local checkAnticipation = true
             local ComboPointsWithAnticipation = function(unit)
-                local name, _,_, anticipation = UnitBuff("player", anticipationBuffName, nil)
+                local _,anticipation
+                if checkAnticipation then
+                    _,_,_,anticipation = UnitBuff("player", anticipationBuffName, nil)
+                end
                 local cp = RogueGetComboPoints(unit)
                 -- local total = cp+(anticipation or 0)
                 -- return min(5,total), nil, nil, max(total-5,0)
-                return cp, nil,nil, anticipation
+                return cp, nil,nil, anticipation or 0
             end
+            GetComboPoints = ComboPointsWithAnticipation
+
             self:SetMaxPoints(5)
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self:RegisterEvent("UNIT_COMBO_POINTS")
@@ -76,11 +82,11 @@ function NugComboBar:LoadClassSettings()
                 if IsPlayerSpell(114015) then -- Anticipation
                     self:EnableBar(0, 5, "Long")
                     self:RegisterUnitEvent("UNIT_AURA", "player")
-                    GetComboPoints = ComboPointsWithAnticipation
+                    checkAnticipation = true
                 else
                     self:DisableBar()
                     self:UnregisterEvent("UNIT_AURA")
-                    GetComboPoints = RogueGetComboPoints
+                    checkAnticipation = false
                 end
             end
             self:SPELLS_CHANGED()
@@ -489,6 +495,7 @@ local defaults = {
     enable3d = true,
     preset3d = "glowPurple",
     preset3dlayer2 = "funnelRed",
+    colors3d = true,
     showAlways = false,
     onlyCombat = false,
 }
@@ -724,6 +731,22 @@ function NugComboBar.DisableBar(self)
     self.bar:Hide()
 end
 
+local function AnticipationIn(point, i)
+    local r,g,b = unpack(NugComboBarDB.colors["layer2"])
+    point:SetColor(r,g,b)
+    point.anticipationColor = true
+
+    point:SetPreset(NugComboBarDB.preset3dlayer2)
+end
+
+local function AnticipationOut(point, i)
+    local r,g,b = unpack(NugComboBarDB.colors[i])
+    point:SetColor(r,g,b)
+    point.anticipationColor = false
+
+    point:SetPreset(NugComboBarDB.preset3d)
+end
+
 
 local comboPointsBefore = 0
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
@@ -757,22 +780,26 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
             point:Deactivate()
         end
 
-        if secondLayerPoints and i <= secondLayerPoints then
-            local r,g,b = unpack(NugComboBarDB.colors["layer2"])
-            point:SetColor(r,g,b)
-            
-            if point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2 then
-                point:Reappear(function()
-                    point:SetPreset(NugComboBarDB.preset3dlayer2)
-                end)
-            end
-        else
-            local r,g,b = unpack(NugComboBarDB.colors[i])
-            point:SetColor(r,g,b)
-            if point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d then
-                point:Reappear(function()
-                    point:SetPreset(NugComboBarDB.preset3d)
-                end)
+        if secondLayerPoints then -- Anticipation stuff
+            if i <= secondLayerPoints then              
+                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2)
+                    or
+                    (not point.anticipationColor) then
+
+
+                    point:Reappear(AnticipationIn, i)
+                end
+            else
+                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d)
+                    or
+                    (point.anticipationColor) then
+
+                    if i <= comboPoints then
+                        point:Reappear(AnticipationOut, i)
+                    else
+                        AnticipationOut(i)
+                    end
+                end
             end
         end
     end
@@ -813,7 +840,11 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
 end
 
 function NugComboBar.SetColor(point, r, g, b)
-    NugComboBarDB.colors[point] = {r,g,b}
+    if b then
+        NugComboBarDB.colors[point] = {r,g,b}
+    else
+        r,g,b = NugComboBarDB.colors[point]
+    end
     if NugComboBar.bar and point == "bar1" then
         return NugComboBar.bar:SetColor(r,g,b)
     end
@@ -1040,6 +1071,18 @@ NugComboBar.Commands = {
         end
         NugComboBarDB.preset3d = v
         NugComboBar:Set3DPreset(v)
+    end,
+    ["preset3dlayer2"] = function(v)
+        if not NugComboBar.presets[v] then
+            return print(string.format("Preset '%s' does not exist", v))
+        end
+        NugComboBarDB.preset3dlayer2 = v
+    end,
+    ["colors3d"] = function(v)
+        NugComboBarDB.colors3d = not NugComboBarDB.colors3d
+        for i=1,#NugComboBar.points do
+            NugComboBar.SetColor(i)
+        end
     end,
     ["gui"] = function(v)
         LoadAddOn('NugComboBarGUI')

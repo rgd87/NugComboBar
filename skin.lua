@@ -172,16 +172,16 @@ NugComboBar.presets = {
         { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
         { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
     },
-    ["Shadowflame"] = {
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 4, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-        { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
-    },
+    -- ["Shadowflame"] = {
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 4, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
+    -- },
     -- ["electricBlue"] = {
     --     { "spells\\lightningboltivus_missile.m2", .25 },
     --     { "spells\\lightningboltivus_missile.m2", .25 },
@@ -217,10 +217,11 @@ end
         f.dagfunc = nil
         self:SetScript("OnFinished", nil)
     end
-local ReappearFunc = function(self, func)
+local ReappearFunc = function(self, func, arg)
     if self.aag:IsPlaying() then self.aag:Stop() end
     if self.dag:IsPlaying() then self.dag:Stop() end
     self.ragfunc = func
+    self.ragfuncarg = arg
     self.rag:Play()
 end
 
@@ -613,15 +614,15 @@ NugComboBar.Create = function(self)
         f.rag = rag
         local r1 = rag:CreateAnimation("Alpha")
         r1:SetChange(-0.7)
-        r1:SetDuration(0.30)
+        r1:SetDuration(0.20)
         r1:SetOrder(1)
         r1:SetScript("OnFinished", function(self)
             local p = self:GetParent():GetParent()
-            p:ragfunc()
+            p:ragfunc(p.ragfuncarg)
         end)
         local r2 = rag:CreateAnimation("Alpha")
         r2:SetChange(0.7)
-        r2:SetDuration(0.50)
+        r2:SetDuration(0.40)
         r2:SetOrder(2)
         rag:SetScript("OnFinished",function(self)
             self:GetParent():SetAlpha(1)

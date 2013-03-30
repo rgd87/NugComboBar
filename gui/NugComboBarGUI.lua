@@ -131,19 +131,11 @@ do
                     },
                 }
             },
-            enable2d = {
-                        name = L"2D Mode",
-                        type = 'toggle',
-                        desc = L"(Color settings only available in 2D mode)",
-                        order = 3,
-                        get = function(info) return (not NugComboBarDB.enable3d) end,
-                        set = function(info, s) NugComboBar.Commands.toggle3d() end,
-                    },
             showColor = {
                 type = "group",
-                name = L"2D Mode settings",
+                name = L"Colors",
                 guiInline = true,
-                order = 4,
+                order = 3,
                 args = {
                     color1 = {
                         name = "1",
@@ -266,8 +258,30 @@ do
                             NugComboBar.SetColor("bar2",r,g,b)
                         end,
                     },
+                    color_layer2 = {
+                        name = "Anticipation",
+                        type = 'color',
+                        get = function(info)
+                            local r,g,b = unpack(NugComboBarDB.colors["layer2"])
+                            return r,g,b
+                        end,
+                        set = function(info, r, g, b)
+                            local tbl = NugComboBarDB.colors["layer2"]
+                            tbl.r = r
+                            tbl.g = g
+                            tbl.b = b
+                        end,
+                    },
                 },
             },
+            enable2d = {
+                        name = L"2D Mode",
+                        type = 'toggle',
+                        desc = L"(Color settings only available in 2D mode)",
+                        order = 4,
+                        get = function(info) return (not NugComboBarDB.enable3d) end,
+                        set = function(info, s) NugComboBar.Commands.toggle3d() end,
+                    },
             enable3d = {
                         name = L"3D Mode",
                         -- desc = L"(Activates 3D Mode)",
@@ -286,6 +300,7 @@ do
                     preset = {
                         name = L"Preset",
                         type = 'select',
+                        order = 1,
                         values = function()
                             local p = {}
                             for k,_ in pairs(NugComboBar.presets) do
@@ -295,6 +310,29 @@ do
                         end,
                         get = function(info) return NugComboBarDB.preset3d end,
                         set = function( info, v ) NugComboBar.Commands.preset3d(v) end,
+                    },
+                    preset_layer2 = {
+                        name = L"Anticipation Preset",
+                        type = 'select',
+                        order = 2,
+                        values = function()
+                            local p = {}
+                            for k,_ in pairs(NugComboBar.presets) do
+                                p[k] = k
+                            end
+                            return p
+                        end,
+                        get = function(info) return NugComboBarDB.preset3dlayer2 end,
+                        set = function( info, v ) NugComboBar.Commands.preset3dlayer2(v) end,
+                    },
+
+                    colors3d = {
+                        name = L"Use colors",
+                        desc = L"[WARNING] Only some effects can be altered using colored lightning",
+                        type = 'toggle',
+                        order = 3,
+                        get = function(info) return NugComboBarDB.colors3d end,
+                        set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
                     }
                 },
             },
