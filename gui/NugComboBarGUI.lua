@@ -129,6 +129,14 @@ do
                         set = function(info, s) NugComboBar.Commands.toggleblizz() end,
                         order = 9,
                     },
+                    togglebliz = {
+                        name = L"Second Layer",
+                        desc = L"For Anticipation talent",
+                        type = "toggle",
+                        get = function(info) return NugComboBarDB.secondLayer end,
+                        set = function(info, s) NugComboBar.Commands.secondlayer() end,
+                        order = 9,
+                    },
                 }
             },
             showColor = {
@@ -259,7 +267,7 @@ do
                         end,
                     },
                     color_layer2 = {
-                        name = "Anticipation",
+                        name = L"Second Layer",
                         type = 'color',
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors["layer2"])
@@ -312,7 +320,7 @@ do
                         set = function( info, v ) NugComboBar.Commands.preset3d(v) end,
                     },
                     preset_layer2 = {
-                        name = L"Anticipation Preset",
+                        name = L"Second Layer Preset",
                         type = 'select',
                         order = 2,
                         values = function()
@@ -328,7 +336,7 @@ do
 
                     colors3d = {
                         name = L"Use colors",
-                        desc = L"[WARNING] Only some effects can be altered using colored lightning",
+                        desc = L"Only some effects can be altered using colored lightning",
                         type = 'toggle',
                         order = 3,
                         get = function(info) return NugComboBarDB.colors3d end,

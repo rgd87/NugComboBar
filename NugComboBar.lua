@@ -8,6 +8,7 @@ local allowedUnit = "player"
 local allowedCaster = "player"
 local showEmpty, showAlways, onlyCombat
 local hideSlowly
+local secondLayerEnabled
 local fadeAfter = 6
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
@@ -66,10 +67,17 @@ function NugComboBar:LoadClassSettings()
                 if checkAnticipation then
                     _,_,_,anticipation = UnitBuff("player", anticipationBuffName, nil)
                 end
+                anticipation = anticipation or 0
                 local cp = RogueGetComboPoints(unit)
-                -- local total = cp+(anticipation or 0)
-                -- return min(5,total), nil, nil, max(total-5,0)
-                return cp, nil,nil, anticipation or 0
+                if anticipation > 0 and cp < 5 then
+                    cp = anticipation
+                    anticipation = 0
+                end
+                if secondLayerEnabled then
+                    return cp, nil,nil, anticipation
+                else
+                    return cp, anticipation
+                end
             end
             GetComboPoints = ComboPointsWithAnticipation
 
@@ -495,6 +503,7 @@ local defaults = {
     enable3d = true,
     preset3d = "glowPurple",
     preset3dlayer2 = "fireOrange",
+    secondLayer = true,
     colors3d = true,
     showAlways = false,
     onlyCombat = false,
@@ -620,6 +629,7 @@ do
         if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
         if onlyCombat == nil then onlyCombat = NugComboBarDB.onlyCombat end;
         if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
+        if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
         self:SetScale(NugComboBarDB.scale)
         self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
@@ -1062,6 +1072,10 @@ NugComboBar.Commands = {
         end
 
         NugComboBar:Reinitialize()
+    end,
+    ["secondlayer"] = function(v)
+        NugComboBarDB.secondLayer = not NugComboBarDB.secondLayer
+        secondLayerEnabled = NugComboBarDB.secondLayer
     end,
     ["toggle3d"] = function(v)
         NugComboBarDB.enable3d = not NugComboBarDB.enable3d
