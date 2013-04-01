@@ -182,16 +182,26 @@ NugComboBar.presets = {
     --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
     --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
     -- },
-    -- ["electricBlue"] = {
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
-    --     { "spells\\lightningboltivus_missile.m2", .4 },
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
-    --     { "spells\\lightningboltivus_missile.m2", .25 },
+    -- ["electricBlueOld"] = {
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .4 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
+    --     { "spells\\lightningboltivus_missile.m2", true, .25 },
     -- },
+    ["electricBlue"] = {
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        { "spells\\lightningbolt_missile.m2", true, 3},
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+    },
 }
 
 
