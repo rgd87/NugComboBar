@@ -1,52 +1,4 @@
-local aX, aY = 0,0-- values to fix model display on different aspect ratios 
---default aspect ratio is 16:9
-local resolution4x3 = {
-    ["800x600"] = true,
-    ["1024x768"] = true,
-    ["1280x960"] = true,
-    ["1440x1080"] = true,
-    ["1600x1200"] = true,
-}
-local resolution16x10 = {
-    ["1280x800"] = true,
-    ["1440x900"] = true,
-    ["1920x1200"] = true,
-    ["1680x1050"] = true,
-    ["2560x1600"] = true,
-}
-local resolution5x4 = {
-    ["1280x1024"] = true,
-    ["2560x2048"] = true,
-}
-local resolution5x2 = {
-    ["2560x1024"] = true,
-}
 
-local res = GetCVar("gxResolution")
-if res then
-    if resolution4x3[res] then
-        aX, aY = 6, 6
-    elseif resolution16x10[res] then
-        aX, aY = 2, 2
-    elseif resolution5x4[res] then
-        aX, aY = 7, 7
-    elseif resolution5x2[res] then
-        aX, aY = -11, -5
-    end
-end
-
--- function NugComboBar.Skin3DAdjustOffset(self, newoffset)
---     local prev
---     for i=1,NugComboBar.MAX_POINTS do
---         local point = self.p[i]
---         point:Show()
---         if prev
---             then f:SetPoint("CENTER", prev, "CENTER", 50+newoffset, 0)
---             else f:SetPoint("LEFT", self, "LEFT", 0, 0)
---         end
---         prev = point
---     end 
--- end
 
 -- local spells = {
 --         purple1 = { model = "spells\\seedofcorruption_state.m2", scale = 1 },
@@ -432,7 +384,8 @@ local SetPresetFunc = function ( self, name, noreset )
         self.model:SetModelScale(0.01*scale)
         
 
-        local x,y,z = unpack(self.model.position)
+        -- local x,y,z = unpack(self.model.position)
+        local x,y,z = NugComboBarDB.adjustX/100, NugComboBarDB.adjustY/100, 0
         self.model:SetPosition(x+ox, y+oy, z)
 
         -- self.playermodel:ClearModel()
@@ -485,8 +438,8 @@ function NugComboBar.Create3DPoint(self, id, opts)
     m:SetAllPoints(f)
     m:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
-    m.position = { 0.0205,0.021,0 }
-    m:SetPosition(unpack(m.position))
+    -- m.position = { 0.0205,0.021,0 }
+    -- m:SetPosition(unpack(m.position))
 
 
     f.playermodel = pm
@@ -549,7 +502,7 @@ end
 -- end
 
 
-NugComboBar.Create = function(self, adjustX, adjustY)
+NugComboBar.Create = function(self)
     local MAX_POINTS = #pointtex
     self:SetFrameStrata("MEDIUM")
     self:SetWidth(164)
@@ -583,7 +536,7 @@ NugComboBar.Create = function(self, adjustX, adjustY)
         -- end
 
         f:SetAlpha(0)
-        f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x+adjustX, ts.poffset_y+adjustY)
+        f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
 
         f.bg = t
         f.id = i

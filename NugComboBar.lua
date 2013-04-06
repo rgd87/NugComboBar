@@ -294,6 +294,7 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self, event)
                 showEmpty = true
                 self:UnregisterEvent("UNIT_AURA")
+                -- self:DisableBar()
                 local spec = GetSpecialization()
                 if      spec == 3 then
                     self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
@@ -508,52 +509,10 @@ local defaults = {
     colors3d = true,
     showAlways = false,
     onlyCombat = false,
-    adjustX = 0,
-    adjustY = 0,
+    adjustX = 2.05,
+    adjustY = 2.1,
     hideWithoutTarget = false,
 }
-do -- pushing default values for different resolutions
-            local resolution4x3 = {
-                ["800x600"] = true,
-                ["1024x768"] = true,
-                ["1280x960"] = true,
-                ["1440x1080"] = true,
-                ["1600x1200"] = true,
-            }
-            local resolution16x10 = {
-                ["1280x800"] = true,
-                ["1440x900"] = true,
-                ["1920x1200"] = true,
-                ["1680x1050"] = true,
-                ["2560x1600"] = true,
-            }
-            local resolution5x4 = {
-                ["1280x1024"] = true,
-                ["2560x2048"] = true,
-            }
-            local resolution5x2 = {
-                ["2560x1024"] = true,
-            }
-
-            local res = GetCVar("gxResolution")
-            local aX, aY
-            if res then
-                if resolution4x3[res] then
-                    aX, aY = 6, 6
-                elseif resolution16x10[res] then
-                    aX, aY = 2, 2
-                elseif resolution5x4[res] then
-                    aX, aY = 7, 7
-                elseif resolution5x2[res] then
-                    aX, aY = -11, -5
-                else
-                    aX, aY = 0,0
-                end
-            end
-            defaults.adjustX = aX
-            defaults.adjustY = aY
-end
-
 NugComboBar.defaults = defaults
 
 local function SetupDefaults(t, defaults)
@@ -669,7 +628,7 @@ end
 do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
-        if initial then self:Create(NugComboBarDB_Global.adjustX, NugComboBarDB_Global.adjustY) end
+        if initial then self:Create() end
         self:LoadClassSettings()
         if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
         if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
@@ -1105,12 +1064,8 @@ NugComboBar.Commands = {
         local num = tonumber(v)
         if num then
             NugComboBarDB_Global.adjustX = num
-            local adjustX = NugComboBarDB_Global.adjustX
-            local adjustY = NugComboBarDB_Global.adjustY
             for i,point in ipairs(NugComboBar.point) do
-                local ts = point.bg.settings
-                if not ts then return end
-                point:SetPoint("CENTER", point.bg, "TOPLEFT", ts.poffset_x+adjustX, ts.poffset_y+adjustY)
+                point:SetPreset(point.currentPreset)
             end
         end
     end,
@@ -1118,12 +1073,8 @@ NugComboBar.Commands = {
         local num = tonumber(v)
         if num then
             NugComboBarDB_Global.adjustY = num
-            local adjustX = NugComboBarDB_Global.adjustX
-            local adjustY = NugComboBarDB_Global.adjustY
             for i,point in ipairs(NugComboBar.point) do
-                local ts = point.bg.settings
-                if not ts then return end
-                point:SetPoint("CENTER", point.bg, "TOPLEFT", ts.poffset_x+adjustX, ts.poffset_y+adjustY)
+                point:SetPreset(point.currentPreset)
             end
         end
     end,
