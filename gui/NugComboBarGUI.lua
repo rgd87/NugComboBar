@@ -123,19 +123,26 @@ do
                     togglebliz = {
                         name = L"Disable Default",
                         type = "toggle",
-                        width = "double",
                         desc = L"Hides default combat point (and other) frames",
                         get = function(info) return NugComboBarDB.disableBlizz end,
                         set = function(info, s) NugComboBar.Commands.toggleblizz() end,
                         order = 9,
                     },
-                    togglebliz = {
+                    secondLayer = {
                         name = L"Second Layer",
                         desc = L"For Anticipation talent",
                         type = "toggle",
                         get = function(info) return NugComboBarDB.secondLayer end,
                         set = function(info, s) NugComboBar.Commands.secondlayer() end,
-                        order = 9,
+                        order = 10,
+                    },
+                    hideWithoutTarget = {
+                        name = L"Hide w/o Target",
+                        desc = L"(Only for combat points)",
+                        type = "toggle",
+                        get = function(info) return NugComboBarDB.hideWithoutTarget end,
+                        set = function(info, s) NugComboBar.Commands.hidewotarget() end,
+                        order = 10,
                     },
                 }
             },
@@ -341,7 +348,31 @@ do
                         order = 3,
                         get = function(info) return NugComboBarDB.colors3d end,
                         set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
-                    }
+                    },
+
+                    adjustX = {
+                        name = L"X Offset",
+                        type = "range",
+                        desc = L"Use these to calibrate point position on resolutions with aspect ratio other than 16:9",
+                        get = function(info) return NugComboBarDB_Global.adjustX end,
+                        set = function(info, v) NugComboBar.Commands.adjustx(v) end,
+                        min = -100,
+                        max = 100,
+                        step = 0.1,
+                        order = 4,
+                    },
+
+                    adjustY = {
+                        name = L"Y Offset",
+                        type = "range",
+                        desc = L"Use these to calibrate point position on resolutions with aspect ratio other than 16:9",
+                        get = function(info) return NugComboBarDB_Global.adjustY end,
+                        set = function(info, v) NugComboBar.Commands.adjusty(v) end,
+                        min = -100,
+                        max = 100,
+                        step = 0.1,
+                        order = 5,
+                    },
                 },
             },
             disable = {

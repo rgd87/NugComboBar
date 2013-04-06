@@ -549,7 +549,7 @@ end
 -- end
 
 
-NugComboBar.Create = function(self)
+NugComboBar.Create = function(self, adjustX, adjustY)
     local MAX_POINTS = #pointtex
     self:SetFrameStrata("MEDIUM")
     self:SetWidth(164)
@@ -577,13 +577,13 @@ NugComboBar.Create = function(self)
 
         local is3D = NugComboBarDB.enable3d
         local f = is3D  and self:Create3DPoint(i, ts) or self:Create2DPoint(i, ts)
-        if is3D then
-            ts.poffset_x = ts.poffset_x + aX
-            ts.poffset_y = ts.poffset_y + aY
-        end
+        -- if is3D then
+            -- ts.poffset_x = ts.poffset_x
+            -- ts.poffset_y = ts.poffset_y
+        -- end
 
         f:SetAlpha(0)
-        f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
+        f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x+adjustX, ts.poffset_y+adjustY)
 
         f.bg = t
         f.id = i
