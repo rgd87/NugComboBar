@@ -690,8 +690,8 @@ NugComboBar.Create = function(self, adjustX, adjustY)
         self:ClearAllPoints()
         NugComboBar.SetScale = normalSetScale
         NugComboBar.SetAlpha = normalSetAlpha
-        NugComboBar.Show = nil -- return to normal
-        NugComboBar.Hide = nil
+        NugComboBar.Show = normalShow
+        NugComboBar.Hide = normalHide
         if barBottom then 
             self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
         else
