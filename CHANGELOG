@@ -2,6 +2,9 @@
  - Hide w/o target option
  - Custom point offset for weird resolutions
  - Demonology->Destruction switch bug fixed
+ - Anticipation is now correcly consumed only on damaging finishers.
+   When anticipation charges are exceeding current amount of CPs,
+   they're displayed in status bar.
 
 5.2.3a:
  - electricBlue skin restored
