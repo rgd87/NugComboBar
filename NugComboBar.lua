@@ -69,14 +69,10 @@ function NugComboBar:LoadClassSettings()
                 end
                 anticipation = anticipation or 0
                 local cp = RogueGetComboPoints(unit)
-                if anticipation > 0 and cp < 5 then
-                    cp = anticipation
-                    anticipation = 0
-                end
-                if secondLayerEnabled then
-                    return cp, nil,nil, anticipation
+                if not secondLayerEnabled or (anticipation > 0 and cp < anticipation) then
+                    return cp, anticipation, nil, 0
                 else
-                    return cp, anticipation
+                    return cp, nil,nil, anticipation
                 end
             end
             GetComboPoints = ComboPointsWithAnticipation
@@ -815,7 +811,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
                     if i <= comboPoints then
                         point:Reappear(AnticipationOut, i)
                     else
-                        AnticipationOut(i)
+                        AnticipationOut(point, i)
                     end
                 end
             end
