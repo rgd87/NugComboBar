@@ -1,3 +1,7 @@
+5.2.5:
+ - Bugfix for offset adjustment on non-global configurations.
+   (It's always global now)
+
 5.2.4:
  - Hide w/o target option
  - Custom point offset for weird resolutions
