@@ -385,7 +385,7 @@ local SetPresetFunc = function ( self, name, noreset )
         
 
         -- local x,y,z = unpack(self.model.position)
-        local x,y,z = NugComboBarDB.adjustX/100, NugComboBarDB.adjustY/100, 0
+        local x,y,z = NugComboBarDB_Global.adjustX/100, NugComboBarDB_Global.adjustY/100, 0
         self.model:SetPosition(x+ox, y+oy, z)
 
         -- self.playermodel:ClearModel()
