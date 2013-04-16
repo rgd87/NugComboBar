@@ -583,6 +583,8 @@ do
 
             if not NugComboBarDB.apoint and NugComboBarDB.point then NugComboBarDB.apoint = NugComboBarDB.point end
             SetupDefaults(NugComboBarDB, defaults)
+            if not NugComboBarDB_Global.adjustX then NugComboBarDB_Global.adjustX = defaults.adjustX end
+            if not NugComboBarDB_Global.adjustY then NugComboBarDB_Global.adjustY = defaults.adjustY end
 
             NugComboBar.isDisabled = nil
             if type(NugComboBarDB.disabled) == "table" then NugComboBarDB.disabled = nil end --old format bugfix
