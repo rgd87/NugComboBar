@@ -597,7 +597,7 @@ do
             -- self:RegisterEvent("PLAYER_LOGIN")
             self:RegisterEvent("PLAYER_LOGOUT")
 
-            NugComboBar.toggleBlizz() --even if disabled
+            if NugComboBarDB.disableBlizz then NugComboBar.disableBlizz() end
 
             if initial then
                 local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
@@ -1029,7 +1029,7 @@ NugComboBar.Commands = {
     end,
     ["toggleblizz"] = function(v)
         NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
-        NugComboBar.toggleBlizz()
+        print ("NCB> Changes will take effect after /reload")
     end,
     ["scale"] = function(v)
         local num = tonumber(v)
@@ -1183,9 +1183,8 @@ function NugComboBar.SlashCmd(msg)
 end
 
 
-function NugComboBar.toggleBlizz()
+function NugComboBar.disableBlizz()
     local class = select(2,UnitClass("player"))
-    if NugComboBarDB.disableBlizz then
         if class == "ROGUE" or class == "DRUID" then
             ComboFrame:UnregisterAllEvents()
             ComboFrame:Hide()
@@ -1214,46 +1213,46 @@ function NugComboBar.toggleBlizz()
             MonkHarmonyBar._Show = MonkHarmonyBar.Show
             MonkHarmonyBar.Show = MonkHarmonyBar.Hide
         end
-    else
-        if class == "ROGUE" or class == "DRUID" then
-            ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-            ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
-            if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-            -- if not PlayerFrame:IsVisible() then return end
-            ComboFrame_Update()
-        end
-        if class == "WARLOCK" then
-            WarlockPowerFrame.Show = WarlockPowerFrame._Show
-            WarlockPowerFrame:Show()
-            if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-            -- if not PlayerFrame:IsVisible() then return end
-            WarlockPowerFrame_OnLoad(WarlockPowerFrame)
-            -- WarlockPowerFrame_Update()
-        end
-        if class == "PALADIN" then
-            PaladinPowerBar.Show = PaladinPowerBar._Show
-            PaladinPowerBar:Show()
-            if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-            -- if not PlayerFrame:IsVisible() then return end
-            PaladinPowerBar_OnLoad(PaladinPowerBar)
-            PaladinPowerBar_Update(PaladinPowerBar)
-        end
-        if class == "PRIEST" then
-            PriestBarFrame.Show = PriestBarFrame._Show
-            PriestBarFrame:Show()
-            if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-            -- if not PlayerFrame:IsVisible() then return end
-            PriestBarFrame.spec = nil
-            PriestBarFrame_OnLoad(PriestBarFrame)
-        end
-        if class == "MONK" then
-            MonkHarmonyBar.Show = MonkHarmonyBar._Show
-            MonkHarmonyBar:Show()
-            if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-            -- if not PlayerFrame:IsVisible() then return end
-            MonkHarmonyBar_OnLoad(MonkHarmonyBar)
-        end
-    end
+    -- else
+    --     if class == "ROGUE" or class == "DRUID" then
+    --         ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    --         ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
+    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
+    --         -- if not PlayerFrame:IsVisible() then return end
+    --         ComboFrame_Update()
+    --     end
+    --     if class == "WARLOCK" then
+    --         WarlockPowerFrame.Show = WarlockPowerFrame._Show
+    --         WarlockPowerFrame:Show()
+    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
+    --         -- if not PlayerFrame:IsVisible() then return end
+    --         WarlockPowerFrame_OnLoad(WarlockPowerFrame)
+    --         -- WarlockPowerFrame_Update()
+    --     end
+    --     if class == "PALADIN" then
+    --         PaladinPowerBar.Show = PaladinPowerBar._Show
+    --         PaladinPowerBar:Show()
+    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
+    --         -- if not PlayerFrame:IsVisible() then return end
+    --         PaladinPowerBar_OnLoad(PaladinPowerBar)
+    --         PaladinPowerBar_Update(PaladinPowerBar)
+    --     end
+    --     if class == "PRIEST" then
+    --         PriestBarFrame.Show = PriestBarFrame._Show
+    --         PriestBarFrame:Show()
+    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
+    --         -- if not PlayerFrame:IsVisible() then return end
+    --         PriestBarFrame.spec = nil
+    --         PriestBarFrame_OnLoad(PriestBarFrame)
+    --     end
+    --     if class == "MONK" then
+    --         MonkHarmonyBar.Show = MonkHarmonyBar._Show
+    --         MonkHarmonyBar:Show()
+    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
+    --         -- if not PlayerFrame:IsVisible() then return end
+    --         MonkHarmonyBar_OnLoad(MonkHarmonyBar)
+    --     end
+    -- end
 end
 
 function NugComboBar:OnSpecChanged()
