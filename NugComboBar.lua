@@ -1,4 +1,4 @@
-NugComboBar = CreateFrame("Frame",nil, UIParent)
+NugComboBar = CreateFrame("Frame", "NugComboBar", UIParent)
 local NugComboBar = NugComboBar
 
 local user
@@ -911,9 +911,10 @@ function NugComboBar.CreateAnchor(frame)
     self:EnableMouse(true)
     self:RegisterForDrag("LeftButton")
     self:SetMovable(true)
-    self:SetScript("OnDragStart",function(self) self:StartMoving() end)
+    self:SetScript("OnDragStart",function(self) self:StartMoving(); self:SetUserPlaced(false) end)
     self:SetScript("OnDragStop",function(self)
         self:StopMovingOrSizing();
+        self:SetUserPlaced(false)
         NugComboBarDB.apoint, _, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
         NugComboBarDB.parent = "UIParent"
     end)
