@@ -1,3 +1,7 @@
+5.2.6:
+ - ToC updated to 50300
+ - removed the possibility to return default class frames without reloading ui, along with any ties to ShadowedUF stuff
+
 5.2.5:
  - Bugfix for offset adjustment on non-global configurations.
    (It's always global now)
@@ -12,7 +16,7 @@
 
 5.2.3a:
  - electricBlue skin restored
-	
+
 5.2.3:
  - added option to toggle second layer
  - fixed glitchy animation of second layer transitions
