@@ -330,10 +330,6 @@ function NugComboBar:LoadClassSettings()
             self.GLYPH_REMOVED = self.GLYPH_UPDATED
             self:SPELLS_CHANGED()
         elseif class == "WARRIOR" then
-            local tfb_bar = function(self)
-                self:EnableBar(0, 15, "Long")
-                if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
-            end
             self:SetMaxPoints(5)
             -- self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
@@ -350,10 +346,8 @@ function NugComboBar:LoadClassSettings()
                     self:SetMaxPoints(3)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
                 elseif spec == 1 then
-                    self:EnableBar(0, 15, "Long")
-                    if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
-                    self:SetMaxPoints(5)
-                    scanAura = GetSpellInfo(125831) -- Taste for blood
+                    self:SetMaxPoints(3)
+                    scanAura = GetSpellInfo(60503) -- Taste for blood
                 else
                     self:UnregisterEvent("UNIT_AURA")
                 end
