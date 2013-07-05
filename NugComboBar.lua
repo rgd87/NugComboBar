@@ -330,7 +330,21 @@ function NugComboBar:LoadClassSettings()
             self.GLYPH_REMOVED = self.GLYPH_UPDATED
             self:SPELLS_CHANGED()
         elseif class == "WARRIOR" then
-            self:SetMaxPoints(5)
+            local tfbAuraName = GetSpellInfo(60503)
+            local GetTasteForBlood = function(unit)
+                local _,_,_,count = UnitBuff("player", tfbAuraName, nil)
+                count = count or 0
+                local over3 = 0
+                if count > 3 then over3 = count - 3; count = 3; end
+                if not secondLayerEnabled then
+                    if over3 == 0 then over3 = nil end
+                    return count, over3, nil, 0
+                else
+                    return count, nil,nil, over3
+                end
+            end
+
+            -- self:SetMaxPoints(5)
             -- self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
@@ -345,9 +359,13 @@ function NugComboBar:LoadClassSettings()
                     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                     self:SetMaxPoints(3)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
+                    GetComboPoints = GetAuraStack
                 elseif spec == 1 then
+                    self:EnableBar(0, 2, "Small")
+                    if self.bar then self.bar:SetScript("OnUpdate", nil) end
+
                     self:SetMaxPoints(3)
-                    scanAura = GetSpellInfo(60503) -- Taste for blood
+                    GetComboPoints = GetTasteForBlood
                 else
                     self:UnregisterEvent("UNIT_AURA")
                 end
