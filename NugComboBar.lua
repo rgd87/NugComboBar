@@ -344,7 +344,7 @@ function NugComboBar:LoadClassSettings()
                 end
             end
 
-            -- self:SetMaxPoints(5)
+            self:SetMaxPoints(4)
             -- self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
