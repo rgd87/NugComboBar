@@ -186,6 +186,12 @@ function NugComboBar:LoadClassSettings()
             local GetChi = function(unit)
                 return UnitPower(unit, SPELL_POWER_CHI)
             end
+            local GetChiAndStagger = function(unit)
+                --just to fill the second arg, everything is done in OnUpdate
+                local stagger = UnitStagger("player")
+                return UnitPower(unit, SPELL_POWER_CHI), stagger > 0 and stagger
+            end
+
             self:SetMaxPoints(4)
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
@@ -194,6 +200,12 @@ function NugComboBar:LoadClassSettings()
             end
             GetComboPoints = GetChi
 
+
+            self.UNIT_MAXHEALTH = function(self, event, unit)
+                if self.bar then self.bar:SetMinMaxValues(0, UnitHealthMax("player")) end
+            end
+            self.UNIT_HEALTH = self.UNIT_COMBO_POINTS
+
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 if IsSpellKnown(115396)  -- Ascension
@@ -201,6 +213,23 @@ function NugComboBar:LoadClassSettings()
                     else self:SetMaxPoints(4)
                 end
                 self:UNIT_COMBO_POINTS(nil,"player")
+
+                local spec = GetSpecialization()
+                if spec == 1 then
+                    GetComboPoints = GetChiAndStagger
+                    self:EnableBar()
+                    if self.bar then
+                        self:EnableBar(0, UnitHealthMax("player"),"Long")
+                        self:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
+                        self:RegisterUnitEvent("UNIT_HEALTH", "player")
+                        -- self.bar:SetScript("OnUpdate", StaggerOnUpdate)
+                    end
+                else
+                    GetComboPoints = GetChi
+                    self:UnegisterEvent("UNIT_MAXHEALTH")
+                    self:UnegisterEvent("UNIT_HEALTH")
+                    self:DisableBar()
+                end
             end
             self:SPELLS_CHANGED()
         elseif class == "SHAMAN" then
