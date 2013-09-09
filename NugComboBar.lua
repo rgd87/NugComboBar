@@ -189,7 +189,15 @@ function NugComboBar:LoadClassSettings()
             local GetChiAndStagger = function(unit)
                 --just to fill the second arg, everything is done in OnUpdate
                 local stagger = UnitStagger("player")
-                return UnitPower(unit, SPELL_POWER_CHI), stagger > 0 and stagger
+                return UnitPower(unit, SPELL_POWER_CHI), stagger > 0 and stagger or nil
+            end
+
+            local StaggerOnUpdate = function(self, time)
+                self._elapsed = (self._elapsed or 0) + time
+                if self._elapsed < 0.5 then return end
+                self._elapsed = 0
+
+                NugComboBar:UNIT_COMBO_POINTS(nil, "player")
             end
 
             self:SetMaxPoints(4)
@@ -202,7 +210,7 @@ function NugComboBar:LoadClassSettings()
 
 
             self.UNIT_MAXHEALTH = function(self, event, unit)
-                if self.bar then self.bar:SetMinMaxValues(0, UnitHealthMax("player")) end
+                self.bar:SetMinMaxValues(0, UnitHealthMax("player"))
             end
             self.UNIT_HEALTH = self.UNIT_COMBO_POINTS
 
@@ -217,12 +225,11 @@ function NugComboBar:LoadClassSettings()
                 local spec = GetSpecialization()
                 if spec == 1 then
                     GetComboPoints = GetChiAndStagger
-                    self:EnableBar()
+                    self:EnableBar(0, UnitHealthMax("player"),"Long")
                     if self.bar then
-                        self:EnableBar(0, UnitHealthMax("player"),"Long")
+                        self.bar:SetScript("OnUpdate", StaggerOnUpdate)
                         self:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
                         self:RegisterUnitEvent("UNIT_HEALTH", "player")
-                        -- self.bar:SetScript("OnUpdate", StaggerOnUpdate)
                     end
                 else
                     GetComboPoints = GetChi
@@ -546,6 +553,7 @@ local defaults = {
     colors3d = true,
     showAlways = false,
     onlyCombat = false,
+    disableProgress = false,
     adjustX = 2.05,
     adjustY = 2.1,
     hideWithoutTarget = false,
@@ -668,6 +676,13 @@ do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
         if initial then self:Create() end
+
+        if NugComboBarDB.disableProgress then
+            NugComboBar.EnableBar_ = NugComboBar.EnableBar
+            NugComboBar.EnableBar = NugComboBar.DisableBar
+            NugComboBar:DisableBar()
+        end
+
         self:LoadClassSettings()
         if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
         if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
@@ -1145,6 +1160,17 @@ NugComboBar.Commands = {
     ["secondlayer"] = function(v)
         NugComboBarDB.secondLayer = not NugComboBarDB.secondLayer
         secondLayerEnabled = NugComboBarDB.secondLayer
+    end,
+    ["toggleprogress"] = function(v)
+        NugComboBarDB.disableProgress = not NugComboBarDB.disableProgress
+        if NugComboBarDB.disableProgress then
+            NugComboBar.EnableBar_ = NugComboBar.EnableBar
+            NugComboBar.EnableBar = NugComboBar.DisableBar
+            NugComboBar:DisableBar()
+        else
+            NugComboBar.EnableBar = NugComboBar.EnableBar_
+            NugComboBar:LoadClassSettings()
+        end
     end,
     ["toggle3d"] = function(v)
         NugComboBarDB.enable3d = not NugComboBarDB.enable3d

@@ -142,7 +142,14 @@ do
                         type = "toggle",
                         get = function(info) return NugComboBarDB.hideWithoutTarget end,
                         set = function(info, s) NugComboBar.Commands.hidewotarget() end,
-                        order = 10,
+                        order = 11,
+                    },
+                    disableProgress = {
+                        name = L"Disable Progress Bar",
+                        type = "toggle",
+                        get = function(info) return NugComboBarDB.disableProgress end,
+                        set = function(info, s) NugComboBar.Commands.toggleprogress() end,
+                        order = 12,
                     },
                 }
             },
