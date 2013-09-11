@@ -233,8 +233,8 @@ function NugComboBar:LoadClassSettings()
                     end
                 else
                     GetComboPoints = GetChi
-                    self:UnegisterEvent("UNIT_MAXHEALTH")
-                    self:UnegisterEvent("UNIT_HEALTH")
+                    self:UnregisterEvent("UNIT_MAXHEALTH")
+                    self:UnregisterEvent("UNIT_HEALTH")
                     self:DisableBar()
                 end
             end
