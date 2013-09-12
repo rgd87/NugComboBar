@@ -189,7 +189,7 @@ function NugComboBar:LoadClassSettings()
             local GetChiAndStagger = function(unit)
                 --just to fill the second arg, everything is done in OnUpdate
                 local stagger = UnitStagger("player")
-                return UnitPower(unit, SPELL_POWER_CHI), stagger > 0 and stagger or nil
+                return UnitPower(unit, SPELL_POWER_CHI), (stagger and stagger > 0) and stagger or nil
             end
 
             local StaggerOnUpdate = function(self, time)
@@ -220,7 +220,6 @@ function NugComboBar:LoadClassSettings()
                     then self:SetMaxPoints(5)
                     else self:SetMaxPoints(4)
                 end
-                self:UNIT_COMBO_POINTS(nil,"player")
 
                 local spec = GetSpecialization()
                 if spec == 1 then
@@ -237,6 +236,8 @@ function NugComboBar:LoadClassSettings()
                     self:UnregisterEvent("UNIT_HEALTH")
                     self:DisableBar()
                 end
+
+                self:UNIT_COMBO_POINTS(nil,"player")
             end
             self:SPELLS_CHANGED()
         elseif class == "SHAMAN" then
