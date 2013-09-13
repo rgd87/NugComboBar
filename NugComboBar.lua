@@ -318,12 +318,10 @@ function NugComboBar:LoadClassSettings()
                     self.bar:SetColor(unpack(NugComboBarDB.colors.bar1))
                 end
             end
-            self:RegisterEvent("GLYPH_UPDATED")
-            self:RegisterEvent("GLYPH_ADDED")
-            self:RegisterEvent("GLYPH_REMOVED")
-            self:RegisterEvent("SPELLS_CHANGED")
-            self:RegisterEvent("UNIT_POWER")
-            self:SetMaxPoints(3); GetComboPoints = GetShards
+    
+            self:SetMaxPoints(3)
+            GetComboPoints = GetShards
+
             self.SPELLS_CHANGED = function(self, event)
                 showEmpty = true
                 self:UnregisterEvent("UNIT_AURA")
@@ -365,7 +363,14 @@ function NugComboBar:LoadClassSettings()
             self.GLYPH_UPDATED = self.SPELLS_CHANGED
             self.GLYPH_ADDED = self.GLYPH_UPDATED
             self.GLYPH_REMOVED = self.GLYPH_UPDATED
+            
             self:SPELLS_CHANGED()
+
+            self:RegisterEvent("GLYPH_UPDATED")
+            self:RegisterEvent("GLYPH_ADDED")
+            self:RegisterEvent("GLYPH_REMOVED")
+            self:RegisterEvent("SPELLS_CHANGED")
+            self:RegisterEvent("UNIT_POWER")
         elseif class == "WARRIOR" then
             local tfbAuraName = GetSpellInfo(60503)
             local GetTasteForBlood = function(unit)
