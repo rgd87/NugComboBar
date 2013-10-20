@@ -350,7 +350,7 @@ do
 
                     colors3d = {
                         name = L"Use colors",
-                        desc = L"Only some effects can be altered using colored lightning",
+                        desc = L"Only some effects can be altered using colored lighting.\nfireXXXX presets are good for it",
                         type = 'toggle',
                         order = 3,
                         get = function(info) return NugComboBarDB.colors3d end,
