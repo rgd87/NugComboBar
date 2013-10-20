@@ -34,6 +34,16 @@ NugComboBar.presets = {
         { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
         { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
     },
+    ["glowHoly"] = {
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.6, 0,0, 0.0, "spells\\Paladin_headlinghands_state_01.m2", true, 1, 0,0,0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+        { "spells\\Holy_precast_med_hand_simple.m2", true, 3, 0,0, 0.0 },
+    },
     ["funnelPurple"] = {
         { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
         { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
@@ -223,12 +233,13 @@ local pointtex = {
         psize = 14,
         poffset_x = 17, poffset_y = -14,
     },
-    [6] = {
+    [6] = { -- the big one
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {98/256, 140/256, 0, 1},
         width = 42, height = 32,
         psize = 18,
         poffset_x = 20, poffset_y = -14,
+        bgeffect = true,
     },
 
     --reversed textures for paladin
@@ -359,7 +370,7 @@ local SetPresetFunc = function ( self, name, noreset )
     local ps = NugComboBar.presets[name]
     if not ps then return false end
     local settings = ps[self.id]
-    local model, cameraReset, scale, ox, oy, oz = unpack(settings)
+    local model, cameraReset, scale, ox, oy, oz, bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz = unpack(settings)
 
     -- print(">>>>", self:GetModelScale(), "POS>", self:GetPosition(), "LIGHT>",self:GetLight())
 
@@ -388,6 +399,20 @@ local SetPresetFunc = function ( self, name, noreset )
         local x,y,z = NugComboBarDB_Global.adjustX/100, NugComboBarDB_Global.adjustY/100, 0
         self.model:SetPosition(x+ox, y+oy, z)
 
+        if self.bgmodel then
+            if bgmodel then
+                bgox = bgox or 0
+                bgoy = bgoy or 0
+                bgoz = bgoz or 0
+                self.bgmodel:SetModel(bgmodel)
+                self.bgmodel:SetModelScale(0.01*bgscale)
+                self.bgmodel:SetPosition(x+bgox, y+bgoy, z)
+                self.bgmodel:Show()
+            else
+                self.bgmodel:Hide()
+            end
+        end
+
         -- self.playermodel:ClearModel()
         
     else
@@ -399,6 +424,11 @@ local SetPresetFunc = function ( self, name, noreset )
 
         self.playermodel:SetPosition(0+oz,0+ox,0+oz)
 
+        if self.bgmodel then
+            if bgmodel then
+                self.bgmodel:Hide()
+            end
+        end
         -- self.model:ClearModel()
         
     end
@@ -429,11 +459,13 @@ function NugComboBar.Create3DPoint(self, id, opts)
 
 
     local pm = CreateFrame("PlayerModel","NugComboBarPointPlayerModel"..id,f)
+    pm:SetFrameLevel(2)
     pm:SetAllPoints(f)
     -- pm:SetScript("OnUpdateModel", function() print("PM model update")     end)
     pm:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
     local m = CreateFrame("Model","NugComboBarPointModel"..id,f)
+    m:SetFrameLevel(2)
     -- pm:SetScript("OnUpdateModel", function() print("M model update") end)
     m:SetAllPoints(f)
     m:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
@@ -444,6 +476,18 @@ function NugComboBar.Create3DPoint(self, id, opts)
 
     f.playermodel = pm
     f.model = m
+
+
+    if opts.bgeffect then
+        local bgm = CreateFrame("Model","NugComboBarPointModel"..id,f)
+        bgm:SetFrameLevel(0)
+        bgm:SetWidth(size)
+        bgm:SetHeight(size)
+        bgm:SetScale(2)
+        bgm:SetPoint("CENTER", f, "CENTER", 0, 0)
+        bgm:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+        f.bgmodel = bgm
+    end
 
     -- if prev
         -- then f:SetPoint("CENTER", prev, "CENTER", 50, 0)
