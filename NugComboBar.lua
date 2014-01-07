@@ -106,6 +106,7 @@ function NugComboBar:LoadClassSettings()
                     local haveTotem, name, startTime, duration, icon = GetTotemInfo(i)
                     if icon == mushrooms_icon then mushrooms = mushrooms + 1 end
                 end
+                if GetSpecialization() == 4 and mushrooms == 1 then mushrooms = 3 end
                 return mushrooms
             end
             local shrooms = function()
