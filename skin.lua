@@ -25,114 +25,50 @@
 NugComboBar.presets = {
     --- model, cameraReset, scale, xOffset, yOffset
     ["glowPurple"] = {
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 4, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", true, 4, 0,0, 0.0 },
     },
     ["glowHoly"] = {
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 2.8, 0,0, 0.0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.2, 0,0, 0.0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.2, 0,0, 0.0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.2, 0,0, 0.0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.2, 0,0, 0.0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.7, 0,0, 0.0, "spells\\Paladin_headlinghands_state_01.m2", true, 1, 0,0,0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 3.2, 0,0, 0.0 },
-        { "spells\\Holy_precast_med_hand_simple.m2", true, 2.8, 0,0, 0.0 },
+        LEFT = { "spells\\Holy_precast_med_hand_simple.m2", true, 2.8, 0,0, 0.0 },
+        NORMAL = { "spells\\Holy_precast_med_hand_simple.m2", true, 3.2, 0,0, 0.0 },
+        BIG = { "spells\\Holy_precast_med_hand_simple.m2", true, 3.7, 0,0, 0.0, "spells\\Paladin_headlinghands_state_01.m2", true, 1, 0,0,0 },
+        RIGHT = { "spells\\Holy_precast_med_hand_simple.m2", true, 2.8, 0,0, 0.0 },
     },
     ["funnelPurple"] = {
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 3 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, 1.7 },
+        BIG = { "spells\\soulfunnel_impact_chest.m2", true, 3 },
     },
     ["glow_funnelPurple"] = {
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\soulfunnel_impact_chest.m2", true, 3, 0,0,0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        BIG = { "spells\\soulfunnel_impact_chest.m2", true, 3, 0,0,0 },
     },
     ["funnelRed"] = {
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
-        { "spells\\healrag_state_chest.m2", true, 3 },
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
-        { "spells\\healrag_state_chest.m2", true, 1.7 },
+        NORMAL = { "spells\\healrag_state_chest.m2", true, 1.7 },
+        BIG = { "spells\\healrag_state_chest.m2", true, 3 },
     },
     ["funnelGreen"] = {
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
-        { "spells\\lifetap_state_chest.m2", true, 3 },
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
-        { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        NORMAL = { "spells\\lifetap_state_chest.m2", true, 1.7 },
+        BIG = { "spells\\lifetap_state_chest.m2", true, 3 },
     },
     ["funnelBlue"] = {
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\manafunnel_impact_chest.m2", true, 3 },
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
-        { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        NORMAL = { "spells\\manafunnel_impact_chest.m2", true, 1.7 },
+        BIG = { "spells\\manafunnel_impact_chest.m2", true, 3 },
     },
     ["glowFreedom"] = {
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.0004,0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
+        BIG = { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.0004,0 },
     },
     ["fireBlue"] = {
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 5.5, 0, 0.0017 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        BIG = { "spells\\fire_blue_precast_uber_hand.m2", true, 5.5, 0, 0.0017 },
     },
     ["fireOrange"] = {
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.m2", true, 5.5, 0, 0.0017 },
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        NORMAL = { "spells\\fire_precast_uber_hand.m2", true, 4, 0, 0.0015 },
+        BIG = { "spells\\fire_precast_uber_hand.m2", true, 5.5, 0, 0.0017 },
     },
     ["fireGreen"] = {
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.m2", true, 5.5, 0, 0.0017 },
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
-        { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        NORMAL = { "spells\\fel_fire_precast_hand.m2", true, 4, 0, 0.0015 },
+        BIG = { "spells\\fel_fire_precast_hand.m2", true, 5.5, 0, 0.0017 },
     },
     -- ["Shadowflame"] = {
     --     { "SPELLS/Shadowflame_Cast_Hand.m2", true, 3, 0, 0 },
@@ -155,14 +91,8 @@ NugComboBar.presets = {
     --     { "spells\\lightningboltivus_missile.m2", true, .25 },
     -- },
     ["electricBlue"] = {
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
-        { "spells\\lightningbolt_missile.m2", true, 3},
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
-        { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        NORMAL = { "spells\\lightningbolt_missile.m2", true, 2.3 },
+        BIG = { "spells\\lightningbolt_missile.m2", true, 3},
     },
 }
 
@@ -197,10 +127,20 @@ local ReappearFunc = function(self, func, arg)
     self.rag:Play()
 end
 
+local SR1 = 9
+local SR2 = 10
+local SR3 = 11
+local SR4 = 12
+local SR5 = 13
+local SR6 = 14
+local SR7 = 15
+local SR8 = 16
+
 local pointtex = {
     [1] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {0, 26/256, 0, 1},
+        role = "LEFT",
         width = 26, height = 32,
         psize = 14,
         poffset_x = 19, poffset_y = -14,
@@ -208,6 +148,7 @@ local pointtex = {
     [2] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
+        role = "NORMAL",
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
@@ -215,6 +156,7 @@ local pointtex = {
     [3] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {50/256, 74/256, 0, 1},
+        role = "NORMAL",
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
@@ -222,6 +164,7 @@ local pointtex = {
     [4] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {74/256, 98/256, 0, 1},
+        role = "NORMAL",
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
@@ -229,6 +172,7 @@ local pointtex = {
     [5] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {26/256, 50/256, 0, 1},
+        role = "NORMAL",
         width = 24, height = 32,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
@@ -236,6 +180,7 @@ local pointtex = {
     [6] = { -- the big one
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {98/256, 140/256, 0, 1},
+        role = "BIG",
         width = 42, height = 32,
         psize = 18,
         poffset_x = 20, poffset_y = -14,
@@ -246,8 +191,9 @@ local pointtex = {
     [7] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {196/256, 221/256, 0, 1},
+        role = "NORMAL",
         width = 25, height = 32,
-        offset_x = -13, drawlayer = 1,
+        toffset_x = -13, drawlayer = 1,
         psize = 14,
         poffset_x = 17, poffset_y = -14,
     },
@@ -255,6 +201,78 @@ local pointtex = {
     [8] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {221/256, 1, 0, 1},
+        role = "RIGHT",
+        width = 35, height = 32,
+        psize = 14,
+        poffset_x = 16, poffset_y = -14,
+    },
+
+
+    -- second row
+    [SR1] = { -- 
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {0, 26/256, 0, 1},
+        role = "LEFT",
+        chainreset = true, toffset_x = 0, toffset_y = -30,
+        width = 26, height = 32,
+        psize = 14,
+        poffset_x = 19, poffset_y = -14,
+    },
+    [SR2] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {26/256, 50/256, 0, 1},
+        role = "NORMAL",
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [SR3] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {50/256, 74/256, 0, 1},
+        role = "NORMAL",
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [SR4] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {74/256, 98/256, 0, 1},
+        role = "NORMAL",
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [SR5] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {26/256, 50/256, 0, 1},
+        role = "NORMAL",
+        width = 24, height = 32,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+    [SR6] = { -- the big one
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {98/256, 140/256, 0, 1},
+        role = "BIG",
+        width = 42, height = 32,
+        psize = 18,
+        poffset_x = 20, poffset_y = -14,
+        bgeffect = true,
+    },
+    [SR7] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {196/256, 221/256, 0, 1},
+        role = "NORMAL",
+        width = 25, height = 32,
+        toffset_x = -13, drawlayer = 1,
+        psize = 14,
+        poffset_x = 17, poffset_y = -14,
+    },
+
+    [SR8] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {221/256, 1, 0, 1},
+        role = "RIGHT",
         width = 35, height = 32,
         psize = 14,
         poffset_x = 16, poffset_y = -14,
@@ -273,15 +291,18 @@ local mappings = {
     [4] = { 1, 2, 3, 6 },
     [5] = { 1, 2, 3, 4, 6 },
     [6] = { 1, 2, 3, 4, 5, 6 },
+    ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},
     ["PALADIN"] = { 1, 2, 6, 7, 8 },
     ["ARCANE"] = { 1, 2, 3, 6, 7, 8 },
     ["NO6"] = { 1, 2, 3, 4, 8 },
 }
 
 
-function NugComboBar.SetMaxPoints(self, n, special)
-    if NugComboBar.MAX_POINTS == n then return end
+function NugComboBar.SetMaxPoints(self, n, special, n2)
+    -- n2 is second row length
+    if NugComboBar.MAX_POINTS == n and NugComboBar.MAX_POINTS2 == n2 then return end
     NugComboBar.MAX_POINTS = n
+    NugComboBar.MAX_POINTS2 = n2
 
     for _, point in pairs(self.point) do
         point:SetAlpha(0)
@@ -292,15 +313,17 @@ function NugComboBar.SetMaxPoints(self, n, special)
 
     self.point_map = mappings[special or n]
 
+    local totalpoints = n + (n2 or 0)
     local prevt
     local framesize = 0
-    for i=1,NugComboBar.MAX_POINTS do
+    for i=1,totalpoints do
         local point = self.p[i]
         local popts = point.bg.settings
         point:Show()
         point.bg:Show()
         framesize = framesize + popts.width
-        point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.offset_x or 0, 0)
+        if popts.chainreset then prevt = nil end
+        point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.toffset_x or 0, popts.toffset_y or 0)
         prevt = point.bg
 
         point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
@@ -370,7 +393,9 @@ end
 local SetPresetFunc = function ( self, name, noreset )
     local ps = NugComboBar.presets[name]
     if not ps then return false end
-    local settings = ps[self.id]
+    local role = self.bg.settings.role
+    if role and not ps[role] then role = "NORMAL" end
+    local settings = ps[role] or ps[self.id]
     local model, cameraReset, scale, ox, oy, oz, bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz = unpack(settings)
 
     -- print(">>>>", self:GetModelScale(), "POS>", self:GetPosition(), "LIGHT>",self:GetLight())
@@ -548,7 +573,6 @@ end
 
 
 NugComboBar.Create = function(self)
-    local MAX_POINTS = #pointtex
     self:SetFrameStrata("MEDIUM")
     self:SetWidth(164)
     self:SetHeight(32)
@@ -561,12 +585,14 @@ NugComboBar.Create = function(self)
     end})
 
     local prevt
-    for i=1,MAX_POINTS do
+    for i=1,#pointtex do
         local ts = pointtex[i]
-        local t = self:CreateTexture("NugComboBarBackgroundTexture"..i,"BACKGROUND",nil, ts.drawlayer)
+        local t = _G["NugComboBarBackgroundTexture"..i] or
+                    self:CreateTexture("NugComboBarBackgroundTexture"..i,"BACKGROUND",nil, ts.drawlayer)
         t:SetTexture(ts.texture)
         t:SetTexCoord(unpack(ts.coords))
-        t:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", 0, 0)
+        if ts.chainreset then prevt = nil end
+        t:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", ts.toffset_x or 0, ts.toffset_y or 0)
         --t:SetPoint("BOTTOMRIGHT", prevt or self, prevt and "BOTTOMRIGHT" or "BOTTOMLEFT", ts.width, ts.height)
         t:SetWidth(ts.width)
         t:SetHeight(ts.height)
@@ -574,7 +600,8 @@ NugComboBar.Create = function(self)
         prevt = t
 
         local is3D = NugComboBarDB.enable3d
-        local f = is3D  and self:Create3DPoint(i, ts) or self:Create2DPoint(i, ts)
+        local f = self.point[i] or
+                  (is3D  and self:Create3DPoint(i, ts) or self:Create2DPoint(i, ts))
         -- if is3D then
             -- ts.poffset_x = ts.poffset_x
             -- ts.poffset_y = ts.poffset_y

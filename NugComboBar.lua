@@ -252,13 +252,13 @@ function NugComboBar:LoadClassSettings()
                 return (count and count - 1 or 0)
             end
 
-            local show_searing_flames = false
+            local show_searing_flames = true
             local searing_totem_buff = GetSpellInfo(77661)
             local maelstrom_weapon_buff = GetSpellInfo(53817)
             local function mael_searing(unit)
                 local _,_,_, count1 = UnitAura("player", maelstrom_weapon_buff, nil, "HELPFUL")
                 local _,_,_, count2 = UnitAura("player", searing_totem_buff, nil, "HELPFUL")
-                return count1 or 0, count2 or 0
+                return count1 or 0, nil, nil, nil, count2 or 0
             end
 
             self:RegisterEvent("SPELLS_CHANGED")
@@ -274,11 +274,12 @@ function NugComboBar:LoadClassSettings()
                     scanAura = GetSpellInfo(51564) -- Tidal Waves
                     GetComboPoints = GetAuraStack
                 else
-                    self:SetMaxPoints(5)
                     if show_searing_flames then
+                        self:SetMaxPoints(5, "SHAMANDOUBLE", 5 )
                         self:EnableBar(0, 5,"Long")
                         GetComboPoints = mael_searing
                     else
+                        self:SetMaxPoints(5)
                         scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
                         GetComboPoints = GetAuraStack
                     end
@@ -549,6 +550,10 @@ local defaults = {
         [4] = {0.77,0.26,0.29},
         [5] = {0.77,0.26,0.29},
         [6] = {0.77,0.26,0.29},
+        [7] = {0.77,0.26,0.29},
+        [8] = {0.77,0.26,0.29},
+        [9] = {0.77,0.26,0.29},
+        [10] = {0.77,0.26,0.29},
         ["bar1"] = { 0.9,0.1,0.1 },
         ["bar2"] = { .9,0.1,0.4 },
         ["layer2"] = { 0.80, 0.23, 0.79 },
@@ -833,7 +838,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
 
     if onlyCombat and not UnitAffectingCombat("player") then return self:Hide() else self:Show() end -- usually frame is set to 0 alpha
     -- local arg1, arg2
-    local comboPoints, arg1, arg2, secondLayerPoints = GetComboPoints(unit);
+    local comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
     if self.bar and self.bar.enabled then
         if arg1 then
@@ -881,6 +886,19 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
                 end
             end
         end
+    end
+
+    --second bar
+    if self.MAX_POINTS2 then
+    for i = 1, self.MAX_POINTS2 do
+        local point = self.p[i+self.MAX_POINTS]
+        if i <= secondBarPoints then
+            point:Activate()
+        end
+        if i > secondBarPoints then
+            point:Deactivate()
+        end
+    end
     end
 
     -- print("progress", progress)
