@@ -561,6 +561,7 @@ local defaults = {
     enable3d = true,
     preset3d = "glowPurple",
     preset3dlayer2 = "fireOrange",
+    preset3dpointbar2 = "fireOrange",
     secondLayer = true,
     colors3d = true,
     showAlways = false,
@@ -1025,6 +1026,11 @@ function NugComboBar.ShowColorPicker(self,color)
             for i=1,#self.point do
                 NugComboBar.SetColor(i,r,g,b)
             end
+        elseif color == -1 then
+            for i=1, self.MAX_POINTS2 do
+                local index = i+self.MAX_POINTS
+                NugComboBar.SetColor(index,r,g,b)
+            end
         else
             NugComboBar.SetColor(color,r,g,b)
         end
@@ -1033,9 +1039,19 @@ function NugComboBar.ShowColorPicker(self,color)
     ColorPickerFrame:Show()
 end
 
-function NugComboBar.Set3DPreset(self, preset)
-    for _, point in pairs(self.point) do
-        point:SetPreset(preset)
+function NugComboBar.Set3DPreset(self, preset, preset2)
+    local e1 = preset or NugComboBarDB.preset3d
+    local e2 = preset2 or NugComboBarDB.preset3dpointbar2
+    -- for _, point in pairs(self.point) do
+    for i = 1, self.MAX_POINTS do
+        local p = self.p[i]
+        p:SetPreset(e1)
+    end
+    if self.MAX_POINTS2 then
+    for i = 1, self.MAX_POINTS2 do
+        local p = self.p[self.MAX_POINTS+i]
+        p:SetPreset(e2)
+    end
     end
 end
 
@@ -1214,6 +1230,13 @@ NugComboBar.Commands = {
         end
         NugComboBarDB.preset3dlayer2 = v
     end,
+    ["preset3dpointbar2"] = function(v)
+        if not NugComboBar.presets[v] then
+            return print(string.format("Preset '%s' does not exist", v))
+        end
+        NugComboBarDB.preset3dpointbar2 = v
+        NugComboBar:Set3DPreset()
+    end,
     ["colors3d"] = function(v)
         NugComboBarDB.colors3d = not NugComboBarDB.colors3d
         for i=1,#NugComboBar.point do
@@ -1247,7 +1270,7 @@ function NugComboBar.SlashCmd(msg)
           |cff55ff55/ncb toggle3d|r
           |cff55ff55/ncb preset3d <preset>|r
           |cff55ff55/ncb scale|r <0.3 - 2.0>
-          |cff55ff55/ncb changecolor|r <1-6, 0 = all>
+          |cff55ff55/ncb changecolor|r <1-6, 0 = all, -1 = 2nd bar>
           |cff55ff55/ncb anchorpoint|r <left | right>
           |cff55ff55/ncb showempty|r
           |cff55ff55/ncb hideslowly|r

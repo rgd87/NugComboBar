@@ -327,9 +327,16 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         prevt = point.bg
 
         point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
-        if not (point:SetPreset(NugComboBarDB.preset3d)) then
-            NugComboBarDB.preset3d = NugComboBar.defaults.preset3d
-            point:SetPreset(NugComboBarDB.preset3d)
+        if i > n then
+            if not (point:SetPreset(NugComboBarDB.preset3dpointbar2)) then
+                NugComboBarDB.preset3dpointbar2 = NugComboBar.defaults.preset3dpointbar2
+                point:SetPreset(NugComboBarDB.preset3dpointbar2)
+            end
+        else
+            if not (point:SetPreset(NugComboBarDB.preset3d)) then
+                NugComboBarDB.preset3d = NugComboBar.defaults.preset3d
+                point:SetPreset(NugComboBarDB.preset3d)
+            end
         end
     end
     self:SetWidth(framesize)

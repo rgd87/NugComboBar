@@ -348,11 +348,26 @@ do
                         set = function( info, v ) NugComboBar.Commands.preset3dlayer2(v) end,
                     },
 
+                    preset_pointbar2 = {
+                        name = L"Second Point Bar Preset",
+                        type = 'select',
+                        order = 3,
+                        values = function()
+                            local p = {}
+                            for k,_ in pairs(NugComboBar.presets) do
+                                p[k] = k
+                            end
+                            return p
+                        end,
+                        get = function(info) return NugComboBarDB.preset3dpointbar2 end,
+                        set = function( info, v ) NugComboBar.Commands.preset3dpointbar2(v) end,
+                    },
+
                     colors3d = {
                         name = L"Use colors",
                         desc = L"Only some effects can be altered using colored lighting.\nfireXXXX presets are good for it",
                         type = 'toggle',
-                        order = 3,
+                        order = 4,
                         get = function(info) return NugComboBarDB.colors3d end,
                         set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
                     },
@@ -366,7 +381,7 @@ do
                         min = -10,
                         max = 10,
                         step = 0.01,
-                        order = 4,
+                        order = 5,
                     },
 
                     adjustY = {
@@ -378,7 +393,7 @@ do
                         min = -10,
                         max = 10,
                         step = 0.01,
-                        order = 5,
+                        order = 6,
                     },
                 },
             },
