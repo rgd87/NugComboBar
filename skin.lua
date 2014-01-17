@@ -285,6 +285,26 @@ local pointtex = {
     },
 }
 
+
+function RotateTexture(coords, degrees)
+        local l,r,t,b = unpack(coords)
+        return { r, t, l, t, r, b, l, b }
+end
+
+local function GoVertical(pt)
+    -- for i=1,#pt do
+        -- local 
+    for i,t in ipairs(pt) do
+        t.coords = RotateTexture(t.coords)
+        t.width, t.height = t.height, t.width 
+        t.poffset_x, t.poffset_y = -t.poffset_y, t.poffset_x
+        t.vertical = true
+    end
+end
+
+GoVertical(pointtex)
+
+
 local mappings = {
     [2] = { 1, 6 },
     [3] = { 1, 2, 6 },
@@ -323,7 +343,11 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         point.bg:Show()
         framesize = framesize + popts.width
         if popts.chainreset then prevt = nil end
-        point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.toffset_x or 0, popts.toffset_y or 0)
+        if popts.vertical then
+            point.bg:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(popts.toffset_y or 0), popts.toffset_x or 0)
+        else
+            point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.toffset_x or 0, popts.toffset_y or 0)
+        end
         prevt = point.bg
 
         point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
@@ -599,7 +623,11 @@ NugComboBar.Create = function(self)
         t:SetTexture(ts.texture)
         t:SetTexCoord(unpack(ts.coords))
         if ts.chainreset then prevt = nil end
-        t:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", ts.toffset_x or 0, ts.toffset_y or 0)
+        if ts.vertical then
+            t:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(ts.toffset_y or 0), ts.toffset_x or 0)
+        else
+            t:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", ts.toffset_x or 0, ts.toffset_y or 0)
+        end
         --t:SetPoint("BOTTOMRIGHT", prevt or self, prevt and "BOTTOMRIGHT" or "BOTTOMLEFT", ts.width, ts.height)
         t:SetWidth(ts.width)
         t:SetHeight(ts.height)
@@ -615,7 +643,7 @@ NugComboBar.Create = function(self)
         -- end
 
         f:SetAlpha(0)
-        f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
+        f:SetPoint("CENTER", t, ts.vertical and "BOTTOMLEFT" or "TOPLEFT", ts.poffset_x, ts.poffset_y)
 
         f.bg = t
         f.id = i
