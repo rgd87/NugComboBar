@@ -375,6 +375,7 @@ do
                     adjustX = {
                         name = L"X Offset",
                         type = "range",
+                        disabled = function() return NugComboBar._disableOffsetSettings end,
                         desc = L"Use these to calibrate point position on resolutions with aspect ratio other than 16:9",
                         get = function(info) return NugComboBarDB_Global.adjustX end,
                         set = function(info, v) NugComboBar.Commands.adjustx(v) end,
@@ -387,6 +388,7 @@ do
                     adjustY = {
                         name = L"Y Offset",
                         type = "range",
+                        disabled = function() return NugComboBar._disableOffsetSettings end,
                         desc = L"Use these to calibrate point position on resolutions with aspect ratio other than 16:9",
                         get = function(info) return NugComboBarDB_Global.adjustY end,
                         set = function(info, v) NugComboBar.Commands.adjusty(v) end,

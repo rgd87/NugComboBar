@@ -292,8 +292,6 @@ function RotateTexture(coords, degrees)
 end
 
 local function GoVertical(pt)
-    -- for i=1,#pt do
-        -- local 
     for i,t in ipairs(pt) do
         t.coords = RotateTexture(t.coords)
         t.width, t.height = t.height, t.width 
@@ -302,7 +300,7 @@ local function GoVertical(pt)
     end
 end
 
-GoVertical(pointtex)
+-- GoVertical(pointtex)
 
 
 local mappings = {

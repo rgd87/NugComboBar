@@ -685,10 +685,45 @@ function NugComboBar.PLAYER_LOGOUT(self, event)
     RemoveDefaults(NugComboBarDB, defaults)
 end
 
+local trim = function(v)
+    return math.floor(v*1000)/1000
+end
+
+local ResolutionOffsets = {
+    [trim(48/9)] = { 0.77, 0.75 },
+    [trim(16/10)] = { 2.25, 2.25 },
+    [trim(16/9)] = { 2.05, 2.1 },
+    [trim(4/3)] = { 2.5, 2.5 },
+}
+
+function NugComboBar:CheckResolution()
+    local maximized = GetCVar("gxMaximize") == "1"
+    -- GetCVar("gxWindow")
+    local aspectratio
+    if maximized then
+        aspectratio = trim(GetMonitorAspectRatio())
+    else
+        local res = GetCVar("gxResolution")
+        local w,h = string.match(res, "(%d+)x(%d+)")
+        aspectratio = trim(w/h)
+    end
+    
+    local offsets = ResolutionOffsets[aspectratio]
+    if not offsets then
+        print("NCB: Unknown game resolution, adjust offsets manually")
+    else
+        NugComboBarDB_Global.adjustX, NugComboBarDB_Global.adjustY = unpack(offsets)
+        self._disableOffsetSettings = true
+    end
+end
+
 do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
-        if initial then self:Create() end
+        if initial then
+            self:CheckResolution()
+            self:Create()
+        end
 
         if NugComboBarDB.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
