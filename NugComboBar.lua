@@ -570,6 +570,7 @@ local defaults = {
     adjustX = 2.05,
     adjustY = 2.1,
     hideWithoutTarget = false,
+    vertical = false,
 }
 NugComboBar.defaults = defaults
 
@@ -722,8 +723,8 @@ do
     function NugComboBar.PLAYER_LOGIN(self, event)
         if initial then
             self:CheckResolution()
-            self:Create()
         end
+        self:Create()
 
         if NugComboBarDB.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
@@ -1281,6 +1282,12 @@ NugComboBar.Commands = {
     ["gui"] = function(v)
         LoadAddOn('NugComboBarGUI')
         InterfaceOptionsFrame_OpenToCategory("NugComboBar")
+    end,
+    ["vertical"] = function(v)
+        NugComboBarDB.vertical = not NugComboBarDB.vertical 
+        NugComboBar:Create()
+        NugComboBar:PLAYER_LOGIN(nil)
+        NugComboBar:PLAYER_ENTERING_WORLD(nil)
     end,
     ["setpos"] = function(v)
         local p = ParseOpts(v)

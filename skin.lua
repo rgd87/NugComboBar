@@ -291,16 +291,11 @@ function RotateTexture(coords, degrees)
         return { r, t, l, t, r, b, l, b }
 end
 
-local function GoVertical(pt)
-    for i,t in ipairs(pt) do
-        t.coords = RotateTexture(t.coords)
-        t.width, t.height = t.height, t.width 
-        t.poffset_x, t.poffset_y = -t.poffset_y, t.poffset_x
-        t.vertical = true
-    end
+
+local IsVertical = function()
+    return NugComboBarDB.vertical
 end
 
--- GoVertical(pointtex)
 
 
 local mappings = {
@@ -341,7 +336,7 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         point.bg:Show()
         framesize = framesize + popts.width
         if popts.chainreset then prevt = nil end
-        if popts.vertical then
+        if IsVertical() then
             point.bg:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(popts.toffset_y or 0), popts.toffset_x or 0)
         else
             point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.toffset_x or 0, popts.toffset_y or 0)
@@ -603,11 +598,17 @@ end
 
 NugComboBar.Create = function(self)
     self:SetFrameStrata("MEDIUM")
-    self:SetWidth(164)
-    self:SetHeight(32)
+    -- if IsVertical() then
+        -- self:SetWidth(32)
+        -- self:SetHeight(164)
+    -- else
+        self:SetWidth(164)
+        self:SetHeight(32)
+    -- end
 
+    local initial = not _G["NugComboBarBackgroundTexture1"]
 
-    self.point = {}
+    self.point = self.point or {}
     self.point_map = mappings[6]
     self.p = setmetatable({}, { __index = function(t,k)
         return self.point[self.point_map[k]]
@@ -619,16 +620,22 @@ NugComboBar.Create = function(self)
         local t = _G["NugComboBarBackgroundTexture"..i] or
                     self:CreateTexture("NugComboBarBackgroundTexture"..i,"BACKGROUND",nil, ts.drawlayer)
         t:SetTexture(ts.texture)
-        t:SetTexCoord(unpack(ts.coords))
+        local coords = IsVertical() and RotateTexture(ts.coords) or ts.coords
+        t:SetTexCoord(unpack(coords))
         if ts.chainreset then prevt = nil end
-        if ts.vertical then
+        if IsVertical() then
             t:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(ts.toffset_y or 0), ts.toffset_x or 0)
         else
             t:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", ts.toffset_x or 0, ts.toffset_y or 0)
         end
         --t:SetPoint("BOTTOMRIGHT", prevt or self, prevt and "BOTTOMRIGHT" or "BOTTOMLEFT", ts.width, ts.height)
-        t:SetWidth(ts.width)
-        t:SetHeight(ts.height)
+        if IsVertical() then
+            t:SetWidth(ts.height)
+            t:SetHeight(ts.width)
+        else
+            t:SetWidth(ts.width)
+            t:SetHeight(ts.height)
+        end
         t.settings = ts
         prevt = t
 
@@ -641,12 +648,17 @@ NugComboBar.Create = function(self)
         -- end
 
         f:SetAlpha(0)
-        f:SetPoint("CENTER", t, ts.vertical and "BOTTOMLEFT" or "TOPLEFT", ts.poffset_x, ts.poffset_y)
+        if IsVertical() then
+            f:SetPoint("CENTER", t, "BOTTOMLEFT", -ts.poffset_y, ts.poffset_x)
+        else
+            f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
+        end
 
         f.bg = t
         f.id = i
         self.point[i] = f
         
+        if initial then
         local aag = f:CreateAnimationGroup()
         f.aag = aag
         local a1 = aag:CreateAnimation("Alpha")
@@ -685,14 +697,16 @@ NugComboBar.Create = function(self)
         rag:SetScript("OnFinished",function(self)
             self:GetParent():SetAlpha(1)
         end)
+
+        end --endif intiial
         
         f.Activate = ActivateFunc
         f.Deactivate = DeactivateFunc
         f.Reappear = ReappearFunc
     end
 
-
-    local bar = CreateFrame("StatusBar",nil, self)
+    local bar = self.bar or CreateFrame("StatusBar",nil, self)
+    if initial then
     local ts = pointtex["bar"]
     bar:SetWidth(45); bar:SetHeight(7)
     bar:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
@@ -742,7 +756,15 @@ NugComboBar.Create = function(self)
     local normalShow = self.Show
     local normalHide = self.Hide
     bar.Small = function(self)
-        self:SetWidth(45); self:SetHeight(7);
+        if IsVertical() then
+            self:SetWidth(7); self:SetHeight(45);
+            self:SetOrientation("VERTICAL")
+            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\vstatusbar]], "ARTWORK")
+        else
+            self:SetWidth(45); self:SetHeight(7);
+            self:SetOrientation("HORIZONTAL")
+            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
+        end
         self.text:Hide()
         self:SetParent(NugComboBar)
         self:ClearAllPoints()
@@ -750,21 +772,44 @@ NugComboBar.Create = function(self)
         NugComboBar.SetAlpha = normalSetAlpha
         NugComboBar.Show = normalShow
         NugComboBar.Hide = normalHide
-        if barBottom then 
-            self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
+        -- if barBottom then 
+            -- self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
+        -- else
+        if IsVertical() then
+            self:SetPoint("BOTTOMRIGHT", NugComboBar, "BOTTOMLEFT", 0, 14)
         else
             self:SetPoint("BOTTOMLEFT", NugComboBar, "TOPLEFT", 14, 0)
         end
+        -- end
         NugComboBar:Show()
     end
 
     bar.Long = function(self)
         self:Small()
-        self:SetWidth(83); self:SetHeight(4);
+        if IsVertical() then
+            self:SetWidth(4); self:SetHeight(83);
+        else
+            self:SetWidth(83); self:SetHeight(4);
+        end
     end
 
     bar.Big = function(self)
-        self:SetWidth(80); self:SetHeight(20);
+        if IsVertical() then
+            self:SetWidth(20); self:SetHeight(80);
+            self:SetOrientation("VERTICAL")
+            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\vstatusbar]], "ARTWORK")
+            self.text:ClearAllPoints()
+            self.text:SetPoint("CENTER",bar,"TOP", 0,-10)
+            self.text:SetFont([[Interface\AddOns\NugComboBar\tex\Emblem.ttf]],10)
+        else
+            self:SetWidth(80); self:SetHeight(20);
+            self:SetOrientation("HORIZONTAL")
+            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
+            self.text:ClearAllPoints()
+            self.text:SetPoint("TOPLEFT",bar,"TOPLEFT", 0,0)
+            self.text:SetPoint("BOTTOMRIGHT",bar,"BOTTOMRIGHT", -10,0)
+            self.text:SetFont([[Interface\AddOns\NugComboBar\tex\Emblem.ttf]],15)
+        end
         self:SetParent(UIParent)
         -- I don't want to rewrite everything
         -- just to make them siblings
@@ -788,9 +833,15 @@ NugComboBar.Create = function(self)
         normalHide(NugComboBar)
 
         self:ClearAllPoints()
-        self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
+        if IsVertical() then
+            self:SetPoint("BOTTOMLEFT", NugComboBar, "BOTTOMLEFT", 3, 5)
+        else
+            self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
+        end
         self.text:Show()
     end
+    end --endif intiial
+
 
     -- local tb = bar:CreateTexture(nil, "BACKGROUND", nil, 1)
     -- tb:SetWidth(ts.width); tb:SetHeight(ts.height)

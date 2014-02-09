@@ -151,6 +151,13 @@ do
                         set = function(info, s) NugComboBar.Commands.toggleprogress() end,
                         order = 12,
                     },
+                    vertical = {
+                        name = L"Vertical",
+                        type = "toggle",
+                        get = function(info) return NugComboBarDB.vertical end,
+                        set = function(info, s) NugComboBar.Commands.vertical() end,
+                        order = 12,
+                    },
                 }
             },
             showColor = {
