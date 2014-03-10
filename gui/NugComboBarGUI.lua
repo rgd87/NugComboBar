@@ -156,7 +156,7 @@ do
                         type = "toggle",
                         get = function(info) return NugComboBarDB.vertical end,
                         set = function(info, s) NugComboBar.Commands.vertical() end,
-                        order = 12,
+                        order = 13,
                     },
                 }
             },

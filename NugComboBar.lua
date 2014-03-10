@@ -258,7 +258,7 @@ function NugComboBar:LoadClassSettings()
             local function mael_searing(unit)
                 local _,_,_, count1 = UnitAura("player", maelstrom_weapon_buff, nil, "HELPFUL")
                 local _,_,_, count2 = UnitAura("player", searing_totem_buff, nil, "HELPFUL")
-                return count1 or 0, nil, nil, nil, count2 or 0
+                return count1 or 0, count2 or 0, nil, nil --,count2 or 0 -- for second line
             end
 
             self:RegisterEvent("SPELLS_CHANGED")
@@ -275,7 +275,8 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetAuraStack
                 else
                     if show_searing_flames then
-                        self:SetMaxPoints(5, "SHAMANDOUBLE", 5 )
+                        -- self:SetMaxPoints(5, "SHAMANDOUBLE", 5 ) -- second line
+                        self:SetMaxPoints(5)
                         self:EnableBar(0, 5,"Long")
                         GetComboPoints = mael_searing
                     else
