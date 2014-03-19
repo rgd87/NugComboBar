@@ -725,7 +725,11 @@ do
         if initial then
             self:CheckResolution()
         end
-        self:Create()
+        -- backward compatibility to old skins, for default there should be just :Create
+        if not IsAddOnLoaded("NugComboBarMakina") and not  IsAddOnLoaded("NugComboBarStriped") then
+            self:Create()
+        else if initial then self:Create() end
+        end
 
         if NugComboBarDB.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
