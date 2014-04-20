@@ -521,13 +521,20 @@ function NugComboBar:LoadClassSettings()
             end
             self:ACTIVE_TALENT_GROUP_CHANGED()
         elseif class == "MAGE" then 
-            self:SetMaxPoints(4)
+            self:SetMaxPoints(4, "ARCANE", 2)
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
-            scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
-            filter = "HARMFUL" 
-            allowedUnit = "player" 
-            GetComboPoints = GetAuraStack
+            local arcaneCharges = GetSpellInfo(36032)
+            local arcaneMissiles = GetSpellInfo(79683)
+            local GetChargesAndBarrage = function(unit)
+                local _,_,_, count1 = UnitAura("player", arcaneCharges, nil, "HARMFUL")
+                local _,_,_, count2 = UnitAura("player", arcaneMissiles, nil, "HELPFUL")
+                return count1 or 0, 0, nil, nil, count2 or 0 -- for second line
+            end
+            -- scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
+            -- filter = "HARMFUL" 
+            -- allowedUnit = "player" 
+            GetComboPoints = GetChargesAndBarrage
         else
             self:SetMaxPoints(2)
             return

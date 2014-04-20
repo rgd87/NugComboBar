@@ -48,12 +48,14 @@
  - fixed glitchy animation of second layer transitions
  - updated ruRU localization
  - Makina and Striped skins updated
+
 5.2.2:
  - Anticipation as second layer
  - Colored light for 3d effects
  - PlayerModel type support (unused, buggy)
  - Evangelism bugfix
  - Druid 2pc setbonus should no longer cause bug with 1st point animation
+
 5.2.0a:
  - Arcane Mage now using 4 point layout
 
@@ -151,7 +153,8 @@
 4.2.3:
  - TOC Update
  - Fixed Ready Set Aim for MM hunters
- 4.2.2:
+
+4.2.2:
  - When CPs drop to 0, bar will fade only after few seconds, /ncb hideslowly to toggle it
  - Option to disable blizzard holypower bar, shard bar and combo bar
  - Arena/bg leaving bug should be fixed
