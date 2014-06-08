@@ -10,6 +10,7 @@ local showEmpty, showAlways, onlyCombat
 local hideSlowly
 local secondLayerEnabled
 local fadeAfter = 6
+local soundFullEnabled = false
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 local defaultProgress = 0
@@ -58,10 +59,12 @@ end
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
+        soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
             local anticipationBuffName = GetSpellInfo(115189)
             local checkAnticipation = true
+            soundFullEnabled = true
             local ComboPointsWithAnticipation = function(unit)
                 local _,anticipation
                 if checkAnticipation then
@@ -123,6 +126,7 @@ function NugComboBar:LoadClassSettings()
 
             local cat = function()
                 self:SetMaxPoints(5)
+                soundFullEnabled = true
                 hideSlowly = NugComboBarDB.hideSlowly
                 showEmpty = NugComboBarDB.showEmpty
                 self:RegisterEvent("UNIT_COMBO_POINTS")
@@ -274,6 +278,7 @@ function NugComboBar:LoadClassSettings()
                     scanAura = GetSpellInfo(51564) -- Tidal Waves
                     GetComboPoints = GetAuraStack
                 else
+                    soundFullEnabled = true
                     if show_searing_flames then
                         -- self:SetMaxPoints(5, "SHAMANDOUBLE", 5 ) -- second line
                         self:SetMaxPoints(5)
@@ -438,6 +443,7 @@ function NugComboBar:LoadClassSettings()
             local bm = function()
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_AURA")
+                soundFullEnabled = true
                 scanAura = GetSpellInfo(19615) -- Frenzy Effect
                 allowedUnit = "pet"
                 allowedCaster = "pet"
@@ -465,6 +471,7 @@ function NugComboBar:LoadClassSettings()
                 if      spec == 3 then -- unholy
                     allowedUnit = "pet"
                     scanAura = GetSpellInfo(91342) -- Shadow Infusion
+                    soundFullEnabled = true
                 elseif  spec == 1 then
                     allowedUnit = "player"
                     scanAura = GetSpellInfo(50421) -- Scent of Blood
@@ -488,6 +495,7 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_AURA")
                 self:SetMaxPoints(3)
                 GetComboPoints = GetShadowOrbs
+                soundFullEnabled = true
             end
             local evangelism = function()
                 self:SetMaxPoints(5)
@@ -570,6 +578,7 @@ local defaults = {
     preset3d = "glowPurple",
     preset3dlayer2 = "fireOrange",
     preset3dpointbar2 = "fireOrange",
+    classThemes = false,
     secondLayer = true,
     colors3d = true,
     showAlways = false,
@@ -579,6 +588,8 @@ local defaults = {
     adjustY = 2.1,
     hideWithoutTarget = false,
     vertical = false,
+    soundNameFull = "none",
+    soundNameFullCustom = "Interface\\AddOns\\YourSound.mp3",
 }
 NugComboBar.defaults = defaults
 
@@ -694,6 +705,30 @@ function NugComboBar.PLAYER_LOGOUT(self, event)
     RemoveDefaults(NugComboBarDB, defaults)
 end
 
+
+
+
+NugComboBar.soundFiles = {
+    ["none"] = "none",
+    ["gm_chatwarning"] = "Sound\\INTERFACE\\GM_ChatWarning.ogg",
+    ["coldblood"] = "Sound\\Spells\\ColdBlood.ogg",
+    ["alarmclockwarning3"] = "Sound\\INTERFACE\\AlarmClockWarning3.ogg",
+    ["auctionwindowopen"] = "Sound\\INTERFACE\\AuctionWindowOpen.ogg",
+    ["wispwhat1"] = "Sound\\Event Sounds\\Wisp\\WispWhat1.ogg",
+    ["custom"] = "custom",
+}
+NugComboBar.soundChoices = {
+    "none",
+    "gm_chatwarning",
+    "coldblood",
+    "alarmclockwarning3",
+    "auctionwindowopen",
+    "wispwhat1",
+    "custom",
+}
+
+
+
 local trim = function(v)
     return math.floor(v*1000)/1000
 end
@@ -726,17 +761,36 @@ function NugComboBar:CheckResolution()
     end
 end
 
+
+function NugComboBar:IsDefaultSkin()
+    return not IsAddOnLoaded("NugComboBarMakina") and not  IsAddOnLoaded("NugComboBarStriped")
+end
+
 do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
         if initial then
             self:CheckResolution()
         end
+
+        local isDefaultSkin = NugComboBar:IsDefaultSkin()
         -- backward compatibility to old skins, for default there should be just :Create
-        if not IsAddOnLoaded("NugComboBarMakina") and not  IsAddOnLoaded("NugComboBarStriped") then
+        if isDefaultSkin then
             self:Create()
         else if initial then self:Create() end
         end
+
+        -- -- class themes
+        -- if NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d then
+        --     local _, class = UnitClass("player")
+        --     local spec = GetSpecialization()
+        --     local preset = NugComboBar.themes[class].preset
+        --     local colors = NugComboBar.themes[class].colors
+        --     local usecolors = colors ~= nil
+
+        --     NugComboBar:Set3DPreset(preset3d, preset3dlayer2)
+        -- end
+
 
         if NugComboBarDB.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
@@ -913,12 +967,21 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
             point:Deactivate()
         end
 
+        if soundFullEnabled then
+            if  comboPoints == self.MAX_POINTS and
+                comboPoints ~= comboPointsBefore and
+                comboPointsBefore ~= 0 then
+                        local sn = NugComboBarDB.soundNameFull
+                        local sound = (sn == "custom") and NugComboBarDB.soundNameFullCustom or NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                        PlaySoundFile(sound, "SFX")
+            end
+        end
+
         if secondLayerPoints then -- Anticipation stuff
             if i <= secondLayerPoints then              
                 if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2)
                     or
                     (not point.anticipationColor) then
-
 
                     point:Reappear(AnticipationIn, i)
                 end
@@ -1265,6 +1328,9 @@ NugComboBar.Commands = {
         NugComboBarDB.enable3d = not NugComboBarDB.enable3d
         print (string.format("NCB> 3D mode is %s, it will take effect after /reload", NugComboBarDB.enable3d and "enabled" or "disabled"))
     end,
+    ["classthemes"] = function(v)
+        NugComboBarDB.classThemes = not NugComboBarDB.classThemes
+    end,
     ["preset3d"] = function(v)
         if not NugComboBar.presets[v] then
             return print(string.format("Preset '%s' does not exist", v))
@@ -1300,6 +1366,12 @@ NugComboBar.Commands = {
         NugComboBar:Create()
         NugComboBar:PLAYER_LOGIN(nil)
         NugComboBar:PLAYER_ENTERING_WORLD(nil)
+    end,
+    ["playsound"] = function(v)
+        if not NugComboBar.soundFiles[v] then
+            return print(string.format("Sound '%s' does not exist", v))
+        end
+        NugComboBarDB.soundNameFull = v
     end,
     ["setpos"] = function(v)
         local p = ParseOpts(v)

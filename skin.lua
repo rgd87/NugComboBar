@@ -485,9 +485,9 @@ local SetPresetFunc = function ( self, name, noreset )
     return true
 end
 
-local SetColor3DFunc = function(self, r,g,b)
+local SetColor3DFunc = function(self, r,g,b, force)
     local enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB
-    if NugComboBarDB.colors3d then
+    if NugComboBarDB.colors3d or force then
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, r,g,b, 1, r,g,b
     else
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = 1, 0, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
@@ -858,3 +858,19 @@ NugComboBar.Create = function(self)
     
     return self
 end
+
+
+
+-- NugComboBar.themes = {}
+-- NugComboBar.themes["WARLOCK"] = {
+--     [1] = {
+--         preset = "glowPurple",
+--         colors = {
+--             ["normal"] = {0.77,0.26,0.29},
+--             ["big"] = {0.77,0.26,0.29},
+--             ["bar1"] = { 0.9,0.1,0.1 },
+--             ["bar2"] = { .9,0.1,0.4 },
+--             ["layer2"] = { 0.80, 0.23, 0.79 },
+--         },
+--     },
+-- }

@@ -6,12 +6,12 @@ do
         name = "NugComboBar",
         args = {},
     }
---~     opt.args.display = {
---~         type    = "group",
---~         name    = "Display Settings",
---~         order   = 1,
---~         args    = {},
---~     }
+    -- opt.args.display = {
+    --     type    = "group",
+    --     name    = "Display Settings",
+    --     order   = 1,
+    --     args    = {},
+    -- }
     opt.args.general = {
         type = "group",
         name = "General",
@@ -42,7 +42,7 @@ do
                     local spec = GetSpecialization()
                     return NugComboBarDB_Character.specspec[spec]
                 end,
-                set = function( info, s )
+                set = function(info, s)
                     NugComboBar.Commands.specspec()
                 end
             },
@@ -160,9 +160,17 @@ do
                     },
                 }
             },
+            -- classThemes = {
+            --             name = L"Use class theme",
+            --             type = 'toggle',
+            --             order = 2.5,
+            --             get = function(info) return NugComboBarDB.classThemes end,
+            --             set = function(info, s) NugComboBar.Commands.classthemes() end,
+            --         },
             showColor = {
                 type = "group",
                 name = L"Colors",
+                disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 3,
                 args = {
@@ -322,6 +330,7 @@ do
             presets = {
                 type = "group",
                 name = L"3D Mode settings",
+                disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 6,
                 args = {
@@ -406,6 +415,57 @@ do
                     },
                 },
             },
+
+
+            sound = {
+                type = "group",
+                name = L"Sounds",
+                guiInline = true,
+                order = 6.5,
+                args = {
+                    soundNameFull = {
+                        name = L"Max points sound",
+                        desc = L"(Active only for certain specs)",
+                        type = 'select',
+                        order = 1,
+                        values = NugComboBar.soundChoices,
+                        get = function(info)
+                            for i,v in ipairs(NugComboBar.soundChoices) do
+                                if v == NugComboBarDB.soundNameFull then return i end
+                            end
+                        end,
+                        set = function( info, v )
+                            local soundNameFull = NugComboBar.soundChoices[v]
+                            NugComboBar.Commands.playsound(soundNameFull)
+                        end,
+                    },
+                    Play_soundNameFull = {
+                        name = L"Play",
+                        type = 'execute',
+                        width = "half",
+                        order = 1.5,
+                        disabled = function() return (NugComboBarDB.soundNameFull == "none") end,
+                        func = function() 
+                        local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                        if sound == "custom" then
+                            sound = NugComboBarDB.soundNameFullCustom
+                        end
+                        PlaySoundFile(sound, "Master") end,
+                    },
+                    customsoundNameFull = {
+                        name = L"Custom Sound",
+                        type = 'input',
+                        width = "full",
+                        order = 2,
+                        disabled = function() return (NugComboBarDB.soundNameFull ~= "custom") end,
+                        get = function(info) return NugComboBarDB.soundNameFullCustom end,
+                        set = function( info, v )
+                            NugComboBarDB.soundNameFullCustom = v
+                        end,
+                    },
+                },
+            },
+
             disable = {
                 type = "group",
                 name = "",
@@ -436,6 +496,7 @@ do
                     -- },
                 },
             },
+            
         },
     }
 
