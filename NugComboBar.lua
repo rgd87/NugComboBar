@@ -6,6 +6,7 @@ local RogueGetComboPoints = GetComboPoints
 local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
+local allowedTargetUnit = "player"
 local showEmpty, showAlways, onlyCombat
 local hideSlowly
 local secondLayerEnabled
@@ -65,6 +66,7 @@ function NugComboBar:LoadClassSettings()
             local anticipationBuffName = GetSpellInfo(115189)
             local checkAnticipation = true
             soundFullEnabled = true
+            allowedTargetUnit = "target"
             local ComboPointsWithAnticipation = function(unit)
                 local _,anticipation
                 if checkAnticipation then
@@ -127,6 +129,7 @@ function NugComboBar:LoadClassSettings()
             local cat = function()
                 self:SetMaxPoints(5)
                 soundFullEnabled = true
+                allowedTargetUnit = "target"
                 hideSlowly = NugComboBarDB.hideSlowly
                 showEmpty = NugComboBarDB.showEmpty
                 self:RegisterEvent("UNIT_COMBO_POINTS")
@@ -936,6 +939,7 @@ end
 
 
 local comboPointsBefore = 0
+local targetBefore
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     if unit ~= allowedUnit then return end
 
@@ -958,6 +962,18 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
         end
     end
 
+    if soundFullEnabled then
+        if  comboPoints == self.MAX_POINTS and
+            comboPoints ~= comboPointsBefore and
+            -- comboPointsBefore ~= 0 then
+            UnitGUID(allowedTargetUnit) == targetBefore then
+                    local sn = NugComboBarDB.soundNameFull
+                    local sound = (sn == "custom") and NugComboBarDB.soundNameFullCustom or NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                    PlaySoundFile(sound, "SFX")
+        end
+        targetBefore = UnitGUID(allowedTargetUnit)
+    end
+
     for i = 1, self.MAX_POINTS do
         local point = self.p[i]
         if i <= comboPoints then
@@ -965,16 +981,6 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
         end
         if i > comboPoints then
             point:Deactivate()
-        end
-
-        if soundFullEnabled then
-            if  comboPoints == self.MAX_POINTS and
-                comboPoints ~= comboPointsBefore and
-                comboPointsBefore ~= 0 then
-                        local sn = NugComboBarDB.soundNameFull
-                        local sound = (sn == "custom") and NugComboBarDB.soundNameFullCustom or NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
-                        PlaySoundFile(sound, "SFX")
-            end
         end
 
         if secondLayerPoints then -- Anticipation stuff
