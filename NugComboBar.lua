@@ -591,6 +591,7 @@ local defaults = {
     adjustY = 2.1,
     hideWithoutTarget = false,
     vertical = false,
+    soundChannel = "SFX",
     soundNameFull = "none",
     soundNameFullCustom = "Interface\\AddOns\\YourSound.mp3",
 }
@@ -969,7 +970,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
             UnitGUID(allowedTargetUnit) == targetBefore then
                     local sn = NugComboBarDB.soundNameFull
                     local sound = (sn == "custom") and NugComboBarDB.soundNameFullCustom or NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
-                    PlaySoundFile(sound, "SFX")
+                    PlaySoundFile(sound, NugComboBarDB.soundChannel)
         end
         targetBefore = UnitGUID(allowedTargetUnit)
     end
@@ -1365,6 +1366,7 @@ NugComboBar.Commands = {
     end,
     ["gui"] = function(v)
         LoadAddOn('NugComboBarGUI')
+        InterfaceOptionsFrame_OpenToCategory("NugComboBar")
         InterfaceOptionsFrame_OpenToCategory("NugComboBar")
     end,
     ["vertical"] = function(v)

@@ -416,13 +416,26 @@ do
                 },
             },
 
-
+                    soundChannel = {
+                        name = L"Sound Channel",
+                        type = 'select',
+                        order = 6.4,
+                        values = {
+                            SFX = L"SFX",
+                            Music = L"Music",
+                            Ambience = L"Ambience",
+                            Master = L"Master",
+                        },
+                        get = function(info) return NugComboBarDB.soundChannel end,
+                        set = function( info, v ) NugComboBarDB.soundChannel = v end,
+                    },
             sound = {
                 type = "group",
                 name = L"Sounds",
                 guiInline = true,
                 order = 6.5,
                 args = {
+                    
                     soundNameFull = {
                         name = L"Max points sound",
                         desc = L"(Active only for certain specs)",
@@ -450,7 +463,7 @@ do
                         if sound == "custom" then
                             sound = NugComboBarDB.soundNameFullCustom
                         end
-                        PlaySoundFile(sound, "Master") end,
+                        PlaySoundFile(sound, NugComboBarDB.soundChannel) end,
                     },
                     customsoundNameFull = {
                         name = L"Custom Sound",
