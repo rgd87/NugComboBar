@@ -60,6 +60,7 @@ end
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
+        self:SetupClassTheme()
         soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
@@ -502,7 +503,7 @@ function NugComboBar:LoadClassSettings()
             end
             local evangelism = function()
                 self:SetMaxPoints(5)
-                self:EnableBar(0, 15, "Long")
+                self:EnableBar(0, 20, "Long")
                 if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                 self:RegisterEvent("UNIT_AURA")
                 self:UnregisterEvent("UNIT_POWER")
@@ -594,6 +595,7 @@ local defaults = {
     soundChannel = "SFX",
     soundNameFull = "none",
     soundNameFullCustom = "Interface\\AddOns\\YourSound.mp3",
+    disabled = false,
 }
 NugComboBar.defaults = defaults
 
@@ -653,27 +655,67 @@ do
                 NugComboBarDB_Character.charspec = true
             end
 
+            -- local NugComboBarDBSource
             if NugComboBarDB_Character.charspec then
                 local spec = GetSpecialization()
                 if spec and NugComboBarDB_Character.specspec[spec] then
                     NugComboBarDB_Character.specdb = NugComboBarDB_Character.specdb or {}
                     NugComboBarDB_Character.specdb[spec] = NugComboBarDB_Character.specdb[spec] or {}
 
-                    NugComboBarDB = NugComboBarDB_Character.specdb[spec]
+                    NugComboBarDBSource = NugComboBarDB_Character.specdb[spec]
                 else
-                    NugComboBarDB = NugComboBarDB_Character
+                    NugComboBarDBSource = NugComboBarDB_Character
                 end
             else
-                NugComboBarDB = NugComboBarDB_Global
+                NugComboBarDBSource = NugComboBarDB_Global
             end
 
-            if not NugComboBarDB.apoint and NugComboBarDB.point then NugComboBarDB.apoint = NugComboBarDB.point end
-            SetupDefaults(NugComboBarDB, defaults)
+
+            if not NugComboBarDBSource.apoint and NugComboBarDBSource.point then NugComboBarDBSource.apoint = NugComboBarDBSource.point end
+            SetupDefaults(NugComboBarDBSource, defaults)
             if not NugComboBarDB_Global.adjustX then NugComboBarDB_Global.adjustX = defaults.adjustX end
             if not NugComboBarDB_Global.adjustY then NugComboBarDB_Global.adjustY = defaults.adjustY end
 
+            if NugComboBarDBSource.classThemes then
+                NugComboBarDB = setmetatable({
+                    __classTheme = nil,
+                    colors = {}
+                }, {
+                    __index = function(t,k)
+                        local ct = rawget(t, "__classTheme")
+                        if ct and ct[k] then
+                            return ct[k]
+                        else
+                            return NugComboBarDBSource[k]
+                        end
+                    end,
+                    __newindex = function(t,k,v)
+                        NugComboBarDBSource[k] = v
+                    end,
+                })
+
+                setmetatable(NugComboBarDB.colors, {
+                        __index = function(t,k)
+                            local ct = NugComboBarDB.__classTheme
+                            if not ct then return NugComboBarDBSource.colors[k] end
+                            local ctc = rawget(ct, "colors")
+                            if not ctc then return NugComboBarDBSource.colors[k] end
+                            if ctc[k] then return ctc[k] end
+                            if not ctc[k] and type(k) == 'number' then
+                                if ctc.normal then return ctc.normal end
+                            end
+                            return NugComboBarDBSource.colors[k]
+                        end,
+                        __newindex = function(t,k,v)
+                        end,
+                    })
+
+            else
+                NugComboBarDB = NugComboBarDBSource
+            end
+
             NugComboBar.isDisabled = nil
-            if type(NugComboBarDB.disabled) == "table" then NugComboBarDB.disabled = nil end --old format bugfix
+            if type(NugComboBarDBSource.disabled) == "table" then NugComboBarDBSource.disabled = nil end --old format bugfix
             NugComboBarDB_Global.disabled = nil
             if NugComboBarDB.disabled then
                 NugComboBar.isDisabled = true
@@ -765,6 +807,16 @@ function NugComboBar:CheckResolution()
     end
 end
 
+
+function NugComboBar:SetupClassTheme()
+    if not NugComboBarDB.classThemes then return end
+    local _, class = UnitClass("player")
+    local spec = GetSpecialization()
+    local cT = NugComboBar.themes[class]
+    if not cT then return rawset(NugComboBarDB,"__classTheme", nil) end
+    local sT = cT[spec] or cT[0]
+    rawset(NugComboBarDB,"__classTheme", sT)
+end
 
 function NugComboBar:IsDefaultSkin()
     return not IsAddOnLoaded("NugComboBarMakina") and not  IsAddOnLoaded("NugComboBarStriped")
@@ -1257,16 +1309,12 @@ NugComboBar.Commands = {
     ["disable"] = function(v)
         if not NugComboBarDB_Character.charspec then return end
         if NugComboBarDB.disabled then
-            NugComboBarDB.disabled = nil
+            NugComboBarDB.disabled = false
         else
             NugComboBarDB.disabled = true
         end
         NugComboBar:Reinitialize()
         -- print ("NCB> Disabled for current class. Changes will take effect after /reload")
-    end,
-    ["enable"] = function(v)
-        NugComboBarDB_Global.disabled[select(2,UnitClass("player"))] = nil
-        print ("NCB> Enabled for current class. Changes will take effect after /reload")
     end,
     ["changecolor"] = function(v)
         local num = tonumber(v)
@@ -1337,6 +1385,7 @@ NugComboBar.Commands = {
     end,
     ["classthemes"] = function(v)
         NugComboBarDB.classThemes = not NugComboBarDB.classThemes
+        NugComboBar:Reinitialize()
     end,
     ["preset3d"] = function(v)
         if not NugComboBar.presets[v] then

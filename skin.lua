@@ -861,16 +861,37 @@ end
 
 
 
--- NugComboBar.themes = {}
--- NugComboBar.themes["WARLOCK"] = {
---     [1] = {
---         preset = "glowPurple",
---         colors = {
---             ["normal"] = {0.77,0.26,0.29},
---             ["big"] = {0.77,0.26,0.29},
---             ["bar1"] = { 0.9,0.1,0.1 },
---             ["bar2"] = { .9,0.1,0.4 },
---             ["layer2"] = { 0.80, 0.23, 0.79 },
---         },
---     },
--- }
+NugComboBar.themes = {}
+NugComboBar.themes["WARLOCK"] = {
+    [0] = {
+        preset3d = "glowPurple",
+    },
+    [3] = {
+        preset3d = "funnelRed",
+    },
+}
+
+NugComboBar.themes["PALADIN"] = {
+    [0] = {
+        preset3d = "glowHoly",
+    }
+}
+
+NugComboBar.themes["SHAMAN"] = {
+    [0] = {
+        preset3d = "electricBlue",
+    }
+}
+
+NugComboBar.themes["PRIEST"] = {
+    [1] = {
+        preset3d = "glowFreedom",
+        colors3d = true,
+        colors = { normal = {0.43, 0.83, 0} },
+    },
+    [3] = {
+        preset3d = "glowPurple",
+        colors3d = true,
+        colors = { normal = {0.27, 1, 0.59} },
+    }
+}

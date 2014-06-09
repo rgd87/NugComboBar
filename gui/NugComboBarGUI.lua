@@ -55,6 +55,7 @@ do
                     unlock = {
                         name = L"Unlock",
                         type = "execute",
+                        width = "half",
                         desc = L"Unlock dragging anchor",
                         func = function() NugComboBar.Commands.unlock() end,
                         order = 1,
@@ -62,6 +63,7 @@ do
                     lock = {
                         name = L"Lock",
                         type = "execute",
+                        width = "half",
                         desc = L"Lock dragging anchor",
                         func = function() NugComboBar.Commands.lock() end,
                         order = 2,
@@ -160,17 +162,18 @@ do
                     },
                 }
             },
-            -- classThemes = {
-            --             name = L"Use class theme",
-            --             type = 'toggle',
-            --             order = 2.5,
-            --             get = function(info) return NugComboBarDB.classThemes end,
-            --             set = function(info, s) NugComboBar.Commands.classthemes() end,
-            --         },
+            classThemes = {
+                        name = "|cffff2222"..L"Use class themes (EXPERIMENTAL)".."|r",
+                        type = 'toggle',
+                        width = "double",
+                        order = 2.5,
+                        get = function(info) return NugComboBarDB.classThemes end,
+                        set = function(info, s) NugComboBar.Commands.classthemes() end,
+                    },
             showColor = {
                 type = "group",
                 name = L"Colors",
-                disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
+                -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 3,
                 args = {
@@ -330,7 +333,7 @@ do
             presets = {
                 type = "group",
                 name = L"3D Mode settings",
-                disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
+                -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 6,
                 args = {
