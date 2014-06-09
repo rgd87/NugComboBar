@@ -307,7 +307,8 @@ local mappings = {
     ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},
     ["PALADIN"] = { 1, 2, 6, 7, 8 },
     ["ARCANE"] = { 1, 2, 3, 6, 7, 8 },
-    ["NO6"] = { 1, 2, 3, 4, 8 },
+    ["4NO6"] = { 1, 2, 3, 8 },
+    ["5NO6"] = { 1, 2, 3, 4, 8 },
 }
 
 
@@ -894,4 +895,10 @@ NugComboBar.themes["PRIEST"] = {
         colors3d = true,
         colors = { normal = {0.27, 1, 0.59} },
     }
+}
+
+NugComboBar.themes["MONK"] = {
+    [0] = {
+        preset3d = "funnelGreen",
+    },
 }

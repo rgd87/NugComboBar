@@ -209,7 +209,9 @@ function NugComboBar:LoadClassSettings()
                 NugComboBar:UNIT_COMBO_POINTS(nil, "player")
             end
 
-            self:SetMaxPoints(4)
+            local isCT = NugComboBarDB.classThemes
+
+            self:SetMaxPoints(4, isCT and "4NO6")
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if ptype ~= "CHI" or unit ~= "player" then return end
@@ -226,8 +228,8 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 if IsSpellKnown(115396)  -- Ascension
-                    then self:SetMaxPoints(5)
-                    else self:SetMaxPoints(4)
+                    then self:SetMaxPoints(5, isCT and "5NO6")
+                    else self:SetMaxPoints(4, isCT and "4NO6")
                 end
 
                 local spec = GetSpecialization()
