@@ -193,6 +193,7 @@ function NugComboBar:LoadClassSettings()
             end
             self:SPELLS_CHANGED()
         elseif class == "MONK" then
+            soundFullEnabled = true
             local GetChi = function(unit)
                 return UnitPower(unit, SPELL_POWER_CHI)
             end
