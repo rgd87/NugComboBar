@@ -105,6 +105,15 @@ function NugComboBar:LoadClassSettings()
             self:SetMaxPoints(5)
             local dummy = function() return 0 end
 
+            local reset = function()
+                defaultValue = 0
+                soundFullEnabled = false
+                hideSlowly = NugComboBarDB.hideSlowly
+                showEmpty = NugComboBarDB.showEmpty
+            end
+
+
+
             local mushrooms_icon = "INTERFACE\\ICONS\\druid_ability_wildmushroom_a"
             local GetMushrooms = function()
                 local mushrooms = 0
@@ -115,10 +124,10 @@ function NugComboBar:LoadClassSettings()
                 if GetSpecialization() == 4 and mushrooms == 1 then mushrooms = 3 end
                 return mushrooms
             end
+
             local shrooms = function()
                 self:SetMaxPoints(3)
                 hideSlowly = false
-                showEmpty = NugComboBarDB.showEmpty
                 self:RegisterEvent("PLAYER_TOTEM_UPDATE")
                 GetComboPoints = GetMushrooms
                 self.PLAYER_TOTEM_UPDATE = function(self, event, totemID)
@@ -127,12 +136,27 @@ function NugComboBar:LoadClassSettings()
                 self:PLAYER_TOTEM_UPDATE()
             end
 
+            local starsurge = function()
+                self:RegisterEvent("SPELL_UPDATE_CHARGES")
+                local charges, maxCharges, start, duration = GetSpellCharges(78674)
+                self:SetMaxPoints(maxCharges)
+                defaultValue = 3
+                -- self:EnableBar(0, duration, "Small")
+                -- if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
+                GetComboPoints = function()
+                    local charges, maxCharges, start, duration = GetSpellCharges(78674)
+                    return charges, start, duration
+                end
+                self.SPELL_UPDATE_CHARGES = function(self, event, arg1)
+                    self:UNIT_COMBO_POINTS(nil, allowedUnit)
+                end
+                self:SPELL_UPDATE_CHARGES()
+            end
+
             local cat = function()
                 self:SetMaxPoints(5)
                 soundFullEnabled = true
                 allowedTargetUnit = "target"
-                hideSlowly = NugComboBarDB.hideSlowly
-                showEmpty = NugComboBarDB.showEmpty
                 self:RegisterEvent("UNIT_COMBO_POINTS")
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 GetComboPoints = RogueGetComboPoints
@@ -149,12 +173,30 @@ function NugComboBar:LoadClassSettings()
                 -- allowedUnit = "target"
                 -- allowedCaster = "player"
                 GetComboPoints = dummy -- disable 
-                local old = hideSlowly
+                local old1 = showEmpty
+                local old2 = hideSlowly
                 showEmpty = false
                 hideSlowly = false
-                self:UNIT_COMBO_POINTS(nil,allowedUnit)
-                hideSlowly = old
+                self:UNIT_COMBO_POINTS(nil,allowedUnit) 
+                showEmpty = old1
+                hideSlowly = old2
             end
+
+
+            local pulverize = function()
+                self:SetMaxPoints(3)
+                self:RegisterEvent("UNIT_AURA")
+                self:RegisterEvent("PLAYER_TARGET_CHANGED")
+                self.UNIT_AURA = self.UNIT_COMBO_POINTS
+                soundFullEnabled = true
+                scanAura = GetSpellInfo(33745) -- Lacerate
+                filter = "HARMFUL"
+                allowedUnit = "target"
+                -- allowedCaster = "player"
+                GetComboPoints = GetAuraStack
+                self:UNIT_COMBO_POINTS(nil,allowedUnit) 
+            end
+
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
             self.UPDATE_SHAPESHIFT_FORM = function(self)
                 self:UnregisterEvent("UNIT_AURA")
@@ -163,9 +205,16 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
                 local spec = GetSpecialization()
                 local form = GetShapeshiftFormID()
-                if form == BEAR_FORM then disable()
+                reset()
+                if form == BEAR_FORM then
+                    if spec == 3 and IsSpellKnown(80313) --pulverize
+                        then pulverize()
+                        else disable()
+                    end
                 elseif form == CAT_FORM then cat()
-                elseif spec == 1 or spec == 4 then
+                elseif spec == 1 then
+                    starsurge()
+                elseif spec == 4 then
                     shrooms()
                 else
                     disable()
@@ -261,16 +310,27 @@ function NugComboBar:LoadClassSettings()
             local LShield = GetSpellInfo(324) -- Lightning Shield
             local GetLightningShield = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
-                return (count and count - 1 or 0)
-            end
-
-            local show_searing_flames = true
-            local searing_totem_buff = GetSpellInfo(77661)
-            local maelstrom_weapon_buff = GetSpellInfo(53817)
-            local function mael_searing(unit)
-                local _,_,_, count1 = UnitAura("player", maelstrom_weapon_buff, nil, "HELPFUL")
-                local _,_,_, count2 = UnitAura("player", searing_totem_buff, nil, "HELPFUL")
-                return count1 or 0, count2 or 0, nil, nil --,count2 or 0 -- for second line
+                if not count then return 0 end
+                count = count - 1
+                local barcount = nil
+                local layer2count = 0
+                -- if not secondLayerEnabled then
+                    if count > 6 then
+                        barcount = count - 6
+                        if barcount == 8 then layer2count = 6 end
+                        count = 6
+                    end 
+                -- else
+                    -- if count > 6 then
+                        -- layer2count = count - 6
+                        -- count = 6
+                        -- if layer2count > 6 then
+                            -- barcount = layer2count - 6
+                            -- layer2count = 6
+                        -- end
+                    -- end
+                -- end
+                return count, barcount, nil, layer2count
             end
 
             self:RegisterEvent("SPELLS_CHANGED")
@@ -279,6 +339,11 @@ function NugComboBar:LoadClassSettings()
                 if spec == 1 then
                     self:DisableBar()
                     self:SetMaxPoints(6)
+                    -- if not secondLayerEnabled then
+                        self:EnableBar(0, 8, "Long")
+                    -- else
+                        -- self:EnableBar(0, 2, "Small")
+                    -- end
                     GetComboPoints = GetLightningShield
                 elseif spec == 3 then
                     self:DisableBar()
@@ -287,16 +352,9 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetAuraStack
                 else
                     soundFullEnabled = true
-                    if show_searing_flames then
-                        -- self:SetMaxPoints(5, "SHAMANDOUBLE", 5 ) -- second line
-                        self:SetMaxPoints(5)
-                        self:EnableBar(0, 5,"Long")
-                        GetComboPoints = mael_searing
-                    else
-                        self:SetMaxPoints(5)
-                        scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
-                        GetComboPoints = GetAuraStack
-                    end
+                    self:SetMaxPoints(5)
+                    scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
+                    GetComboPoints = GetAuraStack
                 end
                 self:UNIT_AURA(nil,allowedUnit)
             end
@@ -867,7 +925,6 @@ do
             NugComboBar:DisableBar()
         end
 
-        self:LoadClassSettings()
         if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
         if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
         if onlyCombat == nil then onlyCombat = NugComboBarDB.onlyCombat end;
@@ -876,6 +933,8 @@ do
         self:SetAlpha(0)
         self:SetScale(NugComboBarDB.scale)
         self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
+
+        self:LoadClassSettings()
         if initial then
             self:CreateAnchor()
         else
