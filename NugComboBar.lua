@@ -475,13 +475,20 @@ function NugComboBar:LoadClassSettings()
                     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                     self:SetMaxPoints(3)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
-                    GetComboPoints = GetAuraStack
-                elseif spec == 1 then
-                    self:EnableBar(0, 2, "Small")
-                    if self.bar then self.bar:SetScript("OnUpdate", nil) end
-
-                    self:SetMaxPoints(3)
-                    GetComboPoints = GetTasteForBlood
+                    -- GetComboPoints = GetAuraStack
+                -- elseif spec == 1 then
+                --     self:EnableBar(0, 2, "Small")
+                --     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
+                --     self:SetMaxPoints(2)
+                --     scanAura = GetSpellInfo(1464) -- Slam
+                elseif spec == 3 then
+                    self:SetMaxPoints(5)
+                    self:EnableBar(0, 6, "Long")
+                    if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
+                    -- soundFullEnabled = true
+                    scanAura = GetSpellInfo(169686) -- proficiency
+                    -- GetComboPoints = GetAuraStack
+                    -- self:UNIT_COMBO_POINTS(nil,allowedUnit)
                 else
                     self:UnregisterEvent("UNIT_AURA")
                 end
@@ -492,20 +499,20 @@ function NugComboBar:LoadClassSettings()
             GetComboPoints = GetAuraStack
             self:SetMaxPoints(5)
             filter = "HELPFUL"
-            local mm = function()
-                self:SetMaxPoints(3)
-                self:RegisterEvent("UNIT_AURA")
-                scanAura = GetSpellInfo(82925) -- Ready, Set, Aim...
-                allowedUnit = "player"
-                allowedCaster = "player"
-                GetComboPoints = function (unit)
-                    if not scanAura then return 0 end
-                    if UnitAura(allowedUnit, GetSpellInfo(82926), nil, filter) then return 3 end -- Fire! proc buff
-                    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
-                    if allowedCaster and caster ~= allowedCaster then count = 0 end
-                    return (count or 0)
-                end
-            end
+            -- local mm = function()
+            --     self:SetMaxPoints(3)
+            --     self:RegisterEvent("UNIT_AURA")
+            --     scanAura = GetSpellInfo(82925) -- Ready, Set, Aim...
+            --     allowedUnit = "player"
+            --     allowedCaster = "player"
+            --     GetComboPoints = function (unit)
+            --         if not scanAura then return 0 end
+            --         if UnitAura(allowedUnit, GetSpellInfo(82926), nil, filter) then return 3 end -- Fire! proc buff
+            --         local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
+            --         if allowedCaster and caster ~= allowedCaster then count = 0 end
+            --         return (count or 0)
+            --     end
+            -- end
             local bm = function()
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_AURA")
@@ -518,7 +525,7 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
-                if spec == 2 then return mm() end
+                -- if spec == 2 then return mm() end
                 if spec == 1 then return bm() end
                 self:UnregisterEvent("UNIT_AURA")
             end
