@@ -56,7 +56,7 @@ NugComboBar.presets = {
     },
     ["glowFreedom"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        BIG = { "spells\\blessingoffreedom_state.m2",  true,  1, 0, -0.0004,0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", true, 4, 0,0, 0.0, "spells\\blessingoffreedom_state.m2",  true,  .51, 0, -0.0004,0 },
     },
     ["fireBlue"] = {
         NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 4, 0, 0.0015 },

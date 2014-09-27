@@ -473,7 +473,7 @@ function NugComboBar:LoadClassSettings()
                 if spec == 2 then 
                     self:EnableBar(0, 10, "Small")
                     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
-                    self:SetMaxPoints(3)
+                    self:SetMaxPoints(4)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
                     -- GetComboPoints = GetAuraStack
                 -- elseif spec == 1 then
@@ -1078,6 +1078,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     if onlyCombat and not UnitAffectingCombat("player") then return self:Hide() else self:Show() end -- usually frame is set to 0 alpha
     -- local arg1, arg2
     local comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints = GetComboPoints(unit);
+    -- print(comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints)
     local progress = not arg2 and arg1 or nil
     if self.bar and self.bar.enabled then
         if arg1 then
