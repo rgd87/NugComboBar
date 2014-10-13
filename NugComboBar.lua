@@ -446,27 +446,32 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self:RegisterEvent("UNIT_POWER")
         elseif class == "WARRIOR" then
-            local tfbAuraName = GetSpellInfo(60503)
-            local GetTasteForBlood = function(unit)
-                local _,_,_,count = UnitBuff("player", tfbAuraName, nil)
-                count = count or 0
-                local over3 = 0
-                if count > 3 then over3 = count - 3; count = 3; end
-                if not secondLayerEnabled then
-                    if over3 == 0 then over3 = nil end
-                    return count, over3, nil, 0
-                else
-                    return count, nil,nil, over3
-                end
-            end
-
             self:SetMaxPoints(4)
-            -- self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
             hideSlowly = false
             self:RegisterEvent("SPELLS_CHANGED")
+
+            local proficiency = GetSpellInfo(169686)
+            local GetProficiency = function(unit)
+                local _,_,_, count, _, duration, expirationTime, caster = UnitAura("player", proficiency, nil, "HELPFUL")
+                if not count then return 0 end
+                local layer2count = 0
+                if not secondLayerEnabled then
+                    count = count > 3 and count - 3 or 0
+                else
+                    local a,rem = math.modf(count/2)
+                    layer2count = a
+                    count = (rem > 0) and a + 1 or a
+                    -- if count > 3 then
+                        -- layer2count = count - 3
+                        -- count = 3
+                    -- end
+                end
+                return count, expirationTime-duration, duration, layer2count
+            end
+
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
                 self:RegisterEvent("UNIT_AURA")
@@ -475,20 +480,16 @@ function NugComboBar:LoadClassSettings()
                     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                     self:SetMaxPoints(4)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
-                    -- GetComboPoints = GetAuraStack
-                -- elseif spec == 1 then
-                --     self:EnableBar(0, 2, "Small")
-                --     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
-                --     self:SetMaxPoints(2)
-                --     scanAura = GetSpellInfo(1464) -- Slam
+                    GetComboPoints = GetAuraStack
                 elseif spec == 3 then
-                    self:SetMaxPoints(5)
-                    self:EnableBar(0, 6, "Long")
+                    -- if not secondLayerEnabled then
+                        self:SetMaxPoints(3)
+                        self:EnableBar(0, 6, "Small")
+                        -- scanAura = GetSpellInfo(169686) -- proficiency
+                    -- else
+                    GetComboPoints = GetProficiency
+
                     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
-                    -- soundFullEnabled = true
-                    scanAura = GetSpellInfo(169686) -- proficiency
-                    -- GetComboPoints = GetAuraStack
-                    -- self:UNIT_COMBO_POINTS(nil,allowedUnit)
                 else
                     self:UnregisterEvent("UNIT_AURA")
                 end
@@ -499,20 +500,6 @@ function NugComboBar:LoadClassSettings()
             GetComboPoints = GetAuraStack
             self:SetMaxPoints(5)
             filter = "HELPFUL"
-            -- local mm = function()
-            --     self:SetMaxPoints(3)
-            --     self:RegisterEvent("UNIT_AURA")
-            --     scanAura = GetSpellInfo(82925) -- Ready, Set, Aim...
-            --     allowedUnit = "player"
-            --     allowedCaster = "player"
-            --     GetComboPoints = function (unit)
-            --         if not scanAura then return 0 end
-            --         if UnitAura(allowedUnit, GetSpellInfo(82926), nil, filter) then return 3 end -- Fire! proc buff
-            --         local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
-            --         if allowedCaster and caster ~= allowedCaster then count = 0 end
-            --         return (count or 0)
-            --     end
-            -- end
             local bm = function()
                 self:SetMaxPoints(5)
                 self:RegisterEvent("UNIT_AURA")
@@ -525,7 +512,6 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
-                -- if spec == 2 then return mm() end
                 if spec == 1 then return bm() end
                 self:UnregisterEvent("UNIT_AURA")
             end
@@ -604,27 +590,12 @@ function NugComboBar:LoadClassSettings()
         elseif class == "MAGE" then 
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
-            local showMissileProcs = false
-            if showMissileProcs then
-                self:SetMaxPoints(4, "ARCANE", 2)
-                local arcaneCharges = GetSpellInfo(36032)
-                local arcaneMissiles = GetSpellInfo(79683)
-                local GetChargesAndBarrage = function(unit)
-                    local _,_,_, count1 = UnitAura("player", arcaneCharges, nil, "HARMFUL")
-                    local _,_,_, count2 = UnitAura("player", arcaneMissiles, nil, "HELPFUL")
-                    return count1 or 0, 0, nil, nil, count2 or 0 -- for second line
-                end
-                -- scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
-                -- filter = "HARMFUL" 
-                -- allowedUnit = "player" 
-                GetComboPoints = GetChargesAndBarrage
-            else
-                self:SetMaxPoints(4)
-                scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
-                filter = "HARMFUL" 
-                allowedUnit = "player" 
-                GetComboPoints = GetAuraStack
-            end
+
+            self:SetMaxPoints(4)
+            scanAura = GetSpellInfo(36032) -- Arcane Blast Buff 
+            filter = "HARMFUL" 
+            allowedUnit = "player" 
+            GetComboPoints = GetAuraStack
         else
             self:SetMaxPoints(2)
             return
