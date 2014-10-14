@@ -213,7 +213,7 @@ local pointtex = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
         coords = {0, 26/256, 0, 1},
         role = "LEFT",
-        chainreset = true, toffset_x = 0, toffset_y = -30,
+        chainreset = true, toffset_x = 13, toffset_y = -20,
         width = 26, height = 32,
         psize = 14,
         poffset_x = 19, poffset_y = -14,
@@ -306,7 +306,7 @@ local mappings = {
     [6] = { 1, 2, 3, 4, 5, 6 },
     ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},
     ["PALADIN"] = { 1, 2, 6, 7, 8 },
-    ["ARCANE"] = { 1, 2, 3, 6, 7, 8 },
+    ["ARCANE"] = { 1, 2, 3, 6, SR1, SR2, SR8 },
     ["4NO6"] = { 1, 2, 3, 8 },
     ["5NO6"] = { 1, 2, 3, 4, 8 },
 }
