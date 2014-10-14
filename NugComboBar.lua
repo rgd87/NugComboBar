@@ -481,14 +481,13 @@ function NugComboBar:LoadClassSettings()
                     self:SetMaxPoints(4)
                     scanAura = GetSpellInfo(85739) -- Meatcleaver
                     GetComboPoints = GetAuraStack
-                elseif spec == 3 then
+                elseif spec == 3 and IsSpellKnown(169685) then
                     -- if not secondLayerEnabled then
                         self:SetMaxPoints(3)
                         self:EnableBar(0, 6, "Small")
                         -- scanAura = GetSpellInfo(169686) -- proficiency
                     -- else
                     GetComboPoints = GetProficiency
-
                     if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
                 else
                     self:UnregisterEvent("UNIT_AURA")
