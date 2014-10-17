@@ -40,7 +40,7 @@ NugComboBar.presets = {
     },
     ["glow_funnelPurple"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 3, 0,0, 0.0 },
-        BIG = { "spells\\soulfunnel_impact_chest.m2", true, 3, 0,0,0 },
+        BIG = { "spells\\soulfunnel_impact_chest.m2", true, 3, 0,0,0 , "spells\\gouge_precast_state_hand.m2", true, 2.5, 0,0, 0.0,},
     },
     ["funnelRed"] = {
         NORMAL = { "spells\\healrag_state_chest.m2", true, 1.7 },
