@@ -214,8 +214,8 @@ function NugComboBar:LoadClassSettings()
                 elseif form == CAT_FORM then cat()
                 elseif spec == 1 then
                     starsurge()
-                elseif spec == 4 then
-                    shrooms()
+                -- elseif spec == 4 then
+                    -- shrooms()
                 else
                     disable()
                 end
