@@ -312,25 +312,19 @@ function NugComboBar:LoadClassSettings()
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
                 if not count then return 0 end
                 count = count - 1
-                local barcount = nil
                 local layer2count = 0
-                -- if not secondLayerEnabled then
-                    if count > 6 then
-                        barcount = count - 6
-                        if barcount == 8 then layer2count = 6 end
-                        count = 6
-                    end 
-                -- else
-                    -- if count > 6 then
-                        -- layer2count = count - 6
-                        -- count = 6
-                        -- if layer2count > 6 then
-                            -- barcount = layer2count - 6
-                            -- layer2count = 6
-                        -- end
+                if not secondLayerEnabled then
+                    count = count > 7 and count - 7 or 0
+                else
+                    local a,rem = math.modf(count/2)
+                    layer2count = a
+                    count = (rem > 0) and a + 1 or a
+                    -- if count > 3 then
+                        -- layer2count = count - 3
+                        -- count = 3
                     -- end
-                -- end
-                return count, barcount, nil, layer2count
+                end
+                return count, nil, nil, layer2count
             end
 
             self:RegisterEvent("SPELLS_CHANGED")
@@ -338,9 +332,10 @@ function NugComboBar:LoadClassSettings()
                 local spec = GetSpecialization()
                 if spec == 1 then
                     self:DisableBar()
-                    self:SetMaxPoints(6)
+                    self:SetMaxPoints(7, "SHAMAN7")
+
                     -- if not secondLayerEnabled then
-                        self:EnableBar(0, 8, "Long")
+                        -- self:EnableBar(0, 8, "Long")
                     -- else
                         -- self:EnableBar(0, 2, "Small")
                     -- end
