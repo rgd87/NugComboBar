@@ -1,3 +1,9 @@
+6.0.4:
+ - Changed fulmination to fill up to 14
+ - Removed mushroom from Restoration Druid
+ - Arance Missiles update (disabled by default)
+ - GUI module ToC updated
+
 6.0.3:
  - ToC updated to 60000
  - added Starsurge charges
