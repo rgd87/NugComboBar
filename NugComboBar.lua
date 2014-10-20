@@ -107,7 +107,8 @@ function PlayerComboFrame.OnUpdate(self, time)
     self._elapsed = 0
     self.timeout = 10
 
-    pOldCP = pOldCP - 1
+
+    if pOldCD > 0 then pOldCP = pOldCP - 1 end
     NugComboBar:UNIT_COMBO_POINTS(nil, "player")
     if pOldCP == 0 then self:SetScript("OnUpdate", nil) end
 end
@@ -144,16 +145,17 @@ function PlayerComboFrame.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, e
             -- print(eventType, spellName)
             pOldCP = pOldCP + 1
             self.timeout = 18
-            NugComboBar:UNIT_COMBO_POINTS(event, "player")
+            NugComboBar:UNIT_COMBO_POINTS(nil, "player")
         end
         if not IsComboPointsVisible() and eventType == "SPELL_CAST_SUCCESS" and finishers[spellID] then
             -- print(eventType, spellName)
             pOldCP = 0
-            NugComboBar:UNIT_COMBO_POINTS(event, "player")
+            NugComboBar:UNIT_COMBO_POINTS(nil, "player")
         end
     end
     if eventType == "UNIT_DIED" and dstGUID == UnitGUID("player") then
         pOldCP = 0
+        NugComboBar:UNIT_COMBO_POINTS(nil, "player")
     end
 end
 
