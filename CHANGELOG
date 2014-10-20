@@ -1,3 +1,6 @@
+6.0.5b:
+ - bugfixes for snd and other non-target finishers
+
 6.0.5:
  - Workaround for combo points to be visible without a target
 
