@@ -62,8 +62,8 @@ local PlayerComboFrame = CreateFrame("Frame")
 PlayerComboFrame:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
-local pCurrentCP = __GetComboPoints("player")
-local pOldCP = __GetComboPoints("player")
+local pCurrentCP = __GetComboPoints("player") or 0
+local pOldCP = __GetComboPoints("player") or 0
 local pLastGUID
 local pIsDecaying = false
 local pInitialOOC = true
@@ -107,8 +107,7 @@ function PlayerComboFrame.OnUpdate(self, time)
     self._elapsed = 0
     self.timeout = 10
 
-
-    if pOldCD > 0 then pOldCP = pOldCP - 1 end
+    if pOldCP > 0 then pOldCP = pOldCP - 1 end
     NugComboBar:UNIT_COMBO_POINTS(nil, "player")
     if pOldCP == 0 then self:SetScript("OnUpdate", nil) end
 end
@@ -1052,7 +1051,13 @@ do
         if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
         if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
+
+        if NugComboBarDB.scale < 0.91 and string.find(NugComboBarDB.preset3d, "funnel") then
+            print("[NugComboBar] funnelXXXX presets do not work on a scale below 0.9.")
+            NugComboBarDB.scale = 0.92
+        end
         self:SetScale(NugComboBarDB.scale)
+
         self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
 
         self:LoadClassSettings()
