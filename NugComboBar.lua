@@ -69,7 +69,8 @@ local pIsDecaying = false
 local pInitialOOC = true
 
 local function IsComboPointsVisible()
-    return UnitExists("target") and UnitReaction("player","target") <= 4
+    local reaction = UnitReaction("player","target") or 15
+    return UnitExists("target") and reaction <= 4
 end
 function PlayerComboFrame:UNIT_COMBO_POINTS(event, unit)
     pCurrentCP = __GetComboPoints(unit)
