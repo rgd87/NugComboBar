@@ -56,127 +56,9 @@ local AuraTimerOnUpdate = function(self, time)
     self:SetValue(progress)
 end
 
-
---- Proxy frame to keep fallback combo points count without a target ---
-local PlayerComboFrame = CreateFrame("Frame")
-PlayerComboFrame:SetScript("OnEvent", function(self, event, ...)
-    return self[event](self, event, ...)
-end)
-local pCurrentCP = __GetComboPoints("player") or 0
-local pOldCP = __GetComboPoints("player") or 0
-local pLastGUID
-local pIsDecaying = false
-local pInitialOOC = true
-
-local function IsComboPointsVisible()
-    local reaction = UnitReaction("player","target") or 15
-    return UnitExists("target") and reaction <= 4
-end
-function PlayerComboFrame:UNIT_COMBO_POINTS(event, unit)
-    pCurrentCP = __GetComboPoints(unit)
-    if pCurrentCP ~= pOldCP and IsComboPointsVisible() then
-        if UnitAffectingCombat("player") then pInitialOOC = false end
-        pOldCP = pCurrentCP
-        pLastGUID = UnitGUID("target")
-    end
-    NugComboBar:UNIT_COMBO_POINTS(event, unit)
-end
-function PlayerComboFrame:PLAYER_TARGET_CHANGED( event) --is it really needed?
-    PlayerComboFrame:UNIT_COMBO_POINTS(event, "player")
-    NugComboBar:PLAYER_TARGET_CHANGED()
-end
---18, 10, 10
-function PlayerComboFrame:PLAYER_REGEN_ENABLED( event)
-    pIsDecaying = true
-    self.timeout = 18
-    self._elapsed = 0
-    self:SetScript("OnUpdate", PlayerComboFrame.OnUpdate)
-end
-function PlayerComboFrame:PLAYER_REGEN_DISABLED( event)
-    pIsDecaying = false
-    self:SetScript("OnUpdate", nil)
-end
-function PlayerComboFrame:ACTIVE_TALENT_GROUP_CHANGED( event)
-    pOldCP = 0
-    self:SetScript("OnUpdate", nil)
-    NugComboBar:UNIT_COMBO_POINTS(event, "player")
-end
-function PlayerComboFrame.OnUpdate(self, time)
-    self._elapsed = self._elapsed + time
-    if self._elapsed < self.timeout then return end
-    self._elapsed = 0
-    self.timeout = 10
-
-    if pOldCP > 0 then pOldCP = pOldCP - 1 end
-    NugComboBar:UNIT_COMBO_POINTS(nil, "player")
-    if pOldCP == 0 then self:SetScript("OnUpdate", nil) end
-end
 RogueGetComboPoints = function(unit)
-    if IsComboPointsVisible() or pInitialOOC then
-        return __GetComboPoints(unit)
-    else
-        return pOldCP
-    end
+    return UnitPower("player", 4)
 end
-local finishers = {
-    [5171] = true, --snd
-    [73651] = true, --recup
-    [52610] = true, --savage roar
-    [408] = true, --ks
-    [2098] = true, --evis
-    [152150] = true, --death from above
-    [26679] = true, --deadly throw
-    [1943] = true, --rupture
-    [22568] = true, --ferocious bite
-    [1079] = true, --rip
-    [121411] = true, --crimson tempest
-}
-
-local bit_band = bit.band
-local AFFILIATION_MINE = COMBATLOG_OBJECT_AFFILIATION_MINE
-function PlayerComboFrame.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, eventType, hideCaster,
-                srcGUID, srcName, srcFlags, srcFlags2,
-                dstGUID, dstName, dstFlags, dstFlags2,
-                spellID, spellName, spellSchool, auraType, amount)
-    local isMine = (bit_band(srcFlags, AFFILIATION_MINE) == AFFILIATION_MINE)
-    if isMine then
-        if not IsComboPointsVisible() and eventType == "SPELL_ENERGIZE" and (spellID == 51699 or spellID == 139546) then --hat, ruthlessness
-            -- print(eventType, spellName)
-            pOldCP = pOldCP + 1
-            self.timeout = 18
-            NugComboBar:UNIT_COMBO_POINTS(nil, "player")
-        end
-        if not IsComboPointsVisible() and eventType == "SPELL_CAST_SUCCESS" and finishers[spellID] then
-            -- print(eventType, spellName)
-            pOldCP = 0
-            NugComboBar:UNIT_COMBO_POINTS(nil, "player")
-        end
-    end
-    if eventType == "UNIT_DIED" and dstGUID == UnitGUID("player") then
-        pOldCP = 0
-        NugComboBar:UNIT_COMBO_POINTS(nil, "player")
-    end
-end
-
-function PlayerComboFrame:Enable()
-    self:RegisterEvent("PLAYER_REGEN_DISABLED")
-    self:RegisterEvent("PLAYER_REGEN_ENABLED")
-    self:RegisterEvent("UNIT_COMBO_POINTS")
-    self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    self:RegisterEvent("PLAYER_TARGET_CHANGED")
-    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-end
-function PlayerComboFrame:Disable()
-    pInitialOOC = true
-    self:UnregisterEvent("PLAYER_REGEN_DISABLED")
-    self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-    self:UnregisterEvent("UNIT_COMBO_POINTS")
-    self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    self:UnregisterEvent("PLAYER_TARGET_CHANGED")
-    self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-end
---- 6.0 hack ends ---
-
 
 
 -- local min = math.min
@@ -208,10 +90,10 @@ function NugComboBar:LoadClassSettings()
             GetComboPoints = ComboPointsWithAnticipation
 
             self:SetMaxPoints(5)
-            PlayerComboFrame:Enable()
+            -- PlayerComboFrame:Enable()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            -- self:RegisterEvent("UNIT_COMBO_POINTS")
-            -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            self:RegisterEvent("UNIT_COMBO_POINTS")
+            self:RegisterEvent("PLAYER_TARGET_CHANGED")
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 if IsPlayerSpell(114015) then -- Anticipation
