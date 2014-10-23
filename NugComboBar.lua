@@ -931,7 +931,7 @@ do
 
         if NugComboBarDB.scale < 0.91 and string.find(NugComboBarDB.preset3d, "funnel") then
             print("[NugComboBar] funnelXXXX presets do not work on a scale below 0.9.")
-            NugComboBarDB.scale = 0.92
+            NugComboBarDB.scale = 1
         end
         self:SetScale(NugComboBarDB.scale)
 

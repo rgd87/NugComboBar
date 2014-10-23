@@ -1,9 +1,9 @@
+6.0.7:
+ - Using UnitPower for CPs now
+
 6.0.6:
  - funnel presets just do not work, if you scale the bar below 0.9
    Automatically scaling up if it is detected
-
-6.0.5b:
- - bugfixes for snd and other non-target finishers
 
 6.0.5:
  - Workaround for combo points to be visible without a target
