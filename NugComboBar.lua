@@ -3,7 +3,6 @@ local NugComboBar = NugComboBar
 
 local user
 local RogueGetComboPoints = GetComboPoints
-local __GetComboPoints = GetComboPoints
 local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
@@ -90,7 +89,6 @@ function NugComboBar:LoadClassSettings()
             GetComboPoints = ComboPointsWithAnticipation
 
             self:SetMaxPoints(5)
-            -- PlayerComboFrame:Enable()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             self:RegisterEvent("UNIT_COMBO_POINTS")
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -164,9 +162,8 @@ function NugComboBar:LoadClassSettings()
                 self:SetMaxPoints(5)
                 soundFullEnabled = true
                 allowedTargetUnit = "target"
-                -- self:RegisterEvent("UNIT_COMBO_POINTS")
-                -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
-                PlayerComboFrame:Enable()
+                self:RegisterEvent("UNIT_COMBO_POINTS")
+                self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 GetComboPoints = RogueGetComboPoints
                 allowedUnit = "player"
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
@@ -176,7 +173,6 @@ function NugComboBar:LoadClassSettings()
                 -- self:SetMaxPoints(3)
                 -- self:RegisterEvent("UNIT_AURA")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
-                PlayerComboFrame:Disable()
                 -- scanAura = GetSpellInfo(33745) -- Lacerate
                 -- filter = "HARMFUL"
                 -- allowedUnit = "target"
@@ -194,7 +190,6 @@ function NugComboBar:LoadClassSettings()
 
             local pulverize = function()
                 self:SetMaxPoints(3)
-                PlayerComboFrame:Disable()
                 self:RegisterEvent("UNIT_AURA")
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
