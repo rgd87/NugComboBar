@@ -526,17 +526,32 @@ function NugComboBar:LoadClassSettings()
             filter = "HELPFUL"
             allowedCaster = "player"
             GetComboPoints = GetAuraStack
+
+            local BloodChargeName = GetSpellInfo(114851)
+            local GetBloodCharges = function(unit)
+                local _,_,_, count, _,_,_, caster = UnitAura("player", BloodChargeName, nil, "HELPFUL")
+                if not count then return 0 end
+                local layer2count = 0
+                local barcount = nil
+                if count > 5 then
+                    barcount = count - 5
+                    count = 5
+                end
+                return count, barcount, nil, 0
+            end
             
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
                 if      spec == 3 then -- unholy
                     allowedUnit = "pet"
+                    self:DisableBar()
                     scanAura = GetSpellInfo(91342) -- Shadow Infusion
                     soundFullEnabled = true
-                elseif  spec == 1 then
+                elseif IsSpellKnown(45529) then
                     allowedUnit = "player"
-                    scanAura = GetSpellInfo(50421) -- Scent of Blood
+                    self:EnableBar(0,7, "Long")
+                    GetComboPoints = GetBloodCharges
                 end
             end
             self:SPELLS_CHANGED()
