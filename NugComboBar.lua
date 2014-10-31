@@ -533,11 +533,15 @@ function NugComboBar:LoadClassSettings()
                 if not count then return 0 end
                 local layer2count = 0
                 local barcount = nil
-                if count > 5 then
-                    barcount = count - 5
-                    count = 5
+                local fives,rem = math.modf(count/5)
+                if count > 10 then
+                    if secondLayerEnabled and count == 12 then
+                        layer2count = 2
+                    else
+                        barcount = count - 10
+                    end
                 end
-                return count, barcount, nil, 0
+                return fives, barcount, nil, layer2count
             end
             
             self:RegisterEvent("SPELLS_CHANGED")
@@ -546,11 +550,12 @@ function NugComboBar:LoadClassSettings()
                 if      spec == 3 then -- unholy
                     allowedUnit = "pet"
                     self:DisableBar()
+                    self:SetMaxPoints(5)
                     scanAura = GetSpellInfo(91342) -- Shadow Infusion
                     soundFullEnabled = true
                 elseif IsSpellKnown(45529) then
-                    allowedUnit = "player"
-                    self:EnableBar(0,7, "Long")
+                    self:SetMaxPoints(2)
+                    self:EnableBar(0,2, "Small")
                     GetComboPoints = GetBloodCharges
                 end
             end
