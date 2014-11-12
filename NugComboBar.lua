@@ -540,6 +540,8 @@ function NugComboBar:LoadClassSettings()
                     else
                         barcount = count - 10
                     end
+                else
+                    barcount = count - fives*5
                 end
                 return fives, barcount, nil, layer2count
             end
@@ -555,7 +557,7 @@ function NugComboBar:LoadClassSettings()
                     soundFullEnabled = true
                 elseif IsSpellKnown(45529) then
                     self:SetMaxPoints(2)
-                    self:EnableBar(0,2, "Small")
+                    self:EnableBar(0,5, "Small")
                     GetComboPoints = GetBloodCharges
                 end
             end
