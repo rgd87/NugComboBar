@@ -577,7 +577,12 @@ function NugComboBar:LoadClassSettings()
                 self:DisableBar()
                 self:RegisterEvent("UNIT_POWER")
                 self:UnregisterEvent("UNIT_AURA")
-                self:SetMaxPoints(3)
+                if IsSpellKnown(157217) then
+                    self:SetMaxPoints(5, "PALADIN")
+                else
+                    self:SetMaxPoints(3)
+                end
+                
                 GetComboPoints = GetShadowOrbs
                 soundFullEnabled = true
             end
