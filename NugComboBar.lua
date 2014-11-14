@@ -283,9 +283,11 @@ function NugComboBar:LoadClassSettings()
 
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
+                local wwperk = IsSpellKnown(157411) and 1 or 0
+
                 if IsSpellKnown(115396)  -- Ascension
-                    then self:SetMaxPoints(5, isCT and "5NO6")
-                    else self:SetMaxPoints(4, isCT and "4NO6")
+                    then self:SetMaxPoints(5+wwperk)
+                    else self:SetMaxPoints(4+wwperk)
                 end
 
                 local spec = GetSpecialization()
