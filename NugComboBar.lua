@@ -1023,7 +1023,7 @@ local HideTimer = function(self, time)
     if self.OnUpdateCounter < fadeAfter then return end
 
     local ncb = NugComboBar
-    local a = 1-((fadeAfter - self.OnUpdateCounter) / fadeTime)
+    local a = 1-((self.OnUpdateCounter - fadeAfter) / fadeTime)
     ncb:SetAlpha(NugComboBarDB.alpha*a)
     if self.OnUpdateCounter >= fadeAfter + fadeTime then
         self:SetScript("OnUpdate",nil)
