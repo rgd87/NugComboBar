@@ -607,8 +607,8 @@ function NugComboBar:LoadClassSettings()
                 GetComboPoints = GetAuraStack
                 scanAura = GetSpellInfo(63735) -- Serendipity
             end
-            self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-            self.ACTIVE_TALENT_GROUP_CHANGED = function(self)
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
                 if spec == 3 then
                     shadow_orbs()
@@ -618,7 +618,7 @@ function NugComboBar:LoadClassSettings()
                     evangelism()
                 end
             end
-            self:ACTIVE_TALENT_GROUP_CHANGED()
+            self:SPELLS_CHANGED()
         elseif class == "MAGE" then 
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
