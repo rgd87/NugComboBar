@@ -573,7 +573,7 @@ function NugComboBar:LoadClassSettings()
                     else
                         self:SetMaxPoints(2)
                     end
-                elseif spec == 1 then
+                elseif spec == 1 and NugComboBarDB.special1 then
                     allowedUnit = "player"
                     scanAura = GetSpellInfo(50421) -- Scent of Blood
                     GetComboPoints = GetAuraStack
