@@ -527,12 +527,13 @@ function NugComboBar:LoadClassSettings()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             filter = "HELPFUL"
             allowedCaster = "player"
-            GetComboPoints = GetAuraStack
 
             local BloodChargeName = GetSpellInfo(114851)
+            local ScentOfBlood = GetSpellInfo(50421)
             local GetBloodCharges = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", BloodChargeName, nil, "HELPFUL")
-                if not count then return 0 end
+                -- if not count then return 0 end
+                count = count or 0
                 local layer2count = 0
                 local barcount = nil
                 local fives,rem = math.modf(count/5)
@@ -545,7 +546,13 @@ function NugComboBar:LoadClassSettings()
                 else
                     barcount = count - fives*5
                 end
-                return fives, barcount, nil, layer2count
+
+                local secondRowCount = nil
+                if NugComboBarDB.special1 then
+                    local _,_,_, count2, _,_,_, caster = UnitAura("player", ScentOfBlood, nil, "HELPFUL")
+                    secondRowCount = count2 or 0
+                end
+                return fives, barcount, nil, layer2count, secondRowCount
             end
             
             self:RegisterEvent("SPELLS_CHANGED")
@@ -556,11 +563,20 @@ function NugComboBar:LoadClassSettings()
                     self:DisableBar()
                     self:SetMaxPoints(5)
                     scanAura = GetSpellInfo(91342) -- Shadow Infusion
+                    GetComboPoints = GetAuraStack
                     soundFullEnabled = true
                 elseif IsSpellKnown(45529) then
-                    self:SetMaxPoints(2)
                     self:EnableBar(0,5, "Small")
                     GetComboPoints = GetBloodCharges
+                    if NugComboBarDB.special1 and spec == 1 then
+                        self:SetMaxPoints(2, "DKDOUBLE", 5)
+                    else
+                        self:SetMaxPoints(2)
+                    end
+                elseif spec == 1 then
+                    allowedUnit = "player"
+                    scanAura = GetSpellInfo(50421) -- Scent of Blood
+                    GetComboPoints = GetAuraStack
                 end
             end
             self:SPELLS_CHANGED()
@@ -623,7 +639,7 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
 
-            local showMissileProcs = false
+            local showMissileProcs = NugComboBarDB.special1
             if showMissileProcs then
                 self:SetMaxPoints(4, "ARCANE", 3)
                 local arcaneCharges = GetSpellInfo(36032)
@@ -638,6 +654,7 @@ function NugComboBar:LoadClassSettings()
                 -- allowedUnit = "player"
                 GetComboPoints = GetChargesAndBarrage
             else
+                self:DisableBar()
                 self:SetMaxPoints(4)
                 scanAura = GetSpellInfo(36032) -- Arcane Blast Buff
                 filter = "HARMFUL"
@@ -688,6 +705,7 @@ local defaults = {
     adjustX = 2.05,
     adjustY = 2.1,
     alpha = 1,
+    special1 = false,
     hideWithoutTarget = false,
     vertical = false,
     soundChannel = "SFX",
@@ -1404,6 +1422,10 @@ NugComboBar.Commands = {
     ["toggleblizz"] = function(v)
         NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
         print ("NCB> Changes will take effect after /reload")
+    end,
+    ["special"] = function(v)
+        NugComboBarDB.special1 = not NugComboBarDB.special1
+        print ("NCB Special = ", NugComboBarDB.special1)
     end,
     ["scale"] = function(v)
         local num = tonumber(v)
