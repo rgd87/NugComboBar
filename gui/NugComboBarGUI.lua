@@ -55,7 +55,7 @@ do
                     unlock = {
                         name = L"Unlock",
                         type = "execute",
-                        width = "half",
+                        -- width = "half",
                         desc = L"Unlock dragging anchor",
                         func = function() NugComboBar.Commands.unlock() end,
                         order = 1,
@@ -63,7 +63,7 @@ do
                     lock = {
                         name = L"Lock",
                         type = "execute",
-                        width = "half",
+                        -- width = "half",
                         desc = L"Lock dragging anchor",
                         func = function() NugComboBar.Commands.lock() end,
                         order = 2,
@@ -83,13 +83,22 @@ do
                     scale = {
                         name = L"Scale",
                         type = "range",
-                        --desc = L"Change scale",
                         get = function(info) return NugComboBarDB.scale end,
                         set = function(info, s) NugComboBarDB.scale = s; NugComboBar:SetScale(NugComboBarDB.scale); end,
                         min = 0.4,
                         max = 2,
                         step = 0.01,
                         order = 4,
+                    },
+                    alpha = {
+                        name = L"Alpha",
+                        type = "range",
+                        get = function(info) return NugComboBarDB.alpha end,
+                        set = function(info, s) NugComboBarDB.alpha = s; NugComboBar:SetAlpha(NugComboBarDB.alpha); end,
+                        min = 0.1,
+                        max = 1,
+                        step = 0.01,
+                        order = 4.5,
                     },
                     showempty = {
                         name = L"Show Empty",

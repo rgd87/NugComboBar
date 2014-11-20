@@ -687,6 +687,7 @@ local defaults = {
     disableProgress = false,
     adjustX = 2.05,
     adjustY = 2.1,
+    alpha = 1,
     hideWithoutTarget = false,
     vertical = false,
     soundChannel = "SFX",
@@ -1022,8 +1023,8 @@ local HideTimer = function(self, time)
     if self.OnUpdateCounter < fadeAfter then return end
 
     local ncb = NugComboBar
-    local a = fadeAfter + fadeTime - self.OnUpdateCounter
-    ncb:SetAlpha(a)
+    local a = 1-((fadeAfter - self.OnUpdateCounter) / fadeTime)
+    ncb:SetAlpha(NugComboBarDB.alpha*a)
     if self.OnUpdateCounter >= fadeAfter + fadeTime then
         self:SetScript("OnUpdate",nil)
         ncb:SetAlpha(0)
@@ -1199,7 +1200,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     else
         fader:SetScript("OnUpdate", nil)
         self.hiding = false
-        self:SetAlpha(1)
+        self:SetAlpha(NugComboBarDB.alpha)
     end
 
     comboPointsBefore = comboPoints
@@ -1355,7 +1356,7 @@ end
 NugComboBar.Commands = {
     ["unlock"] = function(v)
         NugComboBar.anchor:Show()
-        NugComboBar:SetAlpha(1)
+        NugComboBar:SetAlpha(NugComboBarDB.alpha)
         for i=1,NugComboBar.MAX_POINTS do
             NugComboBar.p[i]:Activate()
         end
@@ -1409,6 +1410,13 @@ NugComboBar.Commands = {
         if num then 
             NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
         else print ("Current scale is: ".. NugComboBarDB.scale)
+        end
+    end,
+    ["alpha"] = function(v)
+        local num = tonumber(v)
+        if num then 
+            NugComboBarDB.alpha = num; NugComboBar:SetAlpha(NugComboBarDB.alpha);
+        else print ("Current alpha is: ".. NugComboBarDB.alpha)
         end
     end,
     ["disable"] = function(v)
