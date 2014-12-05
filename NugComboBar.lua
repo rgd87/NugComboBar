@@ -639,28 +639,40 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
 
-            local showMissileProcs = NugComboBarDB.special1
-            if showMissileProcs then
-                self:SetMaxPoints(4, "ARCANE", 3)
-                local arcaneCharges = GetSpellInfo(36032)
-                local arcaneMissiles = GetSpellInfo(79683)
-                local GetChargesAndBarrage = function(unit)
-                    local _,_,_, count1 = UnitAura("player", arcaneCharges, nil, "HARMFUL")
-                    local _,_,_, count2 = UnitAura("player", arcaneMissiles, nil, "HELPFUL")
-                    return count1 or 0, 0, nil, nil, count2 or 0 -- for second line
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self, event)
+                local spec = GetSpecialization()
+                if spec == 1 then
+                    local showMissileProcs = NugComboBarDB.special1
+                    if showMissileProcs then
+                        self:SetMaxPoints(4, "ARCANE", 3)
+                        local arcaneCharges = GetSpellInfo(36032)
+                        local arcaneMissiles = GetSpellInfo(79683)
+                        local GetChargesAndBarrage = function(unit)
+                            local _,_,_, count1 = UnitAura("player", arcaneCharges, nil, "HARMFUL")
+                            local _,_,_, count2 = UnitAura("player", arcaneMissiles, nil, "HELPFUL")
+                            return count1 or 0, 0, nil, nil, count2 or 0 -- for second line
+                        end
+                        -- scanAura = GetSpellInfo(36032) -- Arcane Blast Buff
+                        -- filter = "HARMFUL"
+                        -- allowedUnit = "player"
+                        GetComboPoints = GetChargesAndBarrage
+                    else
+                        self:DisableBar()
+                        self:SetMaxPoints(4)
+                        scanAura = GetSpellInfo(36032) -- Arcane Blast Buff
+                        filter = "HARMFUL"
+                        GetComboPoints = GetAuraStack
+                    end
+                -- else
+                    -- self:DisableBar()
+                    -- self:SetMaxPoints(5)
+                    -- scanAura = GetSpellInfo(116267) -- Incanter's Flow Buff
+                    -- filter = "HELPFUL"
+                    -- GetComboPoints = GetAuraStack
                 end
-                -- scanAura = GetSpellInfo(36032) -- Arcane Blast Buff
-                -- filter = "HARMFUL"
-                -- allowedUnit = "player"
-                GetComboPoints = GetChargesAndBarrage
-            else
-                self:DisableBar()
-                self:SetMaxPoints(4)
-                scanAura = GetSpellInfo(36032) -- Arcane Blast Buff
-                filter = "HARMFUL"
-                allowedUnit = "player"
-                GetComboPoints = GetAuraStack
             end
+            self:SPELLS_CHANGED()
         else
             self:SetMaxPoints(2)
             return
