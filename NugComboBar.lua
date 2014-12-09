@@ -337,7 +337,6 @@ function NugComboBar:LoadClassSettings()
             local GetLightningShield2 = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
                 if not count then return 0, 0 end
-                print(count)
                 return 0, count
             end
 
