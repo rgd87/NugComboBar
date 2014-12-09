@@ -314,6 +314,9 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
+
+            local maxcharges = IsSpellKnown(157774) and 20 or 15
+
             local LShield = GetSpellInfo(324) -- Lightning Shield
             local GetLightningShield = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
@@ -337,6 +340,11 @@ function NugComboBar:LoadClassSettings()
             local GetLightningShield2 = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
                 if not count then return 0, 0 end
+                if count >= maxcharges - 3 and NugComboBar.bar then
+                    NugComboBar.bar:SetColor(unpack(NugComboBarDB.colors.bar2))
+                else
+                    NugComboBar.bar:SetColor(unpack(NugComboBarDB.colors.bar1))
+                end
                 return 0, count
             end
 
@@ -348,7 +356,7 @@ function NugComboBar:LoadClassSettings()
                     defaultProgress = 1
                     if self.bar then
                         showEmpty = true
-                        local maxcharges = IsSpellKnown(157774) and 20 or 15
+                        maxcharges = IsSpellKnown(157774) and 20 or 15
                         self:EnableBar(0, maxcharges, "Big")
                         GetComboPoints = GetLightningShield2
                     else
