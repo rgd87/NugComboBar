@@ -655,9 +655,10 @@ function NugComboBar:LoadClassSettings()
         elseif class == "MAGE" then 
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS 
-
+            self:SetMaxPoints(5)
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
+                self:RegisterEvent("UNIT_AURA")
                 local spec = GetSpecialization()
                 if spec == 1 then
                     local showMissileProcs = NugComboBarDB.special1
@@ -681,12 +682,12 @@ function NugComboBar:LoadClassSettings()
                         filter = "HARMFUL"
                         GetComboPoints = GetAuraStack
                     end
-                -- else
-                    -- self:DisableBar()
-                    -- self:SetMaxPoints(5)
-                    -- scanAura = GetSpellInfo(116267) -- Incanter's Flow Buff
-                    -- filter = "HELPFUL"
-                    -- GetComboPoints = GetAuraStack
+                elseif IsSpellKnown(1463) then
+                    self:DisableBar()
+                    self:SetMaxPoints(5)
+                    scanAura = GetSpellInfo(116267) -- Incanter's Flow Buff
+                    filter = "HELPFUL"
+                    GetComboPoints = GetAuraStack
                 end
             end
             self:SPELLS_CHANGED()
