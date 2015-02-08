@@ -663,6 +663,7 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
+                self:SetMaxPoints(4)
                 if spec == 1 then
                     local showMissileProcs = NugComboBarDB.special1
                     if showMissileProcs then
