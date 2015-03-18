@@ -686,12 +686,12 @@ function NugComboBar:LoadClassSettings()
                         filter = "HARMFUL"
                         GetComboPoints = GetAuraStack
                     end
-                -- else
-                    -- self:DisableBar()
-                    -- self:SetMaxPoints(5)
-                    -- scanAura = GetSpellInfo(116267) -- Incanter's Flow Buff
-                    -- filter = "HELPFUL"
-                    -- GetComboPoints = GetAuraStack
+                else
+                    self:DisableBar()
+                    self:SetMaxPoints(5)
+                    scanAura = GetSpellInfo(116267) -- Incanter's Flow Buff
+                    filter = "HELPFUL"
+                    GetComboPoints = GetAuraStack
                 end
             end
             self:SPELLS_CHANGED()
@@ -1526,6 +1526,9 @@ NugComboBar.Commands = {
         if not NugComboBarDB_Character.charspec then print("Character-specific should be enabled first"); return end
 
         local spec = GetSpecialization()
+        if not spec or spec == 0 then
+            return
+        end
         if NugComboBarDB_Character.specspec[spec] then
             NugComboBarDB_Character.specspec[spec] = nil
         else
