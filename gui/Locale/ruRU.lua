@@ -44,9 +44,10 @@ L["Use these to calibrate point position on resolutions with aspect ratio other 
 L["Vertical"] = "Вертикальное положение"
 L["Second Point Bar Preset"] = "Профиль второго ряда"
 L["Disable Progress Bar"] = "Отключить прогрессбар"
--- L["Sound Channel"] = "Канал звука"
--- L"Sounds" = "Звуки"
--- L"Max points sound",
+L["Sound Channel"] = "Канал звуков"
+L["Sounds"] = "Звуки"
+L["Max points sound"] = "Звук при заполнении"
+L["Custom Sound"] = "Свой звук"
+L["Use class themes (EXPERIMENTAL)"] = "Использовать темы классов"
 -- L"(Active only for certain specs)",
 -- L"Play",
--- L"Custom Sound",
