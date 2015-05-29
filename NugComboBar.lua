@@ -1018,10 +1018,10 @@ do
             NugComboBar:DisableBar()
         end
 
-        if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
-        if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
-        if onlyCombat == nil then onlyCombat = NugComboBarDB.onlyCombat end;
-        if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
+        showEmpty = NugComboBarDB.showEmpty
+        showAlways = NugComboBarDB.showAlways
+        onlyCombat = NugComboBarDB.onlyCombat
+        hideSlowly = NugComboBarDB.hideSlowly
         if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
 
