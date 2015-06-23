@@ -551,44 +551,58 @@ function NugComboBar:LoadClassSettings()
 
             local BloodChargeName = GetSpellInfo(114851)
             local ScentOfBlood = GetSpellInfo(50421)
-            local GetBloodCharges = function(unit)
-                local _,_,_, count, _,_,_, caster = UnitAura("player", BloodChargeName, nil, "HELPFUL")
-                -- if not count then return 0 end
-                count = count or 0
-                local layer2count = 0
-                local barcount = nil
-                local fives,rem = math.modf(count/5)
-                if count > 10 then
-                    if secondLayerEnabled and count == 12 then
-                        layer2count = 2
+            local ShadowInfusion = GetSpellInfo(91342)
+            local GetBloodCharges = function(spec)
+                return function(unit)
+                    local _,_,_, count, _,_,_, caster = UnitAura("player", BloodChargeName, nil, "HELPFUL")
+                    -- if not count then return 0 end
+                    count = count or 0
+                    local layer2count = 0
+                    local barcount = nil
+                    local fives,rem = math.modf(count/5)
+                    if count > 10 then
+                        if secondLayerEnabled and count == 12 then
+                            layer2count = 2
+                        else
+                            barcount = count - 10
+                        end
                     else
-                        barcount = count - 10
+                        barcount = count - fives*5
                     end
-                else
-                    barcount = count - fives*5
-                end
 
-                local secondRowCount = nil
-                if NugComboBarDB.special1 then
-                    local _,_,_, count2, _,_,_, caster = UnitAura("player", ScentOfBlood, nil, "HELPFUL")
-                    secondRowCount = count2 or 0
+                    local secondRowCount = nil
+                    if spec == "Unholy" then
+                        local _,_,_, count2, _,_,_, caster = UnitAura("pet", ShadowInfusion, nil, "HELPFUL")
+                        secondRowCount = count2 or 0
+                    else
+                        if NugComboBarDB.special1 then
+                            local _,_,_, count2, _,_,_, caster = UnitAura("player", ScentOfBlood, nil, "HELPFUL")
+                            secondRowCount = count2 or 0
+                        end
+                    end
+                    return fives, barcount, nil, layer2count, secondRowCount
                 end
-                return fives, barcount, nil, layer2count, secondRowCount
             end
             
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
                 if      spec == 3 then -- unholy
-                    allowedUnit = "pet"
-                    self:DisableBar()
-                    self:SetMaxPoints(5)
-                    scanAura = GetSpellInfo(91342) -- Shadow Infusion
-                    GetComboPoints = GetAuraStack
-                    soundFullEnabled = true
+                    if IsSpellKnown(45529) and NugComboBarDB.special1 then -- Blood Charges
+                        self:EnableBar(0,5, "Small")
+                        self:SetMaxPoints(2, "DKDOUBLE", 5)
+                        GetComboPoints = GetBloodCharges("Unholy")
+                    else
+                        allowedUnit = "pet"
+                        self:DisableBar()
+                        self:SetMaxPoints(5)
+                        scanAura = GetSpellInfo(91342) -- Shadow Infusion
+                        GetComboPoints = GetAuraStack
+                        soundFullEnabled = true
+                    end
                 elseif IsSpellKnown(45529) then
                     self:EnableBar(0,5, "Small")
-                    GetComboPoints = GetBloodCharges
+                    GetComboPoints = GetBloodCharges("Blood")
                     if NugComboBarDB.special1 and spec == 1 then
                         self:SetMaxPoints(2, "DKDOUBLE", 5)
                     else
@@ -1004,10 +1018,10 @@ do
             NugComboBar:DisableBar()
         end
 
-        if showEmpty == nil then showEmpty = NugComboBarDB.showEmpty end;
-        if showAlways == nil then showAlways = NugComboBarDB.showAlways end;
-        if onlyCombat == nil then onlyCombat = NugComboBarDB.onlyCombat end;
-        if hideSlowly == nil then hideSlowly = NugComboBarDB.hideSlowly end;
+        showEmpty = NugComboBarDB.showEmpty
+        showAlways = NugComboBarDB.showAlways
+        onlyCombat = NugComboBarDB.onlyCombat
+        hideSlowly = NugComboBarDB.hideSlowly
         if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
 
