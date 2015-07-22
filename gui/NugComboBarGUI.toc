@@ -1,4 +1,4 @@
-## Interface: 60100
+## Interface: 60200
 ## Title: NugComboBarGUI
 ## Notes: NugComboBar Configuration Panel
 ## Dependencies: NugComboBar
