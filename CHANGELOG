@@ -1,3 +1,13 @@
+6.0.19:
+ - Enhancement Shaman T18 set bonus support
+
+6.0.17:
+ - some settings were not updating on spec change
+ - ToC update for 6.2
+
+6.0.16:
+ - Updated ruRU and zhTW localizations
+
 6.0.15:
  - Incanter's Flow for non-arcane mages
 
