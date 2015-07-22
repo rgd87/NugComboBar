@@ -373,9 +373,17 @@ function NugComboBar:LoadClassSettings()
                     scanAura = GetSpellInfo(51564) -- Tidal Waves
                     GetComboPoints = GetAuraStack
                 else
+                    NugComboBar.TrackItemSet("Enhancement_T18", {
+                        124293, 124297, 124302, 124303, 124308, --normal
+                    })
+
                     self:DisableBar()
                     soundFullEnabled = true
-                    self:SetMaxPoints(5)
+                    if NugComboBar.IsSetBonusActive("Enhancement_T18", 4) then
+                        self:SetMaxPoints(10, "SHAMANDOUBLE")
+                    else
+                        self:SetMaxPoints(5)
+                    end
                     scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
                     GetComboPoints = GetAuraStack
                 end
@@ -1755,3 +1763,97 @@ function NugComboBar:SuperDisable()
     if self.anchor then self.anchor:Hide() end
     self:SetAlpha(0)
 end
+
+
+
+
+
+local ItemSetsRegistered = {}
+
+local tierSlots = {
+    (GetInventorySlotInfo("ChestSlot")),
+    (GetInventorySlotInfo("HeadSlot")),
+    (GetInventorySlotInfo("ShoulderSlot")),
+    (GetInventorySlotInfo("LegsSlot")),
+    (GetInventorySlotInfo("HandsSlot")),
+}
+
+local setwatcher = CreateFrame("Frame", nil, UIParent)
+setwatcher:SetScript("OnEvent", function(self, event, ...)
+    return self[event](self, event, ...)
+end)
+
+-- setwatcher:RegisterEvent("PLAYER_LOGIN")
+
+-- function setwatcher:PLAYER_LOGIN()
+    -- if next(ItemSetsRegistered) then
+        -- self:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
+        -- self:UNIT_INVENTORY_CHANGED(nil, "player")
+    -- end
+-- end
+
+
+function setwatcher:UNIT_INVENTORY_CHANGED(event, unit)
+    for tiername, tier in pairs(ItemSetsRegistered) do
+        local tier_items = tier.items
+        local pieces_equipped = 0
+        for _, slot in ipairs(tierSlots) do
+            local itemID = GetInventoryItemID("player", slot)
+            if tier_items[itemID] then pieces_equipped = pieces_equipped + 1 end
+        end
+
+        for bp, bonus in pairs(tier.callbacks) do
+            if pieces_equipped >= bp then
+                if not bonus.equipped then
+                    if bonus.on then bonus.on() end
+                    bonus.equipped = true
+                end
+            else
+                if bonus.equipped then
+                    if bonus.off then bonus.off() end
+                    bonus.equipped = false
+                end
+            end
+        end
+    end
+end
+
+function NugComboBar.TrackItemSet(tiername, itemArray)
+    ItemSetsRegistered[tiername] = ItemSetsRegistered[tiername] or {}
+    if not ItemSetsRegistered[tiername].items then
+        ItemSetsRegistered[tiername].items = {}
+        ItemSetsRegistered[tiername].callbacks = {}
+        local bitems = ItemSetsRegistered[tiername].items
+        for _, itemID in ipairs(itemArray) do
+            bitems[itemID] = true
+        end
+    end
+end
+
+function NugComboBar.RegisterSetBonusCallback(tiername, pieces, handle_on, handle_off)
+    local tier = ItemSetsRegistered[tiername]
+    if not tier then error(string.format("Itemset '%s' is not registered", tiername)) end
+    tier.callbacks[pieces] = {}
+    tier.callbacks[pieces].equipped = false
+    tier.callbacks[pieces].on = handle_on
+    tier.callbacks[pieces].off = handle_off
+end
+
+
+function NugComboBar.IsSetBonusActive(tiername, bonuscount)
+        local tier = ItemSetsRegistered[tiername]
+        local tier_items = tier.items
+        local pieces_equipped = 0
+        for _, slot in ipairs(tierSlots) do
+            local itemID = GetInventoryItemID("player", slot)
+            if tier_items[itemID] then pieces_equipped = pieces_equipped + 1 end
+        end
+        return (pieces_equipped >= bonuscount)
+end
+
+-- function NugComboBar:EnableItemSetTracking()
+--     if next(ItemSetsRegistered) then
+--         self:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
+--         self:UNIT_INVENTORY_CHANGED(nil, "player")
+--     end
+-- end
