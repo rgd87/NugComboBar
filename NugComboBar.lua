@@ -388,6 +388,10 @@ function NugComboBar:LoadClassSettings()
                     NugComboBar.TrackItemSet("Enhancement_T18", {
                         124293, 124297, 124302, 124303, 124308, --normal
                     })
+                    NugComboBar.RegisterSetBonusCallback("Enhancement_T18", 4,
+                        function() NugComboBar:LoadClassSettings() end,
+                        function() NugComboBar:LoadClassSettings() end
+                    )
 
                     self:DisableBar()
                     soundFullEnabled = true
@@ -1048,7 +1052,7 @@ do
         if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
 
-        if NugComboBarDB.scale < 0.91 and string.find(NugComboBarDB.preset3d, "funnel") then
+        if NugComboBarDB.scale < 0.93 and string.find(NugComboBarDB.preset3d, "funnel") then
             print("[NugComboBar] funnelXXXX presets do not work on a scale below 0.9.")
             NugComboBarDB.scale = 1
         end
@@ -1843,6 +1847,8 @@ function NugComboBar.TrackItemSet(tiername, itemArray)
             bitems[itemID] = true
         end
     end
+
+    setwatcher:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
 end
 
 function NugComboBar.RegisterSetBonusCallback(tiername, pieces, handle_on, handle_off)
