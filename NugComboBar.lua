@@ -352,6 +352,18 @@ function NugComboBar:LoadClassSettings()
                 return 0, count
             end
 
+            local GetMaelstromT18 = function(unit)
+                local _,_,_, count, _,_,_, caster = UnitBuff("player", GetSpellInfo(53817), nil)
+                count = count or 0
+                local secondRowCount = 0
+                if count > 5 then
+                    secondRowCount = count - 5
+                    count = 5
+                end
+
+                return count, nil,nil, secondRowCount
+            end
+
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
@@ -379,13 +391,16 @@ function NugComboBar:LoadClassSettings()
 
                     self:DisableBar()
                     soundFullEnabled = true
+                    self:SetMaxPoints(5)
                     if NugComboBar.IsSetBonusActive("Enhancement_T18", 4) then
-                        self:SetMaxPoints(10, "SHAMANDOUBLE")
+                    -- if true then
+                        -- self:SetMaxPoints(10, "SHAMANDOUBLE")
+                        GetComboPoints = GetMaelstromT18
                     else
-                        self:SetMaxPoints(5)
+                        scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
+                        GetComboPoints = GetAuraStack
                     end
-                    scanAura = GetSpellInfo(53817) -- Maelstrom Weapon
-                    GetComboPoints = GetAuraStack
+                    -- GetComboPoints = GetAuraStack
                 end
                 self:UNIT_AURA(nil,allowedUnit)
             end
