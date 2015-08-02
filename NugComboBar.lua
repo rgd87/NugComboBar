@@ -310,7 +310,6 @@ function NugComboBar:LoadClassSettings()
             end
             self:SPELLS_CHANGED()
         elseif class == "SHAMAN" then
-            self:SetMaxPoints(5)
             self:RegisterEvent("UNIT_AURA")
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
@@ -318,24 +317,15 @@ function NugComboBar:LoadClassSettings()
 
 
             local LShield = GetSpellInfo(324) -- Lightning Shield
-            -- local GetLightningShield = function(unit)
-            --     local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
-            --     if not count then return 0 end
-            --     count = count - 1
-            --     local layer2count = 0
-            --     if not secondLayerEnabled then
-            --         count = count > 7 and count - 7 or 0
-            --     else
-            --         local a,rem = math.modf(count/2)
-            --         layer2count = a
-            --         count = (rem > 0) and a + 1 or a
-            --         -- if count > 3 then
-            --             -- layer2count = count - 3
-            --             -- count = 3
-            --         -- end
-            --     end
-            --     return count, nil, nil, layer2count
-            -- end
+            local GetLightningShield = function(chargeSize)
+                return function(unit)
+                        local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
+                        if not count then return 0 end
+                        if count == 1 then return 0 end
+                        count = math.modf(count/chargeSize)
+                        return count, nil, nil, nil
+                    end
+            end
 
             local GetLightningShield2 = function(unit)
                 local _,_,_, count, _,_,_, caster = UnitAura("player", LShield, nil, "HELPFUL")
@@ -368,16 +358,24 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
                 if spec == 1 then
-                    defaultValue = 0
-                    defaultProgress = 1
-                    if self.bar then
-                        showEmpty = true
-                        local maxcharges = IsSpellKnown(157774) and 20 or 15
-                        self:EnableBar(1, maxcharges, "Big")
-                        GetComboPoints = GetLightningShield2
+                    local showProgressBar = NugComboBarDB.special1
+                    if showProgressBar then
+                        defaultValue = 0
+                        defaultProgress = 1
+                        self:SetMaxPoints(5)
+                        if self.bar then
+                            showEmpty = true
+                            local maxcharges = IsSpellKnown(157774) and 20 or 15
+                            self:EnableBar(1, maxcharges, "Big")
+                            GetComboPoints = GetLightningShield2
+                        else
+                            showEmpty = false
+                            GetComboPoints = GetAuraStack
+                        end
                     else
-                        showEmpty = false
-                        GetComboPoints = GetAuraStack
+                        self:DisableBar()
+                        self:SetMaxPoints(5, "SHAMAN5")
+                        GetComboPoints = GetLightningShield(IsSpellKnown(157774) and 4 or 3)
                     end
                 elseif spec == 3 then
                     self:DisableBar()
