@@ -358,7 +358,7 @@ function NugComboBar:LoadClassSettings()
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
                 if spec == 1 then
-                    local showProgressBar = NugComboBarDB.special1
+                    local showProgressBar = NugComboBarDB.fulminationBar
                     if showProgressBar then
                         defaultValue = 0
                         defaultProgress = 1
@@ -375,6 +375,7 @@ function NugComboBar:LoadClassSettings()
                     else
                         self:DisableBar()
                         self:SetMaxPoints(5, "SHAMAN5")
+                        soundFullEnabled = true
                         GetComboPoints = GetLightningShield(IsSpellKnown(157774) and 4 or 3)
                     end
                 elseif spec == 3 then

@@ -1,3 +1,7 @@
+6.0.22:
+ - Turn on/off Enh T18 setbonus dynamically
+ - Fulmination again displayed as points. Each point = 3 charges or 4 with improved lightning shield
+
 6.0.21:
  - Enh T18 bonus now using a second layer instead of row
 
