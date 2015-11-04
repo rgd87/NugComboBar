@@ -1067,10 +1067,16 @@ do
             self.anchor:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
         end
 
+        self:RegisterEvent("PLAYER_ENTERING_WORLD")
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
-        self:RegisterEvent("PLAYER_ENTERING_WORLD")
-        self.PLAYER_ENTERING_WORLD = self.PLAYER_REGEN_ENABLED -- Update on looading screen to clear after battlegrounds
+        self:RegisterEvent("PET_BATTLE_OPENING_START")
+        self:RegisterEvent("PET_BATTLE_CLOSE")
+        self.PLAYER_ENTERING_WORLD = self.CheckComboPoints -- Update on looading screen to clear after battlegrounds
+        self.PLAYER_REGEN_ENABLED = self.CheckComboPoints
+        self.PLAYER_REGEN_DISABLED = self.CheckComboPoints
+        self.PET_BATTLE_OPENING_START = self.CheckComboPoints
+        self.PET_BATTLE_CLOSE = self.CheckComboPoints
 
         initial = false
         --self:AttachAnimationGroup()
@@ -1132,10 +1138,8 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
         self:Hide()
     end
 end
-function NugComboBar.PLAYER_REGEN_ENABLED(self)
-    self:UNIT_COMBO_POINTS(event, allowedUnit, nil, true)
-end
-function NugComboBar.PLAYER_REGEN_DISABLED(self)
+
+function NugComboBar.CheckComboPoints(self)
     self:UNIT_COMBO_POINTS(event, allowedUnit, nil)
 end
 
@@ -1190,8 +1194,19 @@ end
 
 
 local comboPointsBefore = 0
+-- local lastChangeTimer = CreateFrame("Frame")
+-- local lastChangeOnUpdate = function(self, time)
+--     self._elapsed = (self._elapsed or 0) + time
+--     if self._elapsed < 10 then return end
+--     self._elapsed = 0
+--     print(GetTime(), "UNIT_COMBO_POINTS(nil, allowedUnit)")
+--     NugComboBar:UNIT_COMBO_POINTS(nil, allowedUnit)
+--     lastChangeTimer:SetScript("OnUpdate", nil)
+-- end
+-- local lastChangeValue
+-- local lastChangeTime = GetTime()
 local targetBefore
-function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
+function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype)
     if unit ~= allowedUnit then return end
 
     if onlyCombat and not UnitAffectingCombat("player") then return self:Hide() else self:Show() end -- usually frame is set to 0 alpha
@@ -1273,13 +1288,17 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
 
     -- print("progress", progress)
     -- print (comboPoints, defaultValue, comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
-    if  not showAlways and
-        comboPoints == defaultValue and
-        (progress == nil or progress == defaultProgress) and
-        (not UnitAffectingCombat("player") or not showEmpty)
+    local forceHide = C_PetBattles.IsInBattle()
+    if forceHide or 
+        (
+            not showAlways and
+            comboPoints == defaultValue and -- or (defaultValue == -1 and lastChangeTime < GetTime() - 9)) and
+            (progress == nil or progress == defaultProgress) and
+            (not UnitAffectingCombat("player") or not showEmpty)
+        )
         then
             local hidden = self:GetAlpha() == 0
-            if hideSlowly then
+            if hideSlowly and not forceHide then
                 -- print("hiding, hidden:", self.hiding, hidden)
                 if (not self.hiding and not hidden)  then
                     -- print("start hiding")
@@ -1297,6 +1316,15 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ptype, forced)
     end
 
     comboPointsBefore = comboPoints
+
+    -- if defaultValue == -1 then
+    --         lastChangeTime = GetTime()
+    --         lastChangeTimer:SetScript("OnUpdate", lastChangeOnUpdate)
+    --         print(GetTime(), 'lastChange!')
+    --         lastChangeTimer._elapsed = 0
+    -- else
+    --     lastChangeTimer:SetScript("OnUpdate", nil)
+    -- end
 
     -- if event ~= -1 then
     --     tframe.started = true
