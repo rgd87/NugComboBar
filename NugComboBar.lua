@@ -69,39 +69,45 @@ function NugComboBar:LoadClassSettings()
         soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
-            local anticipationBuffName = GetSpellInfo(115189)
-            local checkAnticipation = true
+            -- local anticipationBuffName = GetSpellInfo(115189)
+            -- local checkAnticipation = true
             soundFullEnabled = true
-            allowedTargetUnit = "target"
+            -- allowedTargetUnit = "target"
             local ComboPointsWithAnticipation = function(unit)
-                local _,anticipation
-                if checkAnticipation then
-                    _,_,_,anticipation = UnitBuff("player", anticipationBuffName, nil)
-                end
-                anticipation = anticipation or 0
                 local cp = RogueGetComboPoints(unit)
-                if not secondLayerEnabled or (anticipation > 0 and cp < anticipation) then
-                    return cp, anticipation, nil, 0
-                else
-                    return cp, nil,nil, anticipation
+                if cp > 5 then
+                    return 5, nil, nil, cp-5, 0
                 end
+                return cp, nil, nil, 0, 0
             end
             GetComboPoints = ComboPointsWithAnticipation
 
             self:SetMaxPoints(5)
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            self:RegisterEvent("UNIT_COMBO_POINTS")
-            self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            -- self:RegisterEvent("UNIT_COMBO_POINTS")
+            -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            -- self.UNIT_POWER = self.UNIT_COMBO_POINTS
+            self:RegisterEvent("UNIT_POWER")
+            self.UNIT_POWER = function(self,event,unit,ptype)
+                if unit ~= "player" then return end
+                if ptype == "COMBO_POINTS" then
+                    return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+                end
+            end
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 if IsPlayerSpell(114015) then -- Anticipation
-                    self:EnableBar(0, 5, "Long")
-                    self:RegisterUnitEvent("UNIT_AURA", "player")
-                    checkAnticipation = true
+                    self:SetMaxPoints(5) --, "ROGUEDOUBLE", 3)
+                    GetComboPoints = ComboPointsWithAnticipation
+                    -- self:EnableBar(0, 5, "Long")
+                    -- self:RegisterUnitEvent("UNIT_AURA", "player")
+                    -- checkAnticipation = true
                 else
-                    self:DisableBar()
-                    self:UnregisterEvent("UNIT_AURA")
-                    checkAnticipation = false
+                    -- self:DisableBar()
+                    -- self:UnregisterEvent("UNIT_AURA")
+                    -- checkAnticipation = false
+                    GetComboPoints = RogueGetComboPoints
+                    self:SetMaxPoints(5)
                 end
             end
             self:SPELLS_CHANGED()
@@ -978,24 +984,24 @@ local ResolutionOffsets = {
 }
 
 function NugComboBar:CheckResolution()
-    local maximized = GetCVar("gxMaximize") == "1"
-    -- GetCVar("gxWindow")
-    local aspectratio
-    if maximized then
-        aspectratio = trim(GetMonitorAspectRatio())
-    else
-        local res = GetCVar("gxResolution")
-        local w,h = string.match(res, "(%d+)x(%d+)")
-        aspectratio = trim(w/h)
-    end
+    -- local maximized = GetCVar("gxMaximize") == "1"
+    -- -- GetCVar("gxWindow")
+    -- local aspectratio
+    -- if maximized then
+    --     aspectratio = trim(GetMonitorAspectRatio())
+    -- else
+    --     local res = GetCVar("gxResolution")
+    --     local w,h = string.match(res, "(%d+)x(%d+)")
+    --     aspectratio = trim(w/h)
+    -- end
     
-    local offsets = ResolutionOffsets[aspectratio]
-    if not offsets then
-        print("NCB: Unknown game resolution, adjust offsets manually")
-    else
-        NugComboBarDB_Global.adjustX, NugComboBarDB_Global.adjustY = unpack(offsets)
-        self._disableOffsetSettings = true
-    end
+    -- local offsets = ResolutionOffsets[aspectratio]
+    -- if not offsets then
+    --     print("NCB: Unknown game resolution, adjust offsets manually")
+    -- else
+    --     NugComboBarDB_Global.adjustX, NugComboBarDB_Global.adjustY = unpack(offsets)
+    --     self._disableOffsetSettings = true
+    -- end
 end
 
 
