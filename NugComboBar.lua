@@ -450,16 +450,17 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_AURA")
                 -- self:DisableBar()
                 local spec = GetSpecialization()
-                if      spec == 3 then
-                    self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
-                    if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
-                    local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
-                    defaultValue = 1
-                    defaultProgress = 0
-                    self:SetMaxPoints(maxembers)
-                    GetComboPoints = GetBurningEmbers
-                    self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
-                elseif  spec == 1 and IsPlayerSpell(WARLOCK_SOULBURN) then
+                -- if      spec == 3 then
+                --     self:EnableBar(0, MAX_POWER_PER_EMBER, "Small")
+                --     if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
+                --     local maxembers = UnitPowerMax( "player", SPELL_POWER_BURNING_EMBERS )
+                --     defaultValue = 1
+                --     defaultProgress = 0
+                --     self:SetMaxPoints(maxembers)
+                --     GetComboPoints = GetBurningEmbers
+                --     self:UNIT_POWER(nil,allowedUnit, "BURNING_EMBERS")
+                -- else
+                if  spec == 1 or spec == 3 then--and IsPlayerSpell(WARLOCK_SOULBURN) then
                     self:DisableBar()
                     local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
                     defaultValue = maxshards
@@ -972,7 +973,7 @@ end
 local ResolutionOffsets = {
     [trim(48/9)] = { 0.77, 0.75 },
     [trim(16/10)] = { 2.25, 2.25 },
-    [trim(16/9)] = { 2.05, 2.1 },
+    [trim(16/9)] = { 0.83, 0.83 },
     [trim(4/3)] = { 2.5, 2.5 },
 }
 
