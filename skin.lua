@@ -4,9 +4,17 @@ NugComboBar.presets = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
         BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0 },
     },
+    ["glowPurple2"] = {
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0, "SPELLS/ShadowWordBefuddle_Head.m2", true, 0.013, 1.95, 1.95,0},
+    },
     ["glowShadowFlame"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
         BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
+    },
+    ["zEpilepsy"] = {
+        NORMAL = { "SPELLS/void_precast_hand.m2", true, 0.03, .85, .85, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4, true },
+        BIG = { "SPELLS/void_precast_hand.m2", true, 0.038, .68, .68, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0, true },
     },
     ["glowHoly"] = {
         LEFT = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.03, 0.83, 0.83, 0 },
@@ -14,10 +22,37 @@ NugComboBar.presets = {
         BIG = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.038, 0.67, 0.67, 0, "spells\\Paladin_headlinghands_state_01.m2", true, 0.01, 2.5,2.5,0 },
         RIGHT = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.03, 0.83, 0.83, 0 },
     },
-
+    
+    -- ["fear"] = {
+    --     NORMAL = { "SPELLS/Fear_State_Base_V2.m2", true, 0.05, 0, 0, 0 },
+    --     BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
+    -- },
+    ["blue"] = {
+        NORMAL = { "SPELLS/FlowingWater_High.m2", true, 0.06, .4, .42, 0 },
+        BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
+    },
+    ["shadow1"] = {
+        NORMAL = { "SPELLS/Precast_Corrupted_01.m2", true, 0.03, .8, .8, 0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0 },
+    },
+    ["furnace"] = {
+        NORMAL = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.01, 2.5, 2.5, 0 },
+        BIG = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.0135, 1.87, 1.87, 0 },
+    },
     ["chiBlast"] = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.025, 1, 1, 0 },
         BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
+    },
+    ["blackHole"] = {
+        -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(-1.1,0,-0.4);
+        -- scale controls black to purple glow ratio
+        -- actual scaling is done by moving camera back and forth
+        NORMAL = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4 },
+        BIG = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0 },
+    },
+    ["blackHole2"] = {
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.014, 1.8, 1.8, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4, true },
+        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.018, 1.42, 1.42, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0, true },
     },
     ["chiBlastBlue"] = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast.m2", true, 0.025, 1, 1, 0 },
@@ -30,10 +65,6 @@ NugComboBar.presets = {
     ["funnelPurple"] = {
         NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, 0.018, 1.4, 1.4, 0 },
         BIG = { "spells\\soulfunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
-    },
-    ["glow_funnelPurple"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
-        BIG = { "spells\\soulfunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0, "spells\\gouge_precast_state_hand.m2", true, 0.0166, 1.5, 1.5, 0},
     },
     ["funnelRed"] = {
         NORMAL = { "spells\\healrag_state_chest.m2", true, 0.018, 1.4, 1.4, 0 },
@@ -281,12 +312,14 @@ local mappings = {
     ["SHAMAN7"] = { 1, 2, 3, 4, 6, 7, 8 },
     ["SHAMAN5"] = { 1, 2, 3, 6, 7 },
     ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},
-    ["ROGUEDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR8 },
+    ["ROGUE53"] = { 1, 2, 3, 4, 6, SR1, SR2, SR8 },
+    ["ROGUE63"] = { 1, 2, 3, 4, 5, 6, SR1, SR2, SR8 },
     ["DKDOUBLE"] = { 1, 6, SR1, SR2, SR3, SR4, SR6},
     ["PALADIN"] = { 1, 2, 6, 7, 8 },
     ["ARCANE"] = { 1, 2, 3, 6, SR1, SR2, SR8 },
     ["4NO6"] = { 1, 2, 3, 8 },
     ["5NO6"] = { 1, 2, 3, 4, 8 },
+    ["MOONKIN"] = { 1, 2, 8, SR1, SR2, SR8 },
 }
 
 
@@ -432,7 +465,7 @@ local SetPresetFunc = function ( self, name, noreset )
     local role = self.bg.settings.role
     if role and not ps[role] then role = "NORMAL" end
     local settings = ps[role] or ps[self.id]
-    local model, cameraReset, scale, ox, oy, oz, bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz = unpack(settings)
+    local model, cameraReset, scale, ox, oy, oz, bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz, doubleLayer = unpack(settings)
 
     self.currentPreset = name
 
@@ -450,6 +483,13 @@ local SetPresetFunc = function ( self, name, noreset )
 
     if self.bgmodel then
         if bgmodel then
+            if doubleLayer then
+                self.bgmodel:SetScale(1)
+                self.bgmodel:SetFrameLevel(1)
+            else
+                self.bgmodel:SetScale(2)
+                self.bgmodel:SetFrameLevel(0)
+            end
 
             self.bgmodel.model_path = bgmodel
             self.bgmodel.model_scale = bgscale
@@ -547,7 +587,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
     -- movieWatchFrame:RegisterEvent("PLAY_MOVIE");
     -- movieWatchFrame:SetScript("OnEvent", ReShowModels);
 
-    if opts.bgeffect then
+    -- if opts.bgeffect then
         local bgm = CreateFrame("PlayerModel","NugComboBarPointBGModel"..id,f)
         bgm:SetFrameLevel(0)
         bgm:SetWidth(size)
@@ -561,7 +601,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
         f.bgmodel:SetScript("OnShow", Redraw)
         f.bgmodel.Redraw = Redraw
         f.bgmodel.ResetTransformations = ResetTransformations
-    end
+    -- end
 
 
     -- local backdrop = {
