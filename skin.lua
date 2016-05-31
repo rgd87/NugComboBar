@@ -22,7 +22,14 @@ NugComboBar.presets = {
         BIG = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.038, 0.67, 0.67, 0, "spells\\Paladin_headlinghands_state_01.m2", true, 0.01, 2.5,2.5,0 },
         RIGHT = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.03, 0.83, 0.83, 0 },
     },
-    
+    -- ["frostFire"] = {
+        -- NORMAL = { 67635, false, 1, -13.7,0,-6},
+        -- BIG = { 67635, false, 1, -6.5,0,-2.9},
+    -- },
+    -- ["frostFireRed"] = {
+    --     NORMAL = { 58835, false, 1, -13.7,0,-6},
+    --     BIG = { 58835, false, 1, -6.5,0,-2.9},
+    -- },    
     -- ["fear"] = {
     --     NORMAL = { "SPELLS/Fear_State_Base_V2.m2", true, 0.05, 0, 0, 0 },
     --     BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
@@ -516,7 +523,11 @@ local Redraw = function(self)
     self:SetModelScale(1)
     self:SetPosition(0,0,0)
 
-    self:SetModel(self.model_path)
+    if type(self.model_path) == "number" then
+        self:SetDisplayInfo(self.model_path)
+    else
+        self:SetModel(self.model_path)
+    end
     self:SetModelScale(self.model_scale)
     self:SetPosition(self.ox, self.oy, self.oz)
 
