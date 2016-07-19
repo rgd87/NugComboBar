@@ -1525,8 +1525,10 @@ end
 function NugComboBar.disableBlizz()
     local class = select(2,UnitClass("player"))
         if class == "ROGUE" or class == "DRUID" then
-            ComboFrame:UnregisterAllEvents()
-            ComboFrame:Hide()
+            ComboPointPlayerFrame:UnregisterAllEvents()
+            ComboPointPlayerFrame:Hide()
+            ComboPointPlayerFrame._Show = ComboPointPlayerFrame.Show
+            ComboPointPlayerFrame.Show = ComboPointPlayerFrame.Hide
         end
         if class == "WARLOCK" then
             WarlockPowerFrame:UnregisterAllEvents()
@@ -1534,24 +1536,24 @@ function NugComboBar.disableBlizz()
             WarlockPowerFrame._Show = WarlockPowerFrame.Show
             WarlockPowerFrame.Show = WarlockPowerFrame.Hide
         end
-        -- if class == "PALADIN" then
-        --     PaladinPowerBar:UnregisterAllEvents()
-        --     PaladinPowerBar:Hide()
-        --     PaladinPowerBar._Show = PaladinPowerBar.Show
-        --     PaladinPowerBar.Show = PaladinPowerBar.Hide
-        -- end
-        -- if class == "PRIEST" then
-        --     PriestBarFrame:UnregisterAllEvents()
-        --     PriestBarFrame:Hide()
-        --     PriestBarFrame._Show = PriestBarFrame.Show
-        --     PriestBarFrame.Show = PriestBarFrame.Hide
-        -- end
-        -- if class == "MONK" then
-        --     MonkHarmonyBar:UnregisterAllEvents()
-        --     MonkHarmonyBar:Hide()
-        --     MonkHarmonyBar._Show = MonkHarmonyBar.Show
-        --     MonkHarmonyBar.Show = MonkHarmonyBar.Hide
-        -- end
+        if class == "PALADIN" then
+            PaladinPowerBarFrame:UnregisterAllEvents()
+            PaladinPowerBarFrame:Hide()
+            PaladinPowerBarFrame._Show = PaladinPowerBarFrame.Show
+            PaladinPowerBarFrame.Show = PaladinPowerBarFrame.Hide
+        end
+        if class == "MAGE" then
+            MageArcaneChargesFrame:UnregisterAllEvents()
+            MageArcaneChargesFrame:Hide()
+            MageArcaneChargesFrame._Show = MageArcaneChargesFrame.Show
+            MageArcaneChargesFrame.Show = MageArcaneChargesFrame.Hide
+        end
+        if class == "MONK" then
+            MonkHarmonyBarFrame:UnregisterAllEvents()
+            MonkHarmonyBarFrame:Hide()
+            MonkHarmonyBarFrame._Show = MonkHarmonyBarFrame.Show
+            MonkHarmonyBarFrame.Show = MonkHarmonyBarFrame.Hide
+        end
     -- else
     --     if class == "ROGUE" or class == "DRUID" then
     --         ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
