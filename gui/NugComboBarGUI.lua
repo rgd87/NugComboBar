@@ -354,7 +354,9 @@ do
                         values = function()
                             local p = {}
                             for k,_ in pairs(NugComboBar.presets) do
-                                p[k] = k
+                                local v = k
+                                if k == "glowPurple" then v = v.." (default)" end
+                                p[k] = v
                             end
                             return p
                         end,
@@ -398,32 +400,6 @@ do
                         order = 4,
                         get = function(info) return NugComboBarDB.colors3d end,
                         set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
-                    },
-
-                    adjustX = {
-                        name = L"X Offset",
-                        type = "range",
-                        disabled = function() return NugComboBar._disableOffsetSettings end,
-                        desc = L"Use these to calibrate point position on resolutions with aspect ratio other than 16:9",
-                        get = function(info) return NugComboBarDB_Global.adjustX end,
-                        set = function(info, v) NugComboBar.Commands.adjustx(v) end,
-                        min = -10,
-                        max = 10,
-                        step = 0.01,
-                        order = 5,
-                    },
-
-                    adjustY = {
-                        name = L"Y Offset",
-                        type = "range",
-                        disabled = function() return NugComboBar._disableOffsetSettings end,
-                        desc = L"Use these to calibrate point position on resolutions with aspect ratio other than 16:9",
-                        get = function(info) return NugComboBarDB_Global.adjustY end,
-                        set = function(info, v) NugComboBar.Commands.adjusty(v) end,
-                        min = -10,
-                        max = 10,
-                        step = 0.01,
-                        order = 6,
                     },
                 },
             },

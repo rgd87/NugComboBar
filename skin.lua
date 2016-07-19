@@ -38,9 +38,9 @@ NugComboBar.presets = {
         NORMAL = { "SPELLS/FlowingWater_High.m2", true, 0.06, .4, .42, 0 },
         BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
     },
-    ["shadow1"] = {
+    ["corrupted"] = {
         NORMAL = { "SPELLS/Precast_Corrupted_01.m2", true, 0.03, .8, .8, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0 },
+        BIG = { "SPELLS/Precast_Corrupted_01.m2", true, 0.035, .7, .7, 0 },
     },
     ["furnace"] = {
         NORMAL = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.01, 2.5, 2.5, 0 },
@@ -50,14 +50,14 @@ NugComboBar.presets = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.025, 1, 1, 0 },
         BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
     },
-    ["blackHole"] = {
+    ["void"] = {
         -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(-1.1,0,-0.4);
         -- scale controls black to purple glow ratio
         -- actual scaling is done by moving camera back and forth
         NORMAL = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4 },
         BIG = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0 },
     },
-    ["blackHole2"] = {
+    ["void2"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.014, 1.8, 1.8, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4, true },
         BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.018, 1.42, 1.42, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0, true },
     },
@@ -903,10 +903,7 @@ end
 NugComboBar.themes = {}
 NugComboBar.themes["WARLOCK"] = {
     [0] = {
-        preset3d = "glowPurple",
-    },
-    [3] = {
-        preset3d = "funnelRed",
+        preset3d = "glowPurple2",
     },
 }
 
@@ -918,25 +915,12 @@ NugComboBar.themes["PALADIN"] = {
 
 NugComboBar.themes["SHAMAN"] = {
     [0] = {
-        preset3d = "electricBlue",
-    }
-}
-
-NugComboBar.themes["PRIEST"] = {
-    [1] = {
-        preset3d = "glowFreedom",
-        colors3d = true,
-        colors = { normal = {0.43, 0.83, 0} },
-    },
-    [3] = {
-        preset3d = "glowPurple",
-        colors3d = true,
-        colors = { normal = {0.27, 1, 0.59} },
+        preset3d = "chiBlastBlue",
     }
 }
 
 NugComboBar.themes["MONK"] = {
     [0] = {
-        preset3d = "funnelGreen",
+        preset3d = "chiBlast",
     },
 }
