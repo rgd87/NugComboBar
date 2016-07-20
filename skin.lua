@@ -924,3 +924,13 @@ NugComboBar.themes["MONK"] = {
         preset3d = "chiBlast",
     },
 }
+
+NugComboBar.themes["ROGUE"] = {
+    [0] = {
+        preset3d = "glowPurple2",
+    },
+    [3] ={
+        preset3d = "glowPurple2",
+        preset3dpointbar2 = "void2",
+    }
+}

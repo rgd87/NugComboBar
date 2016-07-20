@@ -111,7 +111,7 @@ function NugComboBar:LoadClassSettings()
                 local isAnticipation = IsPlayerSpell(114015)
                 local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
                 GetComboPoints = makeRCP(isAnticipation, isSub)--  RogueGetComboPoints
-                if isSub then
+                if isSub and NugComboBarDB.shadowDance then
                     self:SetMaxPoints(maxCP, (maxCP == 6) and "ROGUE63" or "ROGUE53", 3)
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
@@ -377,7 +377,7 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
-                if spec == 3 then
+                if spec == 3 and NugComboBarDB.tidalWaves then
                     self:SetMaxPoints(2)
                     scanAura = GetSpellInfo(53390) -- Tidal Waves
                     GetComboPoints = GetAuraStack
@@ -410,7 +410,7 @@ function NugComboBar:LoadClassSettings()
                 showEmpty = true
                 self:DisableBar()
                 local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
-                defaultValue = maxshards
+                defaultValue = 1
                 self:SetMaxPoints(maxshards)
                 GetComboPoints = GetShards
                 self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
@@ -519,7 +519,7 @@ function NugComboBar:LoadClassSettings()
                     self:SetMaxPoints(4)
                     self:RegisterEvent("UNIT_POWER_FREQUENT")
                     GetComboPoints = GetArcaneCharges
-                else
+                elseif spec == 2 and NugComboBarDB.infernoBlast then
                     soundFullEnabled = false
                     showEmpty = true
                     self:SetMaxPoints(2)
@@ -574,6 +574,9 @@ local defaults = {
     adjustY = 2.1,
     alpha = 1,
     special1 = false,
+    shadowDance = true,
+    tidalWaves = true,
+    infernoBlast = true,
     hideWithoutTarget = false,
     vertical = false,
     soundChannel = "SFX",
@@ -1328,6 +1331,18 @@ NugComboBar.Commands = {
     ["special"] = function(v)
         NugComboBarDB.special1 = not NugComboBarDB.special1
         print ("NCB Special = ", NugComboBarDB.special1)
+    end,
+    ["shadowdance"] = function(v)
+        NugComboBarDB.shadowDance = not NugComboBarDB.shadowDance
+        print ("NCB Shadow Dance = ", NugComboBarDB.shadowDance)
+    end,
+    ["tidalwaves"] = function(v)
+        NugComboBarDB.tidalWaves = not NugComboBarDB.tidalWaves
+        print ("NCB Tidal Waves = ", NugComboBarDB.tidalWaves)
+    end,
+    ["infernoblast"] = function(v)
+        NugComboBarDB.infernoBlast = not NugComboBarDB.infernoBlast
+        print ("NCB Inferno Blast = ", NugComboBarDB.infernoBlast)
     end,
     ["scale"] = function(v)
         local num = tonumber(v)
