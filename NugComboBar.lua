@@ -526,6 +526,8 @@ function NugComboBar:LoadClassSettings()
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
                     GetComboPoints = GetInfernoBlastCharges
+                else
+                    GetComboPoints = RogueGetComboPoints
                 end
             end
             self:SPELLS_CHANGED()
@@ -1334,14 +1336,17 @@ NugComboBar.Commands = {
     end,
     ["shadowdance"] = function(v)
         NugComboBarDB.shadowDance = not NugComboBarDB.shadowDance
+        NugComboBar:Reinitialize()
         print ("NCB Shadow Dance = ", NugComboBarDB.shadowDance)
     end,
     ["tidalwaves"] = function(v)
         NugComboBarDB.tidalWaves = not NugComboBarDB.tidalWaves
+        NugComboBar:Reinitialize()
         print ("NCB Tidal Waves = ", NugComboBarDB.tidalWaves)
     end,
     ["infernoblast"] = function(v)
         NugComboBarDB.infernoBlast = not NugComboBarDB.infernoBlast
+        NugComboBar:Reinitialize()
         print ("NCB Inferno Blast = ", NugComboBarDB.infernoBlast)
     end,
     ["scale"] = function(v)
