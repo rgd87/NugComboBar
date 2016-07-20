@@ -547,6 +547,7 @@ local defaults = {
     showEmpty = false,
     hideSlowly = true,
     disableBlizz = false,
+    disableBlizzNP = false,
     colors = {
         [1] = {0.77,0.26,0.29},
         [2] = {0.77,0.26,0.29},
@@ -714,7 +715,8 @@ do
             -- self:RegisterEvent("PLAYER_LOGIN")
             self:RegisterEvent("PLAYER_LOGOUT")
 
-            if NugComboBarDB.disableBlizz then NugComboBar.disableBlizz() end
+            if NugComboBarDB.disableBlizz then NugComboBar.disableBlizzFrames() end
+            if NugComboBarDB.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
 
             if initial then
                 local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
@@ -1330,6 +1332,10 @@ NugComboBar.Commands = {
         NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
         print ("NCB> Changes will take effect after /reload")
     end,
+    ["toggleblizznp"] = function(v)
+        NugComboBarDB.disableBlizzNP = not NugComboBarDB.disableBlizzNP
+        print ("NCB> Changes will take effect after /reload")
+    end,
     ["special"] = function(v)
         NugComboBarDB.special1 = not NugComboBarDB.special1
         print ("NCB Special = ", NugComboBarDB.special1)
@@ -1542,7 +1548,7 @@ function NugComboBar.SlashCmd(msg)
 end
 
 
-function NugComboBar.disableBlizz()
+function NugComboBar.disableBlizzFrames()
     local class = select(2,UnitClass("player"))
         if class == "ROGUE" or class == "DRUID" then
             ComboPointPlayerFrame:UnregisterAllEvents()
@@ -1554,7 +1560,7 @@ function NugComboBar.disableBlizz()
             WarlockPowerFrame:UnregisterAllEvents()
             WarlockPowerFrame:Hide()
             WarlockPowerFrame._Show = WarlockPowerFrame.Show
-            WarlockPowerFrame.Show = WarlockPowerFrame.Hide
+            WarlockPowerFrame.Show = WarlockPowerFrame.Hide            
         end
         if class == "PALADIN" then
             PaladinPowerBarFrame:UnregisterAllEvents()
@@ -1574,47 +1580,32 @@ function NugComboBar.disableBlizz()
             MonkHarmonyBarFrame._Show = MonkHarmonyBarFrame.Show
             MonkHarmonyBarFrame.Show = MonkHarmonyBarFrame.Hide
         end
-    -- else
-    --     if class == "ROGUE" or class == "DRUID" then
-    --         ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    --         ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
-    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-    --         -- if not PlayerFrame:IsVisible() then return end
-    --         ComboFrame_Update()
-    --     end
-    --     if class == "WARLOCK" then
-    --         WarlockPowerFrame.Show = WarlockPowerFrame._Show
-    --         WarlockPowerFrame:Show()
-    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-    --         -- if not PlayerFrame:IsVisible() then return end
-    --         WarlockPowerFrame_OnLoad(WarlockPowerFrame)
-    --         -- WarlockPowerFrame_Update()
-    --     end
-    --     if class == "PALADIN" then
-    --         PaladinPowerBar.Show = PaladinPowerBar._Show
-    --         PaladinPowerBar:Show()
-    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-    --         -- if not PlayerFrame:IsVisible() then return end
-    --         PaladinPowerBar_OnLoad(PaladinPowerBar)
-    --         PaladinPowerBar_Update(PaladinPowerBar)
-    --     end
-    --     if class == "PRIEST" then
-    --         PriestBarFrame.Show = PriestBarFrame._Show
-    --         PriestBarFrame:Show()
-    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-    --         -- if not PlayerFrame:IsVisible() then return end
-    --         PriestBarFrame.spec = nil
-    --         PriestBarFrame_OnLoad(PriestBarFrame)
-    --     end
-    --     if class == "MONK" then
-    --         MonkHarmonyBar.Show = MonkHarmonyBar._Show
-    --         MonkHarmonyBar:Show()
-    --         if not PlayerFrame.unit then PlayerFrame.unit = "player" end
-    --         -- if not PlayerFrame:IsVisible() then return end
-    --         MonkHarmonyBar_OnLoad(MonkHarmonyBar)
-    --     end
-    -- end
 end
+
+function NugComboBar.disableBlizzNameplates()
+    local class = select(2,UnitClass("player"))
+        if class == "ROGUE" or class == "DRUID" then
+            ClassNameplateBarRogueDruidFrame:UnregisterAllEvents()
+            ClassNameplateBarRogueDruidFrame:HideNameplateBar()
+        end
+        if class == "WARLOCK" then        
+            ClassNameplateBarWarlockFrame:UnregisterAllEvents()
+            ClassNameplateBarWarlockFrame:HideNameplateBar()
+        end
+        if class == "PALADIN" then
+            ClassNameplateBarPaladinFrame:UnregisterAllEvents()
+            ClassNameplateBarPaladinFrame:HideNameplateBar()
+        end
+        if class == "MAGE" then
+            ClassNameplateBarMageFrame:UnregisterAllEvents()
+            ClassNameplateBarMageFrame:HideNameplateBar()
+        end
+        if class == "MONK" then
+            ClassNameplateBarWindwalkerMonkFrame:UnregisterAllEvents()
+            ClassNameplateBarWindwalkerMonkFrame:HideNameplateBar()
+        end
+end
+
 
 function NugComboBar:OnSpecChanged()
     local spec = GetSpecialization()

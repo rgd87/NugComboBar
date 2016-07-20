@@ -131,14 +131,6 @@ do
                         set = function(info, s) NugComboBar.Commands.hideslowly() end,
                         order = 8,
                     },
-                    togglebliz = {
-                        name = L"Disable Default",
-                        type = "toggle",
-                        desc = L"Hides default combat point (and other) frames",
-                        get = function(info) return NugComboBarDB.disableBlizz end,
-                        set = function(info, s) NugComboBar.Commands.toggleblizz() end,
-                        order = 9,
-                    },
                     secondLayer = {
                         name = L"Second Layer",
                         desc = L"For Anticipation talent",
@@ -168,6 +160,32 @@ do
                         get = function(info) return NugComboBarDB.vertical end,
                         set = function(info, s) NugComboBar.Commands.vertical() end,
                         order = 13,
+                    },
+                    resourcesGroup = {
+                        type = "group",
+                        name = "",
+                        guiInline = true,
+                        order = 14,
+                        args = {
+                            togglebliz = {
+                                name = L"Disable Class Frames",
+                                type = "toggle",
+                                width = "double",
+                                desc = L"Hides default class frames on player unit frame",
+                                get = function(info) return NugComboBarDB.disableBlizz end,
+                                set = function(info, s) NugComboBar.Commands.toggleblizz() end,
+                                order = 14,
+                            },
+                            togglebliznp = {
+                                name = L"Disable Nameplate Class Frames ",
+                                type = "toggle",
+                                width = "double",
+                                desc = L"Hides default class frames on player nameplate",
+                                get = function(info) return NugComboBarDB.disableBlizzNP end,
+                                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
+                                order = 16,
+                            },
+                        },
                     },
                 }
             },
