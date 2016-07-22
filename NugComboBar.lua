@@ -303,7 +303,7 @@ function NugComboBar:LoadClassSettings()
             local GetIronskinBrew = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(115308) -- ironskin brew id
                 -- print (charges, maxCharges, chargeStart, chargeDuration)
-                return charges, chargeStart, chargeDuration
+                return charges--, chargeStart, chargeDuration
             end
 
             -- local isCT = NugComboBarDB.classThemes
@@ -346,11 +346,11 @@ function NugComboBar:LoadClassSettings()
                         defaultValue = 3
                     end
                     showEmpty = true
-                    self:EnableBar(0, 6,"Small")
-                    if self.bar then
-                        self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
+                    -- self:EnableBar(0, 6,"Small")
+                    -- if self.bar then
+                        -- self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
                         
-                    end
+                    -- end
                 else
                     soundFullEnabled = true
                     if IsPlayerSpell(115396)  -- Ascension
