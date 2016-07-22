@@ -439,10 +439,12 @@ function NugComboBar:LoadClassSettings()
                 self:UNIT_COMBO_POINTS(nil, "player")
             end
             self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
-            self:SetMaxPoints(3)
+            self:SetMaxPoints(5)
             local survival = function()
                 self:SetMaxPoints(3)
                 defaultValue = 3
+                -- self:Hide()
+                -- self:Shows()
                 showEmpty = true
                 self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                 self:RegisterEvent("SPELL_UPDATE_CHARGES")
@@ -712,7 +714,7 @@ do
                 NugComboBar:SuperDisable()
             end
 
-            -- self:RegisterEvent("PLAYER_LOGIN")
+            self:RegisterEvent("PLAYER_LOGIN")
             self:RegisterEvent("PLAYER_LOGOUT")
 
             if NugComboBarDB.disableBlizz then NugComboBar.disableBlizzFrames() end
