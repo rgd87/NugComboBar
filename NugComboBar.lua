@@ -1590,38 +1590,32 @@ function NugComboBar.SlashCmd(msg)
 
 end
 
+local HideBlizzFrame = function(frame)
+	frame:UnregisterAllEvents()
+	frame:Hide()
+	frame._Show = frame.Show
+	frame.Show = frame.Hide
+end
 
 function NugComboBar.disableBlizzFrames()
     local class = select(2,UnitClass("player"))
         if class == "ROGUE" or class == "DRUID" then
-            ComboPointPlayerFrame:UnregisterAllEvents()
-            ComboPointPlayerFrame:Hide()
-            ComboPointPlayerFrame._Show = ComboPointPlayerFrame.Show
-            ComboPointPlayerFrame.Show = ComboPointPlayerFrame.Hide
+            HideBlizzFrame(ComboPointPlayerFrame)
         end
         if class == "WARLOCK" then
-            WarlockPowerFrame:UnregisterAllEvents()
-            WarlockPowerFrame:Hide()
-            WarlockPowerFrame._Show = WarlockPowerFrame.Show
-            WarlockPowerFrame.Show = WarlockPowerFrame.Hide
+			HideBlizzFrame(WarlockPowerFrame)
         end
         if class == "PALADIN" then
-            PaladinPowerBarFrame:UnregisterAllEvents()
-            PaladinPowerBarFrame:Hide()
-            PaladinPowerBarFrame._Show = PaladinPowerBarFrame.Show
-            PaladinPowerBarFrame.Show = PaladinPowerBarFrame.Hide
+			HideBlizzFrame(PaladinPowerBarFrame)
         end
         if class == "MAGE" then
-            MageArcaneChargesFrame:UnregisterAllEvents()
-            MageArcaneChargesFrame:Hide()
-            MageArcaneChargesFrame._Show = MageArcaneChargesFrame.Show
-            MageArcaneChargesFrame.Show = MageArcaneChargesFrame.Hide
+			HideBlizzFrame(MageArcaneChargesFrame)
         end
         if class == "MONK" then
-            MonkHarmonyBarFrame:UnregisterAllEvents()
-            MonkHarmonyBarFrame:Hide()
-            MonkHarmonyBarFrame._Show = MonkHarmonyBarFrame.Show
-            MonkHarmonyBarFrame.Show = MonkHarmonyBarFrame.Hide
+			HideBlizzFrame(MonkHarmonyBarFrame)
+        end
+		if class == "DEATHKNIGHT" then
+			HideBlizzFrame(RuneFrame)
         end
 end
 
@@ -1646,6 +1640,10 @@ function NugComboBar.disableBlizzNameplates()
         if class == "MONK" then
             ClassNameplateBarWindwalkerMonkFrame:UnregisterAllEvents()
             ClassNameplateBarWindwalkerMonkFrame:HideNameplateBar()
+        end
+		if class == "DEATHKNIGHT" then
+            DeathKnightResourceOverlayFrame:UnregisterAllEvents()
+            DeathKnightResourceOverlayFrame:HideNameplateBar()
         end
 end
 
