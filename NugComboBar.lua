@@ -464,8 +464,10 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
             self:SetMaxPoints(6, "6NO6")
-			isRuneTracker = true
+			isRuneTracker = NugComboBarDB.enableFullRuneTracker
 			defaultValue = 6
+
+			if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") then isRuneTracker = false end
 
 			local GetTotalRunes = function(self, unit)
 				local n = 0
@@ -482,9 +484,9 @@ function NugComboBar:LoadClassSettings()
 			self.RUNE_POWER_UPDATE = function(self, event, runeIndex, isEnergize)
 				self:UNIT_COMBO_POINTS("RUNE_POWER_UPDATE", "player", runeIndex, isEnergize)
 			end
-			self.RUNE_TYPE_UPDATE = function(self,event)
-				print(event)
-			end
+			-- self.RUNE_TYPE_UPDATE = function(self,event)
+				-- print(event)
+			-- end
 
 			for i=1,6 do
 				self:RUNE_POWER_UPDATE("RUNE_POWER_UPDATE", i)
@@ -595,6 +597,7 @@ local defaults = {
     preset3d = "glowPurple",
     preset3dlayer2 = "fireOrange",
     preset3dpointbar2 = "fireOrange",
+	enableFullRuneTracker = true,
     classThemes = false,
     secondLayer = true,
     colors3d = true,
@@ -1381,6 +1384,10 @@ NugComboBar.Commands = {
         NugComboBar:Reinitialize()
         print ("NCB Shadow Dance = ", NugComboBarDB.shadowDance)
     end,
+	["runecooldowns"] = function(v)
+        NugComboBarDB.enableFullRuneTracker = not NugComboBarDB.enableFullRuneTracker
+        print (string.format("NCB> Rune Cooldowns are %s, it will take effect after /reload", NugComboBarDB.enableFullRuneTracker and "enabled" or "disabled"))
+    end,
     ["tidalwaves"] = function(v)
         NugComboBarDB.tidalWaves = not NugComboBarDB.tidalWaves
         NugComboBar:Reinitialize()
@@ -1777,52 +1784,28 @@ local function RuneChargeIn(point)
 	point.bgmodel:SetFrameLevel(0)
 	point.RuneChargeFrame:SetScript("OnUpdate", RuneChargeOnUpdate)
 	point.RuneChargeFrame:Show()
+	-- point.RuneChargeFrame:w()
 end
 
+-- local mapPointToRune = {1,2,3,4,5,6}
+-- local _GetRuneCooldown = GetRuneCooldown
+-- local runeSortFunc = function(a,b)
+-- 	local aStart, aDuration, aReady = _GetRuneCooldown(a);
+-- 	local bStart, bDuration, bReady = _GetRuneCooldown(b);
+-- 	if aReady and bReady then
+-- 		return a < b
+-- 	else
+-- 		return aStart < bStart
+-- 	end
+-- end
+--
+-- function NugComboBar:UpdateRunes0(index, isEnergize)
+-- 	table.sort(mapPointToRune,runeSortFunc)
+-- 	NugComboBar:UpdateRunes()
+-- end
 
-
-function NugComboBar:UpdateRunes(index, isEnergize)
-	local start, duration, runeReady = GetRuneCooldown(index);
-
-	local point = self.p[index]
-	if not point.RuneChargeFrame then
-		local bgm = CreateFrame("PlayerModel", nil, self)
-		bgm:SetWidth(64)
-		bgm:SetHeight(64)
-		bgm:SetFrameLevel(0)
-		bgm:SetPoint("CENTER", point, "CENTER", 0, 0)
-
-		-- "spells\\blessingoffreedom_state.m2",  true,  .005, 5.1, 5, 0
-		-- /script NugComboBar.p[1].bgmodel:SetModelScale(0.002); NugComboBar.p[1].bgmodel:SetPosition(12.5,12.6,0)
-		-- /script NugComboBar.p[1].bgmodel:SetModelScale(0.0037); NugComboBar.p[1].bgmodel:SetPosition(6.77,6.7,0)
-		-- "spells\\blessingoffreedom_state.m2",  true,  .003, 8.35, 8.4, 0
-		-- bgm.model_path = "SPELLS/Shadowflame_Cast_Hand.m2"
-        -- bgm.model_scale = 2
-        -- bgm.ox = 0
-        -- bgm.oy = 0
-        -- bgm.oz = 0.28
-        -- bgm.camera_reset = false
-		--
-		bgm.model_path = "spells\\blessingoffreedom_state.m2"
-        bgm.model_scale = 0.0056
-        bgm.ox = 4.5
-        bgm.oy = 4.5
-        bgm.oz = 0
-        bgm.camera_reset = true
-		--
-		bgm.frame = point
-
-		bgm:SetScript("OnUpdate", RuneChargeOnUpdate)
-
-		bgm:SetScript("OnHide", NugComboBar.ResetTransformations)
-        bgm:SetScript("OnShow", NugComboBar.Redraw)
-		bgm.Redraw = NugComboBar.Redraw
-		bgm:Redraw()
-
-		bgm:SetAlpha(0)
-
-		point.RuneChargeFrame = bgm
-	end
+function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
+	self:EnsureRuneChargeFrame(point)
 	if runeReady then
 		point.runeCharging = nil
 		point.RuneChargeFrame:SetScript("OnUpdate", nil)
@@ -1839,5 +1822,90 @@ function NugComboBar:UpdateRunes(index, isEnergize)
 			if point.rag:IsPlaying() then point.rag:Stop() end
 			point:Reappear(RuneChargeIn)
 		end
+	end
+end
+
+-- local updateAll = true
+function NugComboBar:UpdateRunes(index, isEnergize)
+	-- if updateAll then
+		-- for i, index in ipairs(mapPointToRune) do
+		-- 	local start, duration, runeReady = _GetRuneCooldown(index)
+		-- 	local point = self.p[i]
+		--
+		-- 	self:EnsureRuneChargeFrame(point)
+		-- 	print(index)
+		-- 	if not runeReady then
+		-- 		-- if  (point.currentPreset and point.currentPreset ~= "_RuneCharger2")
+		-- 		-- 	or
+		-- 		-- 	(not point.anticipationColor) then
+		--
+		-- 				if not point.runeCharging then
+		-- 					point.runeStart = start
+		-- 					point.runeDuration = duration
+		-- 					-- RuneChargeIn(point)
+		-- 					if point.rag:IsPlaying() then point.rag:Stop() end
+		-- 					point:Reappear(RuneChargeIn)
+		-- 				end
+		-- 		-- end
+		-- 	else
+		-- 		-- print(point.currentPreset, NugComboBarDB.preset3d)
+		-- 		if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d) then
+		--
+		-- 			point.runeCharging = nil
+		-- 			point.RuneChargeFrame:SetScript("OnUpdate", nil)
+		-- 			point.RuneChargeFrame:SetAlpha(0)
+		-- 			point.playermodel:SetAlpha(1)
+		--
+		-- 			if point.rag:IsPlaying() then point.rag:Stop() end
+		-- 			point:Reappear(AnticipationOut, index)
+		-- 		end
+		-- 	end
+		--
+		-- end
+	-- else
+		local start, duration, runeReady = GetRuneCooldown(index);
+		local point = self.p[index]
+		self:UpdateSingleRune(point, index, start, duration, runeReady)
+	-- end
+end
+
+function NugComboBar:EnsureRuneChargeFrame(point)
+	if not point.RuneChargeFrame then
+		local bgm = CreateFrame("PlayerModel", nil, self)
+		bgm:SetWidth(64)
+		bgm:SetHeight(64)
+		bgm:SetFrameLevel(0)
+		bgm:SetPoint("CENTER", point, "CENTER", 0, 0)
+
+		-- "spells\\blessingoffreedom_state.m2",  true,  .005, 5.1, 5, 0
+		-- /script NugComboBar.p[1].bgmodel:SetModelScale(0.002); NugComboBar.p[1].bgmodel:SetPosition(12.5,12.6,0)
+		-- /script NugComboBar.p[1].bgmodel:SetModelScale(0.0037); NugComboBar.p[1].bgmodel:SetPosition(6.77,6.7,0)
+		-- "spells\\blessingoffreedom_state.m2",  true,  .003, 8.35, 8.4, 0
+		-- bgm.model_path = "SPELLS/Shadowflame_Cast_Hand.m2"
+		-- bgm.model_scale = 2
+		-- bgm.ox = 0
+		-- bgm.oy = 0
+		-- bgm.oz = 0.28
+		-- bgm.camera_reset = false
+		--
+		bgm.model_path = "spells\\blessingoffreedom_state.m2"
+		bgm.model_scale = 0.0056
+		bgm.ox = 4.5
+		bgm.oy = 4.5
+		bgm.oz = 0
+		bgm.camera_reset = true
+		--
+		bgm.frame = point
+
+		bgm:SetScript("OnUpdate", RuneChargeOnUpdate)
+
+		bgm:SetScript("OnHide", NugComboBar.ResetTransformations)
+		bgm:SetScript("OnShow", NugComboBar.Redraw)
+		bgm.Redraw = NugComboBar.Redraw
+		bgm:Redraw()
+
+		bgm:SetAlpha(0)
+
+		point.RuneChargeFrame = bgm
 	end
 end

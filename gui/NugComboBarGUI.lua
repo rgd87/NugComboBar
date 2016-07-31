@@ -227,6 +227,14 @@ do
                         get = function(info) return NugComboBarDB.infernoBlast end,
                         set = function(info, s) NugComboBar.Commands.infernoblast() end,
                     },
+                    detailedRunes = {
+                        name = "|cffaa0000"..L"Rune Cooldowns".."|r",
+                        type = 'toggle',
+                        -- width = "double",
+                        order = 4,
+                        get = function(info) return NugComboBarDB.enableFullRuneTracker end,
+                        set = function(info, s) NugComboBar.Commands.runecooldowns() end,
+                    }
                 },
             },
             showColor = {
@@ -396,7 +404,7 @@ do
                 guiInline = true,
                 order = 6,
                 args = {
-                    
+
                     preset = {
                         name = L"Preset",
                         type = 'select',
@@ -406,7 +414,9 @@ do
                             for k,_ in pairs(NugComboBar.presets) do
                                 local v = k
                                 if k == "glowPurple" then v = v.." (default)" end
-                                p[k] = v
+                                if k ~= "_RuneCharger2" then
+                                    p[k] = v
+                                end
                             end
                             return p
                         end,
@@ -473,7 +483,7 @@ do
                 guiInline = true,
                 order = 6.5,
                 args = {
-                    
+
                     soundNameFull = {
                         name = L"Max points sound",
                         desc = L"(Active only for certain specs)",
@@ -496,7 +506,7 @@ do
                         width = "half",
                         order = 1.5,
                         disabled = function() return (NugComboBarDB.soundNameFull == "none") end,
-                        func = function() 
+                        func = function()
                         local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
                         if sound == "custom" then
                             sound = NugComboBarDB.soundNameFullCustom
@@ -547,7 +557,7 @@ do
                     -- },
                 },
             },
-            
+
         },
     }
 
@@ -556,12 +566,12 @@ do
     Config:RegisterOptionsTable("NugComboBar", opt)
     Config:RegisterOptionsTable("NugComboBar-Bliz", {name = "NugComboBar",type = 'group',args = {} })
     Dialog:SetDefaultSize("NugComboBar-Bliz", 600, 400)
-    
+
     Config:RegisterOptionsTable("NugComboBar-General", opt.args.general)
     Dialog:AddToBlizOptions("NugComboBar-General", "NugComboBar")
     --Config:RegisterOptionsTable("NugComboBar-General", opt.args.general)
     --Dialog:AddToBlizOptions("NugComboBar-General", "NugComboBar")
-    
+
     -- Config:RegisterOptionsTable("NugComboBar-Skin", opt.args.skin)
     -- Dialog:AddToBlizOptions("NugComboBar-Skin", opt.args.skin.name, "NugComboBar")
 end
