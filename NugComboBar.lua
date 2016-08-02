@@ -408,6 +408,7 @@ function NugComboBar:LoadClassSettings()
 
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
+				soundFullEnabled = true
                 showEmpty = true
                 self:DisableBar()
                 local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
@@ -441,7 +442,9 @@ function NugComboBar:LoadClassSettings()
             end
             self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
             self:SetMaxPoints(5)
+			soundFullEnabled = false
             local survival = function()
+				soundFullEnabled = true
                 self:SetMaxPoints(3)
                 defaultValue = 3
                 -- self:Hide()
@@ -592,6 +595,7 @@ local defaults = {
         ["bar1"] = { 0.9,0.1,0.1 },
         ["bar2"] = { .9,0.1,0.4 },
         ["layer2"] = { 0.80, 0.23, 0.79 },
+		["row2"] = { 0.80, 0.23, 0.79 },
     },
     enable3d = true,
     preset3d = "glowPurple",

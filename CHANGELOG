@@ -1,6 +1,7 @@
 7.0.4:
  - Rune Tracking, rune cooldowns option (Makina skin requires update to 
 r7)
+ - Sound enabled for Hunters and Warlocks
 
 7.0.3:
  - Bugfix for cases with points filled from the start of session
