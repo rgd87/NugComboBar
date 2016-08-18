@@ -329,9 +329,6 @@ function NugComboBar:LoadClassSettings()
 
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
-
-
-
                 local spec = GetSpecialization()
                 if spec == 1 and IsPlayerSpell(115308) then
                     GetComboPoints = GetIronskinBrew
@@ -566,6 +563,7 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         else
             self:SetMaxPoints(2)
+			self:Disable()
             return
         end
 end
@@ -600,7 +598,7 @@ local defaults = {
     enable3d = true,
     preset3d = "glowPurple",
     preset3dlayer2 = "fireOrange",
-    preset3dpointbar2 = "fireOrange",
+    preset3dpointbar2 = "void",
 	enableFullRuneTracker = true,
     classThemes = false,
     secondLayer = true,
@@ -851,6 +849,8 @@ end
 do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
+		if NugComboBar.isDisabled then return end
+
         if initial then
             self:CheckResolution()
         end
@@ -1325,6 +1325,7 @@ local ParseOpts = function(str)
 end
 NugComboBar.Commands = {
     ["unlock"] = function(v)
+		NugComboBar:Show()
         NugComboBar.anchor:Show()
         NugComboBar:SetAlpha(NugComboBarDB.alpha)
         for i=1,NugComboBar.MAX_POINTS do
@@ -1567,7 +1568,7 @@ function NugComboBar.SlashCmd(msg)
           |cff55ff55/ncb preset3d <preset>|r
           |cff55ff55/ncb scale|r <0.3 - 2.0>
           |cff55ff55/ncb changecolor|r <1-6, 0 = all, -1 = 2nd bar>
-          |cff55ff55/ncb anchorpoint|r <left | right>
+          |cff55ff55/ncb anchorpoint|r <left | right | top >
           |cff55ff55/ncb showempty|r
           |cff55ff55/ncb hideslowly|r
           |cff55ff55/ncb toggleblizz|r
@@ -1658,6 +1659,13 @@ function NugComboBar:OnSpecChanged()
         currentSpec = spec
         NugComboBar:Reinitialize()
     end
+end
+
+function NugComboBar:Disable()
+	self:DisableBar()
+    if self.anchor then self.anchor:Hide() end
+    self:SetAlpha(0)
+	self:Hide()
 end
 
 function NugComboBar:SuperDisable()

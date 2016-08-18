@@ -1,3 +1,8 @@
+7.0.5:
+ - BrM Monk: bar should no longer appear at login if disabled
+ - bugfixes
+ - Updated void and void2 presets
+
 7.0.4:
  - Rune Tracking, rune cooldowns option (Makina skin requires update to 
 r7)

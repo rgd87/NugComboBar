@@ -60,16 +60,22 @@ NugComboBar.presets = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.025, 1, 1, 0 },
         BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
     },
+    -- ["scourge"] = {
+    --     NORMAL = { "spells/7fx_deathknight_scourgeofworlds_statechest.m2", true, 0.008, 3.1, 3.1, 0 },
+    --     -- BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
+    -- }
+
+    -- NORMAL = { "spells/7fx_cordana_glaive_missile.m2", true, 0.008, 3.1, 3.1, 0 },
     ["void"] = {
-        -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(-1.1,0,-0.4);
+        -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(0,0,0);
         -- scale controls black to purple glow ratio
         -- actual scaling is done by moving camera back and forth
-        NORMAL = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4 },
-        BIG = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0 },
+        NORMAL = { "spells/7fx_warlock_shadow_missile.m2", false, 0.06, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -1.1, 0, -0.4, true },
+        BIG = { "spells/7fx_warlock_shadow_missile.m2", false, 0.06, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -0.2, 0.02, 0, true },
     },
     ["void2"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.014, 1.8, 1.8, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4, true },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.018, 1.42, 1.42, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0, true },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.017, 1.46, 1.46, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.6, -1.1, 0, -0.4, true },
+        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.018, 1.42, 1.42, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.6, -0.2, 0.02, 0, true },
     },
     ["chiBlastBlue"] = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast.m2", true, 0.025, 1, 1, 0 },
@@ -945,6 +951,6 @@ NugComboBar.themes["ROGUE"] = {
     },
     [3] ={
         preset3d = "glowPurple2",
-        preset3dpointbar2 = "void2",
+        preset3dpointbar2 = "void",
     }
 }
