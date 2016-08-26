@@ -1,3 +1,6 @@
+7.0.5c:
+ - Fixed a bug with Runes on 2d mode
+
 7.0.5:
  - BrM Monk: bar should no longer appear at login if disabled
  - bugfixes

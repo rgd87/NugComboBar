@@ -467,7 +467,7 @@ function NugComboBar:LoadClassSettings()
 			isRuneTracker = NugComboBarDB.enableFullRuneTracker
 			defaultValue = 6
 
-			if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") then isRuneTracker = false end
+			if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") or not NugComboBarDB.enable3d then isRuneTracker = false end
 
 			local GetTotalRunes = function(self, unit)
 				local n = 0
