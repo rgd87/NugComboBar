@@ -417,17 +417,25 @@ function NugComboBar:LoadClassSettings()
 
             self:SPELLS_CHANGED()
 
-        -- elseif class == "WARRIOR" then
-        --     self:SetMaxPoints(4)
-        --     self.UNIT_AURA = self.UNIT_COMBO_POINTS
-        --     allowedUnit = "player"
-        --     GetComboPoints = GetAuraStack
-            -- self:RegisterEvent("SPELLS_CHANGED")
-            -- self.SPELLS_CHANGED = function(self)
-                -- local spec = GetSpecialization()
-                -- self:RegisterEvent("UNIT_AURA")
-            -- end
-            -- self:SPELLS_CHANGED()
+        elseif class == "WARRIOR" then
+            self:SetMaxPoints(3)
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+            allowedUnit = "player"
+            GetComboPoints = GetAuraStack
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self)
+                local spec = GetSpecialization()
+				if spec == 3 then
+					scanAura = GetSpellInfo(204488) -- Focused Rage (Prot)
+					self:RegisterEvent("UNIT_AURA")
+				elseif spec == 1 and IsPlayerSpell(207982) then
+					scanAura = GetSpellInfo(207982) -- Focused Rage (Prot)
+                	self:RegisterEvent("UNIT_AURA")
+				else
+					self:Disable()
+				end
+            end
+            self:SPELLS_CHANGED()
         elseif class == "HUNTER" then
             local GetMongooseBite = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(190928) -- Mongoose Bite
@@ -507,11 +515,35 @@ function NugComboBar:LoadClassSettings()
             local GetArcaneCharges = function(unit)
                 return UnitPower(unit, SPELL_POWER_ARCANE_CHARGES)
             end
-            local GetInfernoBlastCharges = function(unit)
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(108853) -- Inferno Blast
+            local GetFireBlastCharges = function(unit)
+                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(108853) -- Fire Blast
                 return charges--, chargeStart, chargeDuration
             end
 
+			local GetPhoenixFlamesCharges = function(unit)
+                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(194466) -- Phoenix's Flames
+                return charges
+            end
+
+			local FireMageCombined = function(unit)
+				local secondRowCount = GetFireBlastCharges()
+				local cp = GetPhoenixFlamesCharges()
+				return cp, nil, nil, 0, secondRowCount
+			end
+
+			-- local makeRCP = function(anticipation, subtlety)
+            --     local secondRowCount = 0
+            --     return function(unit)
+            --         if subtlety then
+            --             secondRowCount = GetShadowdance()
+            --         end
+            --         local cp = RogueGetComboPoints(unit)
+            --         if anticipation and cp > 5 then
+            --             return 5, nil, nil, cp-5, secondRowCount
+            --         end
+            --         return cp, nil, nil, 0, secondRowCount
+            --     end
+            -- end
 
             self.UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
                 if unit ~= "player" then return end
@@ -549,13 +581,27 @@ function NugComboBar:LoadClassSettings()
                     self:SetMaxPoints(4)
                     self:RegisterEvent("UNIT_POWER_FREQUENT")
                     GetComboPoints = GetArcaneCharges
-                elseif spec == 2 and NugComboBarDB.infernoBlast then
+                elseif spec == 2 then
                     soundFullEnabled = false
                     showEmpty = true
-                    self:SetMaxPoints(2)
+					defaultValue = 3
+
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    GetComboPoints = GetInfernoBlastCharges
+
+					if NugComboBar:IsDefaultSkin() and NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
+						self:SetMaxPoints(3, "FIREMAGE", 2)
+						GetComboPoints = FireMageCombined
+					elseif IsPlayerSpell(194466) then
+						self:SetMaxPoints(3)
+						GetComboPoints = GetPhoenixFlamesCharges
+					elseif NugComboBarDB.infernoBlast then
+						defaultValue = 2
+						self:SetMaxPoints(2)
+						GetComboPoints = GetFireBlastCharges
+					else
+						self:Disable()
+					end
                 else
                     GetComboPoints = RogueGetComboPoints
                 end
@@ -1617,6 +1663,7 @@ function NugComboBar.disableBlizzFrames()
 			HideBlizzFrame(MageArcaneChargesFrame)
         end
         if class == "MONK" then
+			MonkHarmonyBarFrame:UpdateMaxPower()
 			HideBlizzFrame(MonkHarmonyBarFrame)
         end
 		if class == "DEATHKNIGHT" then
