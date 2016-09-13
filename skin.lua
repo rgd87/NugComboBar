@@ -44,6 +44,7 @@ NugComboBar.presets = {
     --     NORMAL = { "SPELLS/Fear_State_Base_V2.m2", true, 0.05, 0, 0, 0 },
     --     BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
     -- },
+
     ["blue"] = {
         NORMAL = { "SPELLS/FlowingWater_High.m2", true, 0.06, .4, .42, 0 },
         BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
@@ -53,6 +54,10 @@ NugComboBar.presets = {
         BIG = { "SPELLS/Precast_Corrupted_01.m2", true, 0.035, .7, .7, 0 },
     },
     ["furnace"] = {
+        NORMAL = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.009, 2.8, 2.8, 0, "spells/6fx_smallfire.m2", true, 0.0075, 3.3, 3.5, 0, true },
+        BIG = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.011, 2.3, 2.3, 0, "spells/6fx_smallfire.m2", true, 0.009, 2.8, 3, 0, true },
+    },
+    ["furnace2"] = {
         NORMAL = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.01, 2.5, 2.5, 0 },
         BIG = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.0135, 1.87, 1.87, 0 },
     },

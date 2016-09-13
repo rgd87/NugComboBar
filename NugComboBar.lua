@@ -425,11 +425,12 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
-				if spec == 3 then
-					scanAura = GetSpellInfo(204488) -- Focused Rage (Prot)
-					self:RegisterEvent("UNIT_AURA")
-				elseif spec == 1 and IsPlayerSpell(207982) then
-					scanAura = GetSpellInfo(207982) -- Focused Rage (Prot)
+				-- if spec == 3 then
+				-- 	scanAura = GetSpellInfo(204488) -- Focused Rage (Prot)
+				-- 	self:RegisterEvent("UNIT_AURA")
+				-- else
+				if spec == 1 and IsPlayerSpell(207982) then
+					scanAura = GetSpellInfo(207982) -- Focused Rage (Arms)
                 	self:RegisterEvent("UNIT_AURA")
 				else
 					self:Disable()
