@@ -220,7 +220,7 @@ do
                         set = function(info, s) NugComboBar.Commands.tidalwaves() end,
                     },
                     infernoBlast = {
-                        name = "|cffdb4d15"..GetSpellInfo(188449).."|r",
+                        name = "|cffdb4d15"..GetSpellInfo(108853).."|r",
                         type = 'toggle',
                         -- width = "double",
                         order = 3,
@@ -234,7 +234,15 @@ do
                         order = 4,
                         get = function(info) return NugComboBarDB.enableFullRuneTracker end,
                         set = function(info, s) NugComboBar.Commands.runecooldowns() end,
-                    }
+                    },
+                    meatcleaver = {
+                        name = "|cffff3333"..GetSpellInfo(85739).."|r",
+                        type = 'toggle',
+                        -- width = "double",
+                        order = 5,
+                        get = function(info) return NugComboBarDB.meatcleaver end,
+                        set = function(info, s) NugComboBar.Commands.meatcleaver() end,
+                    },
                 },
             },
             showColor = {

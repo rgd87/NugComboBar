@@ -684,11 +684,11 @@ end
 
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
-
-    local res = select(GetCurrentResolution(), GetScreenResolutions())
-    local w,h = string.match(res, "(%d+)x(%d+)")
-
-    local p = (GetScreenHeight()/h) / UIParent:GetScale()
+    --
+    -- local res = select(GetCurrentResolution(), GetScreenResolutions())
+    -- local w,h = string.match(res, "(%d+)x(%d+)")
+    --
+    -- local p = (GetScreenHeight()/h) / UIParent:GetScale()
     -- print("pixel len", p)
 
     bar:SetWidth(45); bar:SetHeight(3)
@@ -697,8 +697,6 @@ local CreatePixelBar = function(self)
     bar:SetValue(50)
     --
     local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, 3)
-    -- barbg:SetTexture[[Interface\AddOns\NugComboBar\tex\statusbar]]
-    -- --[[Interface\TargetingFrame\UI-StatusBar]]
 
 
     barbg:SetTexture[[Interface\Addons\NugComboBar\tex\white]]
@@ -866,10 +864,8 @@ NugComboBar.Create = function(self)
     -- tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -5, 4)
 
     -- bar:Small()
-    bar:SetColor(0.6,0,0)
     -- bar.t = tb
-    self.bar = bar
-    bar:Hide()
+    if bar then bar:Hide() end
 
 
     return self

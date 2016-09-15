@@ -1,3 +1,9 @@
+7.0.7:
+ - Instant feedback Meatcleaver tracking for historical reasons
+ - Checkbox for Meatcleaver toggle
+ - Cleave for Arms when Focused Rage is not talented
+ - Screen resolution query bug fixed
+
 7.0.6a:
  - Default amount of Souls Shards changed to 3
 

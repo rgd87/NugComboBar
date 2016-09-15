@@ -424,6 +424,26 @@ function NugComboBar:LoadClassSettings()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
             GetComboPoints = GetAuraStack
+
+			local rampageMeatcleaver = 0
+			local currentMeatcleaver = 0
+			local MeatcleaverBuff = GetSpellInfo(85739)
+			local Meatcleaver = function()
+				local name, rank, icon, count, debuffType, duration, expirationTime = UnitAura("player", MeatcleaverBuff, nil, "HELPFUL")
+				currentMeatcleaver = expirationTime
+				if currentMeatcleaver == rampageMeatcleaver then name = nil end
+				return name and 4 or 0
+			end
+
+			self.UNIT_SPELLCAST_SUCCEEDED = function(self, event, unit, spell, rank, lineID, spellID)
+				if spellID == 218617 then -- first Rampage hit
+					rampageMeatcleaver = currentMeatcleaver
+					self:UNIT_AURA(nil, "player")
+				end
+			end
+
+			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
@@ -431,9 +451,22 @@ function NugComboBar:LoadClassSettings()
 				-- 	scanAura = GetSpellInfo(204488) -- Focused Rage (Prot)
 				-- 	self:RegisterEvent("UNIT_AURA")
 				-- else
-				if spec == 1 and IsPlayerSpell(207982) then
-					scanAura = GetSpellInfo(207982) -- Focused Rage (Arms)
+				soundFullEnabled = true
+				if spec == 1 then
+					if IsPlayerSpell(207982) then
+						self:SetMaxPoints(3)
+						scanAura = GetSpellInfo(207982) -- Focused Rage (Arms)
+					else
+						self:SetMaxPoints(5)
+						scanAura = GetSpellInfo(188923) -- Cleave
+					end
                 	self:RegisterEvent("UNIT_AURA")
+					GetComboPoints = GetAuraStack
+				elseif spec == 2 and NugComboBarDB.meatcleaver then
+					self:SetMaxPoints(4)
+					GetComboPoints = Meatcleaver
+					self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+					self:RegisterEvent("UNIT_AURA")
 				else
 					self:Disable()
 				end
@@ -662,6 +695,7 @@ local defaults = {
     shadowDance = true,
     tidalWaves = true,
     infernoBlast = true,
+	meatcleaver = true,
     hideWithoutTarget = false,
     vertical = false,
     soundChannel = "SFX",
@@ -1135,6 +1169,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	    end
 
 	    if soundFullEnabled then
+			-- print(comboPoints, self.MAX_POINTS, comboPoints ~= comboPointsBefore)
 	        if  comboPoints == self.MAX_POINTS and
 	            comboPoints ~= comboPointsBefore and
 	            -- comboPointsBefore ~= 0 then
@@ -1459,6 +1494,11 @@ NugComboBar.Commands = {
         NugComboBarDB.infernoBlast = not NugComboBarDB.infernoBlast
         NugComboBar:Reinitialize()
         print ("NCB Inferno Blast = ", NugComboBarDB.infernoBlast)
+    end,
+	["meatcleaver"] = function(v)
+        NugComboBarDB.meatcleaver = not NugComboBarDB.meatcleaver
+        NugComboBar:Reinitialize()
+        print ("NCB Meatcleaver = ", NugComboBarDB.meatcleaver)
     end,
     ["scale"] = function(v)
         local num = tonumber(v)
