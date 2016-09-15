@@ -655,6 +655,79 @@ function NugComboBar.Create3DPoint(self, id, opts)
     return f
 end
 
+local CreateTextureBar = function(self)
+    local bar = CreateFrame("StatusBar",nil, self)
+    bar:SetWidth(38); bar:SetHeight(5)
+    bar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]], "ARTWORK")
+    bar:SetMinMaxValues(0,100)
+    bar:SetValue(50)
+    --
+    local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, 3)
+    barbg:SetTexture[[Interface\TargetingFrame\UI-StatusBar]]
+    barbg:SetVertexColor(0,0,0)
+    barbg:SetAllPoints(bar)
+    bar.bg = barbg
+
+    local tb = bar:CreateTexture(nil, "ARTWORK", nil, 1)
+    tb:SetWidth(60); tb:SetHeight(24)
+    tb:SetTexture[[Interface\Addons\NugComboBar\tex\bar2.tga]]
+    tb:SetTexCoord(0/128, 60/128, 0/64, 24/64)
+    tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -8, 6)
+
+    bar.SetColor = function(self, r,g,b)
+        self:SetStatusBarColor(r,g,b)
+        self.bg:SetVertexColor(r*.3,g*.3,b*.3)
+    end
+
+    return bar
+end
+
+local CreatePixelBar = function(self)
+    local bar = CreateFrame("StatusBar",nil, self)
+
+    local res = select(GetCurrentResolution(), GetScreenResolutions())
+    local w,h = string.match(res, "(%d+)x(%d+)")
+
+    local p = (GetScreenHeight()/h) / UIParent:GetScale()
+    -- print("pixel len", p)
+
+    bar:SetWidth(45); bar:SetHeight(3)
+    bar:SetStatusBarTexture([[Interface\Addons\NugComboBar\tex\white]], "ARTWORK")
+    bar:SetMinMaxValues(0,100)
+    bar:SetValue(50)
+    --
+    local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, 3)
+    -- barbg:SetTexture[[Interface\AddOns\NugComboBar\tex\statusbar]]
+    -- --[[Interface\TargetingFrame\UI-StatusBar]]
+
+
+    barbg:SetTexture[[Interface\Addons\NugComboBar\tex\white]]
+    barbg:SetVertexColor(0,0,0)
+    -- barbg:SetAllPoints(bar)
+    -- barbg:SetPoint("TOPLEFT", bar, "TOPLEFT", 0, 0)
+    barbg:SetHeight(1)
+    barbg:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", 0, 0)
+    barbg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 0, 0)
+    bar.bg = barbg
+    --
+    --
+    -- local backdrop = {
+    --     bgFile = [[Interface\Addons\NugComboBar\tex\white]],
+    --     tile = true, tileSize = 0,
+    --     insets = {left = 0, right = 0, top = 0, bottom = -p*2},
+    -- }
+    -- bar:SetBackdrop(backdrop)
+    -- bar:SetBackdropColor(0, 0, 0, 1)
+
+    bar.SetColor = function(self, r,g,b)
+        self:SetStatusBarColor(r,g,b)
+        self.bg:SetVertexColor(r,g,b, 0.5)
+        -- self:SetBackdropColor(r,g,b)
+    end
+
+    return bar
+end
+
 NugComboBar.Create = function(self)
     self:SetFrameStrata("MEDIUM")
     -- if IsVertical() then
@@ -769,141 +842,19 @@ NugComboBar.Create = function(self)
         f.Reappear = ReappearFunc
     end
 
-    local bar = self.bar or CreateFrame("StatusBar",nil, self)
+    local bar = self.bar
     if initial then
-    local ts = pointtex["bar"]
-    bar:SetWidth(45); bar:SetHeight(7)
-    bar:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
-    bar:SetMinMaxValues(0,100)
-    bar:SetValue(50)
-
-    local barbg = bar:CreateTexture(nil, "BACKGROUND")
-    barbg:SetTexture[[Interface\AddOns\NugComboBar\tex\statusbar]]
-    --[[Interface\TargetingFrame\UI-StatusBar]]
-    --[[Interface\Addons\NugComboBar\tex\white]]
-    barbg:SetAllPoints(bar)
-    bar.bg = barbg
-
-
-    local backdrop = {
-        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-        tile = true, tileSize = 0,
-        insets = {left = -2, right = -2, top = -2, bottom = -2},
-    }
-    bar:SetBackdrop(backdrop)
-    bar:SetBackdropColor(0, 0, 0, 0.7)
-
-    bar.SetColor = function(self, r,g,b)
-        self:SetStatusBarColor(r,g,b)
-        self.bg:SetVertexColor(r*.5,g*.5,b*.5)
-    end
-
-    local text = bar:CreateFontString(nil, "OVERLAY")
-    text:SetFont([[Interface\AddOns\NugComboBar\tex\Emblem.ttf]],15)
-    text:SetPoint("TOPLEFT",bar,"TOPLEFT", 0,0)
-    text:SetPoint("BOTTOMRIGHT",bar,"BOTTOMRIGHT", -10,0)
-    text:SetJustifyH("RIGHT")
-    text:SetTextColor(1,1,1,0.2)
-    -- text:SetVertexColor(1,1,1)
-    bar.text = text
-
-    bar.SetValue1 = bar.SetValue -- text should only be visible for demonology
-    bar.SetValue = function(self, v)
-        self:SetValue1(v)
-        if self.text:IsVisible() then
-            self.text:SetText(v)
+        if not bar then
+            bar = CreatePixelBar(self)
+            self.bar = bar
         end
-    end
 
-    local normalSetScale = self.SetScale
-    local normalSetAlpha = self.SetAlpha
-    local normalShow = self.Show
-    local normalHide = self.Hide
-    bar.Small = function(self)
-        if IsVertical() then
-            self:SetWidth(7); self:SetHeight(45);
-            self:SetOrientation("VERTICAL")
-            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\vstatusbar]], "ARTWORK")
-        else
-            self:SetWidth(45); self:SetHeight(7);
-            self:SetOrientation("HORIZONTAL")
-            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
-        end
-        self.text:Hide()
-        self:SetParent(NugComboBar)
-        self:ClearAllPoints()
-        NugComboBar.SetScale = normalSetScale
-        NugComboBar.SetAlpha = normalSetAlpha
-        NugComboBar.Show = normalShow
-        NugComboBar.Hide = normalHide
-        -- if barBottom then
-            -- self:SetPoint("TOPLEFT", NugComboBar, "BOTTOMLEFT", 14, 4)
+
+        if not IsVertical() then --only shows bar in horizontal
+            bar:SetPoint("BOTTOMLEFT", NugComboBar, "TOPLEFT", 14, 0)
         -- else
-        if IsVertical() then
-            self:SetPoint("BOTTOMRIGHT", NugComboBar, "BOTTOMLEFT", 0, 14)
-        else
-            self:SetPoint("BOTTOMLEFT", NugComboBar, "TOPLEFT", 14, 0)
+            -- bar:SetPoint("BOTTOMRIGHT", NugComboBar, "BOTTOMLEFT", 0, 14)
         end
-        -- end
-        NugComboBar:Show()
-    end
-
-    bar.Long = function(self)
-        self:Small()
-        if IsVertical() then
-            self:SetWidth(4); self:SetHeight(83);
-        else
-            self:SetWidth(83); self:SetHeight(4);
-        end
-    end
-
-    bar.Big = function(self)
-        if IsVertical() then
-            self:SetWidth(20); self:SetHeight(80);
-            self:SetOrientation("VERTICAL")
-            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\vstatusbar]], "ARTWORK")
-            self.text:ClearAllPoints()
-            self.text:SetPoint("CENTER",bar,"TOP", 0,-10)
-            self.text:SetFont([[Interface\AddOns\NugComboBar\tex\Emblem.ttf]],10)
-        else
-            self:SetWidth(80); self:SetHeight(20);
-            self:SetOrientation("HORIZONTAL")
-            self:SetStatusBarTexture([[Interface\AddOns\NugComboBar\tex\statusbar]], "ARTWORK")
-            self.text:ClearAllPoints()
-            self.text:SetPoint("TOPLEFT",bar,"TOPLEFT", 0,0)
-            self.text:SetPoint("BOTTOMRIGHT",bar,"BOTTOMRIGHT", -10,0)
-            self.text:SetFont([[Interface\AddOns\NugComboBar\tex\Emblem.ttf]],15)
-        end
-        self:SetParent(UIParent)
-        -- I don't want to rewrite everything
-        -- just to make them siblings
-        self:SetScale(NugComboBar:GetScale())
-        NugComboBar.SetScale = function(self, scale)
-            self.bar:SetScale(scale)
-            normalSetScale(NugComboBar, scale)
-        end
-        self:SetAlpha(NugComboBar:GetAlpha())
-        NugComboBar.SetAlpha = function(self, alpha)
-            self.bar:SetAlpha(alpha)
-            normalSetAlpha(NugComboBar, alpha)
-        end
-
-        NugComboBar.Hide = function(self)
-            self.bar:Hide()
-        end
-        NugComboBar.Show = function(self)
-            self.bar:Show()
-        end
-        normalHide(NugComboBar)
-
-        self:ClearAllPoints()
-        if IsVertical() then
-            self:SetPoint("BOTTOMLEFT", NugComboBar, "BOTTOMLEFT", 3, 5)
-        else
-            self:SetPoint("TOPLEFT", NugComboBar, "TOPLEFT", 5, -3)
-        end
-        self.text:Show()
-    end
 
     end --endif intiial
 
@@ -914,7 +865,7 @@ NugComboBar.Create = function(self)
     -- tb:SetTexCoord(unpack(ts.coords))
     -- tb:SetPoint("TOPLEFT", bar, "TOPLEFT", -5, 4)
 
-    bar:Small()
+    -- bar:Small()
     bar:SetColor(0.6,0,0)
     -- bar.t = tb
     self.bar = bar

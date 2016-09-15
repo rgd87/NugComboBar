@@ -74,20 +74,20 @@ function NugComboBar:LoadClassSettings()
 
             local GetShadowdance = function()
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(185313) -- shadow dance
-                -- print (charges, maxCharges, chargeStart, chargeDuration)
+				if charges == maxCharges then chargeStart = nil end
                 return charges, chargeStart, chargeDuration
             end
             local makeRCP = function(anticipation, subtlety)
                 local secondRowCount = 0
                 return function(unit)
                     if subtlety then
-                        secondRowCount = GetShadowdance()
+                        secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
                     end
                     local cp = RogueGetComboPoints(unit)
                     if anticipation and cp > 5 then
                         return 5, nil, nil, cp-5, secondRowCount
                     end
-                    return cp, nil, nil, 0, secondRowCount
+                    return cp, chargeStart, chargeDuration, 0, secondRowCount
                 end
             end
 
@@ -116,7 +116,9 @@ function NugComboBar:LoadClassSettings()
                     self:SetMaxPoints(maxCP, (maxCP == 6) and "ROGUE63" or "ROGUE53", 3)
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
+					-- self:EnableBar(0, 6, 90, "Timer")
                 else
+					self:DisableBar()
                     self:SetMaxPoints(maxCP)
                     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:UnregisterEvent("SPELL_UPDATE_CHARGES")
@@ -256,7 +258,8 @@ function NugComboBar:LoadClassSettings()
             end
             local GetShieldCharges = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(53600) -- Shield of the Righteous
-                return charges--, chargeStart, chargeDuration
+				if charges == maxCharges then chargeStart = nil end
+                return charges, chargeStart, chargeDuration
             end
             soundFullEnabled = true
             self:SetMaxPoints(3)
@@ -284,7 +287,9 @@ function NugComboBar:LoadClassSettings()
                     self:UnregisterEvent("UNIT_POWER")
                     defaultValue = 3
                     showEmpty = true
+					-- self:EnableBar(0, 6,"Small", "Timer")
                 else --if spec == 3 then
+					self:DisableBar()
                     soundFullEnabled = true
                     self:SetMaxPoints(5, "PALADIN")
                     defaultValue = 0
@@ -304,7 +309,7 @@ function NugComboBar:LoadClassSettings()
             local GetIronskinBrew = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(115308) -- ironskin brew id
                 -- print (charges, maxCharges, chargeStart, chargeDuration)
-                return charges--, chargeStart, chargeDuration
+                return charges, chargeStart, chargeDuration
             end
 
             -- local isCT = NugComboBarDB.classThemes
@@ -344,12 +349,9 @@ function NugComboBar:LoadClassSettings()
                         defaultValue = 3
                     end
                     showEmpty = true
-                    -- self:EnableBar(0, 6,"Small")
-                    -- if self.bar then
-                        -- self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
-
-                    -- end
+                    -- self:EnableBar(0, 6,"Small", "Timer")
                 else
+					self:DisableBar()
                     soundFullEnabled = true
                     if IsPlayerSpell(115396)  -- Ascension
                         then self:SetMaxPoints(6)
@@ -409,7 +411,7 @@ function NugComboBar:LoadClassSettings()
                 showEmpty = true
                 self:DisableBar()
                 local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
-                defaultValue = 1
+                defaultValue = 3
                 self:SetMaxPoints(maxshards)
                 GetComboPoints = GetShards
                 self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
@@ -1043,19 +1045,27 @@ end
 --     self:SetScript("OnUpdate", nil)
 -- end
 
-function NugComboBar.EnableBar(self, min, max, btype)
+function NugComboBar.EnableBar(self, min, max, btype, isTimer)
     if not self.bar then return end
     self.bar.enabled = true
     if min and max then self.bar:SetMinMaxValues(min, max) end
     self.bar.max = max
-    if btype and self.bar[btype] then self.bar[btype](self.bar) end
+	if not btype or btype == "Small" then
+		self.bar:SetWidth(45)
+	end
+	if type(btype) == "number" then
+		self.bar:SetWidth(btype)
+	end
+	if isTimer then
+		self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
+	end
     self.bar:Show()
+	return true
 end
 
 function NugComboBar.DisableBar(self)
     if not self.bar then return end
     self.bar.enabled = false
-    self.bar:Small()
     self.bar:Hide()
 end
 
