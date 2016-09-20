@@ -187,6 +187,36 @@ do
                             },
                         },
                     },
+
+                    bar2offset = {
+                        type = "group",
+                        name = "",
+                        guiInline = true,
+                        order = 15,
+                        args = {
+
+                            bar2offset_x = {
+                                name = L"2nd row X offset",
+                                type = "range",
+                                get = function(info) return NugComboBarDB.bar2_x end,
+                                set = function(info, s) NugComboBar.Commands.bar2offset(tonumber(s), nil) end,
+                                softMin = -200,
+                                softMax = 200,
+                                step = 5,
+                                order = 4.1,
+                            },
+                            bar2offset_y = {
+                                name = L"2nd row Y offset",
+                                type = "range",
+                                get = function(info) return NugComboBarDB.bar2_y end,
+                                set = function(info, s) NugComboBar.Commands.bar2offset(nil, tonumber(s)) end,
+                                softMin = -200,
+                                softMax = 200,
+                                step = 5,
+                                order = 4.1,
+                            },
+                        },
+                    },
                 }
             },
             classThemes = {

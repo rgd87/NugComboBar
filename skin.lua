@@ -374,14 +374,20 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
     for i=1,totalpoints do
         local point = self.p[i]
         local popts = point.bg.settings
+        local toffset_x = popts.toffset_x or 0
+        local toffset_y = popts.toffset_y or 0
         point:Show()
         point.bg:Show()
         framesize = framesize + popts.width
-        if popts.chainreset then prevt = nil end
+        if popts.chainreset then
+            prevt = nil
+            toffset_x = NugComboBarDB.bar2_x or toffset_x
+            toffset_y = NugComboBarDB.bar2_y or toffset_y
+        end
         if IsVertical() then
-            point.bg:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(popts.toffset_y or 0), popts.toffset_x or 0)
+            point.bg:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(toffset_y or 0), toffset_x or 0)
         else
-            point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", popts.toffset_x or 0, popts.toffset_y or 0)
+            point.bg:SetPoint("TOPLEFT", prevt or self, prevt and "TOPRIGHT" or "TOPLEFT", toffset_x or 0, toffset_y or 0)
         end
         prevt = point.bg
 

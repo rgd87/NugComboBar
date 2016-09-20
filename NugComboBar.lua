@@ -681,6 +681,8 @@ local defaults = {
     preset3d = "glowPurple",
     preset3dlayer2 = "fireOrange",
     preset3dpointbar2 = "void",
+	bar2_x = 13,
+	bar2_y = -20,
 	enableFullRuneTracker = true,
     classThemes = false,
     secondLayer = true,
@@ -1445,6 +1447,17 @@ NugComboBar.Commands = {
         NugComboBar:ClearAllPoints()
         NugComboBar:SetPoint(p1,NugComboBar.anchor,p2,0,0)
     end,
+	["bar2offset"] = function(a,b)
+		if type(a) == "string" then
+			local p = ParseOpts(a)
+	        NugComboBarDB.bar2_x = p["x"] or NugComboBarDB.bar2_x
+	        NugComboBarDB.bar2_y = p["y"] or NugComboBarDB.bar2_y
+		else
+			NugComboBarDB.bar2_x = a or NugComboBarDB.bar2_x
+	        NugComboBarDB.bar2_y = b or NugComboBarDB.bar2_y
+		end
+		NugComboBar:Reinitialize()
+	end,
     ["showempty"] = function(v)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
         showEmpty = NugComboBarDB.showEmpty
