@@ -1710,6 +1710,8 @@ local HideBlizzFrame = function(frame)
 	frame:Hide()
 	frame._Show = frame.Show
 	frame.Show = frame.Hide
+	frame:ClearAllPoints()
+	frame:SetPoint("TOPLEFT", UIParent, "BOTTOMRIGHT", 100, -100)
 end
 
 function NugComboBar.disableBlizzFrames()

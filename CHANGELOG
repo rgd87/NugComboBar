@@ -1,5 +1,6 @@
 7.0.8:
  - Option to change second bar position
+ - Default class frame textures now should not be visible when disabled
 
 7.0.7:
  - Instant feedback Meatcleaver tracking for historical reasons
