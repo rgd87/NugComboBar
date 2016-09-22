@@ -628,7 +628,7 @@ function NugComboBar:LoadClassSettings()
 					if NugComboBar:IsDefaultSkin() and NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
 						self:SetMaxPoints(3, "FIREMAGE", 2)
 						GetComboPoints = FireMageCombined
-					elseif IsPlayerSpell(194466) then
+					elseif IsPlayerSpell(194466) and NugComboBarDB.phoenixflames then
 						self:SetMaxPoints(3)
 						GetComboPoints = GetPhoenixFlamesCharges
 					elseif NugComboBarDB.infernoBlast then
@@ -697,6 +697,7 @@ local defaults = {
     shadowDance = true,
     tidalWaves = true,
     infernoBlast = true,
+	phoenixflames = true,
 	meatcleaver = true,
     hideWithoutTarget = false,
     vertical = false,
@@ -1215,6 +1216,27 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	        end
 	    end
 
+		-- local charger = true
+		-- if charger then
+		--
+		-- 	if arg2 then
+		-- 		local startTime, duration = arg1, arg2
+		-- 		local nextpoint = self.p[comboPoints+1]
+		--
+		-- 		for i = 1, self.MAX_POINTS do
+		-- 			local point = self.p[i]
+		-- 			if point.runeCharging then
+		-- 				NugComboBar:UpdateSingleRune(point, i, nil, nil, true)
+		-- 			end
+		-- 		end
+		--
+		-- 		if nextpoint then
+		-- 			NugComboBar:UpdateSingleRune(nextpoint, comboPoints+1, start, duration, false)
+		-- 		end
+		--
+		-- 	end
+		-- end
+
 	    --second bar
 	    if self.MAX_POINTS2 then
 	    for i = 1, self.MAX_POINTS2 do
@@ -1507,6 +1529,11 @@ NugComboBar.Commands = {
         NugComboBarDB.infernoBlast = not NugComboBarDB.infernoBlast
         NugComboBar:Reinitialize()
         print ("NCB Inferno Blast = ", NugComboBarDB.infernoBlast)
+    end,
+	["phoenixflames"] = function(v)
+        NugComboBarDB.phoenixflames = not NugComboBarDB.phoenixflames
+        NugComboBar:Reinitialize()
+        print ("NCB Phoenix's Flames = ", NugComboBarDB.phoenixflames)
     end,
 	["meatcleaver"] = function(v)
         NugComboBarDB.meatcleaver = not NugComboBarDB.meatcleaver
@@ -1941,6 +1968,7 @@ function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
 		if not point.runeCharging then
 			point.runeStart = start
 			point.runeDuration = duration
+			point.cd:SetCooldown(start, duration)
 			-- RuneChargeIn(point)
 			if point.rag:IsPlaying() then point.rag:Stop() end
 			point:Reappear(RuneChargeIn)

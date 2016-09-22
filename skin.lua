@@ -604,6 +604,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
     local pm = CreateFrame("PlayerModel","NugComboBarPointPlayerModel"..id,f)
     pm:SetFrameLevel(2)
     pm:SetAllPoints(f)
+    pm:SetFrameLevel(3)
     -- pm:SetScript("OnUpdateModel", function() print("PM model update")     end)
     pm:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
@@ -783,6 +784,22 @@ NugComboBar.Create = function(self)
             -- ts.poffset_x = ts.poffset_x
             -- ts.poffset_y = ts.poffset_y
         -- end
+
+        local cd = CreateFrame("Cooldown", nil, self)
+        cd:SetHeight(22);
+        cd:SetWidth(22);
+        cd:SetSwipeTexture([[Interface\AddOns\NugComboBar\tex\SwipeCircle2.tga]])
+        cd:SetFrameStrata("MEDIUM")
+        -- cd:SetFrameLevel(-3)
+        cd:SetSwipeColor(1,.5,1, 0.7)
+        cd:SetReverse(true)
+        cd:SetHideCountdownNumbers(true)
+        cd.noCooldownCount = true
+        cd:SetPoint("CENTER", f, "CENTER", 0, 0)
+        cd:Show()
+        -- cd:SetCooldownUNIX(GetTime(), 20)
+        -- cd:SetCooldown(GetTime(), 20)
+        f.cd = cd
 
         f:SetAlpha(0)
         if IsVertical() then
