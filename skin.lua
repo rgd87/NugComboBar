@@ -30,7 +30,7 @@ NugComboBar.presets = {
         -- NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0, 1, 1, 0, "spells\\blessingoffreedom_state.m2",  true,  .002, 12.6, 12.5, 0 },
         -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "spells\\blessingoffreedom_state.m2",  true,  .003, 8.35, 8.4, 0 }, --"SPELLS/FlowingWater_High.m2", true, 0.04, .62, .64, 0 },
         NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0, .77, .77, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
+        BIG = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.047, 0.53, 0.57, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
     },
     -- ["frostFire"] = {
         -- NORMAL = { 67635, false, 1, -13.7,0,-6},
@@ -378,7 +378,9 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         local toffset_y = popts.toffset_y or 0
         point:Show()
         point.bg:Show()
-        framesize = framesize + popts.width
+        if i <= n then
+            framesize = framesize + popts.width
+        end
         if popts.chainreset then
             prevt = nil
             toffset_x = NugComboBarDB.bar2_x or toffset_x
@@ -786,13 +788,20 @@ NugComboBar.Create = function(self)
         -- end
 
         local cd = CreateFrame("Cooldown", nil, self)
-        cd:SetHeight(22);
-        cd:SetWidth(22);
-        cd:SetSwipeTexture([[Interface\AddOns\NugComboBar\tex\SwipeCircle2.tga]])
+        local role = ts.role
+        -- cd:SetHeight(22);
+        -- cd:SetWidth(22);
+        cd:SetHeight(28);
+        cd:SetWidth(28);
+        if role == "BIG" then
+            cd:SetHeight(35)
+            cd:SetWidth(35)
+        end
+        cd:SetSwipeTexture([[Interface\AddOns\NugComboBar\tex\SwipeCircleFat.tga]])
         cd:SetFrameStrata("MEDIUM")
         -- cd:SetFrameLevel(-3)
-        cd:SetSwipeColor(1,.5,1, 0.7)
-        cd:SetReverse(true)
+        cd:SetSwipeColor(1,.5,1, 0.4)
+        -- cd:SetReverse(true)
         cd:SetHideCountdownNumbers(true)
         cd.noCooldownCount = true
         cd:SetPoint("CENTER", f, "CENTER", 0, 0)
