@@ -116,7 +116,7 @@ function NugComboBar:LoadClassSettings()
                 local isSub = (GetSpecialization() == 3)
                 local isAnticipation = IsPlayerSpell(114015)
                 local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
-				local maxFill = false
+				local maxFill = NugComboBarDB.maxFill
                 GetComboPoints = makeRCP(isAnticipation, isSub, maxFill, maxCP)--  RogueGetComboPoints
                 if isSub and NugComboBarDB.shadowDance then
                     self:SetMaxPoints(maxCP, (maxCP == 6) and "ROGUE63" or "ROGUE53", 3)
@@ -710,6 +710,7 @@ local defaults = {
 	phoenixflames = true,
 	meatcleaver = true,
 	chargeCooldown = true,
+	maxFill = true,
     hideWithoutTarget = false,
     vertical = false,
     soundChannel = "SFX",
