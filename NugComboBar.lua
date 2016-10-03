@@ -62,6 +62,22 @@ RogueGetComboPoints = function(unit)
     return UnitPower("player", 4)
 end
 
+local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
+	local secondRowCount = 0
+
+	return function(unit)
+		if subtlety then
+			secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
+		end
+		local cp = RogueGetComboPoints(unit)
+		if anticipation and cp > 5 then
+			return 5, nil, nil, cp-5, secondRowCount
+		elseif maxFill and cp == maxCP then
+			return cp, nil, nil, cp, secondRowCount
+		end
+		return cp, nil, nil, 0, secondRowCount
+	end
+end
 
 -- local min = math.min
 -- local max = math.max
@@ -79,22 +95,7 @@ function NugComboBar:LoadClassSettings()
 				if charges == maxCharges then chargeStart = nil end
                 return charges, chargeStart, chargeDuration
             end
-            local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
-                local secondRowCount = 0
 
-                return function(unit)
-                    if subtlety then
-                        secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
-                    end
-                    local cp = RogueGetComboPoints(unit)
-                    if anticipation and cp > 5 then
-                        return 5, nil, nil, cp-5, secondRowCount
-					elseif maxFill and cp == maxCP then
-						return cp, nil, nil, cp, secondRowCount
-                    end
-                    return cp, nil, nil, 0, secondRowCount
-                end
-            end
 
             self.SPELL_UPDATE_COOLDOWN = function(self, event)
                 self:UNIT_COMBO_POINTS(nil, "player")
@@ -134,7 +135,6 @@ function NugComboBar:LoadClassSettings()
         elseif class == "DRUID" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             self:SetMaxPoints(5)
-            local dummy = function() return 0 end
 
             local reset = function()
                 defaultValue = 0
@@ -197,7 +197,8 @@ function NugComboBar:LoadClassSettings()
                 soundFullEnabled = true
                 allowedTargetUnit = "player"
                 self:RegisterEvent("UNIT_POWER_FREQUENT")
-                GetComboPoints = RogueGetComboPoints
+				local maxFill = NugComboBarDB.maxFill
+                GetComboPoints = makeRCP(nil, nil, maxFill, 5)
                 allowedUnit = "player"
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
