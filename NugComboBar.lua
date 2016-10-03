@@ -711,7 +711,7 @@ local defaults = {
 	phoenixflames = true,
 	meatcleaver = true,
 	chargeCooldown = true,
-	maxFill = true,
+	maxFill = false,
     hideWithoutTarget = false,
     vertical = false,
     soundChannel = "SFX",
@@ -1597,6 +1597,10 @@ NugComboBar.Commands = {
     end,
 	["chargecooldown"] = function(v)
 		NugComboBarDB.chargeCooldown = not NugComboBarDB.chargeCooldown
+        NugComboBar:Reinitialize()
+    end,
+	["maxfill"] = function(v)
+		NugComboBarDB.maxFill = not NugComboBarDB.maxFill
         NugComboBar:Reinitialize()
     end,
     ["disable"] = function(v)

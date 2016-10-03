@@ -1,3 +1,8 @@
+7.0.9:
+ - double bar configs with top anchorpoint now centered
+ - charge cooldown tracking (for BrM monk), /ncb chargecooldown to 
+toggle
+
 7.0.8:
  - Option to change second bar position
  - Default class frame textures now should not be visible when disabled
