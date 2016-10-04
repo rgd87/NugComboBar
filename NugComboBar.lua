@@ -62,17 +62,12 @@ RogueGetComboPoints = function(unit)
     return UnitPower("player", 4)
 end
 
-local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
+local makeDruidCP = function(anticipation, subtlety, maxFill, maxCP)
 	local secondRowCount = 0
 
 	return function(unit)
-		if subtlety then
-			secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
-		end
 		local cp = RogueGetComboPoints(unit)
-		if anticipation and cp > 5 then
-			return 5, nil, nil, cp-5, secondRowCount
-		elseif maxFill and cp == maxCP then
+		if maxFill and cp == maxCP then
 			return cp, nil, nil, cp, secondRowCount
 		end
 		return cp, nil, nil, 0, secondRowCount
@@ -95,6 +90,23 @@ function NugComboBar:LoadClassSettings()
 				if charges == maxCharges then chargeStart = nil end
                 return charges, chargeStart, chargeDuration
             end
+
+			local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
+				local secondRowCount = 0
+
+				return function(unit)
+					if subtlety then
+						secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
+					end
+					local cp = RogueGetComboPoints(unit)
+					if anticipation and cp > 5 then
+						return 5, nil, nil, cp-5, secondRowCount
+					elseif maxFill and cp == maxCP then
+						return cp, nil, nil, cp, secondRowCount
+					end
+					return cp, nil, nil, 0, secondRowCount
+				end
+			end
 
 
             self.SPELL_UPDATE_COOLDOWN = function(self, event)
@@ -198,7 +210,7 @@ function NugComboBar:LoadClassSettings()
                 allowedTargetUnit = "player"
                 self:RegisterEvent("UNIT_POWER_FREQUENT")
 				local maxFill = NugComboBarDB.maxFill
-                GetComboPoints = makeRCP(nil, nil, maxFill, 5)
+                GetComboPoints = makeDruidCP(nil, nil, maxFill, 5)
                 allowedUnit = "player"
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
