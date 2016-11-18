@@ -1,3 +1,10 @@
+7.1.1:
+ - Charge Cooldown for Shadow Dance and SotR
+ - alt skin bug with charge cooldown feature fixed
+
+7.1.0:
+ - ToC Update
+
 7.0.9:
  - double bar configs with top anchorpoint now centered
  - charge cooldown tracking (for BrM monk), /ncb chargecooldown to 
