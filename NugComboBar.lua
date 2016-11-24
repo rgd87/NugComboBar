@@ -1160,6 +1160,8 @@ end
 
 function NugComboBar:ShowCooldownCharge(start, duration, point, i, comboPoints)
 	if start and duration and i == comboPoints+1 then
+		-- print( point:GetName(), "SHOW", arg1, arg2, point, i, comboPoints)
+		-- point.cd:SetPoint("CENTER", point, "CENTER", 0, 0)
 		point.cd:SetCooldown(start, duration)
 		local c = NugComboBarDB.colors.bar2
 		point.cd:SetSwipeColor(0,0,0, 0.8)
@@ -1168,6 +1170,7 @@ function NugComboBar:ShowCooldownCharge(start, duration, point, i, comboPoints)
 			self:EnsureRuneChargeFrame(point)
 			point.RuneChargeFrame:SetScript("OnUpdate", nil)
 		end
+		point.cd:SetParent(point.RuneChargeFrame)
 		point.RuneChargeFrame:SetScript("OnUpdate", nil)
 		-- point.RuneChargeFrame:Show()
 		point.RuneChargeFrame:SetAlpha(1)
@@ -1355,6 +1358,14 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
     end
 
     comboPointsBefore = comboPoints
+
+	-- if not isRuneTracker and not chargeCooldown then
+	-- 	for _, point in pairs(self.point) do
+	-- 		if point.RuneChargeFrame then
+	-- 			point.cd:Hide()
+	-- 		end
+	-- 	end
+	-- end
 
     -- if defaultValue == -1 then
     --         lastChangeTime = GetTime()

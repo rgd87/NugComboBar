@@ -1,4 +1,5 @@
 package-as: NugComboBar
+enable-nolib-creation: no
 
 move-folders:
     NugComboBar/gui: NugComboBarGUI

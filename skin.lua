@@ -364,6 +364,7 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         point:Hide()
         point.bg:Hide()
         point.bg:ClearAllPoints()
+        self:ShowCooldownCharge(nil, nil, point)
     end
 
     self.point_map = mappings[special or n]
