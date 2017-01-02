@@ -2,19 +2,8 @@ local L = NugComboBar.L
 
 do
     local opt = {
-        type = 'group',
-        name = "NugComboBar",
-        args = {},
-    }
-    -- opt.args.display = {
-    --     type    = "group",
-    --     name    = "Display Settings",
-    --     order   = 1,
-    --     args    = {},
-    -- }
-    opt.args.general = {
         type = "group",
-        name = "General",
+        name = "NugComboBar",
         order = 1,
         args = {
             charspec = {
@@ -608,15 +597,7 @@ do
 
     local Config = LibStub("AceConfigRegistry-3.0")
     local Dialog = LibStub("AceConfigDialog-3.0")
+
     Config:RegisterOptionsTable("NugComboBar", opt)
-    Config:RegisterOptionsTable("NugComboBar-Bliz", {name = "NugComboBar",type = 'group',args = {} })
-    Dialog:SetDefaultSize("NugComboBar-Bliz", 600, 400)
-
-    Config:RegisterOptionsTable("NugComboBar-General", opt.args.general)
-    Dialog:AddToBlizOptions("NugComboBar-General", "NugComboBar")
-    --Config:RegisterOptionsTable("NugComboBar-General", opt.args.general)
-    --Dialog:AddToBlizOptions("NugComboBar-General", "NugComboBar")
-
-    -- Config:RegisterOptionsTable("NugComboBar-Skin", opt.args.skin)
-    -- Dialog:AddToBlizOptions("NugComboBar-Skin", opt.args.skin.name, "NugComboBar")
+    Dialog:AddToBlizOptions("NugComboBar", "NugComboBar")
 end
