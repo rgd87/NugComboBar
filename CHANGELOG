@@ -1,4 +1,5 @@
 7.1.2:
+ - Charge cooldown checkbox in GUI
  - Fixed a bug with charge cooldown when switching between Sub and other 
 spec
 
