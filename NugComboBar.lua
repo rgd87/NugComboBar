@@ -131,7 +131,7 @@ function NugComboBar:LoadClassSettings()
             end
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
-                local isSub = (GetSpecialization() == 3)
+                local isSub = (GetSpecialization() == 3) and IsPlayerSpell(185313)
                 local isAnticipation = IsPlayerSpell(114015)
                 local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
 				local maxFill = NugComboBarDB.maxFill
