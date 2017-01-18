@@ -787,29 +787,28 @@ NugComboBar.Create = function(self)
             -- ts.poffset_x = ts.poffset_x
             -- ts.poffset_y = ts.poffset_y
         -- end
+        if not f.cd then
 
-        local cd = CreateFrame("Cooldown", nil, self)
-        local role = ts.role
-        -- cd:SetHeight(22);
-        -- cd:SetWidth(22);
-        cd:SetHeight(28);
-        cd:SetWidth(28);
-        if role == "BIG" then
-            cd:SetHeight(35)
-            cd:SetWidth(35)
+            local cd = CreateFrame("Cooldown", nil, self)
+            local role = ts.role
+            -- cd:SetHeight(22);
+            -- cd:SetWidth(22);
+            cd:SetHeight(28);
+            cd:SetWidth(28);
+            if role == "BIG" then
+                cd:SetHeight(35)
+                cd:SetWidth(35)
+            end
+            cd:SetSwipeTexture([[Interface\AddOns\NugComboBar\tex\SwipeCircleFat.tga]])
+            cd:SetFrameStrata("MEDIUM")
+            cd:SetSwipeColor(1,.5,1, 0.4)
+            cd:SetHideCountdownNumbers(true)
+            cd.noCooldownCount = true
+            cd:SetPoint("CENTER", f, "CENTER", 0, 0)
+            cd:Show()
+
+            f.cd = cd
         end
-        cd:SetSwipeTexture([[Interface\AddOns\NugComboBar\tex\SwipeCircleFat.tga]])
-        cd:SetFrameStrata("MEDIUM")
-        -- cd:SetFrameLevel(-3)
-        cd:SetSwipeColor(1,.5,1, 0.4)
-        -- cd:SetReverse(true)
-        cd:SetHideCountdownNumbers(true)
-        cd.noCooldownCount = true
-        cd:SetPoint("CENTER", f, "CENTER", 0, 0)
-        cd:Show()
-        -- cd:SetCooldownUNIX(GetTime(), 20)
-        -- cd:SetCooldown(GetTime(), 20)
-        f.cd = cd
 
         f:SetAlpha(0)
         if IsVertical() then
