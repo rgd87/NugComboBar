@@ -143,13 +143,6 @@ do
                         set = function(info, s) NugComboBar.Commands.toggleprogress() end,
                         order = 12,
                     },
-                    chargeCooldown = {
-                        name = L"Charge Cooldowns",
-                        type = "toggle",
-                        get = function(info) return NugComboBarDB.chargeCooldown end,
-                        set = function(info, s) NugComboBar.Commands.chargecooldown() end,
-                        order = 12.5,
-                    },
                     vertical = {
                         name = L"Vertical",
                         type = "toggle",

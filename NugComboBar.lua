@@ -13,8 +13,6 @@ local secondLayerEnabled
 local fadeAfter = 6
 local soundFullEnabled = false
 local isRuneTracker = false
-local chargeCooldown = false
-local chargeCooldownOnSecondBar = false -- whether to show charge cooldowns on secondary or main bar
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 local defaultProgress = 0
@@ -87,8 +85,6 @@ function NugComboBar:LoadClassSettings()
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
             soundFullEnabled = true
-			chargeCooldown = NugComboBarDB.chargeCooldown
-			chargeCooldownOnSecondBar = true
 
             local GetShadowdance = function()
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(185313) -- shadow dance
@@ -286,7 +282,6 @@ function NugComboBar:LoadClassSettings()
                 return charges, chargeStart, chargeDuration
             end
             soundFullEnabled = true
-			chargeCooldown = NugComboBarDB.chargeCooldown
 
             self:SetMaxPoints(3)
 
@@ -317,7 +312,6 @@ function NugComboBar:LoadClassSettings()
                 else --if spec == 3 then
 					self:DisableBar()
                     soundFullEnabled = true
-					chargeCooldown = false
                     self:SetMaxPoints(5, "PALADIN")
                     defaultValue = 0
                     showEmpty = NugComboBarDB.showEmpty
@@ -333,7 +327,6 @@ function NugComboBar:LoadClassSettings()
                 return UnitPower(unit, SPELL_POWER_CHI)
             end
 
-			chargeCooldown = NugComboBarDB.chargeCooldown
 
             local GetIronskinBrew = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(115308) -- ironskin brew id
@@ -687,6 +680,7 @@ local defaults = {
     point = "CENTER", --to
     x = 0, y = 0,
     anchorpoint = "LEFT",
+    frameparent = nil, -- for SetParent
     scale = 1.0,
     showEmpty = false,
     hideSlowly = true,
@@ -730,7 +724,6 @@ local defaults = {
     infernoBlast = true,
 	phoenixflames = true,
 	meatcleaver = true,
-	chargeCooldown = true,
 	maxFill = false,
     hideWithoutTarget = false,
     vertical = false,
@@ -981,6 +974,10 @@ do
         else if initial then self:Create() end
         end
 
+        if NugComboBarDB.frameparent and _G[NugComboBarDB.frameparent] then
+             NugComboBar:SetParent(_G[NugComboBarDB.frameparent])
+        end
+
         -- -- class themes
         -- if NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d then
         --     local _, class = UnitClass("player")
@@ -1117,6 +1114,8 @@ end
 --     self:SetScript("OnUpdate", nil)
 -- end
 
+NugComboBar.ShowCooldownCharge = function(self, arg1, arg2, point) point.cd:Hide() end -- dummy to not break Valeera with NCB 7.1.4
+
 function NugComboBar.EnableBar(self, min, max, btype, isTimer)
     if not self.bar then return end
     self.bar.enabled = true
@@ -1155,35 +1154,6 @@ local function AnticipationOut(point, i)
     point.anticipationColor = false
 
     point:SetPreset(NugComboBarDB.preset3d)
-end
-
-
-function NugComboBar:ShowCooldownCharge(start, duration, point, i, comboPoints)
-	if start and duration and i == comboPoints+1 then
-		-- print( point:GetName(), "SHOW", arg1, arg2, point, i, comboPoints)
-		-- point.cd:SetPoint("CENTER", point, "CENTER", 0, 0)
-		point.cd:SetCooldown(start, duration)
-		local c = NugComboBarDB.colors.bar2
-		point.cd:SetSwipeColor(0,0,0, 0.8)
-		self:EnsureRuneChargeFrame(point)
-		if not point.RuneChargeFrame then
-			self:EnsureRuneChargeFrame(point)
-			point.RuneChargeFrame:SetScript("OnUpdate", nil)
-		end
-		point.cd:SetParent(point.RuneChargeFrame)
-		point.RuneChargeFrame:SetScript("OnUpdate", nil)
-		-- point.RuneChargeFrame:Show()
-		point.RuneChargeFrame:SetAlpha(1)
-	else
-		point.cd:Hide()
-		if not point.RuneChargeFrame then
-			self:EnsureRuneChargeFrame(point)
-			point.RuneChargeFrame:SetScript("OnUpdate", nil)
-		end
-		point.RuneChargeFrame:SetScript("OnUpdate", nil)
-		point.RuneChargeFrame:SetAlpha(0)
-		-- point.RuneChargeFrame:Hide()
-	end
 end
 
 
@@ -1257,12 +1227,6 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	            point:Deactivate()
 	        end
 
-			if chargeCooldown and not chargeCooldownOnSecondBar then
-				if isDefaultSkin then
-					NugComboBar:ShowCooldownCharge(arg1, arg2, point, i, comboPoints)
-				end
-			end
-
 	        if secondLayerPoints then -- Anticipation stuff
 	            if i <= secondLayerPoints then
 	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2)
@@ -1319,11 +1283,6 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	            point:Deactivate()
 	        end
 
-			if chargeCooldown and chargeCooldownOnSecondBar then
-				if isDefaultSkin then
-					NugComboBar:ShowCooldownCharge(arg1, arg2, point, i, secondBarPoints)
-				end
-			end
 	    end
 	    end
 	end
@@ -1784,6 +1743,13 @@ NugComboBar.Commands = {
         local pos = NugComboBarDB
         NugComboBar.anchor:SetPoint(pos.apoint, pos.parent, pos.point, pos.x, pos.y)
     end,
+
+    ["setparent"] = function(v)
+        if _G[v] then
+            NugComboBarDB.frameparent = v
+            NugComboBar:SetParent(_G[v])
+        end
+    end,
 }
 
 function NugComboBar.SlashCmd(msg)
@@ -1800,7 +1766,6 @@ function NugComboBar.SlashCmd(msg)
           |cff55ff55/ncb changecolor|r <1-6, 0 = all, -1 = 2nd bar>
           |cff55ff55/ncb anchorpoint|r <left | right | top >
           |cff55ff55/ncb showempty|r
-          |cff55ff55/ncb chargecooldown|r
           |cff55ff55/ncb hideslowly|r
           |cff55ff55/ncb toggleblizz|r
           |cff55ff55/ncb disable|enable|r (for current class)
