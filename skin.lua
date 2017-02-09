@@ -691,13 +691,14 @@ local CreateTextureBar = function(self)
     return bar
 end
 
+
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
     --
-    -- local res = select(GetCurrentResolution(), GetScreenResolutions())
-    -- local w,h = string.match(res, "(%d+)x(%d+)")
-    --
-    -- local p = (GetScreenHeight()/h) / UIParent:GetScale()
+    local res = select(GetCurrentResolution(), GetScreenResolutions())
+    local w,h = string.match(res, "(%d+)x(%d+)")
+    local p = (GetScreenHeight()/h) / UIParent:GetScale()
+    p = math.floor(p*100)/100
     -- print("pixel len", p)
 
     bar:SetWidth(45); bar:SetHeight(3)
@@ -710,27 +711,30 @@ local CreatePixelBar = function(self)
 
     barbg:SetTexture[[Interface\Addons\NugComboBar\tex\white]]
     barbg:SetVertexColor(0,0,0)
-    -- barbg:SetAllPoints(bar)
+    barbg:SetAllPoints(bar)
     -- barbg:SetPoint("TOPLEFT", bar, "TOPLEFT", 0, 0)
-    barbg:SetHeight(1)
-    barbg:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", 0, 0)
-    barbg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 0, 0)
+    -- barbg:SetHeight(1)
+    -- barbg:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", 0, 0)
+    -- barbg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 0, 0)
     bar.bg = barbg
     --
-    --
-    -- local backdrop = {
-    --     bgFile = [[Interface\Addons\NugComboBar\tex\white]],
-    --     tile = true, tileSize = 0,
-    --     insets = {left = 0, right = 0, top = 0, bottom = -p*2},
-    -- }
-    -- bar:SetBackdrop(backdrop)
-    -- bar:SetBackdropColor(0, 0, 0, 1)
+    -- /dump NugComboBar.bar:Show()
+    local backdrop = {
+        bgFile = [[Interface\Addons\NugComboBar\tex\white]],
+        tile = true, tileSize = 0,
+        insets = {left = -p*2, right = -p*2, top = -p*2, bottom = -p*1.9},
+    }
+    -- print("p=", p)
+    bar:SetBackdrop(backdrop)
+    bar:SetBackdropColor(0, 0, 0, 1)
 
     bar.SetColor = function(self, r,g,b)
-        self:SetStatusBarColor(r,g,b)
-        self.bg:SetVertexColor(r,g,b, 0.5)
-        -- self:SetBackdropColor(r,g,b)
+        -- self:SetStatusBarColor(r,g,b)
+        -- self.bg:SetVertexColor(r,g,b, 0.5)
+        self:SetBackdropColor(r,g,b)
     end
+
+    bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 14*p, 0)
 
     return bar
 end
@@ -879,11 +883,11 @@ NugComboBar.Create = function(self)
         end
 
 
-        if not IsVertical() then --only shows bar in horizontal
-            bar:SetPoint("BOTTOMLEFT", NugComboBar, "TOPLEFT", 14, 0)
+        -- if not IsVertical() then --only shows bar in horizontal
+            -- bar:SetPoint("BOTTOMLEFT", NugComboBar, "TOPLEFT", 14, 0)
         -- else
             -- bar:SetPoint("BOTTOMRIGHT", NugComboBar, "BOTTOMLEFT", 0, 14)
-        end
+        -- end
 
     end --endif intiial
 

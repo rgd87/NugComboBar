@@ -1,3 +1,7 @@
+7.1.5:
+- Option to attach bar to player nameplate
+- Fixed "Hide without target" feature
+
 7.1.4:
 - Removed chargecooldown feature attemping to eliminate fps drops
 

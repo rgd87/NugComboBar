@@ -238,7 +238,7 @@ function NugComboBar:LoadClassSettings()
             local pulverize = function()
                 self:SetMaxPoints(3)
                 self:RegisterEvent("UNIT_AURA")
-                self:RegisterEvent("PLAYER_TARGET_CHANGED")
+                -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
                 soundFullEnabled = true
                 scanAura = GetSpellInfo(192090) -- Lacerate
@@ -253,7 +253,7 @@ function NugComboBar:LoadClassSettings()
             self.UPDATE_SHAPESHIFT_FORM = function(self)
                 self:UnregisterEvent("UNIT_AURA")
                 self:UnregisterEvent("UNIT_COMBO_POINTS")
-                self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+                -- self:UnregisterEvent("PLAYER_TARGET_CHANGED") -- it should be always on to hideWithoutTarget to work
                 self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
                 local spec = GetSpecialization()
                 local form = GetShapeshiftFormID()
@@ -718,6 +718,8 @@ local defaults = {
     adjustX = 2.05,
     adjustY = 2.1,
     alpha = 1,
+    nameplateAttach = false,
+    nameplateOffsetY = 0,
     special1 = false,
     shadowDance = true,
     tidalWaves = true,
@@ -1009,8 +1011,6 @@ do
         end
         self:SetScale(NugComboBarDB.scale)
 
-        self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
-
         self:LoadClassSettings()
         if initial then
             self:CreateAnchor()
@@ -1019,9 +1019,25 @@ do
             self.anchor:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
         end
 
+        local playerNameplateEnabled = GetCVar("nameplateShowSelf") == "1"
+        if playerNameplateEnabled and NugComboBarDB.nameplateAttach then
+            if C_NamePlate.GetNamePlateForUnit("player") then
+                NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
+            else
+                NugComboBar:NAME_PLATE_UNIT_REMOVED(nil, "player")
+            end
+            self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+            self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+        else
+            self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
+            self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
+            self:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
+        end
+
         self:RegisterEvent("PLAYER_ENTERING_WORLD")
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
+        self:RegisterEvent("PLAYER_TARGET_CHANGED")
         self:RegisterEvent("PET_BATTLE_OPENING_START")
         self:RegisterEvent("PET_BATTLE_CLOSE")
         self.PLAYER_ENTERING_WORLD = self.CheckComboPoints -- Update on looading screen to clear after battlegrounds
@@ -1499,6 +1515,7 @@ NugComboBar.Commands = {
     ["reset"] = function(v)
         NugComboBar.anchor:ClearAllPoints()
         NugComboBar.anchor:SetPoint("CENTER",UIParent,"CENTER",0,0)
+        NugComboBarDB.nameplateOffsetY = 0
     end,
     ["anchorpoint"] = function(v)
         local ap = v:upper()
@@ -1583,6 +1600,10 @@ NugComboBar.Commands = {
         NugComboBarDB.meatcleaver = not NugComboBarDB.meatcleaver
         NugComboBar:Reinitialize()
         print ("NCB Meatcleaver = ", NugComboBarDB.meatcleaver)
+    end,
+    ["nameplateattach"] = function(v)
+        NugComboBarDB.nameplateAttach = not NugComboBarDB.nameplateAttach
+        NugComboBar:Reinitialize()
     end,
     ["scale"] = function(v)
         local num = tonumber(v)
@@ -1767,6 +1788,8 @@ function NugComboBar.SlashCmd(msg)
           |cff55ff55/ncb anchorpoint|r <left | right | top >
           |cff55ff55/ncb showempty|r
           |cff55ff55/ncb hideslowly|r
+          |cff55ff55/ncb vertical|r
+          |cff55ff55/ncb hidewotarget|r
           |cff55ff55/ncb toggleblizz|r
           |cff55ff55/ncb disable|enable|r (for current class)
           |cff55ff55/ncb setpos|r point=CENTER parent=UIParent to=CENTER x=0 y=0
@@ -2144,4 +2167,32 @@ function NugComboBar:EnsureRuneChargeFrame(point)
 
 		point.RuneChargeFrame = bgm
 	end
+end
+
+
+
+-- function NugComboBar.NAME_PLATE_CREATED(self, event, frame)
+    -- frame.timers = {}
+    -- frame:GetChildren().BuffFrame:Hide()
+-- end
+local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
+
+function NugComboBar.NAME_PLATE_UNIT_ADDED(self, event, unit)
+    -- print(event, unit)
+    if UnitIsUnit(unit, "player") then
+        local frame = GetNamePlateForUnit(unit)
+        self:ClearAllPoints()
+        self:SetPoint("TOP", frame, "BOTTOM", 0, NugComboBarDB.nameplateOffsetY)
+        -- print("added", frame)
+    end
+end
+
+function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
+    if UnitIsUnit(unit, "player") then
+        local frame = GetNamePlateForUnit(unit)
+        self:ClearAllPoints()
+        self:SetPoint("TOP", UIParent, "BOTTOM", 0,-500)
+        -- self:Hide()
+        -- self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
+    end
 end

@@ -45,6 +45,7 @@ do
                         name = L"Unlock",
                         type = "execute",
                         -- width = "half",
+                        disabled = function() return NugComboBarDB.nameplateAttach end,
                         desc = L"Unlock dragging anchor",
                         func = function() NugComboBar.Commands.unlock() end,
                         order = 1,
@@ -53,6 +54,7 @@ do
                         name = L"Lock",
                         type = "execute",
                         -- width = "half",
+                        disabled = function() return NugComboBarDB.nameplateAttach end,
                         desc = L"Lock dragging anchor",
                         func = function() NugComboBar.Commands.lock() end,
                         order = 2,
@@ -65,9 +67,36 @@ do
                             RIGHT = "Right",
                             TOP = "Top",
                         },
+                        disabled = function() return NugComboBarDB.nameplateAttach end,
                         get = function() return NugComboBarDB.anchorpoint end,
                         set = function(info, s) NugComboBar.Commands.anchorpoint(s) end,
                         order = 3,
+                    },
+                    nameplateAttach = {
+                        name = L"Attach to Player Nameplate",
+                        desc = L"Display below player nameplate\nOnly works if your have player nameplate enabled",
+                        type = "toggle",
+                        width = "double",
+                        get = function(info) return NugComboBarDB.nameplateAttach end,
+                        set = function(info, s) NugComboBar.Commands.nameplateattach() end,
+                        order = 3.1,
+                    },
+                    nameplateOffsetY = {
+                        name = L"Nameplate Y offset",
+                        type = "range",
+                        
+                        disabled = function() return not NugComboBarDB.nameplateAttach end,
+                        get = function(info) return NugComboBarDB.nameplateOffsetY end,
+                        set = function(info, s)
+                            NugComboBarDB.nameplateOffsetY = s
+                            if C_NamePlate.GetNamePlateForUnit("player") then
+                                NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
+                            end
+                        end,
+                        min = -100,
+                        max = 100,
+                        step = 1,
+                        order = 3.2,
                     },
                     scale = {
                         name = L"Scale",
@@ -143,13 +172,13 @@ do
                         set = function(info, s) NugComboBar.Commands.toggleprogress() end,
                         order = 12,
                     },
-                    vertical = {
-                        name = L"Vertical",
-                        type = "toggle",
-                        get = function(info) return NugComboBarDB.vertical end,
-                        set = function(info, s) NugComboBar.Commands.vertical() end,
-                        order = 13,
-                    },
+                    -- vertical = {
+                    --     name = L"Vertical",
+                    --     type = "toggle",
+                    --     get = function(info) return NugComboBarDB.vertical end,
+                    --     set = function(info, s) NugComboBar.Commands.vertical() end,
+                    --     order = 13,
+                    -- },
                     resourcesGroup = {
                         type = "group",
                         name = "",
@@ -166,7 +195,7 @@ do
                                 order = 14,
                             },
                             togglebliznp = {
-                                name = L"Disable Nameplate Class Frames ",
+                                name = L"Disable Nameplate Class Frames",
                                 type = "toggle",
                                 width = "double",
                                 desc = L"Hides default class frames on player nameplate",

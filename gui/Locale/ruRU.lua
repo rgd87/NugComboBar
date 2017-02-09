@@ -36,7 +36,7 @@ L["Only some effects can be altered using colored lighting.\nfireXXXX presets ar
 L["Second Layer Preset"] = "Профиль второго слоя"
 L["Second Layer"] = "Второй слой"
 L["For Anticipation talent"] = "Для таланта \"Предчувствие\" (Anticipation)"
-L["Hide w/o Target"] = "Скрывать без таргета"
+L["Hide w/o Target"] = "Скрывать без цели"
 L["(Only for combat points)"] = "(Только для комбопойнтов)"
 L["X Offset"] = "Смещение по Х"
 L["Y Offset"] = "Смещение по Y"
@@ -50,3 +50,8 @@ L["Disable Progress Bar"] = "Отключить прогрессбар"
 -- L"(Active only for certain specs)",
 -- L"Play",
 -- L"Custom Sound",
+L["Disable Class Frames"] = "Отключить стандартные фреймы"
+L["Disable Nameplate Class Frames"] = "Отключить фреймы на неймплейте игрока"
+L["2nd row X offset"] = "X смещение 2го ряда"
+L["2nd row Y offset"] = "Y смещение 2го ряда"
+L["Attach to Player Nameplate"] = "Прикрепить к неймплейту игрока"
