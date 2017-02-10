@@ -2171,19 +2171,13 @@ end
 
 
 
--- function NugComboBar.NAME_PLATE_CREATED(self, event, frame)
-    -- frame.timers = {}
-    -- frame:GetChildren().BuffFrame:Hide()
--- end
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 
 function NugComboBar.NAME_PLATE_UNIT_ADDED(self, event, unit)
-    -- print(event, unit)
     if UnitIsUnit(unit, "player") then
         local frame = GetNamePlateForUnit(unit)
         self:ClearAllPoints()
         self:SetPoint("TOP", frame, "BOTTOM", 0, NugComboBarDB.nameplateOffsetY)
-        -- print("added", frame)
     end
 end
 
@@ -2192,7 +2186,5 @@ function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
         local frame = GetNamePlateForUnit(unit)
         self:ClearAllPoints()
         self:SetPoint("TOP", UIParent, "BOTTOM", 0,-500)
-        -- self:Hide()
-        -- self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
     end
 end

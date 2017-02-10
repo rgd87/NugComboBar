@@ -695,10 +695,16 @@ end
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
     --
-    local res = select(GetCurrentResolution(), GetScreenResolutions())
-    local w,h = string.match(res, "(%d+)x(%d+)")
-    local p = (GetScreenHeight()/h) / UIParent:GetScale()
-    p = math.floor(p*100)/100
+    -- local current = GetCurrentResolution()
+    -- if not current then return end
+    -- local resolutions = { GetScreenResolutions() }
+    -- local res = resolutions[current]
+    -- if not res then return end
+
+    -- local w,h = string.match(res, "(%d+)x(%d+)")
+    -- local p = (GetScreenHeight()/h) / UIParent:GetScale()
+    local p = 1
+    -- p = math.floor(p*100)/100
     -- print("pixel len", p)
 
     bar:SetWidth(45); bar:SetHeight(3)

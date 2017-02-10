@@ -1,3 +1,6 @@
+7.1.5a:
+- fixed a bug that was occuring in fullscreen mode
+
 7.1.5:
 - Option to attach bar to player nameplate
 - Fixed "Hide without target" feature
