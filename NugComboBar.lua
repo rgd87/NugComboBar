@@ -649,15 +649,19 @@ function NugComboBar:LoadClassSettings()
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
 
+                    isFlameOn = IsPlayerSpell(205029)
+                    isFlareUp = IsPlayerSpell(203282)
+                    local maxFireBlastCharges = 2 + (isFlameOn and 1 or 0) + (isFlareUp and 1 or 0)
+
 					if NugComboBar:IsDefaultSkin() and NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
-						self:SetMaxPoints(3, "FIREMAGE", 2)
+						self:SetMaxPoints(3, "FIREMAGE"..maxFireBlastCharges, maxFireBlastCharges)
 						GetComboPoints = FireMageCombined
 					elseif IsPlayerSpell(194466) and NugComboBarDB.phoenixflames then
 						self:SetMaxPoints(3)
 						GetComboPoints = GetPhoenixFlamesCharges
 					elseif NugComboBarDB.infernoBlast then
-						defaultValue = 2
-						self:SetMaxPoints(2)
+						defaultValue = maxFireBlastCharges
+						self:SetMaxPoints(maxFireBlastCharges)
 						GetComboPoints = GetFireBlastCharges
 					else
 						self:Disable()
