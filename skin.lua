@@ -1,12 +1,12 @@
 NugComboBar.presets = {
     --- model, cameraReset, scale, xOffset, yOffset
     ["glowPurple"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0 },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0 },
     },
     ["glowPurple2"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0, "SPELLS/ShadowWordBefuddle_Head.m2", true, 0.013, 1.95, 1.95,0},
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/7fx_nightborne_precasthand.m2", false, .75, 0.1,0,0},
     },
     ["glowShadowFlame"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
@@ -17,10 +17,10 @@ NugComboBar.presets = {
         BIG = { "SPELLS/void_precast_hand.m2", true, 0.038, .68, .68, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0, true },
     },
     ["glowHoly"] = {
-        LEFT = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.03, 0.83, 0.83, 0 },
-        NORMAL = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.034, 0.74, 0.75, 0 },
-        BIG = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.038, 0.67, 0.67, 0, "spells\\Paladin_headlinghands_state_01.m2", true, 0.01, 2.5,2.5,0 },
-        RIGHT = { "spells\\Holy_precast_med_hand_simple.m2", true, 0.03, 0.83, 0.83, 0 },
+        LEFT = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.3, 0, 0, 0 },
+        NORMAL = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.6, 0, 0, 0 },
+        BIG = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.7, 0, 0, 0, "spells\\Paladin_headlinghands_state_01.m2", false, 0.4, -0.3,-0.15,0 },
+        RIGHT = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.3, 0, 0, 0 },
     },
     -- ["_RuneCharger"] = {
     --     NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0, 1, 1, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
@@ -46,24 +46,24 @@ NugComboBar.presets = {
     -- },
 
     ["blue"] = {
-        NORMAL = { "SPELLS/FlowingWater_High.m2", true, 0.06, .4, .42, 0 },
-        BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
+        NORMAL = { "SPELLS/FlowingWater_High.m2", false, 3, 0.1, 0, 0 },
+        BIG = { "SPELLS/FlowingWater_High.m2", false, 3.6, 0.1, 0, 0 },
     },
     ["corrupted"] = {
         NORMAL = { "SPELLS/Precast_Corrupted_01.m2", true, 0.03, .8, .8, 0 },
         BIG = { "SPELLS/Precast_Corrupted_01.m2", true, 0.035, .7, .7, 0 },
     },
     ["furnace"] = {
-        NORMAL = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.009, 2.8, 2.8, 0, "spells/6fx_smallfire.m2", true, 0.0075, 3.3, 3.5, 0, true },
-        BIG = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.011, 2.3, 2.3, 0, "spells/6fx_smallfire.m2", true, 0.009, 2.8, 3, 0, true },
-    },
-    ["furnace2"] = {
-        NORMAL = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.01, 2.5, 2.5, 0 },
-        BIG = { "SPELLS/Shaman_Lavaburst_Missile_NoFlash_XS.m2", true, 0.0135, 1.87, 1.87, 0 },
+        NORMAL = { "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0 },
+        BIG = { "spells/6fx_smallfire.m2", false, 0.36, -2.4, -.2, 0 },
     },
     ["chiBlast"] = {
-        NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.025, 1, 1, 0 },
-        BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
+        NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.05, 0.05, 0, 0 },
+        BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.3, 0.03, 0, 0}
+    },
+    ["chiBlastBlue"] = {
+        NORMAL = { "SPELLS/Monk_ChiBlast_Precast.m2", false, 1.05, 0.15, 0, 0 },
+        BIG = { "SPELLS/Monk_ChiBlast_Precast.m2", false, 1.3, 0.1, 0, 0, "SPELLS/Monk_CracklingLightning_Impact_Blue.m2", false, 0.5, 0.5, -0.5, 0 },
     },
     -- ["scourge"] = {
     --     NORMAL = { "spells/7fx_deathknight_scourgeofworlds_statechest.m2", true, 0.008, 3.1, 3.1, 0 },
@@ -75,17 +75,14 @@ NugComboBar.presets = {
         -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(0,0,0);
         -- scale controls black to purple glow ratio
         -- actual scaling is done by moving camera back and forth
-        NORMAL = { "spells/7fx_warlock_shadow_missile.m2", false, 0.06, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -1.1, 0, -0.4, true },
-        BIG = { "spells/7fx_warlock_shadow_missile.m2", false, 0.06, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -0.2, 0.02, 0, true },
+        NORMAL = { "spells/7fx_warlock_shadow_missile.m2", false, 0.8, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -1.1, 0, -0.4, true },
+        BIG = { "spells/7fx_warlock_shadow_missile.m2", false, 1, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -0.2, 0.02, 0, true },
     },
     ["void2"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.017, 1.46, 1.46, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.6, -1.1, 0, -0.4, true },
         BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.018, 1.42, 1.42, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.6, -0.2, 0.02, 0, true },
     },
-    ["chiBlastBlue"] = {
-        NORMAL = { "SPELLS/Monk_ChiBlast_Precast.m2", true, 0.025, 1, 1, 0 },
-        BIG = { "SPELLS/Monk_ChiBlast_Precast.m2", true, 0.033, .77, .77, 0, "SPELLS/Monk_CracklingLightning_Impact_Blue.m2", true, 0.012, 2.05, 2.05, 0 },
-    },
+    
     -- ["Shadowflame"] = {
         -- NORMAL =  { "SPELLS/Shadowflame_Cast_Hand.m2", false, 1.5, 0, 0, 0.28 },
         -- BIG =  { "SPELLS/Shadowflame_Cast_Hand.m2", false, 2, 0, 0, 0.23},
@@ -123,8 +120,8 @@ NugComboBar.presets = {
         BIG = { "spells\\fel_fire_precast_hand.m2", true, 0.047, 0.53, 0.57, 0 },
     },
     ["electricBlue"] = {
-        NORMAL = { "spells\\lightningbolt_missile.m2", true, 0.023, 1.1, 1.1, 0 },
-        BIG = { "spells\\lightningbolt_missile.m2", true, 0.03, 0.85, 0.85, 0 },
+        NORMAL = { "spells\\lightningbolt_missile.m2", false, .9, 0, 0, 0 },
+        BIG = { "spells\\lightningbolt_missile.m2", false, 1.1, 0, 0, 0 },
     },
 }
 
@@ -349,7 +346,9 @@ local mappings = {
     ["5NO6"] = { 1, 2, 3, 4, 8 },
     ["6NO6"] = { 1, 2, 3, 4, 5, 8 },
     ["MOONKIN"] = { 1, 2, 8, SR1, SR2, SR8 },
-    ["FIREMAGE"] = { 1, 2, 6, SR1, SR8 },
+    ["FIREMAGE2"] = { 1, 2, 6, SR1, SR8 },
+    ["FIREMAGE3"] = { 1, 2, 6, SR1, SR2, SR8 },
+    ["FIREMAGE4"] = { 1, 2, 6, SR1, SR2, SR3, SR8 },
 }
 
 
@@ -480,8 +479,9 @@ local nextrender_func = function()
     while next(modelsToReset) do
         local pm = next(modelsToReset)
         modelsToReset[pm] = nil
-        -- print(pm:GetName(), "camera reset")
-        pm:SetCamera(0)
+        print(pm:GetName(), "camera reset")
+        pm:SetModelScale(pm.model_scale)
+        -- pm:SetCamera(0)
     end
     nextrender_frame:SetScript("OnUpdate", nil)
     nextrender_counter = 2
@@ -552,30 +552,31 @@ local Redraw = function(self)
     -- print(self:GetName(), "Redraw")
     if not self.model_path then return end
 
-    self:SetModelScale(1)
-    self:SetPosition(0,0,0)
+    -- self:SetModelScale(1)
+    -- self:SetPosition(0,0,0)
 
     if type(self.model_path) == "number" then
         self:SetDisplayInfo(self.model_path)
     else
         self:SetModel(self.model_path)
     end
-    self:SetModelScale(self.model_scale)
+    self:SetModelScale(1)
     self:SetPosition(self.ox, self.oy, self.oz)
 
+    nextrender_frame:enqueue(self)
     if self.camera_reset then
         self:SetCamera(0)
-        nextrender_frame:enqueue(self)
+        -- nextrender_frame:enqueue(self)
     else
-        nextrender_frame:dequeue(self)
+        -- nextrender_frame:dequeue(self)
         self:RefreshCamera()
     end
 end
 
 local ResetTransformations = function(self)
     -- print(self:GetName(), "hiding", self:GetCameraDistance(), self:GetCameraPosition())
-    self:SetModelScale(1)
-    self:SetPosition(0,0,0)
+    -- self:SetModelScale(1)
+    -- self:SetPosition(0,0,0)
 end
 NugComboBar.Redraw = Redraw
 NugComboBar.ResetTransformations = ResetTransformations
@@ -607,6 +608,10 @@ function NugComboBar.Create3DPoint(self, id, opts)
     pm:SetFrameLevel(2)
     pm:SetAllPoints(f)
     pm:SetFrameLevel(3)
+
+    pm:SetModel("spells\\gouge_precast_state_hand.m2")
+    pm:SetModelScale(1)
+    pm:SetPosition(0,0,0)
     -- pm:SetScript("OnUpdateModel", function() print("PM model update")     end)
     pm:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 
