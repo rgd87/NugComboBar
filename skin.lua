@@ -54,8 +54,12 @@ NugComboBar.presets = {
         BIG = { "SPELLS/Precast_Corrupted_01.m2", true, 0.035, .7, .7, 0 },
     },
     ["furnace"] = {
-        NORMAL = { "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0 },
-        BIG = { "spells/6fx_smallfire.m2", false, 0.36, -2.4, -.2, 0 },
+        NORMAL = { "spells/druid_wrath_impact_v2.m2", false, .7, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
+        BIG = { "spells/druid_wrath_impact_v2.m2", false, 1, 0,0,0, "spells/6fx_smallfire.m2", false, 0.36, -2.4, -.2, 0, true },
+    },
+    ["furnace2"] = {
+        NORMAL = { "spells/bloodlust_state_hand.m2", false, .6, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
+        BIG = { "spells/druid_wrath_impact_v2.m2", false, 1, 0,0, 0 },
     },
     ["chiBlast"] = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.05, 0.05, 0, 0 },
@@ -100,12 +104,15 @@ NugComboBar.presets = {
         BIG = { "spells\\lifetap_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
     },
     ["funnelBlue"] = {
-        NORMAL = { "spells\\manafunnel_impact_chest.m2", true, 0.018, 1.4, 1.4, 0 },
+        NORMAL = { "spells\\manafunnel_impact_chest.m2", false, 1, 0,0, 0 },
         BIG = { "spells\\manafunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
     },
     ["glowFreedom"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0, },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0, "spells\\blessingoffreedom_state.m2",  true,  .005, 5.1, 5, 0 },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        
+        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/monk_avertharm_state_base.m2",  false,  .5, -5.7,0,0},
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/divineshield_v2_chest.m2",  false,  0.8, -11.2, 0, -5},        
+        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 0.1, 0, 0, 0, "spells/weaponenchant_pvppandarias2.m2",  false,  2, -0.1,0,0, true},        
     },
     ["fireBlue"] = {
         NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0 },
