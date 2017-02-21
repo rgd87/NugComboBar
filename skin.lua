@@ -117,11 +117,12 @@ NugComboBar.presets = {
     -- },
     ["glowLifesteal"] = {
         NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 1, 2.2,0,1 },
-        BIG = { "spells\\lifetap_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+        BIG = { "spells/enchantments/purpleflame_low.m2", false, 1, 2.9,0,1.3 },
+        --BIG = { "spells\\lifetap_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
     },
     -- ["funnelBlue"] = {
-    --     NORMAL = { "spells\\manafunnel_impact_chest.m2", false, 1, 0,0, 0 },
-    --     BIG = { "spells\\manafunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    --     NORMAL = { "spells/arcaneshot_missile.m2", false, 0.5, -0.35,0,0, "spells\\manafunnel_impact_chest.m2", false, 0.7, 0,0, 0, true },
+    --     BIG = { "spells\\manafunnel_impact_chest.m2", false, 0.95, 0,0, 0 },
     -- },
     ["glowFreedom"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
