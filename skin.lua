@@ -60,10 +60,10 @@ NugComboBar.presets = {
         NORMAL = { "spells/cfx_mage_greaterpyroblast_missile.m2", false, 0.4, -0.9, -0.2,0 },
         BIG = { "spells/cfx_mage_greaterpyroblast_missile.m2", false, 0.52, -0.7, -0.16,0 },
     },
-    ["furnace3"] = {
-        NORMAL = { "spells/bloodlust_state_hand.m2", false, .6, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
-        BIG = { "spells/druid_wrath_impact_v2.m2", false, 1, 0,0, 0 },
-    },
+    -- ["furnace3"] = {
+    --     NORMAL = { "spells/bloodlust_state_hand.m2", false, .6, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
+    --     BIG = { "spells/bloodlust_state_hand.m2", false, .76, 0,0,0, "spells/6fx_smallfire.m2", false, 0.34, -3.2, -.2, 0, true },
+    -- },
     ["chiBlast"] = {
         NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.05, 0.05, 0, 0 },
         BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.3, 0.03, 0, 0}
