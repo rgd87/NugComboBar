@@ -467,9 +467,9 @@ do
                         order = 1,
                         values = function()
                             local p = {}
-                            for k,_ in pairs(NugComboBar.presets) do
+                            for k,preset in pairs(NugComboBar.presets) do
                                 local v = k
-                                if k == "glowPurple" then v = v.." (default)" end
+                                if preset.name then v = string.format("%s %s", k, preset.name) end
                                 if k ~= "_RuneCharger2" then
                                     p[k] = v
                                 end

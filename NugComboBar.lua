@@ -18,7 +18,7 @@ local defaultValue = 0
 local defaultProgress = 0
 local currentSpec = -1
 
-local isDefaultSkin = true
+local isDefaultSkin = nil
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
@@ -703,12 +703,12 @@ local defaults = {
         [10] = {0.77,0.26,0.29},
         ["bar1"] = { 0.9,0.1,0.1 },
         ["bar2"] = { .9,0.1,0.4 },
-        ["layer2"] = { 0.80, 0.23, 0.79 },
+        ["layer2"] = { 0.74, 0.06, 0 },
 		["row2"] = { 0.80, 0.23, 0.79 },
     },
     enable3d = true,
     preset3d = "glowPurple",
-    preset3dlayer2 = "fireOrange",
+    preset3dlayer2 = "glowArcshot",
     preset3dpointbar2 = "void",
 	bar2_x = 13,
 	bar2_y = -20,
@@ -928,27 +928,6 @@ local ResolutionOffsets = {
     [trim(4/3)] = { 2.5, 2.5 },
 }
 
-function NugComboBar:CheckResolution()
-    -- local maximized = GetCVar("gxMaximize") == "1"
-    -- -- GetCVar("gxWindow")
-    -- local aspectratio
-    -- if maximized then
-    --     aspectratio = trim(GetMonitorAspectRatio())
-    -- else
-    --     local res = GetCVar("gxResolution")
-    --     local w,h = string.match(res, "(%d+)x(%d+)")
-    --     aspectratio = trim(w/h)
-    -- end
-
-    -- local offsets = ResolutionOffsets[aspectratio]
-    -- if not offsets then
-    --     print("NCB: Unknown game resolution, adjust offsets manually")
-    -- else
-    --     NugComboBarDB_Global.adjustX, NugComboBarDB_Global.adjustY = unpack(offsets)
-    --     self._disableOffsetSettings = true
-    -- end
-end
-
 
 function NugComboBar:SetupClassTheme()
     if not NugComboBarDB.classThemes then return end
@@ -960,8 +939,12 @@ function NugComboBar:SetupClassTheme()
     rawset(NugComboBarDB,"__classTheme", sT)
 end
 
-function NugComboBar:IsDefaultSkin()
-    return not IsAddOnLoaded("NugComboBarMakina") and not  IsAddOnLoaded("NugComboBarStriped")
+function NugComboBar:IsDefaultSkin(set)
+    if set then
+        isDefaultSkin = set
+    else
+        return isDefaultSkin
+    end
 end
 
 do
@@ -969,16 +952,10 @@ do
     function NugComboBar.PLAYER_LOGIN(self, event)
 		if NugComboBar.isDisabled then return end
 
-        if initial then
-            self:CheckResolution()
-        end
-
         isDefaultSkin = NugComboBar:IsDefaultSkin()
-        -- backward compatibility to old skins, for default there should be just :Create
-        if isDefaultSkin then
-            self:Create()
-        else if initial then self:Create() end
-        end
+
+        if initial then self:Create() end
+        -- Always calling :Create will allow switching to vertical without reload?
 
         if NugComboBarDB.frameparent and _G[NugComboBarDB.frameparent] then
              NugComboBar:SetParent(_G[NugComboBarDB.frameparent])
@@ -995,6 +972,14 @@ do
         --     NugComboBar:Set3DPreset(preset3d, preset3dlayer2)
         -- end
 
+        local presets = NugComboBar.presets
+        if not presets[NugComboBarDB.preset3dlayer2] then
+            NugComboBarDB.preset3dlayer2 = defaults.preset3dlayer2
+            if not presets[NugComboBarDB.preset3dlayer2] then
+                NugComboBarDB.preset3dlayer2 = next(presets)
+            end
+        end
+
 
         if NugComboBarDB.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
@@ -1009,10 +994,6 @@ do
         if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
 
-        if NugComboBarDB.scale < 0.93 and string.find(NugComboBarDB.preset3d, "funnel") then
-            print("[NugComboBar] funnelXXXX presets do not work on a scale below 0.9.")
-            NugComboBarDB.scale = 1
-        end
         self:SetScale(NugComboBarDB.scale)
 
         self:LoadClassSettings()
@@ -2015,11 +1996,12 @@ end
 local function RuneChargeOnUpdate(self, time)
 	local now = GetTime()
 	local frame = self.frame
-	local elapsed = now - frame.runeStart
+    local runeStart = frame.runeStart or now
+	local elapsed = now - runeStart
 	local progress = elapsed/frame.runeDuration
 	if progress < 0 then progress = 0 end
 	if progress > 1 then progress = 1 end
-	self.frame.playermodel:SetAlpha(progress*0.6)
+	self.frame.playermodel:SetAlpha(progress*0.8)
 	-- self.frame.playermodel:SetModelScale(0)
 	self:SetAlpha(progress ~= 0 and 0.7 or 0)
 

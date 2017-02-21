@@ -3,19 +3,16 @@ NugComboBar.presets = {
     ["glowPurple"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0 },
+        name = "(colored)",
     },
     ["glowPurple2"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/7fx_nightborne_precasthand.m2", false, .75, 0.1,0,0},
     },
     ["glowShadowFlame"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.025, 1, 1, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.033, .77, .77, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
-    },
-    ["zEpilepsy"] = {
-        NORMAL = { "SPELLS/void_precast_hand.m2", true, 0.03, .85, .85, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -1.1, 0, -0.4, true },
-        BIG = { "SPELLS/void_precast_hand.m2", true, 0.038, .68, .68, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.5, -0.2, 0.02, 0, true },
-    },
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
+    },    
     ["glowHoly"] = {
         LEFT = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.3, 0, 0, 0 },
         NORMAL = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.6, 0, 0, 0 },
@@ -29,8 +26,10 @@ NugComboBar.presets = {
     ["_RuneCharger2"] = {
         -- NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0, 1, 1, 0, "spells\\blessingoffreedom_state.m2",  true,  .002, 12.6, 12.5, 0 },
         -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "spells\\blessingoffreedom_state.m2",  true,  .003, 8.35, 8.4, 0 }, --"SPELLS/FlowingWater_High.m2", true, 0.04, .62, .64, 0 },
-        NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
-        BIG = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.047, 0.53, 0.57, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
+        
+        -- NORMAL = { "spells/7fx_warlock_tormentedsoulspawn_missile.m2", false, 1, 0, 0, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
+        NORMAL = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -1.1, 0, -0.4, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
+        BIG = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -1.1, 0, -0.4, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
     },
     -- ["frostFire"] = {
         -- NORMAL = { 67635, false, 1, -13.7,0,-6},
@@ -49,15 +48,19 @@ NugComboBar.presets = {
         NORMAL = { "SPELLS/FlowingWater_High.m2", false, 3, 0.1, 0, 0 },
         BIG = { "SPELLS/FlowingWater_High.m2", false, 3.6, 0.1, 0, 0 },
     },
-    ["corrupted"] = {
-        NORMAL = { "SPELLS/Precast_Corrupted_01.m2", true, 0.03, .8, .8, 0 },
-        BIG = { "SPELLS/Precast_Corrupted_01.m2", true, 0.035, .7, .7, 0 },
-    },
+    -- ["corrupted"] = {
+    --     NORMAL = { "SPELLS/Precast_Corrupted_01.m2", false, 1.1, 0, 0, 0 },
+    --     BIG = { "SPELLS/Precast_Corrupted_01.m2", false, 1.3, 0, 0, 0 },
+    -- },
     ["furnace"] = {
         NORMAL = { "spells/druid_wrath_impact_v2.m2", false, .7, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
         BIG = { "spells/druid_wrath_impact_v2.m2", false, 1, 0,0,0, "spells/6fx_smallfire.m2", false, 0.36, -2.4, -.2, 0, true },
     },
     ["furnace2"] = {
+        NORMAL = { "spells/cfx_mage_greaterpyroblast_missile.m2", false, 0.4, -0.9, -0.2,0 },
+        BIG = { "spells/cfx_mage_greaterpyroblast_missile.m2", false, 0.52, -0.7, -0.16,0 },
+    },
+    ["furnace3"] = {
         NORMAL = { "spells/bloodlust_state_hand.m2", false, .6, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
         BIG = { "spells/druid_wrath_impact_v2.m2", false, 1, 0,0, 0 },
     },
@@ -82,31 +85,44 @@ NugComboBar.presets = {
         NORMAL = { "spells/7fx_warlock_shadow_missile.m2", false, 0.8, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -1.1, 0, -0.4, true },
         BIG = { "spells/7fx_warlock_shadow_missile.m2", false, 1, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -0.2, 0.02, 0, true },
     },
-    ["void2"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0.017, 1.46, 1.46, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.6, -1.1, 0, -0.4, true },
-        BIG = { "spells\\gouge_precast_state_hand.m2", true, 0.018, 1.42, 1.42, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.6, -0.2, 0.02, 0, true },
-    },
-    
-    -- ["Shadowflame"] = {
-        -- NORMAL =  { "SPELLS/Shadowflame_Cast_Hand.m2", false, 1.5, 0, 0, 0.28 },
-        -- BIG =  { "SPELLS/Shadowflame_Cast_Hand.m2", false, 2, 0, 0, 0.23},
+    -- ["funnelPurple"] = {
+    --     NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, 0.018, 1.4, 1.4, 0 },
+    --     BIG = { "spells\\soulfunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
     -- },
-    ["funnelPurple"] = {
-        NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, 0.018, 1.4, 1.4, 0 },
-        BIG = { "spells\\soulfunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    -- ["funnelRed"] = {
+    --     NORMAL = { "spells\\healrag_state_chest.m2", true, 0.018, 1.4, 1.4, 0 },
+    --     BIG = { "spells\\healrag_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    -- },
+    ["glowGreen"] = {
+        NORMAL = { "spells/enchantments/greenflame_low.m2", false, 1, 2.2,0,1 },
+        BIG = { "spells/enchantments/greenflame_low.m2", false, 1, 2.9,0,1.3 },
+        name = "(colored)",
     },
-    ["funnelRed"] = {
-        NORMAL = { "spells\\healrag_state_chest.m2", true, 0.018, 1.4, 1.4, 0 },
-        BIG = { "spells\\healrag_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    ["glowOrange"] = {
+        NORMAL = { "spells/enchantments/redflame_low.m2", false, 1, 2.2,0,1 },
+        BIG = { "spells/enchantments/redflame_low.m2", false, 1, 2.9,0,1.3 },
     },
-    ["funnelGreen"] = {
-        NORMAL = { "spells\\lifetap_state_chest.m2", true, 0.018, 1.4, 1.4, 0 },
+    ["glowWhite"] = {
+        NORMAL = { "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.2,0,1, "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.2,0,1, true },
+        BIG = { "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.9,0,1.3, "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.2,0,1, true },
+        name = "(colored)",
+    },
+    -- ["glowRed"] = {
+    --     NORMAL = { "spells/enchantments/redglow_high.m2", false, 1, 1.6,0, 0.7 },
+    --     BIG = { "spells/enchantments/redglow_high.m2", false, 1, 2.2,0,1 },
+    -- },
+    -- ["glowYellow"] = {
+    --     NORMAL = { "spells/enchantments/yellowflame_low.m2", false, 1, 2.2,0,1 },
+    --     BIG = { "spells/enchantments/yellowflame_low.m2", false, 1, 2.9,0,1.3 },
+    -- },
+    ["glowLifesteal"] = {
+        NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 1, 2.2,0,1 },
         BIG = { "spells\\lifetap_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
     },
-    ["funnelBlue"] = {
-        NORMAL = { "spells\\manafunnel_impact_chest.m2", false, 1, 0,0, 0 },
-        BIG = { "spells\\manafunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
-    },
+    -- ["funnelBlue"] = {
+    --     NORMAL = { "spells\\manafunnel_impact_chest.m2", false, 1, 0,0, 0 },
+    --     BIG = { "spells\\manafunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    -- },
     ["glowFreedom"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         
@@ -114,18 +130,21 @@ NugComboBar.presets = {
         BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/divineshield_v2_chest.m2",  false,  0.8, -11.2, 0, -5},        
         -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 0.1, 0, 0, 0, "spells/weaponenchant_pvppandarias2.m2",  false,  2, -0.1,0,0, true},        
     },
-    ["fireBlue"] = {
-        NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0 },
-        BIG = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.047, 0.53, 0.57, 0 },
+    ["arcanePink"] = {
+        NORMAL = { "spells/cast_arcane_pink_01.m2", false, 0.9, 0,0,0, "spells/antimagic_precast_hand_02red.m2", false, 2.3, 0,0,0, true },
+        BIG = { "spells/cast_arcane_pink_01.m2", false, 1.1, 0,0,0, "spells/antimagic_precast_hand_02red.m2", false, 2.8, 0,0,0, true },
     },
-    ["fireOrange"] = {
-        NORMAL = { "spells\\fire_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0 },
-        BIG = { "spells\\fire_precast_uber_hand.m2", true, 0.047, 0.53, 0.57, 0 },
+    ["glowArcshot"] = {
+        NORMAL = { "spells/arcaneshot_missile.m2", false, 0.5, -0.35,0,0, "spells/antimagic_precast_hand_02red.m2", false, 2.3, 0,0,0, true },
+        BIG = { "spells/arcaneshot_missile.m2", false, 0.65, -0.35,0,0, "spells/antimagic_precast_hand_02red.m2", false, 2.8, 0,0,0, true },
+        name = "(colored)",
     },
-    ["fireGreen"] = {
-        NORMAL = { "spells\\fel_fire_precast_hand.m2", true, 0.036, 0.70, 0.72, 0 },
-        BIG = { "spells\\fel_fire_precast_hand.m2", true, 0.047, 0.53, 0.57, 0 },
-    },
+    
+    
+    -- ["fireGreen"] = {
+    --     NORMAL = { "spells\\fel_fire_precast_hand.m2", true, 0.036, 0.70, 0.72, 0 },
+    --     BIG = { "spells\\fel_fire_precast_hand.m2", true, 0.047, 0.53, 0.57, 0 },
+    -- },
     ["electricBlue"] = {
         NORMAL = { "spells\\lightningbolt_missile.m2", false, .9, 0, 0, 0 },
         BIG = { "spells\\lightningbolt_missile.m2", false, 1.1, 0, 0, 0 },
@@ -486,9 +505,12 @@ local nextrender_func = function()
     while next(modelsToReset) do
         local pm = next(modelsToReset)
         modelsToReset[pm] = nil
-        print(pm:GetName(), "camera reset")
-        pm:SetModelScale(pm.model_scale)
-        -- pm:SetCamera(0)
+        -- print(pm:GetName(), "camera reset")
+        if not pm.camera_reset then
+            pm:SetModelScale(pm.model_scale)
+        else
+            pm:SetCamera(0)
+        end
     end
     nextrender_frame:SetScript("OnUpdate", nil)
     nextrender_counter = 2
@@ -559,8 +581,8 @@ local Redraw = function(self)
     -- print(self:GetName(), "Redraw")
     if not self.model_path then return end
 
-    -- self:SetModelScale(1)
-    -- self:SetPosition(0,0,0)
+    self:SetModelScale(1)
+    self:SetPosition(0,0,0)
 
     if type(self.model_path) == "number" then
         self:SetDisplayInfo(self.model_path)
@@ -571,19 +593,26 @@ local Redraw = function(self)
     self:SetPosition(self.ox, self.oy, self.oz)
 
     nextrender_frame:enqueue(self)
+    -- old method (pre 7.2):
+    -- SetCamera(0) is a bugged function that was breaking model camera
+    -- and was resetting it to default position, thus turning some effects to the bottom view
+    -- new method:
+    -- doesn't break camera, and all is good, but...
+    -- All calls to SetModelScale before model was rendered do nothing.
+    -- Regardless of scale value model will appear as if it was 1.
+    -- And all following transformations will be relative to that value
+    -- So that's why model scale initially should be 1, and only after it was loaded it should be scaled.
     if self.camera_reset then
         self:SetCamera(0)
-        -- nextrender_frame:enqueue(self)
     else
-        -- nextrender_frame:dequeue(self)
         self:RefreshCamera()
     end
 end
 
 local ResetTransformations = function(self)
     -- print(self:GetName(), "hiding", self:GetCameraDistance(), self:GetCameraPosition())
-    -- self:SetModelScale(1)
-    -- self:SetPosition(0,0,0)
+    self:SetModelScale(1)
+    self:SetPosition(0,0,0)
 end
 NugComboBar.Redraw = Redraw
 NugComboBar.ResetTransformations = ResetTransformations
@@ -595,8 +624,9 @@ local SetColor3DFunc = function(self, r,g,b, force)
     else
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = true, false, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
     end
-    self.model:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+    -- self.model:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
     self.playermodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+    self.bgmodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 end
 
 function NugComboBar.Create3DPoint(self, id, opts)
@@ -758,24 +788,28 @@ local CreatePixelBar = function(self)
 end
 
 NugComboBar.Create = function(self)
+    NugComboBar:IsDefaultSkin(true)
+
     self:SetFrameStrata("MEDIUM")
-    -- if IsVertical() then
-        -- self:SetWidth(32)
-        -- self:SetHeight(164)
-    -- else
+    if IsVertical() then
+        self:SetWidth(32)
+        self:SetHeight(164)
+    else
         self:SetWidth(164)
         self:SetHeight(32)
-    -- end
+    end
 
     local initial = not _G["NugComboBarBackgroundTexture1"]
 
     local is3D = NugComboBarDB.enable3d
 
-    self.point = self.point or {}
-    self.point_map = mappings[6]
-    self.p = setmetatable({}, { __index = function(t,k)
-        return self.point[self.point_map[k]]
-    end})
+    if initial then
+        self.point = self.point or {}
+        self.point_map = mappings[6]
+        self.p = setmetatable({}, { __index = function(t,k)
+            return self.point[self.point_map[k]]
+        end})
+    end
 
     local prevt
     for i=1,#pointtex do
@@ -843,50 +877,50 @@ NugComboBar.Create = function(self)
         self.point[i] = f
 
         if initial then
-        local aag = f:CreateAnimationGroup()
-        f.aag = aag
-        local a1 = aag:CreateAnimation("Alpha")
-        a1:SetFromAlpha(0)
-        a1:SetToAlpha(1)
-        a1:SetDuration(0.3)
-        a1:SetOrder(1)
-        aag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(1)
-        end)
+            local aag = f:CreateAnimationGroup()
+            f.aag = aag
+            local a1 = aag:CreateAnimation("Alpha")
+            a1:SetFromAlpha(0)
+            a1:SetToAlpha(1)
+            a1:SetDuration(0.3)
+            a1:SetOrder(1)
+            aag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(1)
+            end)
 
-        local dag = f:CreateAnimationGroup()
-        f.dag = dag
-        local d1 = dag:CreateAnimation("Alpha")
-        d1:SetFromAlpha(1)
-        d1:SetToAlpha(0)
-        d1:SetDuration(0.5)
-        d1:SetOrder(1)
-        dag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(0)
-        end)
+            local dag = f:CreateAnimationGroup()
+            f.dag = dag
+            local d1 = dag:CreateAnimation("Alpha")
+            d1:SetFromAlpha(1)
+            d1:SetToAlpha(0)
+            d1:SetDuration(0.5)
+            d1:SetOrder(1)
+            dag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
 
 
-        local rag = f:CreateAnimationGroup()
-        f.rag = rag
-        local r1 = rag:CreateAnimation("Alpha")
-        r1:SetFromAlpha(1)
-        r1:SetToAlpha(0.3)
-        r1:SetDuration(0.20)
-        r1:SetOrder(1)
-        r1:SetScript("OnFinished", function(self)
-            local p = self:GetParent():GetParent()
-            p:ragfunc(p.ragfuncarg)
-        end)
-        local r2 = rag:CreateAnimation("Alpha")
-        r2:SetFromAlpha(0.3)
-        r2:SetToAlpha(1)
-        r2:SetDuration(0.40)
-        r2:SetOrder(2)
-        rag:SetScript("OnFinished",function(self)
-            self:GetParent():SetAlpha(1)
-        end)
+            local rag = f:CreateAnimationGroup()
+            f.rag = rag
+            local r1 = rag:CreateAnimation("Alpha")
+            r1:SetFromAlpha(1)
+            r1:SetToAlpha(0.3)
+            r1:SetDuration(0.20)
+            r1:SetOrder(1)
+            r1:SetScript("OnFinished", function(self)
+                local p = self:GetParent():GetParent()
+                p:ragfunc(p.ragfuncarg)
+            end)
+            local r2 = rag:CreateAnimation("Alpha")
+            r2:SetFromAlpha(0.3)
+            r2:SetToAlpha(1)
+            r2:SetDuration(0.40)
+            r2:SetOrder(2)
+            rag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(1)
+            end)
 
-        end --endif intiial
+        end
 
         f.Activate = ActivateFunc
         f.Deactivate = DeactivateFunc
