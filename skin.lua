@@ -103,8 +103,8 @@ NugComboBar.presets = {
         BIG = { "spells/enchantments/redflame_low.m2", false, 1, 2.9,0,1.3 },
     },
     ["glowWhite"] = {
-        NORMAL = { "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.2,0,1, "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.2,0,1, true },
-        BIG = { "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.9,0,1.3, "spells/enchantments/whiteflame_low.m2", false, 1.15, 2.2,0,1, true },
+        NORMAL = { "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.23,0.03,1, "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.23,-0.03,1, true },
+        BIG = { "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.9,0.03,1.3, "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.2,-0.05,1, true },
         name = "(colored)",
     },
     -- ["glowRed"] = {
@@ -994,4 +994,24 @@ NugComboBar.themes["ROGUE"] = {
         preset3d = "glowPurple2",
         preset3dpointbar2 = "void",
     }
+}
+
+NugComboBar.themes["MAGE"] = {
+    [0] = {
+        preset3d = "glowPurple",
+    },
+    [1] ={
+        preset3d = "arcanePink",
+    },
+    [2] ={
+        preset3d = "furnace2",
+        preset3dpointbar2 = "furnace",
+    }
+}
+
+
+NugComboBar.themes["WARRIOR"] = {
+    [0] = {
+        preset3d = "glowOrange",
+    },
 }
