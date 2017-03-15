@@ -273,9 +273,26 @@ function NugComboBar:LoadClassSettings()
             end
             self:UPDATE_SHAPESHIFT_FORM()
         elseif class == "PALADIN" then
+
+            local TheFiresOFJustice = GetSpellInfo(209785)
+            -- local DivinePurpose = GetSpellInfo(223819)
+            local GetHolyPowerWBuffs = function(unit)
+                local fojup = UnitAura("player", TheFiresOFJustice, nil, "HELPFUL")
+                -- local dpup = UnitAura("player", DivinePurpose, nil, "HELPFUL")
+                local hp = UnitPower(unit, SPELL_POWER_HOLY_POWER)
+                local layer2 = 0
+                -- if dpup then
+                    -- layer2 = hp
+                -- else
+                if fojup then
+                    layer2 = 1
+                end
+                return hp, nil, nil, layer2
+            end
             local GetHolyPower = function(unit)
                 return UnitPower(unit, SPELL_POWER_HOLY_POWER)
             end
+
             local GetShieldCharges = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(53600) -- Shield of the Righteous
 				if charges == maxCharges then chargeStart = nil end
@@ -290,6 +307,8 @@ function NugComboBar:LoadClassSettings()
                 if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
+
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
 
             self.SPELL_UPDATE_COOLDOWN = function(self, event)
                 self:UNIT_COMBO_POINTS(nil, "player")
@@ -306,17 +325,29 @@ function NugComboBar:LoadClassSettings()
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
                     self:UnregisterEvent("UNIT_POWER")
+                    self:UnregisterEvent("UNIT_AURA")
                     defaultValue = 3
                     showEmpty = true
 					-- self:EnableBar(0, 6,"Small", "Timer")
                 else --if spec == 3 then
 					self:DisableBar()
                     soundFullEnabled = true
+
+                    local isFoJ = IsPlayerSpell(203316)
+
                     self:SetMaxPoints(5, "PALADIN")
                     defaultValue = 0
                     showEmpty = NugComboBarDB.showEmpty
-                    GetComboPoints = GetHolyPower
-                    self:RegisterEvent("UNIT_POWER")
+
+                    if IsPlayerSpell(203316) and NugComboBarDB.paladinBuffs then
+                        GetComboPoints = GetHolyPowerWBuffs
+                        self:RegisterEvent("UNIT_POWER")
+                        self:RegisterEvent("UNIT_AURA")
+                    else
+                        GetComboPoints = GetHolyPower
+                        self:RegisterEvent("UNIT_POWER")
+                        self:UnregisterEvent("UNIT_AURA")
+                    end
                     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:UnregisterEvent("SPELL_UPDATE_CHARGES")
                 end

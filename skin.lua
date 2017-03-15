@@ -1015,3 +1015,9 @@ NugComboBar.themes["WARRIOR"] = {
         preset3d = "glowOrange",
     },
 }
+
+NugComboBar.themes["DEATHKNIGHT"] = {
+    [0] = {
+        preset3d = "glowPurple",
+    },
+}
