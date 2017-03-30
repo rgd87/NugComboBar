@@ -384,6 +384,14 @@ local mappings = {
 }
 
 
+function NugComboBar.MoveCharger(self, point)
+    self.bar:ClearAllPoints()
+    self.bar:SetPoint("TOP", point, "BOTTOM", 0,16)
+    self.bar:SetWidth(24)
+    self.bar:SetHeight(5)
+end
+
+
 function NugComboBar.SetMaxPoints(self, n, special, n2)
     -- n2 is second row length
     if NugComboBar.MAX_POINTS == n and NugComboBar.MAX_POINTS2 == n2 then return end
@@ -755,7 +763,7 @@ local CreatePixelBar = function(self)
     -- p = math.floor(p*100)/100
     -- print("pixel len", p)
 
-    bar:SetWidth(45); bar:SetHeight(3)
+    bar:SetWidth(45); bar:SetHeight(4)
     bar:SetStatusBarTexture([[Interface\Addons\NugComboBar\tex\white]], "ARTWORK")
     bar:SetMinMaxValues(0,100)
     bar:SetValue(50)
@@ -776,22 +784,44 @@ local CreatePixelBar = function(self)
     local backdrop = {
         bgFile = [[Interface\Addons\NugComboBar\tex\white]],
         tile = true, tileSize = 0,
-        insets = {left = -p*2, right = -p*2, top = -p*2, bottom = -p*1.9},
+        insets = {left = -1, right = -1, top = -1, bottom = -1},
     }
     -- print("p=", p)
     bar:SetBackdrop(backdrop)
     bar:SetBackdropColor(0, 0, 0, 1)
 
     bar.SetColor = function(self, r,g,b)
-        -- self:SetStatusBarColor(r,g,b)
-        -- self.bg:SetVertexColor(r,g,b, 0.5)
-        self:SetBackdropColor(r,g,b)
+        self:SetStatusBarColor(r,g,b)
+        self.bg:SetVertexColor(r*0.3,g*0.3,b*0.3)
+        self:SetBackdropColor(0,0,0,1)
     end
 
     bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 14*p, 0)
+    -- bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 80, -35)
 
     return bar
 end
+
+-- local cdOnUpdate = function(self,time)
+--     self._elapsed = self._elapsed + time
+--     if self._elapsed < 0.03 then return end
+--     self._elapsed = 0
+
+--     local t = self.texture
+--     local progress = (GetTime() - self.start)/self.duration
+--     if progress > 1 then progress = 1 end
+--     if progress < 0 then progress = 0 end
+--     print(progress)
+--     t:SetRotation(math.rad(-360*progress))
+
+--     -- print(progress)
+--     if progress == 1 then
+--         self:SetScript("OnUpdate", nil)
+--         self:Hide()
+--     -- else
+--         -- t:Show()
+--     end
+-- end
 
 NugComboBar.Create = function(self)
     NugComboBar:IsDefaultSkin(true)
@@ -946,6 +976,35 @@ NugComboBar.Create = function(self)
         -- else
             -- bar:SetPoint("BOTTOMRIGHT", NugComboBar, "BOTTOMLEFT", 0, 14)
         -- end
+
+
+        -- local cd = CreateFrame("Frame", nil, self)
+        -- cd:SetHeight(64); cd:SetWidth(64);
+        -- local cdt = cd:CreateTexture(nil, "ARTWORK", nil, 3)
+        -- cdt:SetTexture([[Interface\Addons\NugComboBar\tex\chargeArrow]])
+        -- cdt:SetBlendMode("ADD")
+        -- cdt:SetAllPoints(cd)
+        -- cd.texture = cdt
+
+        -- local f = self.point[6]
+
+        -- cd:SetPoint("CENTER", f, "CENTER",0,0)
+
+        -- cdt:SetVertexColor(1,0,0, 1)
+
+        -- cd.SetSwipeColor = function() end
+        -- cd.SetParent = function() end
+
+        -- cd._elapsed = 0
+        -- -- /script NugComboBar.p[2].cd:SetCooldown(GetTime(), 10); NugComboBar.p[2].cd:Show()
+        -- cd.SetCooldown = function(self, start, duration)
+        --     self.start = start
+        --     self.duration = duration
+        --     self:SetScript("OnUpdate", cdOnUpdate)
+        --     self:Show()
+        -- end
+
+        -- self.charger = cd
 
     end --endif intiial
 

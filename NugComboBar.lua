@@ -75,6 +75,8 @@ local makeDruidCP = function(anticipation, subtlety, maxFill, maxCP)
 	end
 end
 
+
+
 -- local min = math.min
 -- local max = math.max
 function NugComboBar:LoadClassSettings()
@@ -136,7 +138,9 @@ function NugComboBar:LoadClassSettings()
                     self:SetMaxPoints(maxCP, (maxCP == 6) and "ROGUE63" or "ROGUE53", 3)
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-					-- self:EnableBar(0, 6, 90, "Timer")
+					self:EnableBar(0, 6, 90, "Timer")
+                    chargeCooldown = NugComboBarDB.chargeCooldown
+                    chargeCooldownOnSecondBar = true
                 else
 					self:DisableBar()
                     self:SetMaxPoints(maxCP)
@@ -328,10 +332,13 @@ function NugComboBar:LoadClassSettings()
                     self:UnregisterEvent("UNIT_AURA")
                     defaultValue = 3
                     showEmpty = true
-					-- self:EnableBar(0, 6,"Small", "Timer")
+                    chargeCooldown = NugComboBarDB.chargeCooldown
+					self:EnableBar(0, 6,"Small", "Timer")
                 else --if spec == 3 then
 					self:DisableBar()
+                    chargeCooldown = false
                     soundFullEnabled = true
+
 
                     local isFoJ = IsPlayerSpell(203316)
 
@@ -361,7 +368,7 @@ function NugComboBar:LoadClassSettings()
 
             local GetIronskinBrew = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(115308) -- ironskin brew id
-                -- print (charges, maxCharges, chargeStart, chargeDuration)
+                if charges == maxCharges then chargeStart = nil end
                 return charges, chargeStart, chargeDuration
             end
 
@@ -391,6 +398,7 @@ function NugComboBar:LoadClassSettings()
                 if spec == 1 and IsPlayerSpell(115308) then
                     GetComboPoints = GetIronskinBrew
                     soundFullEnabled = false
+                    chargeCooldown = NugComboBarDB.chargeCooldown
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
                     self:UnregisterEvent("UNIT_POWER")
@@ -402,9 +410,10 @@ function NugComboBar:LoadClassSettings()
                         defaultValue = 3
                     end
                     showEmpty = true
-                    -- self:EnableBar(0, 6,"Small", "Timer")
+                    self:EnableBar(0, 6,"Small", "Timer")
                 else
 					self:DisableBar()
+                    chargeCooldown = false
                     soundFullEnabled = true
                     if IsPlayerSpell(115396)  -- Ascension
                         then self:SetMaxPoints(6)
@@ -1153,12 +1162,14 @@ function NugComboBar.EnableBar(self, min, max, btype, isTimer)
     self.bar.enabled = true
     if min and max then self.bar:SetMinMaxValues(min, max) end
     self.bar.max = max
-	if not btype or btype == "Small" then
-		self.bar:SetWidth(45)
-	end
-	if type(btype) == "number" then
-		self.bar:SetWidth(btype)
-	end
+    if not chargeCooldown then
+    	if not btype or btype == "Small" then
+    		self.bar:SetWidth(45)
+    	end
+    	if type(btype) == "number" then
+    		self.bar:SetWidth(btype)
+    	end
+    end
 	if isTimer then
 		self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
 	end
@@ -1282,6 +1293,15 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	        end
 	    end
 
+        if chargeCooldown and not chargeCooldownOnSecondBar then
+            if isDefaultSkin then
+                if comboPoints ~= self.MAX_POINTS then
+                    local point = self.p[comboPoints+1]
+                    NugComboBar:MoveCharger(point)
+                end
+            end
+        end
+
 		-- local charger = true
 		-- if charger then
 		-- 	if arg1 and arg2 then
@@ -1316,6 +1336,16 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	        end
 
 	    end
+
+        if chargeCooldown and chargeCooldownOnSecondBar then
+            if isDefaultSkin then
+                if secondBarPoints ~= self.MAX_POINTS2 then
+                    local point = self.p[self.MAX_POINTS+secondBarPoints+1]
+                    NugComboBar:MoveCharger(point)
+                end
+            end
+        end
+
 	    end
 	end
 
@@ -1928,101 +1958,6 @@ function NugComboBar:SuperDisable()
     self:SetAlpha(0)
 end
 
-
-
-
-
-local ItemSetsRegistered = {}
-
-local tierSlots = {
-    (GetInventorySlotInfo("ChestSlot")),
-    (GetInventorySlotInfo("HeadSlot")),
-    (GetInventorySlotInfo("ShoulderSlot")),
-    (GetInventorySlotInfo("LegsSlot")),
-    (GetInventorySlotInfo("HandsSlot")),
-}
-
-local setwatcher = CreateFrame("Frame", nil, UIParent)
-setwatcher:SetScript("OnEvent", function(self, event, ...)
-    return self[event](self, event, ...)
-end)
-
--- setwatcher:RegisterEvent("PLAYER_LOGIN")
-
--- function setwatcher:PLAYER_LOGIN()
-    -- if next(ItemSetsRegistered) then
-        -- self:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
-        -- self:UNIT_INVENTORY_CHANGED(nil, "player")
-    -- end
--- end
-
-
-function setwatcher:UNIT_INVENTORY_CHANGED(event, unit)
-    for tiername, tier in pairs(ItemSetsRegistered) do
-        local tier_items = tier.items
-        local pieces_equipped = 0
-        for _, slot in ipairs(tierSlots) do
-            local itemID = GetInventoryItemID("player", slot)
-            if tier_items[itemID] then pieces_equipped = pieces_equipped + 1 end
-        end
-
-        for bp, bonus in pairs(tier.callbacks) do
-            if pieces_equipped >= bp then
-                if not bonus.equipped then
-                    if bonus.on then bonus.on() end
-                    bonus.equipped = true
-                end
-            else
-                if bonus.equipped then
-                    if bonus.off then bonus.off() end
-                    bonus.equipped = false
-                end
-            end
-        end
-    end
-end
-
-function NugComboBar.TrackItemSet(tiername, itemArray)
-    ItemSetsRegistered[tiername] = ItemSetsRegistered[tiername] or {}
-    if not ItemSetsRegistered[tiername].items then
-        ItemSetsRegistered[tiername].items = {}
-        ItemSetsRegistered[tiername].callbacks = {}
-        local bitems = ItemSetsRegistered[tiername].items
-        for _, itemID in ipairs(itemArray) do
-            bitems[itemID] = true
-        end
-    end
-
-    setwatcher:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
-end
-
-function NugComboBar.RegisterSetBonusCallback(tiername, pieces, handle_on, handle_off)
-    local tier = ItemSetsRegistered[tiername]
-    if not tier then error(string.format("Itemset '%s' is not registered", tiername)) end
-    tier.callbacks[pieces] = {}
-    tier.callbacks[pieces].equipped = false
-    tier.callbacks[pieces].on = handle_on
-    tier.callbacks[pieces].off = handle_off
-end
-
-
-function NugComboBar.IsSetBonusActive(tiername, bonuscount)
-        local tier = ItemSetsRegistered[tiername]
-        local tier_items = tier.items
-        local pieces_equipped = 0
-        for _, slot in ipairs(tierSlots) do
-            local itemID = GetInventoryItemID("player", slot)
-            if tier_items[itemID] then pieces_equipped = pieces_equipped + 1 end
-        end
-        return (pieces_equipped >= bonuscount)
-end
-
--- function NugComboBar:EnableItemSetTracking()
---     if next(ItemSetsRegistered) then
---         self:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
---         self:UNIT_INVENTORY_CHANGED(nil, "player")
---     end
--- end
 
 local function RuneChargeOnUpdate(self, time)
 	local now = GetTime()
