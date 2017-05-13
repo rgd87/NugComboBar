@@ -468,16 +468,14 @@ function NugComboBar.Create2DPoint(self, id, opts)
     t1:SetAllPoints(f)
     f.t = t1
 
-    local f2 = CreateFrame("Frame",nil,f)
-    f2:SetHeight(size+3); f2:SetWidth(size+3);
-    local g2 = f2:CreateTexture(nil,"OVERLAY")
-    g2:SetAllPoints(f2)
+    local g2 = f:CreateTexture(nil,"OVERLAY")
+    g2:SetHeight(size+3); g2:SetWidth(size+3);
     g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbc_point_shine]]
-    f2:SetPoint("CENTER",f,"CENTER",3,2)
+    g2:SetPoint("CENTER",f,"CENTER",3,2)
 
-    f2:SetAlpha(0)
+    g2:SetAlpha(0)
 
-    local g2aag = f2:CreateAnimationGroup()
+    local g2aag = g2:CreateAnimationGroup()
     local g2a = g2aag:CreateAnimation("Alpha")
     g2a:SetStartDelay(0.18)
     g2a:SetFromAlpha(1)
