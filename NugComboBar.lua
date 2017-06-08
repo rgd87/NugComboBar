@@ -1819,28 +1819,33 @@ NugComboBar.Commands = {
     end,
 }
 
+local helpMessage = {
+    "|cff55ffff/ncb gui|r",
+    "|cff55ff55/ncb charspec|r",
+    "|cff55ff55/ncb lock|r",
+    "|cff55ff55/ncb unlock|r",
+    "|cff55ff55/ncb toggle3d|r",
+    "|cff55ff55/ncb preset3d <preset>|r",
+    "|cff55ff55/ncb scale|r <0.3 - 2.0>",
+    "|cff55ff55/ncb changecolor|r <1-6, 0 = all, -1 = 2nd bar>",
+    "|cff55ff55/ncb anchorpoint|r <left | right | top >",
+    "|cff55ff55/ncb showempty|r",
+    "|cff55ff55/ncb hideslowly|r",
+    "|cff55ff55/ncb vertical|r",
+    "|cff55ff55/ncb hidewotarget|r",
+    "|cff55ff55/ncb toggleblizz|r",
+    "|cff55ff55/ncb disable|enable|r (for current class)",
+    "|cff55ff55/ncb setpos|r point=CENTER parent=UIParent to=CENTER x=0 y=0",
+    "|cff55ff55/ncb reset|r",
+}
+
 function NugComboBar.SlashCmd(msg)
     k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
     if not k or k == "help" then
-        print([[Usage:
-          |cff55ffff/ncb gui|r
-          |cff55ff55/ncb charspec|r
-          |cff55ff55/ncb lock|r
-          |cff55ff55/ncb unlock|r
-          |cff55ff55/ncb toggle3d|r
-          |cff55ff55/ncb preset3d <preset>|r
-          |cff55ff55/ncb scale|r <0.3 - 2.0>
-          |cff55ff55/ncb changecolor|r <1-6, 0 = all, -1 = 2nd bar>
-          |cff55ff55/ncb anchorpoint|r <left | right | top >
-          |cff55ff55/ncb showempty|r
-          |cff55ff55/ncb hideslowly|r
-          |cff55ff55/ncb vertical|r
-          |cff55ff55/ncb hidewotarget|r
-          |cff55ff55/ncb toggleblizz|r
-          |cff55ff55/ncb disable|enable|r (for current class)
-          |cff55ff55/ncb setpos|r point=CENTER parent=UIParent to=CENTER x=0 y=0
-          |cff55ff55/ncb reset|r]]
-        )
+        print("Usage:")
+        for k,v in ipairs(helpMessage) do
+            print(" - ",v)
+        end
     end
     if NugComboBar.Commands[k] then
         NugComboBar.Commands[k](v)
