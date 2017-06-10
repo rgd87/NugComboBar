@@ -1029,6 +1029,10 @@ NugComboBar.themes = {}
 NugComboBar.themes["WARLOCK"] = {
     [0] = {
         preset3d = "glowPurple2",
+        colors = {
+            normal = { 0.5, 0.5 , 1 },
+            ["bar1"] = { 0.6, 0, 1 },
+        },
     },
 }
 
@@ -1046,7 +1050,11 @@ NugComboBar.themes["SHAMAN"] = {
 
 NugComboBar.themes["MONK"] = {
     [0] = {
-        preset3d = "chiBlast",
+        preset3d = "glowBlue",
+        colors = {
+            normal = { 0, 1, 0.3 },
+            ["bar1"] = { 0, 0.66, 0.43 },
+        },
     },
 }
 
@@ -1057,6 +1065,10 @@ NugComboBar.themes["ROGUE"] = {
     [3] ={
         preset3d = "glowPurple2",
         preset3dpointbar2 = "void",
+        colors = {
+            -- normal = { 0, 0, 0 },
+            ["bar1"] = { 0.6, 0, 1 },
+        },
     }
 }
 

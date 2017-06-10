@@ -458,6 +458,14 @@ function NugComboBar:LoadClassSettings()
                 return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
             end
 
+            local GetDestructionShards = function(unit)
+                local shards = UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
+                local fragments = UnitPower(unit, SPELL_POWER_SOUL_SHARDS, true)
+                local rfragments = fragments - (shards*10)
+                if rfragments == 0 then rfragments = nil end
+                return shards, rfragments
+            end
+
             self:RegisterEvent("UNIT_POWER")
             self.UNIT_POWER = function(self,event,unit,ptype)
                 if unit ~= "player" then return end
@@ -479,6 +487,15 @@ function NugComboBar:LoadClassSettings()
                 self:SetMaxPoints(maxshards)
                 GetComboPoints = GetShards
                 self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
+                if GetSpecialization() == 3 then
+                    GetComboPoints = GetDestructionShards
+                    chargeCooldown = NugComboBarDB.chargeCooldown
+                    self:EnableBar(0, 10,"Small" )
+                else
+                    GetComboPoints = GetShards
+                    chargeCooldown = nil
+                    self:DisableBar()
+                end
             end
 
             self:SPELLS_CHANGED()
