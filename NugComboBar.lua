@@ -135,7 +135,9 @@ function NugComboBar:LoadClassSettings()
 				local maxFill = NugComboBarDB.maxFill
                 GetComboPoints = makeRCP(isAnticipation, isSub, maxFill, maxCP)--  RogueGetComboPoints
                 if isSub and NugComboBarDB.shadowDance then
-                    self:SetMaxPoints(maxCP, (maxCP == 6) and "ROGUE63" or "ROGUE53", 3)
+                    local maxShadowDance = IsPlayerSpell(238104) and 3 or 2
+                    local barSetup = "ROGUE"..maxCP..maxShadowDance
+                    self:SetMaxPoints(maxCP, barSetup, maxShadowDance)
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
 					self:EnableBar(0, 6, 90, "Timer")
