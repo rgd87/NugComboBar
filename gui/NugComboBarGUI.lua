@@ -245,7 +245,7 @@ do
                 }
             },
             classThemes = {
-                        name = "|cffff2222"..L"Use class themes (EXPERIMENTAL)".."|r",
+                        name = "|cffff5555"..L"Use NCB Class Themes".."|r",
                         type = 'toggle',
                         width = "double",
                         order = 2.5,

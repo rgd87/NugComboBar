@@ -4,4 +4,5 @@
 ## Dependencies: NugComboBar
 ## Author: d87
 ## LoadOnDemand: 1
-gui.xml
+..\NugComboBar\gui\includes.xml
+

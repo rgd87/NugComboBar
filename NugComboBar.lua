@@ -778,6 +778,7 @@ local defaults = {
     showAlways = false,
     onlyCombat = false,
     disableProgress = false,
+    chargeCooldown = true,
     adjustX = 2.05,
     adjustY = 2.1,
     alpha = 1,

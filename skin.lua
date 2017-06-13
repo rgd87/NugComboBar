@@ -1095,5 +1095,8 @@ NugComboBar.themes["WARRIOR"] = {
 NugComboBar.themes["DEATHKNIGHT"] = {
     [0] = {
         preset3d = "glowPurple",
+        colors = {
+            normal = { 0.7, 0.2, 0.2 },
+        }
     },
 }
