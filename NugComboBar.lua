@@ -83,6 +83,7 @@ function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
         self:SetupClassTheme()
+        self.isTempDisabled = nil
         soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
         if class == "ROGUE" then
@@ -732,7 +733,7 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         else
             self:SetMaxPoints(2)
-			self:Disable()
+            self:Disable()
             return
         end
 end
@@ -1371,7 +1372,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 
     -- print("progress", progress)
     -- print (comboPoints, defaultValue, comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
-    local forceHide = C_PetBattles.IsInBattle()
+    local forceHide = C_PetBattles.IsInBattle() or self.isTempDisabled
     if forceHide or
         (
             not showAlways and
@@ -1968,7 +1969,7 @@ function NugComboBar:Disable()
 	-- self:UnregisterEvent("UNIT_POWER")
 	-- self:UnregisterEvent("SPELL_UPDATE_CHARGES")
 	-- self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-	-- self.isDisabled = true
+	self.isTempDisabled = true
 
 	self:DisableBar()
     if self.anchor then self.anchor:Hide() end
