@@ -1034,6 +1034,11 @@ do
             end
         end
 
+        if not NugComboBar.soundFiles[NugComboBarDB.soundNameFull] then
+            NugComboBarDB.soundNameFull = "none"
+        end
+
+
 
         if NugComboBarDB.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
@@ -1272,8 +1277,10 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
                         if sn == "custom" then
                             PlaySoundFile(NugComboBarDB.soundNameFullCustom, NugComboBarDB.soundChannel)
                         else
-    	                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
-    	                    PlaySound(sound, NugComboBarDB.soundChannel)
+                            if type(sound) == "number" then
+        	                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+        	                    PlaySound(sound, NugComboBarDB.soundChannel)
+                            end
                         end
 	        end
 	        targetBefore = UnitGUID(allowedTargetUnit)

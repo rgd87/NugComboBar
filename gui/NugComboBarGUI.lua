@@ -575,7 +575,9 @@ do
                                 sound = NugComboBarDB.soundNameFullCustom
                                 PlaySoundFile(sound, NugComboBarDB.soundChannel)
                             else
-                                PlaySound(sound, NugComboBarDB.soundChannel)
+                                if type(sound) == "number" then
+                                    PlaySound(sound, NugComboBarDB.soundChannel)
+                                end
                             end
                         end,
                     },
