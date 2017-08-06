@@ -1052,7 +1052,7 @@ NugComboBar.themes["MONK"] = {
     [0] = {
         preset3d = "glowBlue",
         colors = {
-            normal = { 0, 1, 0.3 },
+            normal = { 0, 0.73, 0.27 },
             ["bar1"] = { 0, 0.66, 0.43 },
         },
     },

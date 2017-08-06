@@ -570,11 +570,14 @@ do
                         order = 1.5,
                         disabled = function() return (NugComboBarDB.soundNameFull == "none") end,
                         func = function()
-                        local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
-                        if sound == "custom" then
-                            sound = NugComboBarDB.soundNameFullCustom
-                        end
-                        PlaySoundFile(sound, NugComboBarDB.soundChannel) end,
+                            local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                            if sound == "custom" then
+                                sound = NugComboBarDB.soundNameFullCustom
+                                PlaySoundFile(sound, NugComboBarDB.soundChannel)
+                            else
+                                PlaySound(sound, NugComboBarDB.soundChannel)
+                            end
+                        end,
                     },
                     customsoundNameFull = {
                         name = L"Custom Sound",

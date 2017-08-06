@@ -954,25 +954,18 @@ function NugComboBar.PLAYER_LOGOUT(self, event)
     RemoveDefaults(NugComboBarDB, defaults)
 end
 
-
-
-
 NugComboBar.soundFiles = {
     ["none"] = "none",
-    ["gm_chatwarning"] = "Sound\\INTERFACE\\GM_ChatWarning.ogg",
-    ["coldblood"] = "Sound\\Spells\\ColdBlood.ogg",
-    ["alarmclockwarning3"] = "Sound\\INTERFACE\\AlarmClockWarning3.ogg",
-    ["auctionwindowopen"] = "Sound\\INTERFACE\\AuctionWindowOpen.ogg",
-    ["wispwhat1"] = "Sound\\Event Sounds\\Wisp\\WispWhat1.ogg",
+    ["gm_chatwarning"] = SOUNDKIT.GM_CHAT_WARNING,
+    ["alarmclockwarning3"] = SOUNDKIT.ALARM_CLOCK_WARNING_3,
+    ["auctionwindowopen"] = SOUNDKIT.AUCTION_WINDOW_OPEN,
     ["custom"] = "custom",
 }
 NugComboBar.soundChoices = {
     "none",
     "gm_chatwarning",
-    "coldblood",
     "alarmclockwarning3",
     "auctionwindowopen",
-    "wispwhat1",
     "custom",
 }
 
@@ -1276,8 +1269,12 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	            -- comboPointsBefore ~= 0 then
 	            UnitGUID(allowedTargetUnit) == targetBefore then
 	                    local sn = NugComboBarDB.soundNameFull
-	                    local sound = (sn == "custom") and NugComboBarDB.soundNameFullCustom or NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
-	                    PlaySoundFile(sound, NugComboBarDB.soundChannel)
+                        if sn == "custom" then
+                            PlaySoundFile(NugComboBarDB.soundNameFullCustom, NugComboBarDB.soundChannel)
+                        else
+    	                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+    	                    PlaySound(sound, NugComboBarDB.soundChannel)
+                        end
 	        end
 	        targetBefore = UnitGUID(allowedTargetUnit)
 	    end
