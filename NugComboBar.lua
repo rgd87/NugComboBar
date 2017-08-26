@@ -709,8 +709,8 @@ function NugComboBar:LoadClassSettings()
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
 
-                    isFlameOn = IsPlayerSpell(205029)
-                    isFlareUp = IsPlayerSpell(203282)
+                    local isFlameOn = IsPlayerSpell(205029)
+                    local isFlareUp = IsPlayerSpell(203282)
                     local maxFireBlastCharges = 2 + (isFlameOn and 1 or 0) + (isFlareUp and 1 or 0)
 
 					if NugComboBar:IsDefaultSkin() and NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
@@ -1153,7 +1153,7 @@ end
 
 function NugComboBar.CheckComboPoints(self)
 	if not self.isDisabled then
-    	self:UNIT_COMBO_POINTS(event, allowedUnit, nil)
+    	self:UNIT_COMBO_POINTS(nil, allowedUnit, nil)
 	end
 end
 
@@ -1277,7 +1277,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
                         if sn == "custom" then
                             PlaySoundFile(NugComboBarDB.soundNameFullCustom, NugComboBarDB.soundChannel)
                         else
-                            if type(sound) == "number" then
+                            if type(sn) == "number" then
         	                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
         	                    PlaySound(sound, NugComboBarDB.soundChannel)
                             end
@@ -1490,7 +1490,8 @@ function NugComboBar.CreateAnchor(frame)
     self:SetScript("OnDragStop",function(self)
         self:StopMovingOrSizing();
         self:SetUserPlaced(false)
-        NugComboBarDB.apoint, _, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
+        local parent
+        NugComboBarDB.apoint, parent, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
         NugComboBarDB.parent = "UIParent"
     end)
 
@@ -1865,7 +1866,7 @@ local helpMessage = {
 }
 
 function NugComboBar.SlashCmd(msg)
-    k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
+    local k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
     if not k or k == "help" then
         print("Usage:")
         for k,v in ipairs(helpMessage) do
