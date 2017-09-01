@@ -1273,15 +1273,15 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	            comboPoints ~= comboPointsBefore and
 	            -- comboPointsBefore ~= 0 then
 	            UnitGUID(allowedTargetUnit) == targetBefore then
-	                    local sn = NugComboBarDB.soundNameFull
-                        if sn == "custom" then
-                            PlaySoundFile(NugComboBarDB.soundNameFullCustom, NugComboBarDB.soundChannel)
-                        else
-                            if type(sn) == "number" then
-        	                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
-        	                    PlaySound(sound, NugComboBarDB.soundChannel)
-                            end
+                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                    if sound == "custom" then
+                        sound = NugComboBarDB.soundNameFullCustom
+                        PlaySoundFile(sound, NugComboBarDB.soundChannel)
+                    else
+                        if type(sound) == "number" then
+                            PlaySound(sound, NugComboBarDB.soundChannel)
                         end
+                    end
 	        end
 	        targetBefore = UnitGUID(allowedTargetUnit)
 	    end
