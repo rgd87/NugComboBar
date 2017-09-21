@@ -408,6 +408,7 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
     end
 
     self.point_map = mappings[special or n]
+    -- print(special or n, self.point_map)
 
     local totalpoints = n + (n2 or 0)
     local prevt
@@ -843,7 +844,11 @@ NugComboBar.Create = function(self)
         self.point = self.point or {}
         self.point_map = mappings[6]
         self.p = setmetatable({}, { __index = function(t,k)
-            return self.point[self.point_map[k]]
+            if self.point_map then  --weird error when zoning out of timewalking dungeon
+                return self.point[self.point_map[k]]
+            else
+                return nil
+            end
         end})
     end
 
@@ -1082,6 +1087,12 @@ NugComboBar.themes["MAGE"] = {
     [2] ={
         preset3d = "furnace",
         preset3dpointbar2 = "glowOrange",
+    },
+    [3] = {
+        preset3d = "glowBlue",
+        colors = {
+            normal = { 0.36, 0.69, 0.76 },
+        },
     }
 }
 

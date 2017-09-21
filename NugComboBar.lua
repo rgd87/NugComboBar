@@ -1322,7 +1322,9 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
             if isDefaultSkin then
                 if comboPoints ~= self.MAX_POINTS then
                     local point = self.p[comboPoints+1]
-                    NugComboBar:MoveCharger(point)
+                    if point then
+                        NugComboBar:MoveCharger(point)
+                    end
                 end
             end
         end
