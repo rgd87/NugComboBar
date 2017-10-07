@@ -389,7 +389,7 @@ local mappings = {
 function NugComboBar.MoveCharger(self, point)
     self.bar:ClearAllPoints()
     self.bar:SetPoint("TOP", point, "BOTTOM", 0,16)
-    self.bar:SetWidth(24)
+    self.bar:SetWidth(28)
     self.bar:SetHeight(5)
 end
 
