@@ -9,6 +9,11 @@ NugComboBar.presets = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/7fx_nightborne_precasthand.m2", false, .75, 0.1,0,0},
     },
+    -- {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}
+    ["glowFreedom"] = {
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
+    },
     ["glowShadowFlame"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
@@ -86,8 +91,8 @@ NugComboBar.presets = {
         BIG = { "spells/7fx_warlock_shadow_missile.m2", false, 1, -0.32, 0, 0, "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -0.2, 0.02, 0, true },
     },
     -- ["funnelPurple"] = {
-    --     NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, 0.018, 1.4, 1.4, 0 },
-    --     BIG = { "spells\\soulfunnel_impact_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    --     NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.001}, nil, nil, nil },
+    --     BIG = { "spells\\soulfunnel_impact_chest.m2", true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}, nil, nil, nil },
     -- },
     -- ["funnelRed"] = {
     --     NORMAL = { "spells\\healrag_state_chest.m2", true, 0.018, 1.4, 1.4, 0 },
@@ -129,7 +134,7 @@ NugComboBar.presets = {
     --     NORMAL = { "spells/arcaneshot_missile.m2", false, 0.5, -0.35,0,0, "spells\\manafunnel_impact_chest.m2", false, 0.7, 0,0, 0, true },
     --     BIG = { "spells\\manafunnel_impact_chest.m2", false, 0.95, 0,0, 0 },
     -- },
-    ["glowFreedom"] = {
+    ["glowFreedom2"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         
         -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/monk_avertharm_state_base.m2",  false,  .5, -5.7,0,0},
@@ -524,7 +529,8 @@ local nextrender_func = function()
         if not pm.camera_reset then
             pm:SetModelScale(pm.model_scale)
         else
-            pm:SetCamera(0)
+            -- pm:SetCamera(0)
+            pm:SetTransform(unpack(pm.model_scale))
         end
     end
     nextrender_frame:SetScript("OnUpdate", nil)
@@ -597,6 +603,7 @@ local Redraw = function(self)
     if not self.model_path then return end
 
     self:SetModelScale(1)
+    self:ClearTransform()
     self:SetPosition(0,0,0)
 
     if type(self.model_path) == "number" then
@@ -617,17 +624,18 @@ local Redraw = function(self)
     -- Regardless of scale value model will appear as if it was 1.
     -- And all following transformations will be relative to that value
     -- So that's why model scale initially should be 1, and only after it was loaded it should be scaled.
-    if self.camera_reset then
-        self:SetCamera(0)
-    else
-        self:RefreshCamera()
-    end
+    -- if self.camera_reset then
+        -- self:SetCamera(0)
+    -- else
+        -- self:RefreshCamera()
+    -- end
 end
 
 local ResetTransformations = function(self)
     -- print(self:GetName(), "hiding", self:GetCameraDistance(), self:GetCameraPosition())
     self:SetModelScale(1)
     self:SetPosition(0,0,0)
+    self:ClearTransform()
 end
 NugComboBar.Redraw = Redraw
 NugComboBar.ResetTransformations = ResetTransformations
