@@ -244,14 +244,6 @@ do
                     },
                 }
             },
-            classThemes = {
-                        name = "|cffff5555"..L"Use NCB Class Themes".."|r",
-                        type = 'toggle',
-                        width = "double",
-                        order = 2.5,
-                        get = function(info) return NugComboBarDB.classThemes end,
-                        set = function(info, s) NugComboBar.Commands.classthemes() end,
-                    },
             resourcesGroup = {
                 type = "group",
                 name = L"Additional Resources",
@@ -466,7 +458,7 @@ do
                 -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 6,
-                args = {
+                args = {                    
 
                     preset = {
                         name = L"Preset",
@@ -516,11 +508,21 @@ do
                         set = function( info, v ) NugComboBar.Commands.preset3dpointbar2(v) end,
                     },
 
+                    classThemes = {
+                        name = "|cffff5555"..L"Use NCB Class Themes".."|r",
+                        type = 'toggle',
+                        width = "double",
+                        order = 4,
+                        get = function(info) return NugComboBarDB.classThemes end,
+                        set = function(info, s) NugComboBar.Commands.classthemes() end,
+                    },
+
                     colors3d = {
                         name = L"Use colors",
                         desc = L"Only some effects can be altered using colored lighting.\nfireXXXX presets are good for it",
+                        width = "double",
                         type = 'toggle',
-                        order = 4,
+                        order = 5,
                         get = function(info) return NugComboBarDB.colors3d end,
                         set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
                     },

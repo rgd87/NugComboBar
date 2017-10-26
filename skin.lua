@@ -394,7 +394,7 @@ local mappings = {
 function NugComboBar.MoveCharger(self, point)
     self.bar:ClearAllPoints()
     self.bar:SetPoint("TOP", point, "BOTTOM", 0,16)
-    self.bar:SetWidth(28)
+    self.bar:SetWidth(29)
     self.bar:SetHeight(5)
 end
 
@@ -771,6 +771,13 @@ local CreatePixelBar = function(self)
     local p = 1
     -- p = math.floor(p*100)/100
     -- print("pixel len", p)
+
+    -- bar.SetScale1 = bar.SetScale
+    -- bar.SetScale = function(self, scale)
+    --     self:SetScale1(UIParent:GetScale()*scale)
+    -- end
+    -- bar:SetScale(1)
+
 
     bar:SetWidth(45); bar:SetHeight(4)
     bar:SetStatusBarTexture([[Interface\Addons\NugComboBar\tex\white]], "ARTWORK")
