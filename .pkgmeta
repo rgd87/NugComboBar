@@ -4,4 +4,6 @@ enable-nolib-creation: no
 move-folders:
     NugComboBar/gui/loader: NugComboBarGUI
 
-manual-changelog: CHANGELOG
+manual-changelog:
+    filename: CHANGELOG
+    markup-type: markdown

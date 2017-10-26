@@ -1088,12 +1088,16 @@ NugComboBar.themes["MONK"] = {
 NugComboBar.themes["ROGUE"] = {
     [0] = {
         preset3d = "glowPurple2",
+        colors = {
+            normal = {0.77,0.26,0.29},
+            ["bar1"] = { 0.6, 0, 1 },
+        },
     },
     [3] ={
         preset3d = "glowPurple2",
         preset3dpointbar2 = "void",
         colors = {
-            -- normal = { 0, 0, 0 },
+            normal = {0.77,0.26,0.29},
             ["bar1"] = { 0.6, 0, 1 },
         },
     }

@@ -1,3 +1,8 @@
+### 7.3.5:
+
+- Revamped Rune tracker mode, now runes are sorted
+- returned old glowFreedom effect with the new SetTransform model type
+
 ### 7.3.4:
 
 - Charge bars now grow to the right
