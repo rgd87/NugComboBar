@@ -185,11 +185,12 @@ end
         f.dagfunc = nil
         self:SetScript("OnFinished", nil)
     end
-local ReappearFunc = function(self, func, arg)
+local ReappearFunc = function(self, func, arg, speed)
     if self.aag:IsPlaying() then self.aag:Stop() end
     if self.dag:IsPlaying() then self.dag:Stop() end
     self.ragfunc = func
     self.ragfuncarg = arg
+    self.rag:SetSpeed(speed or 1)
     self.rag:Play()
 end
 
@@ -975,6 +976,12 @@ NugComboBar.Create = function(self)
             rag:SetScript("OnFinished",function(self)
                 self:GetParent():SetAlpha(1)
             end)
+            rag.r1 = r1
+            rag.r2 = r2
+            rag.SetSpeed = function(self, mul)
+                self.r1:SetDuration(0.20*mul)
+                self.r2:SetDuration(0.40*mul)
+            end
 
         end
 

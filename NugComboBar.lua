@@ -595,10 +595,10 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
             self:SetMaxPoints(6, "6NO6")
-			isRuneTracker = NugComboBarDB.enableFullRuneTracker
+			isRuneTracker = true --NugComboBarDB.enableFullRuneTracker
 			defaultValue = 6
 
-			if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") or not NugComboBarDB.enable3d then isRuneTracker = false end
+			-- if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") or not NugComboBarDB.enable3d then isRuneTracker = false end
 
 			local GetTotalRunes = function(self, unit)
 				local n = 0
@@ -610,22 +610,14 @@ function NugComboBar:LoadClassSettings()
 			end
 			GetComboPoints = GetTotalRunes
             self:RegisterEvent("RUNE_POWER_UPDATE")
-			self:RegisterEvent("RUNE_TYPE_UPDATE")
+			-- self:RegisterEvent("RUNE_TYPE_UPDATE")
 
 			self.RUNE_POWER_UPDATE = function(self, event, runeIndex, isEnergize)
 				self:UNIT_COMBO_POINTS("RUNE_POWER_UPDATE", "player", runeIndex, isEnergize)
 			end
-			-- self.RUNE_TYPE_UPDATE = function(self,event)
-				-- print(event)
-			-- end
 
-			for i=1,6 do
-				self:RUNE_POWER_UPDATE("RUNE_POWER_UPDATE", i)
-			end
+			self:RUNE_POWER_UPDATE("RUNE_POWER_UPDATE")
 
-            -- self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            -- filter = "HELPFUL"
-            -- allowedCaster = "player"
         -- elseif class == "PRIEST" then
             -- self:SetMaxPoints(3)
             -- self:RegisterEvent("SPELLS_CHANGED")
@@ -1253,12 +1245,12 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	local comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
 
-	if isRuneTracker then
-		if event == "RUNE_POWER_UPDATE" then
-			local runeIndex, isEnergize = ...
-			self:UpdateRunes(runeIndex, isEnergize)
-		end
-	else
+	-- if isRuneTracker then
+	-- 	if event == "RUNE_POWER_UPDATE" then
+	-- 		local runeIndex, isEnergize = ...
+	-- 		self:UpdateRunes(runeIndex, isEnergize)
+	-- 	end
+	-- else
 	    if self.bar and self.bar.enabled then
 	        if arg1 then
 	            self.bar:Show()
@@ -1294,37 +1286,42 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	        targetBefore = UnitGUID(allowedTargetUnit)
 	    end
 
-	    for i = 1, self.MAX_POINTS do
-	        local point = self.p[i]
-	        if i <= comboPoints then
-	            point:Activate()
-	        end
-	        if i > comboPoints then
-	            point:Deactivate()
-	        end
+        if isRuneTracker and isDefaultSkin then
+            local runeIndex, isEnergize = ...
+            self:UpdateRunes(runeIndex, isEnergize)
+        else
+    	    for i = 1, self.MAX_POINTS do
+    	        local point = self.p[i]
+    	        if i <= comboPoints then
+    	            point:Activate()
+    	        end
+    	        if i > comboPoints then
+    	            point:Deactivate()
+    	        end
 
-	        if secondLayerPoints then -- Anticipation stuff
-	            if i <= secondLayerPoints then
-	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2)
-	                    or
-	                    (not point.anticipationColor) then
+    	        if secondLayerPoints then -- Anticipation stuff
+    	            if i <= secondLayerPoints then
+    	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2)
+    	                    or
+    	                    (not point.anticipationColor) then
 
-	                    point:Reappear(AnticipationIn, i)
-	                end
-	            else
-	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d)
-	                    or
-	                    (point.anticipationColor) then
+    	                    point:Reappear(AnticipationIn, i)
+    	                end
+    	            else
+    	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d)
+    	                    or
+    	                    (point.anticipationColor) then
 
-	                    if i <= comboPoints then
-	                        point:Reappear(AnticipationOut, i)
-	                    else
-	                        AnticipationOut(point, i)
-	                    end
-	                end
-	            end
-	        end
-	    end
+    	                    if i <= comboPoints then
+    	                        point:Reappear(AnticipationOut, i)
+    	                    else
+    	                        AnticipationOut(point, i)
+    	                    end
+    	                end
+    	            end
+    	        end
+    	    end
+        end
 
         if chargeCooldown and not chargeCooldownOnSecondBar then
             if isDefaultSkin then
@@ -1382,7 +1379,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
         end
 
 	    end
-	end
+	-- end
 
     -- print("progress", progress)
     -- print (comboPoints, defaultValue, comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
@@ -2047,69 +2044,66 @@ end
 function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
 	self:EnsureRuneChargeFrame(point)
 	if runeReady then
-		point.runeCharging = nil
+		-- point.runeCharging = nil
 		point.RuneChargeFrame:SetScript("OnUpdate", nil)
 		point.RuneChargeFrame:SetAlpha(0)
 		point.playermodel:SetAlpha(1)
 		-- point.cd:Hide()
 
-		if point.rag:IsPlaying() then point.rag:Stop() end
-		point:Reappear(AnticipationOut, index)
+        if point.runeCharging == nil then
+            point:Activate()
+        end
+
+        if point.runeCharging then
+		    if point.rag:IsPlaying() then point.rag:Stop() end
+		    point:Reappear(AnticipationOut, index)
+            point.runeCharging = false
+        -- else
+            -- point:Activate()
+        end
 	else
+        point.runeStart = start
+        point.runeDuration = duration
 		if not point.runeCharging then
-			point.runeStart = start
-			point.runeDuration = duration
 			-- point.cd:SetCooldown(start, duration)
 			-- point.cd:Show()b
 			-- RuneChargeIn(point)
 			if point.rag:IsPlaying() then point.rag:Stop() end
-			point:Reappear(RuneChargeIn)
+			point:Reappear(RuneChargeIn, nil, 0.3)
 		end
 	end
 end
 
 -- local updateAll = true
 function NugComboBar:UpdateRunes(index, isEnergize)
-	-- if updateAll then
-		-- for i, index in ipairs(mapPointToRune) do
-		-- 	local start, duration, runeReady = _GetRuneCooldown(index)
-		-- 	local point = self.p[i]
-		--
-		-- 	self:EnsureRuneChargeFrame(point)
-		-- 	print(index)
-		-- 	if not runeReady then
-		-- 		-- if  (point.currentPreset and point.currentPreset ~= "_RuneCharger2")
-		-- 		-- 	or
-		-- 		-- 	(not point.anticipationColor) then
-		--
-		-- 				if not point.runeCharging then
-		-- 					point.runeStart = start
-		-- 					point.runeDuration = duration
-		-- 					-- RuneChargeIn(point)
-		-- 					if point.rag:IsPlaying() then point.rag:Stop() end
-		-- 					point:Reappear(RuneChargeIn)
-		-- 				end
-		-- 		-- end
-		-- 	else
-		-- 		-- print(point.currentPreset, NugComboBarDB.preset3d)
-		-- 		if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d) then
-		--
-		-- 			point.runeCharging = nil
-		-- 			point.RuneChargeFrame:SetScript("OnUpdate", nil)
-		-- 			point.RuneChargeFrame:SetAlpha(0)
-		-- 			point.playermodel:SetAlpha(1)
-		--
-		-- 			if point.rag:IsPlaying() then point.rag:Stop() end
-		-- 			point:Reappear(AnticipationOut, index)
-		-- 		end
-		-- 	end
-		--
-		-- end
-	-- else
-		local start, duration, runeReady = GetRuneCooldown(index);
-		local point = self.p[index]
-		self:UpdateSingleRune(point, index, start, duration, runeReady)
-	-- end
+        if not self.runeTable then 
+            self.runeTable = {
+                {0, 1, false}, --start, duration, ready
+                {0, 1, false},
+                {0, 1, false},
+                {0, 1, false},
+                {0, 1, false},
+                {0, 1, false},
+            }
+        end
+        local runeTable = self.runeTable
+        for i=1, 6 do
+            local r = runeTable[i]
+            r[1], r[2], r[3] = GetRuneCooldown(i);
+        end
+        table.sort(runeTable, function(a,b)
+            if a[3] and not b[3] then -- if a.isReady and not b.isReady then
+                return true
+            elseif not a[3] and not b[3] then -- elseif not a.isReady and not b.isReady then
+                return a[1] < b[1]
+            end
+        end)
+
+        for i=1, 6 do
+            local start, duration, isReady = unpack(runeTable[i])
+            local point = self.p[i]
+            self:UpdateSingleRune(point, i, start, duration, isReady)
+        end
 end
 
 function NugComboBar:EnsureRuneChargeFrame(point)
@@ -2120,33 +2114,6 @@ function NugComboBar:EnsureRuneChargeFrame(point)
 		bgm:SetFrameLevel(0)
 		bgm:SetPoint("CENTER", point, "CENTER", 0, 0)
 
-		-- "spells\\blessingoffreedom_state.m2",  true,  .005, 5.1, 5, 0
-		-- /script NugComboBar.p[1].bgmodel:SetModelScale(0.002); NugComboBar.p[1].bgmodel:SetPosition(12.5,12.6,0)
-		-- /script NugComboBar.p[1].bgmodel:SetModelScale(0.0037); NugComboBar.p[1].bgmodel:SetPosition(6.77,6.7,0)
-		-- "spells\\blessingoffreedom_state.m2",  true,  .003, 8.35, 8.4, 0
-		-- bgm.model_path = "SPELLS/Shadowflame_Cast_Hand.m2"
-		-- bgm.model_scale = 2
-		-- bgm.ox = 0
-		-- bgm.oy = 0
-		-- bgm.oz = 0.28
-		-- bgm.camera_reset = false
-		--
-
-		local role = point.bg.settings.role
-
-		bgm.model_path = "spells\\blessingoffreedom_state.m2"
-		bgm.model_scale = 0.0056
-		bgm.ox = 4.5
-		bgm.oy = 4.5
-		bgm.oz = 0
-		bgm.camera_reset = true
-
-		if role == "BIG" then
-			bgm.model_scale = 0.0068
-			bgm.ox = 3.7
-			bgm.oy = 3.7
-		end
-		--
 		bgm.frame = point
 
 		bgm:SetScript("OnUpdate", RuneChargeOnUpdate)

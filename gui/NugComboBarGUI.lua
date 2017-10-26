@@ -274,14 +274,14 @@ do
                         get = function(info) return NugComboBarDB.infernoBlast end,
                         set = function(info, s) NugComboBar.Commands.infernoblast() end,
                     },
-                    detailedRunes = {
-                        name = "|cffaa0000"..L"Rune Cooldowns".."|r",
-                        type = 'toggle',
-                        -- width = "double",
-                        order = 4,
-                        get = function(info) return NugComboBarDB.enableFullRuneTracker end,
-                        set = function(info, s) NugComboBar.Commands.runecooldowns() end,
-                    },
+                    -- detailedRunes = {
+                    --     name = "|cffaa0000"..L"Rune Cooldowns".."|r",
+                    --     type = 'toggle',
+                    --     -- width = "double",
+                    --     order = 4,
+                    --     get = function(info) return NugComboBarDB.enableFullRuneTracker end,
+                    --     set = function(info, s) NugComboBar.Commands.runecooldowns() end,
+                    -- },
                     meatcleaver = {
                         name = "|cffff3333"..GetSpellInfo(85739).."|r",
                         type = 'toggle',
