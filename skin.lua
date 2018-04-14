@@ -382,6 +382,7 @@ local mappings = {
     ["DKDOUBLE"] = { 1, 6, SR1, SR2, SR3, SR4, SR6},
     ["PALADIN"] = { 1, 2, 6, 7, 8 },
     ["ARCANE"] = { 1, 2, 3, 6, SR1, SR2, SR8 },
+    ["DEATHKNIGHT"] = { 1, 2, 6, 7, 4, 8 },
     ["4NO6"] = { 1, 2, 3, 8 },
     ["5NO6"] = { 1, 2, 3, 4, 8 },
     ["6NO6"] = { 1, 2, 3, 4, 5, 8 },

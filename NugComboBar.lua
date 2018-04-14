@@ -594,7 +594,7 @@ function NugComboBar:LoadClassSettings()
             end
             self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
-            self:SetMaxPoints(6, "6NO6")
+            self:SetMaxPoints(6, "DEATHKNIGHT")
 			isRuneTracker = true --NugComboBarDB.enableFullRuneTracker
 			defaultValue = 6
 
