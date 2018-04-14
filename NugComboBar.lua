@@ -17,6 +17,7 @@ local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 local defaultProgress = 0
 local currentSpec = -1
+local playerClass
 
 local isDefaultSkin = nil
 
@@ -922,6 +923,8 @@ do
                 NugComboBar:SuperDisable()
             end
 
+            playerClass = select(2,UnitClass("player"))
+
             self:RegisterEvent("PLAYER_LOGIN")
             self:RegisterEvent("PLAYER_LOGOUT")
 
@@ -1144,7 +1147,7 @@ end
 
 function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     self:UNIT_COMBO_POINTS(event, allowedUnit)
-    if not UnitExists("target") and NugComboBarDB.hideWithoutTarget then
+    if not UnitExists("target") and NugComboBarDB.hideWithoutTarget and playerClass ~= "DEATHKNIGHT" then
         self:Hide()
     end
 end
