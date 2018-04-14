@@ -2006,8 +2006,9 @@ local function RuneChargeOnUpdate(self, time)
 	local elapsed = now - runeStart
 	local progress = elapsed/frame.runeDuration
 	if progress < 0 then progress = 0 end
-	if progress > 1 then progress = 1 end
-	self.frame.playermodel:SetAlpha(progress*0.8)
+    if progress > 1 then progress = 1 end
+    local pmp = progress*progress
+	self.frame.playermodel:SetAlpha(pmp)--progress*0.8)
 	-- self.frame.playermodel:SetModelScale(0)
 	self:SetAlpha(progress ~= 0 and 0.7 or 0)
 
