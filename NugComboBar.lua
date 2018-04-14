@@ -791,6 +791,7 @@ local defaults = {
 	maxFill = false,
     hideWithoutTarget = false,
     vertical = false,
+    overrideLayout = false,
     soundChannel = "SFX",
     soundNameFull = "none",
     soundNameFullCustom = "Interface\\AddOns\\YourSound.mp3",
@@ -1836,6 +1837,11 @@ NugComboBar.Commands = {
         local pos = NugComboBarDB
         NugComboBar.anchor:SetPoint(pos.apoint, pos.parent, pos.point, pos.x, pos.y)
     end,
+    ["overridelayout"] = function(newLayout)
+        if not newLayout or newLayout == "none" or newLayout == "Default" then newLayout = false end
+        NugComboBarDB.overrideLayout = newLayout
+        NugComboBar:Reinitialize()
+    end,
 
     ["setparent"] = function(v)
         if _G[v] then
@@ -2056,15 +2062,20 @@ function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
         point.runeStart = start
         point.runeDuration = duration
 		if not point.anticipationColor then
-			-- point.cd:SetCooldown(start, duration)
-			-- point.cd:Show()
 			if point.rag:IsPlaying() then point.rag:Stop() end
 			point:Reappear(RuneChargeIn, nil, 0.3)
 		end
 	end
 end
 
--- local updateAll = true
+
+local runeSortFunc = function(a,b)
+    if a[3] and not b[3] then -- if a.isReady and not b.isReady then
+        return true
+    elseif not a[3] and not b[3] then -- elseif not a.isReady and not b.isReady then
+        return a[1] < b[1]
+    end
+end
 function NugComboBar:UpdateRunes(index, isEnergize)
         if not self.runeTable then 
             self.runeTable = {
@@ -2082,13 +2093,7 @@ function NugComboBar:UpdateRunes(index, isEnergize)
             r[1], r[2], r[3] = GetRuneCooldown(i);
             if not r[1] then return end
         end
-        table.sort(runeTable, function(a,b)
-            if a[3] and not b[3] then -- if a.isReady and not b.isReady then
-                return true
-            elseif not a[3] and not b[3] then -- elseif not a.isReady and not b.isReady then
-                return a[1] < b[1]
-            end
-        end)
+        table.sort(runeTable, runeSortFunc)
 
         -- print("------")
         for i=1, 6 do

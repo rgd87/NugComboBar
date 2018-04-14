@@ -1,5 +1,13 @@
 local L = NugComboBar.L
 
+
+-- local layoutChoices = { }
+-- for k,v in pairs(NugComboBar.mappings) do
+--         table.insert(layoutChoices, tostring(k))
+-- end
+-- table.sort(layoutChoices)
+-- table.insert(layoutChoices, 1, "Default" )
+
 do
     local opt = {
         type = "group",
@@ -528,20 +536,7 @@ do
                     },
                 },
             },
-
-                    soundChannel = {
-                        name = L"Sound Channel",
-                        type = 'select',
-                        order = 6.4,
-                        values = {
-                            SFX = L"SFX",
-                            Music = L"Music",
-                            Ambience = L"Ambience",
-                            Master = L"Master",
-                        },
-                        get = function(info) return NugComboBarDB.soundChannel end,
-                        set = function( info, v ) NugComboBarDB.soundChannel = v end,
-                    },
+           
             sound = {
                 type = "group",
                 name = L"Sounds",
@@ -596,6 +591,32 @@ do
                     },
                 },
             },
+            -- overrideLayout = {
+            --     type = "group",
+            --     name = "",
+            --     guiInline = true,
+            --     disabled = function() return not NugComboBar:IsDefaultSkin() end,
+            --     order = 6.9,
+            --     args = {
+            --         overridePointLayout = {
+            --             name = L"Override Layout",
+            --             type = 'select',
+            --             order = 6.4,
+            --             values = layoutChoices,
+            --             get = function(info)
+            --                 local overrideLayout = NugComboBarDB.overrideLayout
+            --                 if not overrideLayout then return 1 end
+            --                 for i,v in ipairs(layoutChoices) do
+            --                     if v == overrideLayout then return i end
+            --                 end
+            --             end,
+            --             set = function( info, v )
+            --                 local newLayout = layoutChoices[v]
+            --                 NugComboBar.Commands.overridelayout(newLayout)
+            --             end,
+            --         },
+            --     },
+            -- },
 
             disable = {
                 type = "group",

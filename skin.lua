@@ -372,16 +372,15 @@ local mappings = {
     [4] = { 1, 2, 3, 6 },
     [5] = { 1, 2, 3, 4, 6 },
     [6] = { 1, 2, 3, 4, 5, 6 },
-    ["SHAMAN7"] = { 1, 2, 3, 4, 6, 7, 8 },
-    ["SHAMAN5"] = { 1, 2, 3, 6, 7 },
-    ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},
+    -- ["SHAMAN7"] = { 1, 2, 3, 4, 6, 7, 8 },
+    -- ["SHAMAN5"] = { 1, 2, 3, 6, 7 },
+    -- ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},
     ["ROGUE53"] = { 1, 2, 3, 4, 6, SR1, SR2, SR8 },
     ["ROGUE63"] = { 1, 2, 3, 4, 5, 6, SR1, SR2, SR8 },
     ["ROGUE52"] = { 1, 2, 3, 4, 6, SR1, SR8 },
     ["ROGUE62"] = { 1, 2, 3, 4, 5, 6, SR1, SR8 },
-    ["DKDOUBLE"] = { 1, 6, SR1, SR2, SR3, SR4, SR6},
+    ["DKDOUBLE"] = { 1, 2, 6, SR1, SR2, SR8},
     ["PALADIN"] = { 1, 2, 6, 7, 8 },
-    ["ARCANE"] = { 1, 2, 3, 6, SR1, SR2, SR8 },
     ["DEATHKNIGHT"] = { 1, 2, 6, 7, 4, 8 },
     ["4NO6"] = { 1, 2, 3, 8 },
     ["5NO6"] = { 1, 2, 3, 4, 8 },
@@ -391,6 +390,7 @@ local mappings = {
     ["FIREMAGE3"] = { 1, 2, 6, SR1, SR2, SR8 },
     ["FIREMAGE4"] = { 1, 2, 6, SR1, SR2, SR3, SR8 },
 }
+NugComboBar.mappings = mappings
 
 
 function NugComboBar.MoveCharger(self, point)
@@ -414,10 +414,23 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         point.bg:ClearAllPoints()
     end
 
+    local totalpoints = n + (n2 or 0)
+
+    if NugComboBarDB.overrideLayout then
+        local layout = NugComboBarDB.overrideLayout
+        layout = tonumber(layout) or layout
+        local customLayout = mappings[layout]
+        if customLayout and #customLayout >= totalpoints then
+            special = layout
+        end
+        -- if not customLayout then
+            -- NugComboBarDB.overrideLayout = false -- remove override if it was deleted from skin settings
+        -- end
+    end
+
     self.point_map = mappings[special or n]
     -- print(special or n, self.point_map)
 
-    local totalpoints = n + (n2 or 0)
     local prevt
     local framesize = 0
     for i=1,totalpoints do
