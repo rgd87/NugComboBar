@@ -138,7 +138,7 @@ NugComboBar.presets = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         
         -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/monk_avertharm_state_base.m2",  false,  .5, -5.7,0,0},
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/divineshield_v2_chest.m2",  false,  0.8, -11.2, 0, -5},        
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "spells/divineshield_v2_chest.m2",  false,  0.8, -17.5, 0, -7.8},        
         -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 0.1, 0, 0, 0, "spells/weaponenchant_pvppandarias2.m2",  false,  2, -0.1,0,0, true},        
     },
     ["arcanePink"] = {
@@ -1147,7 +1147,9 @@ NugComboBar.themes["DEATHKNIGHT"] = {
     [0] = {
         preset3d = "glowPurple",
         colors = {
-            normal = { 0.7, 0.2, 0.2 },
+            normal = {0.77,0.26,0.29},
+            -- normal = {0.15,0.80,0.48},
+            [3] = {1, 0, 0},
         }
     },
 }
