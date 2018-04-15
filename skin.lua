@@ -832,6 +832,7 @@ local CreatePixelBar = function(self)
 
     return bar
 end
+NugComboBar.CreatePixelBar = CreatePixelBar
 
 -- local cdOnUpdate = function(self,time)
 --     self._elapsed = self._elapsed + time
@@ -1145,7 +1146,7 @@ NugComboBar.themes["WARRIOR"] = {
 
 NugComboBar.themes["DEATHKNIGHT"] = {
     [0] = {
-        preset3d = "glowPurple",
+        preset3d = "glowFreedom",
         colors = {
             normal = {0.77,0.26,0.29},
             -- normal = {0.15,0.80,0.48},

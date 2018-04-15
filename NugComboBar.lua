@@ -1215,6 +1215,7 @@ local function AnticipationIn(point, i)
 end
 
 local function AnticipationOut(point, i)
+    print(i, "AnticipationOut", point.id)
     local r,g,b = unpack(NugComboBarDB.colors[i])
     point:SetColor(r,g,b)
     point.anticipationColor = false
@@ -1999,6 +2000,8 @@ function NugComboBar:SuperDisable()
 end
 
 
+local isPrettyRuneCharger = true
+
 local function RuneChargeOnUpdate(self, time)
 	local now = GetTime()
 	local frame = self.frame
@@ -2007,68 +2010,37 @@ local function RuneChargeOnUpdate(self, time)
 	local progress = elapsed/frame.runeDuration
 	if progress < 0 then progress = 0 end
     if progress > 1 then progress = 1 end
-    local pmp = progress*progress*progress+0.1
-	self.frame.playermodel:SetAlpha(pmp)--progress*0.8)
-	-- self.frame.playermodel:SetModelScale(0)
-	self:SetAlpha(progress ~= 0 and 0.7 or 0)
 
-	self.frame.bgmodel:SetAlpha(progress)
+    if isPrettyRuneCharger then
+        local pmp = progress*progress*progress+0.1
+        self.playermodel:SetAlpha(pmp)--progress*0.8)
+        self:SetAlpha(progress ~= 0 and 0.9 or 0)
+        self.bgmodel:SetAlpha(progress)
+
+    else
+        if progress == 0 then
+            self:SetAlpha(0)
+        else
+            self:SetAlpha(1)
+        end
+        self:SetValue(progress)
+    end
 end
 
-local function RuneChargeIn(point)
-	-- point.runeCharging = true
-	-- if point.rag:IsPlaying() then point.rag:Stop() end
-	point:SetColor(1, .0, 0.5)
-    point.anticipationColor = true
-    point:SetPreset("_RuneCharger2")
 
-	point.bgmodel:SetFrameLevel(0)
-	point.RuneChargeFrame:SetScript("OnUpdate", RuneChargeOnUpdate)
-	point.RuneChargeFrame:Show()
-	-- point.RuneChargeFrame:w()
-end
-
--- local mapPointToRune = {1,2,3,4,5,6}
--- local _GetRuneCooldown = GetRuneCooldown
--- local runeSortFunc = function(a,b)
--- 	local aStart, aDuration, aReady = _GetRuneCooldown(a);
--- 	local bStart, bDuration, bReady = _GetRuneCooldown(b);
--- 	if aReady and bReady then
--- 		return a < b
--- 	else
--- 		return aStart < bStart
--- 	end
--- end
---
--- function NugComboBar:UpdateRunes0(index, isEnergize)
--- 	table.sort(mapPointToRune,runeSortFunc)
--- 	NugComboBar:UpdateRunes()
--- end
 
 function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
-	self:EnsureRuneChargeFrame(point)
+    self:EnsureRuneChargeFrame(point)
 	if runeReady then
-
-		point.RuneChargeFrame:SetScript("OnUpdate", nil)
-		point.RuneChargeFrame:SetAlpha(0)
-		point.playermodel:SetAlpha(1)
-		-- point.cd:Hide()
-
-        if point.anticipationColor then
-            if point.rag:IsPlaying() then point.rag:Stop() end
-            point:Reappear(AnticipationOut, index)
-
-        else
-            point:Activate()
-        end
-
+        point:Activate()
+        point.RuneChargeFrame:Hide()
 	else
         point.runeStart = start
         point.runeDuration = duration
-		if not point.anticipationColor then
-			if point.rag:IsPlaying() then point.rag:Stop() end
-			point:Reappear(RuneChargeIn, nil, 0.3)
-		end
+
+        point:Deactivate()
+        point.RuneChargeFrame:SetScript("OnUpdate", RuneChargeOnUpdate)
+        point.RuneChargeFrame:Show()
 	end
 end
 
@@ -2109,25 +2081,35 @@ function NugComboBar:UpdateRunes(index, isEnergize)
 end
 
 function NugComboBar:EnsureRuneChargeFrame(point)
-	if not point.RuneChargeFrame then
-		local bgm = CreateFrame("PlayerModel", nil, self)
-		bgm:SetWidth(64)
-		bgm:SetHeight(64)
-		bgm:SetFrameLevel(0)
-		bgm:SetPoint("CENTER", point, "CENTER", 0, 0)
+    if not point.RuneChargeFrame then
+        
+        local f
+        if isPrettyRuneCharger then
+            local t = point.bg
+            local ts = t.settings
+            f = self:Create3DPoint(point.id.."rcf", ts)
+        
+            if NugComboBarDB.vertical then
+                f:SetPoint("CENTER", t, "BOTTOMLEFT", -ts.poffset_y, ts.poffset_x)
+            else
+                f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
+            end
+            f.bg = t
+            f:SetPreset("_RuneCharger2")
 
-		bgm.frame = point
+            f.bgmodel:SetFrameLevel(0)
+        else
 
-		bgm:SetScript("OnUpdate", RuneChargeOnUpdate)
+            f = self:CreatePixelBar()
+            f:SetWidth(18)
+            f:SetColor(1,0,1)
+            f:SetMinMaxValues(0,1)
+            f:ClearAllPoints()
+            f:SetPoint("TOP", point, "CENTER", 0, -16)
+        end
 
-		bgm:SetScript("OnHide", NugComboBar.ResetTransformations)
-		bgm:SetScript("OnShow", NugComboBar.Redraw)
-		bgm.Redraw = NugComboBar.Redraw
-		bgm:Redraw()
-
-		bgm:SetAlpha(0)
-
-		point.RuneChargeFrame = bgm
+        f.frame = point
+        point.RuneChargeFrame = f
 	end
 end
 
