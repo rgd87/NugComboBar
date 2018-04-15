@@ -1215,7 +1215,6 @@ local function AnticipationIn(point, i)
 end
 
 local function AnticipationOut(point, i)
-    print(i, "AnticipationOut", point.id)
     local r,g,b = unpack(NugComboBarDB.colors[i])
     point:SetColor(r,g,b)
     point.anticipationColor = false
