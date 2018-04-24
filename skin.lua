@@ -1080,7 +1080,11 @@ NugComboBar.themes["WARLOCK"] = {
 
 NugComboBar.themes["PALADIN"] = {
     [0] = {
-        preset3d = "glowHoly",
+        preset3d = "glowFreedom",
+        colors = {
+            normal = {0.77,0.26,0.29},
+            ["bar1"] = { 196/255, 66/255, 138/255 },
+        },
     }
 }
 
