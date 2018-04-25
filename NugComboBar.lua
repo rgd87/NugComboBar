@@ -24,11 +24,13 @@ local isDefaultSkin = nil
 
 local UnitAura = UnitAura
 local UnitPower = UnitPower
+local GetRuneCooldown = GetRuneCooldown
+local tsort = table.sort
 
 
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
-	self[event](self, event, ...)
+	return self[event](self, event, ...)
 end)
 
 NugComboBar:RegisterEvent("ADDON_LOADED")
@@ -591,12 +593,17 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
-                if spec == 3 then return survival() end
-                GetComboPoints = RogueGetComboPoints
-                self:SPELL_UPDATE_CHARGES()
-                self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-                self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-                showEmpty = NugComboBarDB.showEmpty
+                if spec == 3 then
+                    return survival()
+                else
+                    -- GetComboPoints = RogueGetComboPoints
+                    defaultValue = 0
+                    -- self:SPELL_UPDATE_CHARGES()
+                    -- self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
+                    -- self:UnregisterEvent("SPELL_UPDATE_CHARGES")
+                    -- showEmpty = NugComboBarDB.showEmpty
+                    self:Disable()
+                end
             end
             self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
@@ -2071,7 +2078,7 @@ function NugComboBar:UpdateRunes(index, isEnergize)
             r[1], r[2], r[3] = GetRuneCooldown(i);
             if not r[1] then return end
         end
-        table.sort(runeTable, runeSortFunc)
+        tsort(runeTable, runeSortFunc)
 
         -- print("------")
         for i=1, 6 do
