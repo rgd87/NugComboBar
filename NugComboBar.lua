@@ -21,6 +21,12 @@ local playerClass
 
 local isDefaultSkin = nil
 
+
+local UnitAura = UnitAura
+local UnitPower = UnitPower
+
+
+
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
 end)
@@ -38,15 +44,29 @@ local L = setmetatable({}, {
 })
 NugComboBar.L = L
 
-local scanAura
-local filter = "HELPFUL"
-local GetAuraStack = function(unit)
-    if not scanAura then return 0 end
-    local name, rank, icon, count, debuffType, duration, expirationTime, caster = UnitAura(allowedUnit, scanAura, nil, filter)
-    if allowedCaster and caster ~= allowedCaster then count = nil end
-    if count then
-        return count --, expirationTime-duration, duration
-    else return 0,0,0 end
+
+
+local function FindAura(unit, spellID, filter)
+    for i=1, 100 do
+        -- rank will be removed in bfa
+        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
+        if not name then return nil end
+        if spellID == auraSpellID then
+            return name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID
+        end
+    end
+end
+
+local GetAuraStack = function(scanID, filter, unit, casterCheck)
+    allowedUnit = allowedUnit or "player"
+    filter = filter or "HELPFUL"
+    return function(unit)
+        local name, rank, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
+        if casterCheck and caster ~= casterCheck then count = nil end
+        if count then
+            return count --, expirationTime-duration, duration
+        else return 0,0,0 end
+    end
 end
 
 local AuraTimerOnUpdate = function(self, time)
@@ -177,11 +197,11 @@ function NugComboBar:LoadClassSettings()
             end
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
 
-            local solar_aura = GetSpellInfo(164545)
-            local lunar_aura = GetSpellInfo(164547)
+            local solar_aura = 164545
+            local lunar_aura = 164547
             local GetEmpowerments = function(unit)
-                local _,_,_, solar = UnitAura("player", solar_aura, nil, "HELPFUL")
-                local _,_,_, lunar = UnitAura("player", lunar_aura, nil, "HELPFUL")
+                local _,_,_, solar = FindAura("player", solar_aura, "HELPFUL")
+                local _,_,_, lunar = FindAura("player", lunar_aura, "HELPFUL")
                 lunar = lunar or 0
                 solar = solar or 0
                 return lunar, nil, nil, 0, solar
@@ -233,10 +253,6 @@ function NugComboBar:LoadClassSettings()
                 -- self:SetMaxPoints(3)
                 -- self:RegisterEvent("UNIT_AURA")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
-                -- scanAura = GetSpellInfo(33745) -- Lacerate
-                -- filter = "HARMFUL"
-                -- allowedUnit = "target"
-                -- allowedCaster = "player"
                 GetComboPoints = dummy -- disable
                 local old1 = showEmpty
                 local old2 = hideSlowly
@@ -254,18 +270,14 @@ function NugComboBar:LoadClassSettings()
                 -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
                 self.UNIT_AURA = self.UNIT_COMBO_POINTS
                 soundFullEnabled = true
-                scanAura = GetSpellInfo(192090) -- Lacerate
-                filter = "HARMFUL"
-                allowedUnit = "target"
-                -- allowedCaster = "player"
-                GetComboPoints = GetAuraStack
+                GetComboPoints = GetAuraStack(192090, "HARMFUL", "target") -- Lacerate`
                 self:UNIT_COMBO_POINTS(nil,allowedUnit)
             end
 
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
             self.UPDATE_SHAPESHIFT_FORM = function(self)
                 self:UnregisterEvent("UNIT_AURA")
-                self:UnregisterEvent("UNIT_COMBO_POINTS")
+                self:UnregisterEvent("UNIT_POWER_FREQUENT")
                 -- self:UnregisterEvent("PLAYER_TARGET_CHANGED") -- it should be always on to hideWithoutTarget to work
                 self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
                 local spec = GetSpecialization()
@@ -287,11 +299,10 @@ function NugComboBar:LoadClassSettings()
             self:UPDATE_SHAPESHIFT_FORM()
         elseif class == "PALADIN" then
 
-            local TheFiresOFJustice = GetSpellInfo(209785)
+            local TheFiresOFJustice = 209785
             -- local DivinePurpose = GetSpellInfo(223819)
             local GetHolyPowerWBuffs = function(unit)
-                local fojup = UnitAura("player", TheFiresOFJustice, nil, "HELPFUL")
-                -- local dpup = UnitAura("player", DivinePurpose, nil, "HELPFUL")
+                local fojup = FindAura("player", TheFiresOFJustice, "HELPFUL")
                 local hp = UnitPower(unit, SPELL_POWER_HOLY_POWER)
                 local layer2 = 0
                 -- if dpup then
@@ -450,8 +461,7 @@ function NugComboBar:LoadClassSettings()
                 local spec = GetSpecialization()
                 if spec == 3 and NugComboBarDB.tidalWaves then
                     self:SetMaxPoints(2)
-                    scanAura = GetSpellInfo(53390) -- Tidal Waves
-                    GetComboPoints = GetAuraStack
+                    GetComboPoints = GetAuraStack(53390) -- Tidal Waves
                     self:RegisterEvent("UNIT_AURA")
                     self:UNIT_AURA(nil,allowedUnit)
                 else
@@ -511,13 +521,13 @@ function NugComboBar:LoadClassSettings()
             self:SetMaxPoints(3)
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
-            GetComboPoints = GetAuraStack
+            GetComboPoints = dummy
 
 			local rampageMeatcleaver = 0
 			local currentMeatcleaver = 0
-			local MeatcleaverBuff = GetSpellInfo(85739)
+			local MeatcleaverBuff = 85739
 			local Meatcleaver = function()
-				local name, rank, icon, count, debuffType, duration, expirationTime = UnitAura("player", MeatcleaverBuff, nil, "HELPFUL")
+				local name, rank, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
 				currentMeatcleaver = expirationTime
 				if currentMeatcleaver == rampageMeatcleaver then name = nil end
 				return name and 4 or 0
@@ -535,21 +545,16 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
-				-- if spec == 3 then
-				-- 	scanAura = GetSpellInfo(204488) -- Focused Rage (Prot)
-				-- 	self:RegisterEvent("UNIT_AURA")
-				-- else
 				soundFullEnabled = true
 				if spec == 1 then
 					if IsPlayerSpell(207982) then
-						self:SetMaxPoints(3)
-						scanAura = GetSpellInfo(207982) -- Focused Rage (Arms)
+                        self:SetMaxPoints(3)
+                        GetComboPoints = GetAuraStack(207982, "HELPFUL") -- Focused Rage (Arms)
 					else
-						self:SetMaxPoints(5)
-						scanAura = GetSpellInfo(188923) -- Cleave
+                        self:SetMaxPoints(5)
+                        GetComboPoints = GetAuraStack(188923, "HELPFUL") -- Cleave
 					end
                 	self:RegisterEvent("UNIT_AURA")
-					GetComboPoints = GetAuraStack
 				elseif spec == 2 and NugComboBarDB.meatcleaver then
 					self:SetMaxPoints(4)
 					GetComboPoints = Meatcleaver
@@ -685,12 +690,10 @@ function NugComboBar:LoadClassSettings()
                 if spec == 3 then
 					defaultValue = 0
                     soundFullEnabled = true
-                    scanAura = GetSpellInfo(205473) -- Icicles
                     showEmpty = NugComboBarDB.showEmpty
                     self:SetMaxPoints(5)
-                    filter = "HELPFUL"
                     allowedUnit = "player"
-                    GetComboPoints = GetAuraStack
+                    GetComboPoints = GetAuraStack(205473) -- Icicles
                     self:RegisterEvent("UNIT_AURA")
                 elseif spec == 1 then
 					defaultValue = 0
