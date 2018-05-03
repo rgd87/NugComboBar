@@ -721,7 +721,7 @@ function NugComboBar:LoadClassSettings()
                     local isFlareUp = IsPlayerSpell(203282)
                     local maxFireBlastCharges = 2 + (isFlameOn and 1 or 0) + (isFlareUp and 1 or 0)
 
-					if NugComboBar:IsDefaultSkin() and NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
+					if NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
 						self:SetMaxPoints(3, "FIREMAGE"..maxFireBlastCharges, maxFireBlastCharges)
 						GetComboPoints = FireMageCombined
 					elseif IsPlayerSpell(194466) and NugComboBarDB.phoenixflames then
