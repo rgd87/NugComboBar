@@ -22,7 +22,18 @@ local playerClass
 local isDefaultSkin = nil
 
 
-local UnitAura = UnitAura
+local IsBFA = GetBuildInfo():match("^8")
+local UnitAura = function(...)
+    local name, _, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod
+    if IsBFA then
+        name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod = UnitAura(...)
+    else
+        name, _, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod = UnitAura(...)
+    end
+    return name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod
+end
+-- local UnitAura = UnitAura
+
 local UnitPower = UnitPower
 local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
@@ -51,10 +62,10 @@ NugComboBar.L = L
 local function FindAura(unit, spellID, filter)
     for i=1, 100 do
         -- rank will be removed in bfa
-        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
+        local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
         if not name then return nil end
         if spellID == auraSpellID then
-            return name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID
+            return name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID
         end
     end
 end
@@ -63,7 +74,7 @@ local GetAuraStack = function(scanID, filter, unit, casterCheck)
     allowedUnit = allowedUnit or "player"
     filter = filter or "HELPFUL"
     return function(unit)
-        local name, rank, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
+        local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
         if casterCheck and caster ~= casterCheck then count = nil end
         if count then
             return count --, expirationTime-duration, duration
@@ -202,8 +213,8 @@ function NugComboBar:LoadClassSettings()
             local solar_aura = 164545
             local lunar_aura = 164547
             local GetEmpowerments = function(unit)
-                local _,_,_, solar = FindAura("player", solar_aura, "HELPFUL")
-                local _,_,_, lunar = FindAura("player", lunar_aura, "HELPFUL")
+                local _,_, solar = FindAura("player", solar_aura, "HELPFUL")
+                local _,_, lunar = FindAura("player", lunar_aura, "HELPFUL")
                 lunar = lunar or 0
                 solar = solar or 0
                 return lunar, nil, nil, 0, solar
@@ -529,7 +540,7 @@ function NugComboBar:LoadClassSettings()
 			local currentMeatcleaver = 0
 			local MeatcleaverBuff = 85739
 			local Meatcleaver = function()
-				local name, rank, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
+				local name, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
 				currentMeatcleaver = expirationTime
 				if currentMeatcleaver == rampageMeatcleaver then name = nil end
 				return name and 4 or 0
