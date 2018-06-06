@@ -339,8 +339,8 @@ function NugComboBar:LoadClassSettings()
 
             self:SetMaxPoints(3)
 
-            self:RegisterEvent("UNIT_POWER")
-            self.UNIT_POWER = function(self,event,unit,ptype)
+            self:RegisterEvent("UNIT_POWER_UPDATE")
+            self.UNIT_POWER_UPDATE = function(self,event,unit,ptype)
                 if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
@@ -361,7 +361,7 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetShieldCharges
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    self:UnregisterEvent("UNIT_POWER")
+                    self:UnregisterEvent("UNIT_POWER_UPDATE")
                     self:UnregisterEvent("UNIT_AURA")
                     defaultValue = 3
                     showEmpty = true
@@ -381,11 +381,11 @@ function NugComboBar:LoadClassSettings()
 
                     if IsPlayerSpell(203316) and NugComboBarDB.paladinBuffs then
                         GetComboPoints = GetHolyPowerWBuffs
-                        self:RegisterEvent("UNIT_POWER")
+                        self:RegisterEvent("UNIT_POWER_UPDATE")
                         self:RegisterEvent("UNIT_AURA")
                     else
                         GetComboPoints = GetHolyPower
-                        self:RegisterEvent("UNIT_POWER")
+                        self:RegisterEvent("UNIT_POWER_UPDATE")
                         self:UnregisterEvent("UNIT_AURA")
                     end
                     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -408,8 +408,8 @@ function NugComboBar:LoadClassSettings()
             -- local isCT = NugComboBarDB.classThemes
             -- self:SetMaxPoints(4, isCT and "4NO6")
 
-            -- self:RegisterEvent("UNIT_POWER")
-            self.UNIT_POWER = function(self,event,unit,ptype)
+            -- self:RegisterEvent("UNIT_POWER_UPDATE")
+            self.UNIT_POWER_UPDATE = function(self,event,unit,ptype)
                 if ptype ~= "CHI" or unit ~= "player" then return end
                 self.UNIT_COMBO_POINTS(self,event,unit,ptype)
             end
@@ -434,7 +434,7 @@ function NugComboBar:LoadClassSettings()
                     chargeCooldown = NugComboBarDB.chargeCooldown
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    self:UnregisterEvent("UNIT_POWER")
+                    self:UnregisterEvent("UNIT_POWER_UPDATE")
                     if IsPlayerSpell(196721) then -- Light Brewing
                         self:SetMaxPoints(4)
                         defaultValue = 4
@@ -455,7 +455,7 @@ function NugComboBar:LoadClassSettings()
                     defaultValue = 0
                     GetComboPoints = GetChi
                     showEmpty = NugComboBarDB.showEmpty
-                    self:RegisterEvent("UNIT_POWER")
+                    self:RegisterEvent("UNIT_POWER_UPDATE")
                     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:UnregisterEvent("SPELL_UPDATE_CHARGES")
                     self:DisableBar()
@@ -496,8 +496,8 @@ function NugComboBar:LoadClassSettings()
                 return shards, rfragments
             end
 
-            self:RegisterEvent("UNIT_POWER")
-            self.UNIT_POWER = function(self,event,unit,ptype)
+            self:RegisterEvent("UNIT_POWER_UPDATE")
+            self.UNIT_POWER_UPDATE = function(self,event,unit,ptype)
                 if unit ~= "player" then return end
                 if ptype == "SOUL_SHARDS" then
                     return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
@@ -516,7 +516,7 @@ function NugComboBar:LoadClassSettings()
                 defaultValue = 3
                 self:SetMaxPoints(maxshards)
                 GetComboPoints = GetShards
-                self:UNIT_POWER(nil,allowedUnit, "SOUL_SHARDS" )
+                self:UNIT_POWER_UPDATE(nil,allowedUnit, "SOUL_SHARDS" )
                 if GetSpecialization() == 3 then
                     GetComboPoints = GetDestructionShards
                     chargeCooldown = NugComboBarDB.chargeCooldown
@@ -2001,7 +2001,7 @@ function NugComboBar:Disable()
 	showEmpty = old1
 	hideSlowly = old2
 	-- self:UnregisterEvent("UNIT_AURA")
-	-- self:UnregisterEvent("UNIT_POWER")
+	-- self:UnregisterEvent("UNIT_POWER_UPDATE")
 	-- self:UnregisterEvent("SPELL_UPDATE_CHARGES")
 	-- self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
 	self.isTempDisabled = true

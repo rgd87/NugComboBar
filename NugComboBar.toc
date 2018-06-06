@@ -6,5 +6,3 @@
 ## SavedVariables: NugComboBarDB_Global
 NugComboBar.lua
 skin.lua
-
-gui\gui.xml
