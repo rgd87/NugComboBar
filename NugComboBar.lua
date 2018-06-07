@@ -18,6 +18,12 @@ local defaultValue = 0
 local defaultProgress = 0
 local currentSpec = -1
 local playerClass
+local EPT = Enum.PowerType
+local Enum_PowerType_ComboPoints = EPT.ComboPoints
+local Enum_PowerType_Chi = EPT.Chi
+local Enum_PowerType_HolyPower = EPT.HolyPower
+local Enum_PowerType_SoulShards = EPT.SoulShards
+local Enum_PowerType_ArcaneCharges = EPT.ArcaneCharges
 
 local isDefaultSkin = nil
 
@@ -316,7 +322,7 @@ function NugComboBar:LoadClassSettings()
             -- local DivinePurpose = GetSpellInfo(223819)
             local GetHolyPowerWBuffs = function(unit)
                 local fojup = FindAura("player", TheFiresOFJustice, "HELPFUL")
-                local hp = UnitPower(unit, SPELL_POWER_HOLY_POWER)
+                local hp = UnitPower(unit, Enum_PowerType_HolyPower)
                 local layer2 = 0
                 -- if dpup then
                     -- layer2 = hp
@@ -327,7 +333,7 @@ function NugComboBar:LoadClassSettings()
                 return hp, nil, nil, layer2
             end
             local GetHolyPower = function(unit)
-                return UnitPower(unit, SPELL_POWER_HOLY_POWER)
+                return UnitPower(unit, Enum_PowerType_HolyPower)
             end
 
             local GetShieldCharges = function(unit)
@@ -395,7 +401,7 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         elseif class == "MONK" then
             local GetChi = function(unit)
-                return UnitPower(unit, SPELL_POWER_CHI)
+                return UnitPower(unit, Enum_PowerType_Chi)
             end
 
 
@@ -485,12 +491,12 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
         elseif class == "WARLOCK" then
             local GetShards = function(unit)
-                return UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
+                return UnitPower(unit, Enum_PowerType_SoulShards)
             end
 
             local GetDestructionShards = function(unit)
-                local shards = UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
-                local fragments = UnitPower(unit, SPELL_POWER_SOUL_SHARDS, true)
+                local shards = UnitPower(unit, Enum_PowerType_SoulShards)
+                local fragments = UnitPower(unit, Enum_PowerType_SoulShards, true)
                 local rfragments = fragments - (shards*10)
                 if rfragments == 0 then rfragments = nil end
                 return shards, rfragments
@@ -512,7 +518,7 @@ function NugComboBar:LoadClassSettings()
 				soundFullEnabled = true
                 showEmpty = true
                 self:DisableBar()
-                local maxshards = UnitPowerMax( "player", SPELL_POWER_SOUL_SHARDS )
+                local maxshards = UnitPowerMax( "player", Enum_PowerType_SoulShards )
                 defaultValue = 3
                 self:SetMaxPoints(maxshards)
                 GetComboPoints = GetShards
@@ -652,7 +658,7 @@ function NugComboBar:LoadClassSettings()
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
 
             local GetArcaneCharges = function(unit)
-                return UnitPower(unit, SPELL_POWER_ARCANE_CHARGES)
+                return UnitPower(unit, Enum_PowerType_ArcaneCharges)
             end
             local GetFireBlastCharges = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(108853) -- Fire Blast
@@ -665,9 +671,9 @@ function NugComboBar:LoadClassSettings()
             end
 
 			local FireMageCombined = function(unit)
-				local secondRowCount = GetFireBlastCharges()
-				local cp = GetPhoenixFlamesCharges()
-				return cp, nil, nil, 0, secondRowCount
+				local fb = GetFireBlastCharges()
+				local pf = GetPhoenixFlamesCharges()
+				return fb, nil, nil, 0, pf
 			end
 
 			-- local makeRCP = function(anticipation, subtlety)
@@ -729,19 +735,19 @@ function NugComboBar:LoadClassSettings()
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
 
                     local isFlameOn = IsPlayerSpell(205029)
-                    local isFlareUp = IsPlayerSpell(203282)
-                    local maxFireBlastCharges = 2 + (isFlameOn and 1 or 0) + (isFlareUp and 1 or 0)
+                    local isPhoenixFlames = IsPlayerSpell(257541)
+                    -- local isFlareUp = IsPlayerSpell(203282)
+                    local maxFireBlastCharges = 2 + (isFlameOn and 1 or 0) -- + (isFlareUp and 1 or 0)
+                    defaultValue = maxFireBlastCharges
 
-					if NugComboBarDB.infernoBlast and IsPlayerSpell(194466) then
-						self:SetMaxPoints(3, "FIREMAGE"..maxFireBlastCharges, maxFireBlastCharges)
-						GetComboPoints = FireMageCombined
-					elseif IsPlayerSpell(194466) and NugComboBarDB.phoenixflames then
-						self:SetMaxPoints(3)
-						GetComboPoints = GetPhoenixFlamesCharges
-					elseif NugComboBarDB.infernoBlast then
-						defaultValue = maxFireBlastCharges
-						self:SetMaxPoints(maxFireBlastCharges)
-						GetComboPoints = GetFireBlastCharges
+                    if NugComboBarDB.infernoBlast then
+                        if isPhoenixFlames then
+                            self:SetMaxPoints(maxFireBlastCharges, "FIREMAGE3", 3)
+                            GetComboPoints = FireMageCombined
+                        else
+                            self:SetMaxPoints(maxFireBlastCharges)
+                            GetComboPoints = GetFireBlastCharges
+                        end
 					else
 						self:Disable()
 					end
