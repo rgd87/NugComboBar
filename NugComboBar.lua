@@ -484,7 +484,7 @@ function NugComboBar:LoadClassSettings()
                     self:RegisterEvent("UNIT_AURA")
                     self:UNIT_AURA(nil,allowedUnit)
                 else
-                    self:UnregisterEvent("UNIT_AURA")
+                    self:Disable()
                 end
 
             end
@@ -537,47 +537,24 @@ function NugComboBar:LoadClassSettings()
             self:SPELLS_CHANGED()
 
         elseif class == "WARRIOR" then
-            self:SetMaxPoints(3)
+            self:SetMaxPoints(4)
             self.UNIT_AURA = self.UNIT_COMBO_POINTS
             allowedUnit = "player"
             GetComboPoints = dummy
 
-			local rampageMeatcleaver = 0
-			local currentMeatcleaver = 0
 			local MeatcleaverBuff = 85739
 			local Meatcleaver = function()
 				local name, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
-				currentMeatcleaver = expirationTime
-				if currentMeatcleaver == rampageMeatcleaver then name = nil end
-				return name and 4 or 0
+				return name and count*2 or 0
 			end
-
-			self.UNIT_SPELLCAST_SUCCEEDED = function(self, event, unit, spell, rank, lineID, spellID)
-				if spellID == 218617 then -- first Rampage hit
-					rampageMeatcleaver = currentMeatcleaver
-					self:UNIT_AURA(nil, "player")
-				end
-			end
-
-			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
 				soundFullEnabled = true
-				if spec == 1 then
-					if IsPlayerSpell(207982) then
-                        self:SetMaxPoints(3)
-                        GetComboPoints = GetAuraStack(207982, "HELPFUL") -- Focused Rage (Arms)
-					else
-                        self:SetMaxPoints(5)
-                        GetComboPoints = GetAuraStack(188923, "HELPFUL") -- Cleave
-					end
-                	self:RegisterEvent("UNIT_AURA")
-				elseif spec == 2 and NugComboBarDB.meatcleaver then
+				if spec == 2 and NugComboBarDB.meatcleaver then
 					self:SetMaxPoints(4)
 					GetComboPoints = Meatcleaver
-					self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 					self:RegisterEvent("UNIT_AURA")
 				else
 					self:Disable()

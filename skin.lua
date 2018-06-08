@@ -1088,7 +1088,10 @@ NugComboBar.themes["PALADIN"] = {
 
 NugComboBar.themes["SHAMAN"] = {
     [0] = {
-        preset3d = "chiBlastBlue",
+        preset3d = "glowBlue",
+        colors = {
+            normal = {1,0.7,0.7},
+        },
     }
 }
 
