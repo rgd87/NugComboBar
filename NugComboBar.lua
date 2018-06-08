@@ -585,44 +585,33 @@ function NugComboBar:LoadClassSettings()
             end
             self:SPELLS_CHANGED()
         elseif class == "HUNTER" then
-            local GetMongooseBite = function(unit)
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(190928) -- Mongoose Bite
-                return charges--, chargeStart, chargeDuration
-            end
-
-            self.SPELL_UPDATE_COOLDOWN = function(self, event)
-                self:UNIT_COMBO_POINTS(nil, "player")
-            end
-            self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
+            -- self.SPELL_UPDATE_COOLDOWN = function(self, event)
+            --     self:UNIT_COMBO_POINTS(nil, "player")
+            -- end
+            -- self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
             self:SetMaxPoints(5)
-			soundFullEnabled = false
-            local survival = function()
-				soundFullEnabled = true
-                self:SetMaxPoints(3)
-                defaultValue = 3
-                -- self:Hide()
-                -- self:Shows()
-                showEmpty = true
-                self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-                self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                GetComboPoints = GetMongooseBite
-            end
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self)
-                local spec = GetSpecialization()
-                if spec == 3 then
-                    return survival()
-                else
-                    -- GetComboPoints = RogueGetComboPoints
-                    defaultValue = 0
-                    -- self:SPELL_UPDATE_CHARGES()
-                    -- self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-                    -- self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-                    -- showEmpty = NugComboBarDB.showEmpty
-                    self:Disable()
-                end
-            end
-            self:SPELLS_CHANGED()
+            self:Disable()
+			-- soundFullEnabled = false
+            -- local survival = function()
+			-- 	soundFullEnabled = true
+            --     self:SetMaxPoints(3)
+            --     defaultValue = 3
+            --     showEmpty = true
+            --     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+            --     self:RegisterEvent("SPELL_UPDATE_CHARGES")
+            --     GetComboPoints = GetMongooseBite
+            -- end
+            -- self:RegisterEvent("SPELLS_CHANGED")
+            -- self.SPELLS_CHANGED = function(self)
+            --     local spec = GetSpecialization()
+            --     if spec == 3 then
+            --         return survival()
+            --     else
+            --         defaultValue = 0
+            --         self:Disable()
+            --     end
+            -- end
+            -- self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
             self:SetMaxPoints(6, "DEATHKNIGHT")
 			isRuneTracker = true --NugComboBarDB.enableFullRuneTracker
