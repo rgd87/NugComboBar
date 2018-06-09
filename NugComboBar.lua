@@ -77,7 +77,7 @@ local function FindAura(unit, spellID, filter)
 end
 
 local GetAuraStack = function(scanID, filter, unit, casterCheck)
-    allowedUnit = allowedUnit or "player"
+    if unit then allowedUnit = unit end
     filter = filter or "HELPFUL"
     return function(unit)
         local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
