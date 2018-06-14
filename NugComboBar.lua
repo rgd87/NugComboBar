@@ -27,18 +27,7 @@ local Enum_PowerType_ArcaneCharges = EPT.ArcaneCharges
 
 local isDefaultSkin = nil
 
-
-local IsBFA = GetBuildInfo():match("^8")
-local UnitAura = function(...)
-    local name, _, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod
-    if IsBFA then
-        name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod = UnitAura(...)
-    else
-        name, _, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod = UnitAura(...)
-    end
-    return name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod
-end
--- local UnitAura = UnitAura
+local UnitAura = UnitAura
 
 local UnitPower = UnitPower
 local GetRuneCooldown = GetRuneCooldown
@@ -557,6 +546,25 @@ function NugComboBar:LoadClassSettings()
 					GetComboPoints = Meatcleaver
 					self:RegisterEvent("UNIT_AURA")
 				else
+					self:Disable()
+				end
+            end
+            self:SPELLS_CHANGED()
+        elseif class == "DEMONHUNTER" then
+            self:SetMaxPoints(5)
+            allowedUnit = "player"
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
+
+            self:RegisterEvent("SPELLS_CHANGED")
+            self.SPELLS_CHANGED = function(self)
+                local spec = GetSpecialization()
+				soundFullEnabled = true
+				if spec == 2 then
+					self:SetMaxPoints(5)
+					GetComboPoints = GetAuraStack(203981)
+                    self:RegisterUnitEvent("UNIT_AURA", "player")
+                else
+                    self:UnregisterEvent("UNIT_AURA")
 					self:Disable()
 				end
             end
