@@ -12,8 +12,13 @@ NugComboBar.presets = {
     -- {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}
     ["glowFreedom"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
-        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "SPELLS\\AURARUNE_A", 0.65},
+        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\AURARUNE_A.tga", 0.65, 1, 0.5, 0, 0.8, 1},
+    },
+    ["glowFreedom3"] = {
+        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\paladin_blessingofspellwarding_runeplane.tga", 0.65, 1, 0.5, 0, 0.6, 1.5},
     },
     ["glowShadowFlame"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
@@ -568,10 +573,6 @@ local SetPresetFunc = function ( self, name, noreset )
     if role and not ps[role] then role = "NORMAL" end
     local settings = ps[role] or ps[self.id]
     local model, cameraReset, scale, ox, oy, oz, bgType = unpack(settings)
-    local bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz, doubleLayer
-    if bgType == "MODEL" then
-        bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz, doubleLayer = unpack(settings, 8)
-    end
 
     self.currentPreset = name
 
@@ -588,7 +589,8 @@ local SetPresetFunc = function ( self, name, noreset )
     self.playermodel:Redraw()
 
     if self.bgmodel then
-        if bgmodel then
+        if bgType == "MODEL" then
+            local bgmodel, bgcameraReset, bgscale, bgox, bgoy, bgoz, doubleLayer = unpack(settings, 8)
             if doubleLayer then
                 local v = type(doubleLayer) == "number" and doubleLayer or 1
                 self.bgmodel:SetScale(v)
@@ -609,6 +611,27 @@ local SetPresetFunc = function ( self, name, noreset )
             self.bgmodel:Show()
         else
             self.bgmodel:Hide()
+        end
+    end
+
+    if bgType == "TEXTURE" and not self.bgtex then
+        self:CreateBGTexture()
+    end
+
+    if self.bgtex then
+        if bgType == "TEXTURE" then
+            local tex, scale, r,g,b,a, duration = unpack(settings, 8)
+            local tf = self.bgtex 
+            local t = self.bgtex.texture
+            t:SetTexture(tex)
+            t:SetVertexColor(r,g,b,a)
+            local w,h = tf:GetSize()
+            t:SetSize(w*scale, h*scale)
+            tf:Show()
+            tf.ag.a:SetDuration(duration or 1)
+            tf.ag:Play()
+        else
+            self.bgtex:Hide()
         end
     end
 
@@ -668,6 +691,32 @@ local SetColor3DFunc = function(self, r,g,b, force)
     -- self.model:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
     self.playermodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
     self.bgmodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
+end
+
+local CreateBGTexture = function(f)
+    local bgtf = CreateFrame("Frame", nil,f)
+    local size = f.bgmodel:GetWidth()
+    bgtf:SetFrameLevel(0)
+    bgtf:SetWidth(size)
+    bgtf:SetHeight(size)
+    bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
+    local bgt = bgtf:CreateTexture(nil, "ARTWORK", nil, 0)
+    bgt:SetBlendMode("ADD")
+    bgt:SetPoint("CENTER")
+    bgtf.texture = bgt
+    
+    local ag = f:CreateAnimationGroup()
+    ag:SetLooping("REPEAT")
+    local a = ag:CreateAnimation("Rotation")
+    a:SetDuration(1)
+    a:SetDegrees(360)
+    ag.a = a
+
+    bgtf.ag = ag
+
+    -- ag:Play()
+    
+    f.bgtex = bgtf
 end
 
 function NugComboBar.Create3DPoint(self, id, opts)
@@ -732,16 +781,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
         f.bgmodel.ResetTransformations = ResetTransformations
     -- end
 
-        -- local bgtf = CreateFrame("Frame", nil,f)
-        -- bgtf:SetFrameLevel(0)
-        -- bgtf:SetWidth(size)
-        -- bgtf:SetHeight(size)
-        -- bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
-        -- local bgt = bgtf:CreateTexture(nil, "ARTWORK", nil, 0)
-        -- bgt:SetBlendMode("ADD")
-        -- bgt:SetPoint("CENTER")
-        -- f.bgtex = bgt
-
+    f.CreateBGTexture = CreateBGTexture
 
     -- local backdrop = {
     --     bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -1093,7 +1133,7 @@ NugComboBar.themes["WARLOCK"] = {
 
 NugComboBar.themes["PALADIN"] = {
     [0] = {
-        preset3d = "glowFreedom2",
+        preset3d = "glowFreedom",
         colors = {
             normal = {0.77,0.26,0.29},
             ["bar1"] = { 196/255, 66/255, 138/255 },
@@ -1166,7 +1206,7 @@ NugComboBar.themes["WARRIOR"] = {
 
 NugComboBar.themes["DEATHKNIGHT"] = {
     [0] = {
-        preset3d = "glowFreedom2",
+        preset3d = "glowFreedom",
         colors = {
             normal = {0.77,0.26,0.29},
             -- normal = {0.15,0.80,0.48},
