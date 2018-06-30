@@ -190,6 +190,8 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
             self:SetMaxPoints(5)
 
+            local enablePulverize = false
+
             local reset = function()
                 defaultValue = 0
                 soundFullEnabled = false
@@ -292,7 +294,7 @@ function NugComboBar:LoadClassSettings()
                 local form = GetShapeshiftFormID()
                 reset()
                 if form == BEAR_FORM then
-                    if spec == 3 and IsPlayerSpell(80313) --pulverize
+                    if spec == 3 and enablePulverize and IsPlayerSpell(80313) --pulverize
                         then pulverize()
                         else disable()
                     end

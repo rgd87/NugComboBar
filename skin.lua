@@ -13,7 +13,7 @@ NugComboBar.presets = {
     ["glowFreedom"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\AURARUNE_A.tga", 0.65, 1, 0.5, 0, 0.8, 1},
+        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\AURARUNE_A.tga", 0.65, 1, 0.5, 0, 0.9, 1},
     },
     ["glowFreedom3"] = {
         NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
