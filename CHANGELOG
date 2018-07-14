@@ -1,3 +1,11 @@
+### 8.0.0:
+
+- BfA update
+- added Soul Fragments
+- removed Pulverize
+- glowFreedom swirly part is now 2D texture, and works on all resolutions
+- activation animation speed increased
+
 ### 7.3.7:
 
 - Reworked rune charging that fixed the occasional bug with runes
