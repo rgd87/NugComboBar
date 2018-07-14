@@ -4,5 +4,9 @@
 ## Author: d87
 ## SavedVariablesPerCharacter: NugComboBarDB_Character
 ## SavedVariables: NugComboBarDB_Global
+## Version: @project-version@
+
+## X-WoWI-ID: 6308
+
 NugComboBar.lua
 skin.lua
