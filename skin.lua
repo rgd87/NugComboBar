@@ -1131,6 +1131,16 @@ NugComboBar.themes["WARLOCK"] = {
     },
 }
 
+NugComboBar.themes["DEMONHUNTER"] = {
+    [0] = {
+        preset3d = "glowPurple2",
+        colors = {
+            normal = { 0.5, 0.5 , 1 },
+            ["bar1"] = { 0.6, 0, 1 },
+        },
+    },
+}
+
 NugComboBar.themes["PALADIN"] = {
     [0] = {
         preset3d = "glowFreedom",
