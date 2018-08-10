@@ -13,6 +13,7 @@ local secondLayerEnabled
 local fadeAfter = 6
 local soundFullEnabled = false
 local isRuneTracker = false
+local isPrettyRuneCharger = false
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 local defaultProgress = 0
@@ -600,8 +601,14 @@ function NugComboBar:LoadClassSettings()
             -- end
             -- self:SPELLS_CHANGED()
         elseif class == "DEATHKNIGHT" then
-            self:SetMaxPoints(6, "DEATHKNIGHT")
-			isRuneTracker = true --NugComboBarDB.enableFullRuneTracker
+            isRuneTracker = true --NugComboBarDB.enableFullRuneTracker
+            isPrettyRuneCharger = NugComboBarDB.enablePrettyRunes
+            if isPrettyRuneCharger then
+                self:SetMaxPoints(6, "DEATHKNIGHT")
+            else
+                self:SetMaxPoints(6, "6NO6")
+            end
+
 			defaultValue = 6
 
 			-- if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") or not NugComboBarDB.enable3d then isRuneTracker = false end
@@ -763,7 +770,7 @@ local defaults = {
         [9] = {0.77,0.26,0.29},
         [10] = {0.77,0.26,0.29},
         ["bar1"] = { 0.9,0.1,0.1 },
-        ["bar2"] = { .9,0.1,0.4 },
+        ["bar2"] = { 0.9,0.1,0.4 },
         ["layer2"] = { 0.74, 0.06, 0 },
 		["row2"] = { 0.80, 0.23, 0.79 },
     },
@@ -792,7 +799,8 @@ local defaults = {
     infernoBlast = true,
 	phoenixflames = true,
 	meatcleaver = true,
-	maxFill = false,
+    maxFill = false,
+    enablePrettyRunes = true,
     hideWithoutTarget = false,
     vertical = false,
     overrideLayout = false,
@@ -1005,10 +1013,22 @@ function NugComboBar:IsDefaultSkin(set)
     end
 end
 
+local pmult = 1
+function NugComboBar.pixelperfect(size)
+    return floor(size/pmult + 0.5)*pmult
+end
+local pixelperfect = NugComboBar.pixelperfect
+
 do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
-		if NugComboBar.isDisabled then return end
+        if NugComboBar.isDisabled then return end
+        
+        local res = GetCVar("gxWindowedResolution") --select(GetCurrentResolution(), GetScreenResolutions())
+        if res then
+            local w,h = string.match(res, "(%d+)x(%d+)")
+            pmult = (768/h) / UIParent:GetScale()
+        end
 
         isDefaultSkin = NugComboBar:IsDefaultSkin()
 
@@ -2001,9 +2021,6 @@ function NugComboBar:SuperDisable()
     self:SetAlpha(0)
 end
 
-
-local isPrettyRuneCharger = true
-
 local function RuneChargeOnUpdate(self, time)
 	local now = GetTime()
 	local frame = self.frame
@@ -2103,8 +2120,8 @@ function NugComboBar:EnsureRuneChargeFrame(point)
         else
 
             f = self:CreatePixelBar()
-            f:SetWidth(18)
-            f:SetColor(1,0,1)
+            f:SetWidth(pixelperfect(18))
+            f:SetColor(unpack(NugComboBarDB.colors.bar1))
             f:SetMinMaxValues(0,1)
             f:ClearAllPoints()
             f:SetPoint("TOP", point, "CENTER", 0, -16)

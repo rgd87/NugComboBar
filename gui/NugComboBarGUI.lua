@@ -187,6 +187,20 @@ do
                         set = function(info, s) NugComboBar.Commands.chargecooldown() end,
                         order = 12.5,
                     },
+                    enablePrettyRunes = {
+                        name = L"Pretty Runes",
+                        desc = L"If disabled, rune charge timers will be displayed as simple bars",
+                        width = "full",
+                        type = "toggle",
+                        confirm = true,
+						confirmText = "Warning: Requires UI reloading.",
+                        get = function(info) return NugComboBarDB.enablePrettyRunes end,
+                        set = function(info, s)
+                            NugComboBarDB.enablePrettyRunes = not NugComboBarDB.enablePrettyRunes
+                            ReloadUI()
+                        end,
+                        order = 12.6,
+                    },
                     -- vertical = {
                     --     name = L"Vertical",
                     --     type = "toggle",

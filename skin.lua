@@ -825,63 +825,52 @@ local CreateTextureBar = function(self)
 end
 
 
+local pixelperfect = NugComboBar.pixelperfect
+
+local all_bars = {}
+
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
-    --
-    -- local current = GetCurrentResolution()
-    -- if not current then return end
-    -- local resolutions = { GetScreenResolutions() }
-    -- local res = resolutions[current]
-    -- if not res then return end
+   
+    local p = pixelperfect(1)
 
-    -- local w,h = string.match(res, "(%d+)x(%d+)")
-    -- local p = (GetScreenHeight()/h) / UIParent:GetScale()
-    local p = 1
-    -- p = math.floor(p*100)/100
-    -- print("pixel len", p)
-
-    -- bar.SetScale1 = bar.SetScale
-    -- bar.SetScale = function(self, scale)
-    --     self:SetScale1(UIParent:GetScale()*scale)
-    -- end
-    -- bar:SetScale(1)
-
-
-    bar:SetWidth(45); bar:SetHeight(4)
-    bar:SetStatusBarTexture([[Interface\Addons\NugComboBar\tex\white]], "ARTWORK")
+    bar:SetWidth(pixelperfect(45)); bar:SetHeight(pixelperfect(4))
+    bar:SetStatusBarTexture([[Interface\BUTTONS\WHITE8X8]], "ARTWORK")
     bar:SetMinMaxValues(0,100)
     bar:SetValue(50)
-    --
     local barbg = bar:CreateTexture(nil, "BACKGROUND", nil, 3)
 
 
-    barbg:SetTexture[[Interface\Addons\NugComboBar\tex\white]]
+    barbg:SetTexture[[Interface\BUTTONS\WHITE8X8]]
     barbg:SetVertexColor(0,0,0)
     barbg:SetAllPoints(bar)
-    -- barbg:SetPoint("TOPLEFT", bar, "TOPLEFT", 0, 0)
-    -- barbg:SetHeight(1)
-    -- barbg:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", 0, 0)
-    -- barbg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 0, 0)
     bar.bg = barbg
-    --
-    -- /dump NugComboBar.bar:Show()
+
     local backdrop = {
-        bgFile = [[Interface\Addons\NugComboBar\tex\white]],
+        bgFile = [[Interface\BUTTONS\WHITE8X8]],
         tile = true, tileSize = 0,
-        insets = {left = -1, right = -1, top = -1, bottom = -1},
+        insets = {left = -1*p, right = -p, top = -p, bottom = -p},
     }
-    -- print("p=", p)
     bar:SetBackdrop(backdrop)
     bar:SetBackdropColor(0, 0, 0, 1)
 
-    bar.SetColor = function(self, r,g,b)
+    bar.SetColor1 = function(self, r,g,b)
         self:SetStatusBarColor(r,g,b)
         self.bg:SetVertexColor(r*0.3,g*0.3,b*0.3)
         self:SetBackdropColor(0,0,0,1)
     end
 
+    bar.SetColor = function(self,r,g,b)
+        for bar in pairs(all_bars) do
+            bar:SetColor1(r,g,b)
+        end
+    end
+
+    all_bars[bar] = true
+
     bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 14*p, 0)
-    -- bar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 80, -35)
+
+
 
     return bar
 end
@@ -1221,6 +1210,7 @@ NugComboBar.themes["DEATHKNIGHT"] = {
             normal = {0.77,0.26,0.29},
             -- normal = {0.15,0.80,0.48},
             [3] = {1, 0, 0},
+            bar1 = {1, 0.07, 0.65},
         }
     },
 }
