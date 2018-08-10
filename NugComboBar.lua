@@ -645,7 +645,8 @@ function NugComboBar:LoadClassSettings()
             end
             local GetFireBlastCharges = function(unit)
                 local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(108853) -- Fire Blast
-                return charges--, chargeStart, chargeDuration
+                if charges == maxCharges then chargeStart = nil end
+                return charges, chargeStart, chargeDuration
             end
 
 			local GetPhoenixFlamesCharges = function(unit)
@@ -695,22 +696,28 @@ function NugComboBar:LoadClassSettings()
                 local spec = GetSpecialization()
                 self:SetMaxPoints(4)
                 if spec == 3 then
-					defaultValue = 0
+                    defaultValue = 0
+                    chargeCooldown = false
                     soundFullEnabled = true
                     showEmpty = NugComboBarDB.showEmpty
                     self:SetMaxPoints(5)
                     allowedUnit = "player"
                     GetComboPoints = GetAuraStack(205473) -- Icicles
                     self:RegisterEvent("UNIT_AURA")
+                    self:DisableBar()
                 elseif spec == 1 then
 					defaultValue = 0
                     soundFullEnabled = true
+                    chargeCooldown = false
                     showEmpty = NugComboBarDB.showEmpty
                     self:SetMaxPoints(4)
                     self:RegisterEvent("UNIT_POWER_FREQUENT")
                     GetComboPoints = GetArcaneCharges
+                    self:DisableBar()
                 elseif spec == 2 then
                     soundFullEnabled = false
+                    chargeCooldown = NugComboBarDB.chargeCooldown
+                    self:EnableBar(0, 6,"Small", "Timer")
                     showEmpty = true
 					defaultValue = 3
 

@@ -1187,6 +1187,9 @@ NugComboBar.themes["MAGE"] = {
     [2] ={
         preset3d = "furnace",
         preset3dpointbar2 = "glowOrange",
+        colors = {
+            bar1 = { 1,0.15,0}
+        }
     },
     [3] = {
         preset3d = "glowBlue",
