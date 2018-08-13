@@ -413,11 +413,8 @@ function NugComboBar:LoadClassSettings()
             end
             GetComboPoints = GetChi
 
+            self.UNIT_AURA = self.UNIT_COMBO_POINTS
 
-            -- self.UNIT_MAXHEALTH = function(self, event, unit)
-                -- self.bar:SetMinMaxValues(0, UnitHealthMax("player"))
-            -- end
-            -- self.UNIT_HEALTH = self.UNIT_COMBO_POINTS
             self.SPELL_UPDATE_COOLDOWN = function(self, event)
                 self:UNIT_COMBO_POINTS(nil, "player")
             end
@@ -426,13 +423,18 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
+
+                self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
+                self:UnregisterEvent("SPELL_UPDATE_CHARGES")
+                self:UnregisterEvent("UNIT_POWER_UPDATE")
+                self:UnregisterEvent("UNIT_AURA")
                 if spec == 1 and IsPlayerSpell(115308) then
                     GetComboPoints = GetIronskinBrew
                     soundFullEnabled = false
                     chargeCooldown = NugComboBarDB.chargeCooldown
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    self:UnregisterEvent("UNIT_POWER_UPDATE")
+                    
                     if IsPlayerSpell(196721) then -- Light Brewing
                         self:SetMaxPoints(4)
                         defaultValue = 4
@@ -442,6 +444,15 @@ function NugComboBar:LoadClassSettings()
                     end
                     showEmpty = true
                     self:EnableBar(0, 6,"Small", "Timer")
+                elseif spec == 2 then
+					self:DisableBar()
+                    chargeCooldown = false
+                    soundFullEnabled = true
+                    self:SetMaxPoints(3)
+                    defaultValue = 0
+                    GetComboPoints = GetAuraStack(202090) -- Teachings of the Monastery 
+                    showEmpty = NugComboBarDB.showEmpty
+                    self:RegisterUnitEvent("UNIT_AURA", "player")
                 else
 					self:DisableBar()
                     chargeCooldown = false
@@ -453,10 +464,8 @@ function NugComboBar:LoadClassSettings()
                     defaultValue = 0
                     GetComboPoints = GetChi
                     showEmpty = NugComboBarDB.showEmpty
-                    self:RegisterEvent("UNIT_POWER_UPDATE")
-                    self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-                    self:DisableBar()
+                    self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+                    
                 end
 
                 self:UNIT_COMBO_POINTS(nil,"player")
