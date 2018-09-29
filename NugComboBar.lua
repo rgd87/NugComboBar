@@ -78,6 +78,14 @@ local GetAuraStack = function(scanID, filter, unit, casterCheck)
     end
 end
 
+local MakeGetChargeFunc = function(spellID)
+    return function(unit)
+        local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
+        if charges == maxCharges then chargeStart = nil end
+        return charges, chargeStart, chargeDuration
+    end
+end
+
 local AuraTimerOnUpdate = function(self, time)
     self._elapsed = (self._elapsed or 0) + time
     if self._elapsed < 0.03 then return end
@@ -396,13 +404,6 @@ function NugComboBar:LoadClassSettings()
                 return UnitPower(unit, Enum_PowerType_Chi)
             end
 
-
-            local GetIronskinBrew = function(unit)
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(115308) -- ironskin brew id
-                if charges == maxCharges then chargeStart = nil end
-                return charges, chargeStart, chargeDuration
-            end
-
             -- local isCT = NugComboBarDB.classThemes
             -- self:SetMaxPoints(4, isCT and "4NO6")
 
@@ -420,6 +421,8 @@ function NugComboBar:LoadClassSettings()
             end
             self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
 
+            local doRenewingMist = NugComboBarDB.renewingMist
+
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self, event)
                 local spec = GetSpecialization()
@@ -429,7 +432,7 @@ function NugComboBar:LoadClassSettings()
                 self:UnregisterEvent("UNIT_POWER_UPDATE")
                 self:UnregisterEvent("UNIT_AURA")
                 if spec == 1 and IsPlayerSpell(115308) then
-                    GetComboPoints = GetIronskinBrew
+                    GetComboPoints = MakeGetChargeFunc(115308) -- Ironskin Brew
                     soundFullEnabled = false
                     chargeCooldown = NugComboBarDB.chargeCooldown
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -445,14 +448,26 @@ function NugComboBar:LoadClassSettings()
                     showEmpty = true
                     self:EnableBar(0, 6,"Small", "Timer")
                 elseif spec == 2 then
-					self:DisableBar()
-                    chargeCooldown = false
-                    soundFullEnabled = true
-                    self:SetMaxPoints(3)
-                    defaultValue = 0
-                    GetComboPoints = GetAuraStack(202090) -- Teachings of the Monastery 
-                    showEmpty = NugComboBarDB.showEmpty
-                    self:RegisterUnitEvent("UNIT_AURA", "player")
+                    if doRenewingMist then
+                        self:EnableBar(0, 6,"Small", "Timer")
+                        chargeCooldown = true
+                        soundFullEnabled = false
+                        self:SetMaxPoints(2)
+                        defaultValue = 2
+                        GetComboPoints = MakeGetChargeFunc(115151) -- Renewing Mist
+                        showEmpty = NugComboBarDB.showEmpty
+                        self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+                        self:RegisterEvent("SPELL_UPDATE_CHARGES")
+                    else
+                        self:DisableBar()
+                        chargeCooldown = false
+                        soundFullEnabled = true
+                        self:SetMaxPoints(3)
+                        defaultValue = 0
+                        GetComboPoints = GetAuraStack(202090) -- Teachings of the Monastery     
+                        showEmpty = NugComboBarDB.showEmpty
+                        self:RegisterUnitEvent("UNIT_AURA", "player")
+                    end
                 else
 					self:DisableBar()
                     chargeCooldown = false
@@ -814,7 +829,8 @@ local defaults = {
     tidalWaves = true,
     infernoBlast = true,
 	phoenixflames = true,
-	meatcleaver = true,
+    meatcleaver = true,
+    renewingMist = false,
     maxFill = false,
     enablePrettyRunes = true,
     hideWithoutTarget = false,
@@ -1715,6 +1731,10 @@ NugComboBar.Commands = {
         NugComboBarDB.meatcleaver = not NugComboBarDB.meatcleaver
         NugComboBar:Reinitialize()
         print ("NCB Meatcleaver = ", NugComboBarDB.meatcleaver)
+    end,
+    ["renewingmist"] = function(v)
+        NugComboBarDB.renewingMist = not NugComboBarDB.renewingMist
+        NugComboBar:Reinitialize()
     end,
     ["nameplateattach"] = function(v)
         NugComboBarDB.nameplateAttach = not NugComboBarDB.nameplateAttach

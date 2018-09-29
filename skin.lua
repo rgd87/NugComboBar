@@ -109,6 +109,11 @@ NugComboBar.presets = {
         BIG = { "spells/enchantments/greenflame_low.m2", false, 1, 2.9,0,1.3 },
         name = "(colored)",
     },
+    -- ["shamanRed"] = {
+    --     NORMAL = { "spells/enchantments/Shaman_Red.m2", false, 0.1, 2.2,0,1 },
+    --     BIG = { "spells/enchantments/Shaman_Red.m2", false, 0.1, 2.9,0,1.3 },
+    --     name = "(colored)",
+    -- },
     ["glowBlue"] = {
         NORMAL = { "spells/enchantments/blueflame_low.m2", false, 1, 2.2,0,1 },
         BIG = { "spells/enchantments/blueflame_low.m2", false, 1, 2.9,0,1.3 },
