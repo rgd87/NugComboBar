@@ -312,6 +312,13 @@ do
                         get = function(info) return NugComboBarDB.meatcleaver end,
                         set = function(info, s) NugComboBar.Commands.meatcleaver() end,
                     },
+                    renewingMist = {
+                        name = "|cff00ff96"..GetSpellInfo(115151).."|r",
+                        type = 'toggle',
+                        order = 6,
+                        get = function(info) return NugComboBarDB.renewingMist end,
+                        set = function(info, s) NugComboBar.Commands.renewingmist() end,
+                    },
                 },
             },
             showColor = {
@@ -547,6 +554,18 @@ do
                         order = 5,
                         get = function(info) return NugComboBarDB.colors3d end,
                         set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
+                    },
+                    description1 = {
+                        name = "|cffffaa55 * "..L"Effects are influenced by Particle Density setting in Graphics Menu".."|r",
+                        width = "full",
+                        type = 'description',
+                        order = 7,
+                    },
+                    description2 = {
+                        name = "|cffffaa55 * "..L"Only several effects can change colors to some degree, marked as 'colored'".."|r",
+                        width = "full",
+                        type = 'description',
+                        order = 8,
                     },
                 },
             },
