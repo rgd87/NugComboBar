@@ -558,6 +558,20 @@ do
                 order = 6.5,
                 args = {
 
+                    soundChannel = {
+                        name = L"Sound Channel",
+                        type = 'select',
+                        order = 6.4,
+                        values = {
+                            SFX = L"SFX",
+                            Music = L"Music",
+                            Ambience = L"Ambience",
+                            Master = L"Master",
+                        },
+                        get = function(info) return NugComboBarDB.soundChannel end,
+                        set = function( info, v ) NugComboBarDB.soundChannel = v end,
+                    },
+
                     soundNameFull = {
                         name = L"Max points sound",
                         desc = L"(Active only for certain specs)",
