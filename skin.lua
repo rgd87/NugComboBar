@@ -1,46 +1,81 @@
+-- [166255] = "spells\\gouge_precast_state_hand.m2"
+-- [1394789] = "spells/7fx_nightborne_precasthand.m2"
+-- [166817] = "SPELLS/Shadowflame_Cast_Hand.m2"
+-- [654832] = "spells\\Holy_precast_med_hand_simple.m2"
+-- [457274] = "spells\\Paladin_headlinghands_state_01.m2"
+-- [166813] = "SPELLS/Shadow_Strikes_State_Hand.m2"
+-- [165693] = "spells\\blessingoffreedom_state.m2"
+-- [530798] = "spells/druid_wrath_impact_v2.m2"
+-- [852939] = "SPELLS/Precast_Corrupted_01.m2"
+-- [937416] = "spells/6fx_smallfire.m2"
+-- [1333999] = "spells/cfx_mage_greaterpyroblast_missile.m2"
+-- [165728] = "spells/bloodlust_state_hand.m2"
+-- [915803] = "SPELLS/Monk_ChiBlast_Precast_Jade.m2"
+-- [623723] = "SPELLS/Monk_ChiBlast_Precast.m2"
+-- [610473] = "SPELLS/Monk_CracklingLightning_Impact_Blue.m2"
+-- [1454964] = "spells/7fx_deathknight_scourgeofworlds_statechest.m2"
+-- [1399809] = "spells/7fx_warlock_shadow_missile.m2"
+-- [166923] = "spells\\soulfunnel_impact_chest.m2"
+-- [166294] = "spells\\healrag_state_chest.m2"
+-- [166003] = "spells/enchantments/greenflame_low.m2"
+-- [165995] = "spells/enchantments/blueflame_low.m2"
+-- [166011] = "spells/enchantments/redflame_low.m2"
+-- [166030] = "spells/enchantments/whiteflame_low.m2"
+-- [166012] = "spells/enchantments/redglow_high.m2"
+-- [166033] = "spells/enchantments/yellowflame_low.m2"
+-- [166008] = "spells/enchantments/purpleflame_low.m2"
+-- [166471] = "spells\\lifetap_state_chest.m2"
+-- [611982] = "spells/monk_avertharm_state_base.m2"
+-- [588344] = "spells/divineshield_v2_chest.m2"
+-- [804539] = "spells/weaponenchant_pvppandarias2.m2"
+-- [1007525] = "spells/cast_arcane_pink_01.m2"
+-- [1389209] = "spells/antimagic_precast_hand_02red.m2"
+-- [165592] = "spells/arcaneshot_missile.m2"
+-- [166497] = "spells\\lightningbolt_missile.m2"
+
 NugComboBar.presets = {
     --- model, cameraReset, scale, xOffset, yOffset
     ["glowPurple"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0 },
+        NORMAL = { 166255, false, 1, 0, 0, 0 },
+        BIG = { 166255, false, 1.2, 0, 0, 0 },
         name = "(colored)",
     },
     ["glowPurple2"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/7fx_nightborne_precasthand.m2", false, .75, 0.1,0,0},
+        NORMAL = { 166255, false, 1, 0, 0, 0 },
+        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 1394789, false, .75, 0.1,0,0},
     },
     -- {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}
     ["glowFreedom"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\AURARUNE_A.tga", 0.65, 1, 0.5, 0, 0.9, 1},
+        NORMAL = { 166255, false, 1, 0, 0, 0 },
+        -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
+        BIG = { 166255, false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\AURARUNE_A.tga", 0.65, 1, 0.5, 0, 0.9, 1},
     },
     ["glowFreedom3"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\paladin_blessingofspellwarding_runeplane.tga", 0.65, 1, 0.5, 0, 0.6, 1.5},
+        NORMAL = { 166255, false, 1, 0, 0, 0 },
+        -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
+        BIG = { 166255, false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\paladin_blessingofspellwarding_runeplane.tga", 0.65, 1, 0.5, 0, 0.6, 1.5},
     },
     ["glowShadowFlame"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
+        NORMAL = { 166255, false, 1, 0, 0, 0 },
+        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
     },    
     ["glowHoly"] = {
-        LEFT = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.3, 0, 0, 0 },
-        NORMAL = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.6, 0, 0, 0 },
-        BIG = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.7, 0, 0, 0, "MODEL", "spells\\Paladin_headlinghands_state_01.m2", false, 0.4, -0.3,-0.15,0 },
-        RIGHT = { "spells\\Holy_precast_med_hand_simple.m2", false, 1.3, 0, 0, 0 },
+        LEFT = { 654832, false, 1.3, 0, 0, 0 },
+        NORMAL = { 654832, false, 1.6, 0, 0, 0 },
+        BIG = { 654832, false, 1.7, 0, 0, 0, "MODEL", 457274, false, 0.4, -0.3,-0.15,0 },
+        RIGHT = { 654832, false, 1.3, 0, 0, 0 },
     },
     -- ["_RuneCharger"] = {
-    --     NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0, 1, 1, 0, "MODEL", "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
-    --     BIG = { "spells\\gouge_precast_state_hand.m2", true, 0, .77, .77, 0, "MODEL", "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28 },
+    --     NORMAL = { 166255, true, 0, 1, 1, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
+    --     BIG = { 166255, true, 0, .77, .77, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
     -- },
     ["_RuneCharger2"] = {
-        -- NORMAL = { "spells\\gouge_precast_state_hand.m2", true, 0, 1, 1, 0, "MODEL", "spells\\blessingoffreedom_state.m2",  true,  .002, 12.6, 12.5, 0 },
-        -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "MODEL", "spells\\blessingoffreedom_state.m2",  true,  .003, 8.35, 8.4, 0 }, --"SPELLS/FlowingWater_High.m2", true, 0.04, .62, .64, 0 },
+        -- NORMAL = { 166255, true, 0, 1, 1, 0, "MODEL", 165693,  true,  .002, 12.6, 12.5, 0 },
+        -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "MODEL", 165693,  true,  .003, 8.35, 8.4, 0 }, --"SPELLS/FlowingWater_High.m2", true, 0.04, .62, .64, 0 },
         
-        -- NORMAL = { "spells/7fx_warlock_tormentedsoulspawn_missile.m2", false, 1, 0, 0, 0, "MODEL", "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
-        NORMAL = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -1.1, 0, -0.4, "MODEL", "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
-        BIG = { "SPELLS/Shadow_Strikes_State_Hand.m2", false, 0.7, -1.1, 0, -0.4, "MODEL", "SPELLS/Shadowflame_Cast_Hand.m2", false, 1, 0, 0, 0.28, 1.3 },
+        -- NORMAL = { "spells/7fx_warlock_tormentedsoulspawn_missile.m2", false, 1, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
+        NORMAL = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
+        BIG = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
     },
     -- ["frostFire"] = {
         -- NORMAL = { 67635, false, 1, -13.7,0,-6},
@@ -60,32 +95,32 @@ NugComboBar.presets = {
         BIG = { "SPELLS/FlowingWater_High.m2", false, 3.6, 0.1, 0, 0 },
     },
     -- ["corrupted"] = {
-    --     NORMAL = { "SPELLS/Precast_Corrupted_01.m2", false, 1.1, 0, 0, 0 },
-    --     BIG = { "SPELLS/Precast_Corrupted_01.m2", false, 1.3, 0, 0, 0 },
+    --     NORMAL = { 852939, false, 1.1, 0, 0, 0 },
+    --     BIG = { 852939, false, 1.3, 0, 0, 0 },
     -- },
     ["furnace"] = {
-        NORMAL = { "spells/druid_wrath_impact_v2.m2", false, .7, 0,0,0, "MODEL", "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
-        BIG = { "spells/druid_wrath_impact_v2.m2", false, 1, 0,0,0, "MODEL", "spells/6fx_smallfire.m2", false, 0.36, -2.4, -.2, 0, true },
+        NORMAL = { 530798, false, .7, 0,0,0, "MODEL", 937416, false, 0.27, -3.2, -.2, 0, true },
+        BIG = { 530798, false, 1, 0,0,0, "MODEL", 937416, false, 0.36, -2.4, -.2, 0, true },
     },
     ["furnace2"] = {
-        NORMAL = { "spells/cfx_mage_greaterpyroblast_missile.m2", false, 0.4, -0.9, -0.2,0 },
-        BIG = { "spells/cfx_mage_greaterpyroblast_missile.m2", false, 0.52, -0.7, -0.16,0 },
+        NORMAL = { 1333999, false, 0.4, -0.9, -0.2,0 },
+        BIG = { 1333999, false, 0.52, -0.7, -0.16,0 },
     },
     -- ["furnace3"] = {
-    --     NORMAL = { "spells/bloodlust_state_hand.m2", false, .6, 0,0,0, "spells/6fx_smallfire.m2", false, 0.27, -3.2, -.2, 0, true },
-    --     BIG = { "spells/bloodlust_state_hand.m2", false, .76, 0,0,0, "spells/6fx_smallfire.m2", false, 0.34, -3.2, -.2, 0, true },
+    --     NORMAL = { 165728, false, .6, 0,0,0, 937416, false, 0.27, -3.2, -.2, 0, true },
+    --     BIG = { 165728, false, .76, 0,0,0, 937416, false, 0.34, -3.2, -.2, 0, true },
     -- },
     ["chiBlast"] = {
-        NORMAL = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.05, 0.05, 0, 0 },
-        BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", false, 1.3, 0.03, 0, 0}
+        NORMAL = { 915803, false, 1.05, 0.05, 0, 0 },
+        BIG = { 915803, false, 1.3, 0.03, 0, 0}
     },
     ["chiBlastBlue"] = {
-        NORMAL = { "SPELLS/Monk_ChiBlast_Precast.m2", false, 1.05, 0.15, 0, 0 },
-        BIG = { "SPELLS/Monk_ChiBlast_Precast.m2", false, 1.3, 0.1, 0, 0, "MODEL", "SPELLS/Monk_CracklingLightning_Impact_Blue.m2", false, 0.5, 0.5, -0.5, 0 },
+        NORMAL = { 623723, false, 1.05, 0.15, 0, 0 },
+        BIG = { 623723, false, 1.3, 0.1, 0, 0, "MODEL", 610473, false, 0.5, 0.5, -0.5, 0 },
     },
     -- ["scourge"] = {
-    --     NORMAL = { "spells/7fx_deathknight_scourgeofworlds_statechest.m2", true, 0.008, 3.1, 3.1, 0 },
-    --     -- BIG = { "SPELLS/Monk_ChiBlast_Precast_Jade.m2", true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
+    --     NORMAL = { 1454964, true, 0.008, 3.1, 3.1, 0 },
+    --     -- BIG = { 915803, true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
     -- }
 
     -- NORMAL = { "spells/7fx_cordana_glaive_missile.m2", true, 0.008, 3.1, 3.1, 0 },
@@ -93,20 +128,20 @@ NugComboBar.presets = {
         -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(0,0,0);
         -- scale controls black to purple glow ratio
         -- actual scaling is done by moving camera back and forth
-        NORMAL = { "spells/7fx_warlock_shadow_missile.m2", false, 0.8, -0.32, 0, 0, "MODEL", "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -1.1, 0, -0.4, true },
-        BIG = { "spells/7fx_warlock_shadow_missile.m2", false, 1, -0.32, 0, 0, "MODEL", "SPELLS/Shadow_Strikes_State_Hand.m2", false, 1, -0.2, 0.02, 0, true },
+        NORMAL = { 1399809, false, 0.8, -0.32, 0, 0, "MODEL", 166813, false, 1, -1.1, 0, -0.4, true },
+        BIG = { 1399809, false, 1, -0.32, 0, 0, "MODEL", 166813, false, 1, -0.2, 0.02, 0, true },
     },
     -- ["funnelPurple"] = {
-    --     NORMAL = { "spells\\soulfunnel_impact_chest.m2", true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.001}, nil, nil, nil },
-    --     BIG = { "spells\\soulfunnel_impact_chest.m2", true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}, nil, nil, nil },
+    --     NORMAL = { 166923, true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.001}, nil, nil, nil },
+    --     BIG = { 166923, true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}, nil, nil, nil },
     -- },
     -- ["funnelRed"] = {
-    --     NORMAL = { "spells\\healrag_state_chest.m2", true, 0.018, 1.4, 1.4, 0 },
-    --     BIG = { "spells\\healrag_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+    --     NORMAL = { 166294, true, 0.018, 1.4, 1.4, 0 },
+    --     BIG = { 166294, true, 0.024, 1.05, 1.05, 0 },
     -- },
     ["glowGreen"] = {
-        NORMAL = { "spells/enchantments/greenflame_low.m2", false, 1, 2.2,0,1 },
-        BIG = { "spells/enchantments/greenflame_low.m2", false, 1, 2.9,0,1.3 },
+        NORMAL = { 166003, false, 1, 2.2,0,1 },
+        BIG = { 166003, false, 1, 2.9,0,1.3 },
         name = "(colored)",
     },
     -- ["shamanRed"] = {
@@ -115,50 +150,46 @@ NugComboBar.presets = {
     --     name = "(colored)",
     -- },
     ["glowBlue"] = {
-        NORMAL = { "spells/enchantments/blueflame_low.m2", false, 1, 2.2,0,1 },
-        BIG = { "spells/enchantments/blueflame_low.m2", false, 1, 2.9,0,1.3 },
+        NORMAL = { 165995, false, 1, 2.2,0,1 },
+        BIG = { 165995, false, 1, 2.9,0,1.3 },
         name = "(colored)",
     },
     ["glowOrange"] = {
-        NORMAL = { "spells/enchantments/redflame_low.m2", false, 1, 2.2,0,1 },
-        BIG = { "spells/enchantments/redflame_low.m2", false, 1, 2.9,0,1.3 },
+        NORMAL = { 166011, false, 1, 2.2,0,1 },
+        BIG = { 166011, false, 1, 2.9,0,1.3 },
     },
     ["glowWhite"] = {
-        NORMAL = { "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.23,0.03,1, "MODEL", "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.23,-0.03,1, true },
-        BIG = { "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.9,0.03,1.3, "MODEL", "spells/enchantments/whiteflame_low.m2", false, 1.3, 2.2,-0.05,1, true },
+        NORMAL = { 166030, false, 1.3, 2.23,0.03,1, "MODEL", 166030, false, 1.3, 2.23,-0.03,1, true },
+        BIG = { 166030, false, 1.3, 2.9,0.03,1.3, "MODEL", 166030, false, 1.3, 2.2,-0.05,1, true },
         name = "(colored)",
     },
     -- ["glowRed"] = {
-    --     NORMAL = { "spells/enchantments/redglow_high.m2", false, 1, 1.6,0, 0.7 },
-    --     BIG = { "spells/enchantments/redglow_high.m2", false, 1, 2.2,0,1 },
+    --     NORMAL = { 166012, false, 1, 1.6,0, 0.7 },
+    --     BIG = { 166012, false, 1, 2.2,0,1 },
     -- },
     -- ["glowYellow"] = {
-    --     NORMAL = { "spells/enchantments/yellowflame_low.m2", false, 1, 2.2,0,1 },
-    --     BIG = { "spells/enchantments/yellowflame_low.m2", false, 1, 2.9,0,1.3 },
+    --     NORMAL = { 166033, false, 1, 2.2,0,1 },
+    --     BIG = { 166033, false, 1, 2.9,0,1.3 },
     -- },
     ["glowLifesteal"] = {
-        NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 1, 2.2,0,1 },
-        BIG = { "spells/enchantments/purpleflame_low.m2", false, 1, 2.9,0,1.3 },
-        --BIG = { "spells\\lifetap_state_chest.m2", true, 0.024, 1.05, 1.05, 0 },
+        NORMAL = { 166008, false, 1, 2.2,0,1 },
+        BIG = { 166008, false, 1, 2.9,0,1.3 },
+        --BIG = { 166471, true, 0.024, 1.05, 1.05, 0 },
     },
-    -- ["funnelBlue"] = {
-    --     NORMAL = { "spells/arcaneshot_missile.m2", false, 0.5, -0.35,0,0, "MODEL", "spells\\manafunnel_impact_chest.m2", false, 0.7, 0,0, 0, true },
-    --     BIG = { "spells\\manafunnel_impact_chest.m2", false, 0.95, 0,0, 0 },
-    -- },
     ["glowFreedom2"] = {
-        NORMAL = { "spells\\gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        NORMAL = { 166255, false, 1, 0, 0, 0 },
         
-        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/monk_avertharm_state_base.m2",  false,  .5, -5.7,0,0},
-        BIG = { "spells\\gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0, "MODEL", "spells/divineshield_v2_chest.m2",  false,  0.8, -17.5, 0, -7.8},        
-        -- BIG = { "spells\\gouge_precast_state_hand.m2", false, 0.1, 0, 0, 0, "MODEL", "spells/weaponenchant_pvppandarias2.m2",  false,  2, -0.1,0,0, true},        
+        -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 611982,  false,  .5, -5.7,0,0},
+        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 588344,  false,  0.8, -17.5, 0, -7.8},        
+        -- BIG = { 166255, false, 0.1, 0, 0, 0, "MODEL", 804539,  false,  2, -0.1,0,0, true},        
     },
     ["arcanePink"] = {
-        NORMAL = { "spells/cast_arcane_pink_01.m2", false, 0.9, 0,0,0, "MODEL", "spells/antimagic_precast_hand_02red.m2", false, 2.3, 0,0,0, true },
-        BIG = { "spells/cast_arcane_pink_01.m2", false, 1.1, 0,0,0, "MODEL", "spells/antimagic_precast_hand_02red.m2", false, 2.8, 0,0,0, true },
+        NORMAL = { 1007525, false, 0.9, 0,0,0, "MODEL", 1389209, false, 2.3, 0,0,0, true },
+        BIG = { 1007525, false, 1.1, 0,0,0, "MODEL", 1389209, false, 2.8, 0,0,0, true },
     },
     ["glowArcshot"] = {
-        NORMAL = { "spells/arcaneshot_missile.m2", false, 0.5, -0.35,0,0, "MODEL", "spells/antimagic_precast_hand_02red.m2", false, 2.3, 0,0,0, true },
-        BIG = { "spells/arcaneshot_missile.m2", false, 0.65, -0.35,0,0, "MODEL", "spells/antimagic_precast_hand_02red.m2", false, 2.8, 0,0,0, true },
+        NORMAL = { 165592, false, 0.5, -0.35,0,0, "MODEL", 1389209, false, 2.3, 0,0,0, true },
+        BIG = { 165592, false, 0.65, -0.35,0,0, "MODEL", 1389209, false, 2.8, 0,0,0, true },
         name = "(colored)",
     },
     
@@ -168,8 +199,8 @@ NugComboBar.presets = {
     --     BIG = { "spells\\fel_fire_precast_hand.m2", true, 0.047, 0.53, 0.57, 0 },
     -- },
     ["electricBlue"] = {
-        NORMAL = { "spells\\lightningbolt_missile.m2", false, .9, 0, 0, 0 },
-        BIG = { "spells\\lightningbolt_missile.m2", false, 1.1, 0, 0, 0 },
+        NORMAL = { 166497, false, .9, 0, 0, 0 },
+        BIG = { 166497, false, 1.1, 0, 0, 0 },
     },
 }
 
@@ -741,7 +772,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
     pm:SetAllPoints(f)
     pm:SetFrameLevel(3)
 
-    pm:SetModel("spells\\gouge_precast_state_hand.m2")
+    pm:SetModel(166255)
     pm:SetModelScale(1)
     pm:SetPosition(0,0,0)
     -- pm:SetScript("OnUpdateModel", function() print("PM model update")     end)
