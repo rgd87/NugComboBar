@@ -32,6 +32,7 @@
 -- [1389209] = "spells/antimagic_precast_hand_02red.m2"
 -- [165592] = "spells/arcaneshot_missile.m2"
 -- [166497] = "spells\\lightningbolt_missile.m2"
+-- [622694] = "SPELLS/FlowingWater_High.m2"
 
 NugComboBar.presets = {
     --- model, cameraReset, scale, xOffset, yOffset
@@ -71,7 +72,7 @@ NugComboBar.presets = {
     -- },
     ["_RuneCharger2"] = {
         -- NORMAL = { 166255, true, 0, 1, 1, 0, "MODEL", 165693,  true,  .002, 12.6, 12.5, 0 },
-        -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "MODEL", 165693,  true,  .003, 8.35, 8.4, 0 }, --"SPELLS/FlowingWater_High.m2", true, 0.04, .62, .64, 0 },
+        -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "MODEL", 165693,  true,  .003, 8.35, 8.4, 0 }, --622694, true, 0.04, .62, .64, 0 },
         
         -- NORMAL = { "spells/7fx_warlock_tormentedsoulspawn_missile.m2", false, 1, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
         NORMAL = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
@@ -87,12 +88,12 @@ NugComboBar.presets = {
     -- },
     -- ["fear"] = {
     --     NORMAL = { "SPELLS/Fear_State_Base_V2.m2", true, 0.05, 0, 0, 0 },
-    --     BIG = { "SPELLS/FlowingWater_High.m2", true, 0.07, .35, .36, 0 },
+    --     BIG = { 622694, true, 0.07, .35, .36, 0 },
     -- },
 
     ["blue"] = {
-        NORMAL = { "SPELLS/FlowingWater_High.m2", false, 3, 0.1, 0, 0 },
-        BIG = { "SPELLS/FlowingWater_High.m2", false, 3.6, 0.1, 0, 0 },
+        NORMAL = { 622694, false, 3, 0.1, 0, 0 },
+        BIG = { 622694, false, 3.6, 0.1, 0, 0 },
     },
     -- ["corrupted"] = {
     --     NORMAL = { 852939, false, 1.1, 0, 0, 0 },
