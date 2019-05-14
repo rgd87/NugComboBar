@@ -3,6 +3,7 @@ local NugComboBar = NugComboBar
 
 local user
 local RogueGetComboPoints = GetComboPoints
+local IsInPetBattle = C_PetBattles.IsInBattle
 local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
@@ -494,9 +495,16 @@ function NugComboBar:LoadClassSettings()
             self:RegisterEvent("SPELLS_CHANGED")
             self.SPELLS_CHANGED = function(self)
                 local spec = GetSpecialization()
+                hideSlowly = NugComboBarDB.hideSlowly
                 if spec == 3 and NugComboBarDB.tidalWaves then
                     self:SetMaxPoints(2)
                     GetComboPoints = GetAuraStack(53390) -- Tidal Waves
+                    self:RegisterEvent("UNIT_AURA")
+                    self:UNIT_AURA(nil,allowedUnit)
+                elseif spec == 1 and IsPlayerSpell(210714) then -- Icefury
+                    self:SetMaxPoints(4)
+                    GetComboPoints = GetAuraStack(210714) -- Icefury
+                    hideSlowly = false
                     self:RegisterEvent("UNIT_AURA")
                     self:UNIT_AURA(nil,allowedUnit)
                 else
@@ -1435,7 +1443,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 
     -- print("progress", progress)
     -- print (comboPoints, defaultValue, comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
-    local forceHide = C_PetBattles.IsInBattle() or self.isTempDisabled
+    local forceHide = IsInPetBattle() or self.isTempDisabled
     if forceHide or
         (
             not showAlways and
