@@ -766,9 +766,11 @@ function NugComboBar:LoadClassSettings()
                         if isPhoenixFlames then
                             self:SetMaxPoints(maxFireBlastCharges, "FIREMAGE3", 3)
                             GetComboPoints = FireMageCombined
+                            self:DisableBar()
                         else
                             self:SetMaxPoints(maxFireBlastCharges)
                             GetComboPoints = GetFireBlastCharges
+                            self:EnableBar(0, 6,"Small", "Timer")
                         end
 					else
 						self:Disable()
@@ -1259,7 +1261,7 @@ function NugComboBar.EnableBar(self, min, max, btype, isTimer, isReversed)
 	if isTimer then
 		self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
 	end
-    self.bar:Show()
+    -- self.bar:Show()
 	return true
 end
 
@@ -1313,7 +1315,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
     local progress = not arg2 and arg1 or nil
 
 	    if self.bar and self.bar.enabled then
-	        if arg1 then
+            if arg1 then
 	            self.bar:Show()
 	            if arg2 then
 	                local startTime, duration = arg1, arg2
