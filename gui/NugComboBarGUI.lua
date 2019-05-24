@@ -1,7 +1,5 @@
 local L = NugComboBar.L
 
-local isClassic = select(4,GetBuildInfo()) <= 19999
-
 -- local layoutChoices = { }
 -- for k,v in pairs(NugComboBar.mappings) do
 --         table.insert(layoutChoices, tostring(k))
@@ -26,22 +24,6 @@ do
                 end,
                 set = function( info, s )
                     NugComboBar.Commands.charspec()
-                end
-            },
-            specspec = {
-                type = 'toggle',
-                name = L"Specialization-specific",
-                width = "normal",
-                order = 1,
-                disabled = function()
-                    return (not NugComboBarDB_Character.charspec)
-                end,
-                get = function(info)
-                    local spec = GetSpecialization()
-                    return NugComboBarDB_Character.specspec[spec]
-                end,
-                set = function(info, s)
-                    NugComboBar.Commands.specspec()
                 end
             },
             showGeneral = {
@@ -273,53 +255,13 @@ do
                 guiInline = true,
                 order = 2.3,
                 args = {
-                    shadowDance = {
-                        name = "|cff673065"..(GetSpellInfo(185313) or "").."|r",
-                        type = 'toggle',
-                        -- width = "double",
-                        order = 1,
-                        get = function(info) return NugComboBarDB.shadowDance end,
-                        set = function(info, s) NugComboBar.Commands.shadowdance() end,
-                    },
-                    tidalWaves = {
-                        name = "|cff4d7cb7"..(GetSpellInfo(53390) or "").."|r",
-                        type = 'toggle',
-                        -- width = "double",
-                        order = 2,
-                        get = function(info) return NugComboBarDB.tidalWaves end,
-                        set = function(info, s) NugComboBar.Commands.tidalwaves() end,
-                    },
-                    infernoBlast = {
-                        name = "|cffdb4d15"..(GetSpellInfo(108853) or "").."|r",
-                        type = 'toggle',
-                        -- width = "double",
-                        order = 3,
-                        get = function(info) return NugComboBarDB.infernoBlast end,
-                        set = function(info, s) NugComboBar.Commands.infernoblast() end,
-                    },
-                    -- detailedRunes = {
-                    --     name = "|cffaa0000"..L"Rune Cooldowns" or "").."|r",
+                    -- shadowDance = {
+                    --     name = "|cff673065"..(GetSpellInfo(185313) or "").."|r",
                     --     type = 'toggle',
-                    --     -- width = "double",
-                    --     order = 4,
-                    --     get = function(info) return NugComboBarDB.enableFullRuneTracker end,
-                    --     set = function(info, s) NugComboBar.Commands.runecooldowns() end,
+                    --     order = 1,
+                    --     get = function(info) return NugComboBarDB.shadowDance end,
+                    --     set = function(info, s) NugComboBar.Commands.shadowdance() end,
                     -- },
-                    meatcleaver = {
-                        name = "|cffff3333"..(GetSpellInfo(85739) or "").."|r",
-                        type = 'toggle',
-                        -- width = "double",
-                        order = 5,
-                        get = function(info) return NugComboBarDB.meatcleaver end,
-                        set = function(info, s) NugComboBar.Commands.meatcleaver() end,
-                    },
-                    renewingMist = {
-                        name = "|cff00ff96"..(GetSpellInfo(115151) or "").."|r",
-                        type = 'toggle',
-                        order = 6,
-                        get = function(info) return NugComboBarDB.renewingMist end,
-                        set = function(info, s) NugComboBar.Commands.renewingmist() end,
-                    },
                 },
             },
             showColor = {
@@ -699,11 +641,6 @@ do
 
         },
     }
-
-    if isClassic then
-        opt.args.specspec = nil
-        opt.args.resourcesGroup = nil
-    end
 
     local Config = LibStub("AceConfigRegistry-3.0")
     local Dialog = LibStub("AceConfigDialog-3.0")

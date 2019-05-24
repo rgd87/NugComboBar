@@ -446,7 +446,6 @@ do
 
             NugComboBarDB_Global = NugComboBarDB_Global or {}
             NugComboBarDB_Character = NugComboBarDB_Character or {}
-            NugComboBarDB_Character.specspec = NugComboBarDB_Character.specspec or {}
             local _,class = UnitClass("player")
             NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
             user = UnitName("player").."@"..GetRealmName()
@@ -459,22 +458,6 @@ do
                 NugComboBarDB_Global.charspec[user] = nil
                 NugComboBarDB_Character.charspec = true
             end
-
-            -- local NugComboBarDBSource
-            if NugComboBarDB_Character.charspec then
-                local spec = GetSpecialization()
-                if spec and NugComboBarDB_Character.specspec[spec] then
-                    NugComboBarDB_Character.specdb = NugComboBarDB_Character.specdb or {}
-                    NugComboBarDB_Character.specdb[spec] = NugComboBarDB_Character.specdb[spec] or {}
-
-                    NugComboBarDBSource = NugComboBarDB_Character.specdb[spec]
-                else
-                    NugComboBarDBSource = NugComboBarDB_Character
-                end
-            else
-                NugComboBarDBSource = NugComboBarDB_Global
-            end
-
 
             if not NugComboBarDBSource.apoint and NugComboBarDBSource.point then NugComboBarDBSource.apoint = NugComboBarDBSource.point end
             SetupDefaults(NugComboBarDBSource, defaults)
@@ -1367,21 +1350,6 @@ NugComboBar.Commands = {
             NugComboBarDB_Character.charspec = nil
         else
             NugComboBarDB_Character.charspec = true
-        end
-
-        NugComboBar:Reinitialize()
-    end,
-    ["specspec"] = function(v)
-        if not NugComboBarDB_Character.charspec then print("Character-specific should be enabled first"); return end
-
-        local spec = GetSpecialization()
-        if not spec or spec == 0 then
-            return
-        end
-        if NugComboBarDB_Character.specspec[spec] then
-            NugComboBarDB_Character.specspec[spec] = nil
-        else
-            NugComboBarDB_Character.specspec[spec] = true
         end
 
         NugComboBar:Reinitialize()
