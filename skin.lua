@@ -39,6 +39,10 @@ NugComboBar.presets = {
         NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 1, 3.7,0,1.64, "MODEL", "spells/enchantments/purpleflame_low.m2", false, 1, 3.5,0,1.55, true },
         BIG = { "spells/enchantments/purpleflame_low.m2", false, 1, 4,0,1.77, "MODEL", "spells/enchantments/purpleflame_low.m2", false, 1, 3.5,0,1.55, true },
     },
+    -- ["glowOrange"] = {
+    --     NORMAL = { "spells/enchantments/redflame_low.m2", false, 1, 3.7,0,1.64, "MODEL", "spells/enchantments/redflame_low.m2", false, 1, 3.5,0,1.55, true },
+    --     BIG = { "spells/enchantments/redflame_low.m2", false, 1, 4,0,1.77, "MODEL", "spells/enchantments/redflame_low.m2", false, 1, 3.5,0,1.55, true },
+    -- },
     ["glowPurple"] = {
         NORMAL = { "spells/Gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
         BIG = { "spells/Gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0 },
@@ -49,7 +53,7 @@ NugComboBar.presets = {
         NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 0, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
         BIG = { "spells/enchantments/purpleflame_low.m2", false, 0, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
     },
-    ["glowRed"] = {
+    ["glowOrangeStatic"] = {
         NORMAL = { "spells/enchantments/redflame_low.m2", false, 0, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\redflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
         BIG = { "spells/enchantments/redflame_low.m2", false, 0, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\redflame_tex.tga", 0.7, 1, 1, 1, 1, 0},
     },
