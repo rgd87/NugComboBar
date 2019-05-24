@@ -143,6 +143,7 @@ do
                     secondLayer = {
                         name = L"Second Layer",
                         desc = L"For Anticipation talent",
+                        disabled = true,
                         type = "toggle",
                         get = function(info) return NugComboBarDB.secondLayer end,
                         set = function(info, s) NugComboBar.Commands.secondlayer() end,
@@ -166,23 +167,10 @@ do
                     chargeCooldown = {
                         name = L"Charge Cooldowns",
                         type = "toggle",
+                        disabled = true,
                         get = function(info) return NugComboBarDB.chargeCooldown end,
                         set = function(info, s) NugComboBar.Commands.chargecooldown() end,
                         order = 12.5,
-                    },
-                    enablePrettyRunes = {
-                        name = L"Pretty Runes",
-                        desc = L"If disabled, rune charge timers will be displayed as simple bars",
-                        width = "full",
-                        type = "toggle",
-                        confirm = true,
-						confirmText = "Warning: Requires UI reloading.",
-                        get = function(info) return NugComboBarDB.enablePrettyRunes end,
-                        set = function(info, s)
-                            NugComboBarDB.enablePrettyRunes = not NugComboBarDB.enablePrettyRunes
-                            ReloadUI()
-                        end,
-                        order = 12.6,
                     },
                     -- vertical = {
                     --     name = L"Vertical",
@@ -214,36 +202,6 @@ do
                                 get = function(info) return NugComboBarDB.disableBlizzNP end,
                                 set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
                                 order = 16,
-                            },
-                        },
-                    },
-
-                    bar2offset = {
-                        type = "group",
-                        name = "",
-                        guiInline = true,
-                        order = 15,
-                        args = {
-
-                            bar2offset_x = {
-                                name = L"2nd row X offset",
-                                type = "range",
-                                get = function(info) return NugComboBarDB.bar2_x end,
-                                set = function(info, s) NugComboBar.Commands.bar2offset(tonumber(s), nil) end,
-                                softMin = -200,
-                                softMax = 200,
-                                step = 5,
-                                order = 4.1,
-                            },
-                            bar2offset_y = {
-                                name = L"2nd row Y offset",
-                                type = "range",
-                                get = function(info) return NugComboBarDB.bar2_y end,
-                                set = function(info, s) NugComboBar.Commands.bar2offset(nil, tonumber(s)) end,
-                                softMin = -200,
-                                softMax = 200,
-                                step = 5,
-                                order = 4.1,
                             },
                         },
                     },
@@ -453,6 +411,7 @@ do
                     preset_layer2 = {
                         name = L"Second Layer Preset",
                         type = 'select',
+                        disabled = true,
                         order = 2,
                         values = function()
                             local p = {}
@@ -468,6 +427,7 @@ do
                     preset_pointbar2 = {
                         name = L"Second Point Bar Preset",
                         type = 'select',
+                        disabled = true,
                         order = 3,
                         values = function()
                             local p = {}
@@ -478,15 +438,6 @@ do
                         end,
                         get = function(info) return NugComboBarDB.preset3dpointbar2 end,
                         set = function( info, v ) NugComboBar.Commands.preset3dpointbar2(v) end,
-                    },
-
-                    classThemes = {
-                        name = "|cffff5555"..L"Use NCB Class Themes".."|r",
-                        type = 'toggle',
-                        width = "double",
-                        order = 4,
-                        get = function(info) return NugComboBarDB.classThemes end,
-                        set = function(info, s) NugComboBar.Commands.classthemes() end,
                     },
 
                     colors3d = {

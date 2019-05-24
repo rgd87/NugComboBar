@@ -133,7 +133,6 @@ end
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = nil
-        self:SetupClassTheme()
         self.isTempDisabled = nil
         soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
@@ -369,7 +368,6 @@ local defaults = {
     preset3dpointbar2 = "void",
 	bar2_x = 13,
 	bar2_y = -20,
-    classThemes = not isClassic,
     secondLayer = true,
     colors3d = true,
     showAlways = false,
@@ -459,43 +457,7 @@ do
             if not NugComboBarDB_Global.adjustX then NugComboBarDB_Global.adjustX = defaults.adjustX end
             if not NugComboBarDB_Global.adjustY then NugComboBarDB_Global.adjustY = defaults.adjustY end
 
-            if NugComboBarDBSource.classThemes then
-                NugComboBarDB = setmetatable({
-                    __classTheme = nil,
-                    colors = {}
-                }, {
-                    __index = function(t,k)
-                        local ct = rawget(t, "__classTheme")
-                        if ct and ct[k] then
-                            return ct[k]
-                        else
-                            return NugComboBarDBSource[k]
-                        end
-                    end,
-                    __newindex = function(t,k,v)
-                        NugComboBarDBSource[k] = v
-                    end,
-                })
-
-                setmetatable(NugComboBarDB.colors, {
-                        __index = function(t,k)
-                            local ct = NugComboBarDB.__classTheme
-                            if not ct then return NugComboBarDBSource.colors[k] end
-                            local ctc = rawget(ct, "colors")
-                            if not ctc then return NugComboBarDBSource.colors[k] end
-                            if ctc[k] then return ctc[k] end
-                            if not ctc[k] and type(k) == 'number' then
-                                if ctc.normal then return ctc.normal end
-                            end
-                            return NugComboBarDBSource.colors[k]
-                        end,
-                        __newindex = function(t,k,v)
-                        end,
-                    })
-
-            else
-                NugComboBarDB = NugComboBarDBSource
-            end
+            NugComboBarDB = NugComboBarDBSource
 
             NugComboBar.isDisabled = nil
             if type(NugComboBarDBSource.disabled) == "table" then NugComboBarDBSource.disabled = nil end --old format bugfix
@@ -564,17 +526,6 @@ local ResolutionOffsets = {
     [trim(16/9)] = { 0.83, 0.83 },
     [trim(4/3)] = { 2.5, 2.5 },
 }
-
-
-function NugComboBar:SetupClassTheme()
-    if not NugComboBarDB.classThemes then return end
-    local _, class = UnitClass("player")
-    local spec = GetSpecialization()
-    local cT = NugComboBar.themes[class]
-    if not cT then return rawset(NugComboBarDB,"__classTheme", nil) end
-    local sT = cT[spec] or cT[0]
-    rawset(NugComboBarDB,"__classTheme", sT)
-end
 
 function NugComboBar:IsDefaultSkin(set)
     if set then
