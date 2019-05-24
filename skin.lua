@@ -34,33 +34,6 @@
 -- [166497] = "spells\\lightningbolt_missile.m2"
 -- [622694] = "SPELLS/FlowingWater_High.m2"
 
-local isClassic = select(4,GetBuildInfo()) <= 19999
-
-if isClassic then
-
-NugComboBar.presets = {
-    ["glowLifesteal"] = {
-        NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 1, 3.7,0,1.64, "MODEL", "spells/enchantments/purpleflame_low.m2", false, 1, 3.5,0,1.55, true },
-        BIG = { "spells/enchantments/purpleflame_low.m2", false, 1, 4,0,1.77, "MODEL", "spells/enchantments/purpleflame_low.m2", false, 1, 3.5,0,1.55, true },
-    },
-    ["glowPurple"] = {
-        NORMAL = { "spells/Gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
-        BIG = { "spells/Gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0 },
-        name = "(colored)",
-    },
-    ["glowLifestealStatic"] = {
-        -- !!!!!!!!!!!!!!!!! SCALE SET TO 0
-        NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 0, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
-        BIG = { "spells/enchantments/purpleflame_low.m2", false, 0, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
-    },
-    ["glowRed"] = {
-        NORMAL = { "spells/enchantments/redflame_low.m2", false, 0, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\redflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
-        BIG = { "spells/enchantments/redflame_low.m2", false, 0, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\redflame_tex.tga", 0.7, 1, 1, 1, 1, 0},
-    },
-}
-
-else
-
 NugComboBar.presets = {
     ["glowPurple"] = {
         NORMAL = { 166255, false, 1, 0, 0, 0 },
@@ -231,8 +204,6 @@ NugComboBar.presets = {
         BIG = { 166497, false, 1.1, 0, 0, 0 },
     }
 }
-
-end
 
 local barBottom = false
 
