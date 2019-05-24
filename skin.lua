@@ -35,174 +35,24 @@
 -- [622694] = "SPELLS/FlowingWater_High.m2"
 
 NugComboBar.presets = {
-    ["glowPurple"] = {
-        NORMAL = { 166255, false, 1, 0, 0, 0 },
-        BIG = { 166255, false, 1.2, 0, 0, 0 },
-        name = "(colored)",
-    },
-    
-    ["glowPurple2"] = {
-        NORMAL = { 166255, false, 1, 0, 0, 0 },
-        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 1394789, false, .75, 0.1,0,0},
-    },
-    -- {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}
-    ["glowFreedom"] = {
-        NORMAL = { 166255, false, 1, 0, 0, 0 },
-        -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
-        BIG = { 166255, false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\AURARUNE_A.tga", 0.65, 1, 0.5, 0, 0.9, 1},
-    },
-    ["glowFreedom3"] = {
-        NORMAL = { 166255, false, 1, 0, 0, 0 },
-        -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", "spells/blessingoffreedom_state.m2", true, {0.0328,0.0325,0, rad(90), rad(270), rad(270), 0.006}, nil,nil,nil},
-        BIG = { 166255, false, 1.2, 0, 0, 0, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\paladin_blessingofspellwarding_runeplane.tga", 0.65, 1, 0.5, 0, 0.6, 1.5},
-    },
-    ["glowShadowFlame"] = {
-        NORMAL = { 166255, false, 1, 0, 0, 0 },
-        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
-    },    
-    ["glowHoly"] = {
-        LEFT = { 654832, false, 1.3, 0, 0, 0 },
-        NORMAL = { 654832, false, 1.6, 0, 0, 0 },
-        BIG = { 654832, false, 1.7, 0, 0, 0, "MODEL", 457274, false, 0.4, -0.3,-0.15,0 },
-        RIGHT = { 654832, false, 1.3, 0, 0, 0 },
-    },
-    -- ["_RuneCharger"] = {
-    --     NORMAL = { 166255, true, 0, 1, 1, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
-    --     BIG = { 166255, true, 0, .77, .77, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
-    -- },
-    ["_RuneCharger2"] = {
-        -- NORMAL = { 166255, true, 0, 1, 1, 0, "MODEL", 165693,  true,  .002, 12.6, 12.5, 0 },
-        -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "MODEL", 165693,  true,  .003, 8.35, 8.4, 0 }, --622694, true, 0.04, .62, .64, 0 },
-        
-        -- NORMAL = { "spells/7fx_warlock_tormentedsoulspawn_missile.m2", false, 1, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
-        NORMAL = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
-        BIG = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
-    },
-    -- ["frostFire"] = {
-        -- NORMAL = { 67635, false, 1, -13.7,0,-6},
-        -- BIG = { 67635, false, 1, -6.5,0,-2.9},
-    -- },
-    -- ["frostFireRed"] = {
-    --     NORMAL = { 58835, false, 1, -13.7,0,-6},
-    --     BIG = { 58835, false, 1, -6.5,0,-2.9},
-    -- },
-    -- ["fear"] = {
-    --     NORMAL = { "SPELLS/Fear_State_Base_V2.m2", true, 0.05, 0, 0, 0 },
-    --     BIG = { 622694, true, 0.07, .35, .36, 0 },
-    -- },
-
-    ["blue"] = {
-        NORMAL = { 622694, false, 3, 0.1, 0, 0 },
-        BIG = { 622694, false, 3.6, 0.1, 0, 0 },
-    },
-    -- ["corrupted"] = {
-    --     NORMAL = { 852939, false, 1.1, 0, 0, 0 },
-    --     BIG = { 852939, false, 1.3, 0, 0, 0 },
-    -- },
-    ["furnace"] = {
-        NORMAL = { 530798, false, .7, 0,0,0, "MODEL", 937416, false, 0.27, -3.2, -.2, 0, true },
-        BIG = { 530798, false, 1, 0,0,0, "MODEL", 937416, false, 0.36, -2.4, -.2, 0, true },
-    },
-    ["furnace2"] = {
-        NORMAL = { 1333999, false, 0.4, -0.9, -0.2,0 },
-        BIG = { 1333999, false, 0.52, -0.7, -0.16,0 },
-    },
-    -- ["furnace3"] = {
-    --     NORMAL = { 165728, false, .6, 0,0,0, 937416, false, 0.27, -3.2, -.2, 0, true },
-    --     BIG = { 165728, false, .76, 0,0,0, 937416, false, 0.34, -3.2, -.2, 0, true },
-    -- },
-    ["chiBlast"] = {
-        NORMAL = { 915803, false, 1.05, 0.05, 0, 0 },
-        BIG = { 915803, false, 1.3, 0.03, 0, 0}
-    },
-    ["chiBlastBlue"] = {
-        NORMAL = { 623723, false, 1.05, 0.15, 0, 0 },
-        BIG = { 623723, false, 1.3, 0.1, 0, 0, "MODEL", 610473, false, 0.5, 0.5, -0.5, 0 },
-    },
-    -- ["scourge"] = {
-    --     NORMAL = { 1454964, true, 0.008, 3.1, 3.1, 0 },
-    --     -- BIG = { 915803, true, 0.033, .77, .77, 0,} -- "SPELLS/Monk_CracklingLightning_Impact.m2", true, 0.012, 2.05, 2.05, 0 },
-    -- }
-
-    -- NORMAL = { "spells/7fx_cordana_glaive_missile.m2", true, 0.008, 3.1, 3.1, 0 },
-    ["void"] = {
-        -- /script NugComboBar.p[1].playermodel:SetModelScale(0.5); NugComboBar.p[1].playermodel:SetPosition(0,0,0);
-        -- scale controls black to purple glow ratio
-        -- actual scaling is done by moving camera back and forth
-        NORMAL = { 1399809, false, 0.8, -0.32, 0, 0, "MODEL", 166813, false, 1, -1.1, 0, -0.4, true },
-        BIG = { 1399809, false, 1, -0.32, 0, 0, "MODEL", 166813, false, 1, -0.2, 0.02, 0, true },
-    },
-    -- ["funnelPurple"] = {
-    --     NORMAL = { 166923, true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.001}, nil, nil, nil },
-    --     BIG = { 166923, true, {0.02,0.0168,0, rad(90), rad(270), rad(270), 0.006}, nil, nil, nil },
-    -- },
-    -- ["funnelRed"] = {
-    --     NORMAL = { 166294, true, 0.018, 1.4, 1.4, 0 },
-    --     BIG = { 166294, true, 0.024, 1.05, 1.05, 0 },
-    -- },
-    ["glowGreen"] = {
-        NORMAL = { 166003, false, 1, 2.2,0,1 },
-        BIG = { 166003, false, 1, 2.9,0,1.3 },
-        name = "(colored)",
-    },
-    -- ["shamanRed"] = {
-    --     NORMAL = { "spells/enchantments/Shaman_Red.m2", false, 0.1, 2.2,0,1 },
-    --     BIG = { "spells/enchantments/Shaman_Red.m2", false, 0.1, 2.9,0,1.3 },
-    --     name = "(colored)",
-    -- },
-    ["glowBlue"] = {
-        NORMAL = { 165995, false, 1, 2.2,0,1 },
-        BIG = { 165995, false, 1, 2.9,0,1.3 },
-        name = "(colored)",
-    },
-    ["glowOrange"] = {
-        NORMAL = { 166011, false, 1, 2.2,0,1 },
-        BIG = { 166011, false, 1, 2.9,0,1.3 },
-    },
-    ["glowWhite"] = {
-        NORMAL = { 166030, false, 1.3, 2.23,0.03,1, "MODEL", 166030, false, 1.3, 2.23,-0.03,1, true },
-        BIG = { 166030, false, 1.3, 2.9,0.03,1.3, "MODEL", 166030, false, 1.3, 2.2,-0.05,1, true },
-        name = "(colored)",
-    },
-    -- ["glowRed"] = {
-    --     NORMAL = { 166012, false, 1, 1.6,0, 0.7 },
-    --     BIG = { 166012, false, 1, 2.2,0,1 },
-    -- },
-    -- ["glowYellow"] = {
-    --     NORMAL = { 166033, false, 1, 2.2,0,1 },
-    --     BIG = { 166033, false, 1, 2.9,0,1.3 },
-    -- },
     ["glowLifesteal"] = {
-        NORMAL = { 166008, false, 1, 2.2,0,1 },
-        BIG = { 166008, false, 1, 2.9,0,1.3 },
-        --BIG = { 166471, true, 0.024, 1.05, 1.05, 0 },
+        NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 1, 3.7,0,1.64, "MODEL", "spells/enchantments/purpleflame_low.m2", false, 1, 3.5,0,1.55, true },
+        BIG = { "spells/enchantments/purpleflame_low.m2", false, 1, 4,0,1.77, "MODEL", "spells/enchantments/purpleflame_low.m2", false, 1, 3.5,0,1.55, true },
     },
-    ["glowFreedom2"] = {
-        NORMAL = { 166255, false, 1, 0, 0, 0 },
-        
-        -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 611982,  false,  .5, -5.7,0,0},
-        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 588344,  false,  0.8, -17.5, 0, -7.8},        
-        -- BIG = { 166255, false, 0.1, 0, 0, 0, "MODEL", 804539,  false,  2, -0.1,0,0, true},        
-    },
-    ["arcanePink"] = {
-        NORMAL = { 1007525, false, 0.9, 0,0,0, "MODEL", 1389209, false, 2.3, 0,0,0, true },
-        BIG = { 1007525, false, 1.1, 0,0,0, "MODEL", 1389209, false, 2.8, 0,0,0, true },
-    },
-    ["glowArcshot"] = {
-        NORMAL = { 165592, false, 0.5, -0.35,0,0, "MODEL", 1389209, false, 2.3, 0,0,0, true },
-        BIG = { 165592, false, 0.65, -0.35,0,0, "MODEL", 1389209, false, 2.8, 0,0,0, true },
+    ["glowPurple"] = {
+        NORMAL = { "spells/Gouge_precast_state_hand.m2", false, 1, 0, 0, 0 },
+        BIG = { "spells/Gouge_precast_state_hand.m2", false, 1.2, 0, 0, 0 },
         name = "(colored)",
     },
-    
-    
-    -- ["fireGreen"] = {
-    --     NORMAL = { "spells\\fel_fire_precast_hand.m2", true, 0.036, 0.70, 0.72, 0 },
-    --     BIG = { "spells\\fel_fire_precast_hand.m2", true, 0.047, 0.53, 0.57, 0 },
-    -- },
-    ["electricBlue"] = {
-        NORMAL = { 166497, false, .9, 0, 0, 0 },
-        BIG = { 166497, false, 1.1, 0, 0, 0 },
-    }
+    ["glowLifestealStatic"] = {
+        -- !!!!!!!!!!!!!!!!! SCALE SET TO 0
+        NORMAL = { "spells/enchantments/purpleflame_low.m2", false, 0, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
+        BIG = { "spells/enchantments/purpleflame_low.m2", false, 0, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
+    },
+    ["glowRed"] = {
+        NORMAL = { "spells/enchantments/redflame_low.m2", false, 0, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\redflame_tex.tga", 0.6, 1, 1, 1, 1, 0},
+        BIG = { "spells/enchantments/redflame_low.m2", false, 0, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\redflame_tex.tga", 0.7, 1, 1, 1, 1, 0},
+    },
 }
 
 local barBottom = false
