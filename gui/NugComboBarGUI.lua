@@ -1,5 +1,6 @@
 local L = NugComboBar.L
 
+local isClassic = select(4,GetBuildInfo()) <= 19999
 
 -- local layoutChoices = { }
 -- for k,v in pairs(NugComboBar.mappings) do
@@ -273,7 +274,7 @@ do
                 order = 2.3,
                 args = {
                     shadowDance = {
-                        name = "|cff673065"..GetSpellInfo(185313).."|r",
+                        name = "|cff673065"..(GetSpellInfo(185313) or "").."|r",
                         type = 'toggle',
                         -- width = "double",
                         order = 1,
@@ -281,7 +282,7 @@ do
                         set = function(info, s) NugComboBar.Commands.shadowdance() end,
                     },
                     tidalWaves = {
-                        name = "|cff4d7cb7"..GetSpellInfo(53390).."|r",
+                        name = "|cff4d7cb7"..(GetSpellInfo(53390) or "").."|r",
                         type = 'toggle',
                         -- width = "double",
                         order = 2,
@@ -289,7 +290,7 @@ do
                         set = function(info, s) NugComboBar.Commands.tidalwaves() end,
                     },
                     infernoBlast = {
-                        name = "|cffdb4d15"..GetSpellInfo(108853).."|r",
+                        name = "|cffdb4d15"..(GetSpellInfo(108853) or "").."|r",
                         type = 'toggle',
                         -- width = "double",
                         order = 3,
@@ -297,7 +298,7 @@ do
                         set = function(info, s) NugComboBar.Commands.infernoblast() end,
                     },
                     -- detailedRunes = {
-                    --     name = "|cffaa0000"..L"Rune Cooldowns".."|r",
+                    --     name = "|cffaa0000"..L"Rune Cooldowns" or "").."|r",
                     --     type = 'toggle',
                     --     -- width = "double",
                     --     order = 4,
@@ -305,7 +306,7 @@ do
                     --     set = function(info, s) NugComboBar.Commands.runecooldowns() end,
                     -- },
                     meatcleaver = {
-                        name = "|cffff3333"..GetSpellInfo(85739).."|r",
+                        name = "|cffff3333"..(GetSpellInfo(85739) or "").."|r",
                         type = 'toggle',
                         -- width = "double",
                         order = 5,
@@ -313,7 +314,7 @@ do
                         set = function(info, s) NugComboBar.Commands.meatcleaver() end,
                     },
                     renewingMist = {
-                        name = "|cff00ff96"..GetSpellInfo(115151).."|r",
+                        name = "|cff00ff96"..(GetSpellInfo(115151) or "").."|r",
                         type = 'toggle',
                         order = 6,
                         get = function(info) return NugComboBarDB.renewingMist end,
@@ -698,6 +699,11 @@ do
 
         },
     }
+
+    if isClassic then
+        opt.args.specspec = nil
+        opt.args.resourcesGroup = nil
+    end
 
     local Config = LibStub("AceConfigRegistry-3.0")
     local Dialog = LibStub("AceConfigDialog-3.0")
