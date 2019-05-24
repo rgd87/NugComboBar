@@ -386,12 +386,6 @@ local defaults = {
     nameplateAttach = false,
     nameplateOffsetY = 0,
     special1 = false,
-    shadowDance = true,
-    tidalWaves = true,
-    infernoBlast = true,
-	phoenixflames = true,
-    meatcleaver = true,
-    renewingMist = false,
     maxFill = false,
     enablePrettyRunes = true,
     hideWithoutTarget = false,
@@ -1248,39 +1242,6 @@ NugComboBar.Commands = {
     ["special"] = function(v)
         NugComboBarDB.special1 = not NugComboBarDB.special1
         print ("NCB Special = ", NugComboBarDB.special1)
-    end,
-    ["shadowdance"] = function(v)
-        NugComboBarDB.shadowDance = not NugComboBarDB.shadowDance
-        NugComboBar:Reinitialize()
-        print ("NCB Shadow Dance = ", NugComboBarDB.shadowDance)
-    end,
-	["runecooldowns"] = function(v)
-        NugComboBarDB.enableFullRuneTracker = not NugComboBarDB.enableFullRuneTracker
-        print (string.format("NCB> Rune Cooldowns are %s, it will take effect after /reload", NugComboBarDB.enableFullRuneTracker and "enabled" or "disabled"))
-    end,
-    ["tidalwaves"] = function(v)
-        NugComboBarDB.tidalWaves = not NugComboBarDB.tidalWaves
-        NugComboBar:Reinitialize()
-        print ("NCB Tidal Waves = ", NugComboBarDB.tidalWaves)
-    end,
-    ["infernoblast"] = function(v)
-        NugComboBarDB.infernoBlast = not NugComboBarDB.infernoBlast
-        NugComboBar:Reinitialize()
-        print ("NCB Inferno Blast = ", NugComboBarDB.infernoBlast)
-    end,
-	["phoenixflames"] = function(v)
-        NugComboBarDB.phoenixflames = not NugComboBarDB.phoenixflames
-        NugComboBar:Reinitialize()
-        print ("NCB Phoenix's Flames = ", NugComboBarDB.phoenixflames)
-    end,
-	["meatcleaver"] = function(v)
-        NugComboBarDB.meatcleaver = not NugComboBarDB.meatcleaver
-        NugComboBar:Reinitialize()
-        print ("NCB Meatcleaver = ", NugComboBarDB.meatcleaver)
-    end,
-    ["renewingmist"] = function(v)
-        NugComboBarDB.renewingMist = not NugComboBarDB.renewingMist
-        NugComboBar:Reinitialize()
     end,
     ["nameplateattach"] = function(v)
         NugComboBarDB.nameplateAttach = not NugComboBarDB.nameplateAttach
