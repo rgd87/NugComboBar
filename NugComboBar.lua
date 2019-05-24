@@ -12,8 +12,6 @@ local hideSlowly
 local secondLayerEnabled
 local fadeAfter = 6
 local soundFullEnabled = false
-local isRuneTracker = false
-local isPrettyRuneCharger = false
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 local defaultProgress = 0
@@ -31,7 +29,6 @@ local isDefaultSkin = nil
 local UnitAura = UnitAura
 
 local UnitPower = UnitPower
-local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
 
 --- Compatibility with Classic
@@ -372,7 +369,6 @@ local defaults = {
     preset3dpointbar2 = "void",
 	bar2_x = 13,
 	bar2_y = -20,
-	enableFullRuneTracker = true,
     classThemes = not isClassic,
     secondLayer = true,
     colors3d = true,
@@ -387,7 +383,6 @@ local defaults = {
     nameplateOffsetY = 0,
     special1 = false,
     maxFill = false,
-    enablePrettyRunes = true,
     hideWithoutTarget = false,
     vertical = false,
     overrideLayout = false,
@@ -879,10 +874,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	        targetBefore = UnitGUID(allowedTargetUnit)
 	    end
 
-        if isRuneTracker and isDefaultSkin then
-            local runeIndex, isEnergize = ...
-            self:UpdateRunes(runeIndex, isEnergize)
-        else
+        
     	    for i = 1, self.MAX_POINTS do
     	        local point = self.p[i]
     	        if i <= comboPoints then
@@ -914,7 +906,6 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
     	            end
     	        end
     	    end
-        end
 
         if chargeCooldown and not chargeCooldownOnSecondBar then
             if isDefaultSkin then
@@ -926,28 +917,6 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
                 end
             end
         end
-
-		-- local charger = true
-		-- if charger then
-		-- 	if arg1 and arg2 then
-		-- 		local start, duration = arg1, arg2
-		-- 		local nextpoint = self.p[comboPoints+1]
-		--
-		-- 		for i = 1, self.MAX_POINTS do
-		-- 			local point = self.p[i]
-		-- 			-- if point.runeCharging then
-		-- 				NugComboBar:UpdateSingleRune(point, i, nil, nil, true)
-		-- 			-- end
-		-- 		end
-		--
-		-- 		if nextpoint then
-		-- 			nextpoint:Activate()
-		-- 			print(start,duration)
-		-- 			NugComboBar:UpdateSingleRune(nextpoint, comboPoints+1, start, duration, false)
-		-- 		end
-		--
-		-- 	end
-		-- end
 
 	    --second bar
 	    if self.MAX_POINTS2 then
@@ -1003,30 +972,6 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
     end
 
     comboPointsBefore = comboPoints
-
-	-- if not isRuneTracker and not chargeCooldown then
-	-- 	for _, point in pairs(self.point) do
-	-- 		if point.RuneChargeFrame then
-	-- 			point.cd:Hide()
-	-- 		end
-	-- 	end
-	-- end
-
-    -- if defaultValue == -1 then
-    --         lastChangeTime = GetTime()
-    --         lastChangeTimer:SetScript("OnUpdate", lastChangeOnUpdate)
-    --         print(GetTime(), 'lastChange!')
-    --         lastChangeTimer._elapsed = 0
-    -- else
-    --     lastChangeTimer:SetScript("OnUpdate", nil)
-    -- end
-
-    -- if event ~= -1 then
-    --     tframe.started = true
-    --     tframe.unit = unit
-    --     tframe.ptype = ptype
-    --     tframe:SetScript("OnUpdate", tfunc)
-    -- end
 end
 
 function NugComboBar.SetColor(point, r, g, b)
@@ -1548,119 +1493,6 @@ function NugComboBar:SuperDisable()
     if self.anchor then self.anchor:Hide() end
     self:SetAlpha(0)
 end
-
-local function RuneChargeOnUpdate(self, time)
-	local now = GetTime()
-	local frame = self.frame
-    local runeStart = frame.runeStart or now
-	local elapsed = now - runeStart
-	local progress = elapsed/frame.runeDuration
-	if progress < 0 then progress = 0 end
-    if progress > 1 then progress = 1 end
-
-    if isPrettyRuneCharger then
-        local pmp = progress*progress*progress+0.1
-        self.playermodel:SetAlpha(pmp)--progress*0.8)
-        self:SetAlpha(progress ~= 0 and 0.9 or 0)
-        self.bgmodel:SetAlpha(progress)
-
-    else
-        if progress == 0 then
-            self:SetAlpha(0)
-        else
-            self:SetAlpha(1)
-        end
-        self:SetValue(progress)
-    end
-end
-
-
-
-function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
-    self:EnsureRuneChargeFrame(point)
-	if runeReady then
-        point:Activate()
-        point.RuneChargeFrame:Hide()
-	else
-        point.runeStart = start
-        point.runeDuration = duration
-
-        point:Deactivate()
-        point.RuneChargeFrame:SetScript("OnUpdate", RuneChargeOnUpdate)
-        point.RuneChargeFrame:Show()
-	end
-end
-
-
-local runeSortFunc = function(a,b)
-    if a[3] and not b[3] then -- if a.isReady and not b.isReady then
-        return true
-    elseif not a[3] and not b[3] then -- elseif not a.isReady and not b.isReady then
-        return a[1] < b[1]
-    end
-end
-function NugComboBar:UpdateRunes(index, isEnergize)
-        if not self.runeTable then 
-            self.runeTable = {
-                {0, 1, false}, --start, duration, ready
-                {0, 1, false},
-                {0, 1, false},
-                {0, 1, false},
-                {0, 1, false},
-                {0, 1, false},
-            }
-        end
-        local runeTable = self.runeTable
-        for i=1, 6 do
-            local r = runeTable[i]
-            r[1], r[2], r[3] = GetRuneCooldown(i);
-            if not r[1] then return end
-        end
-        tsort(runeTable, runeSortFunc)
-
-        -- print("------")
-        for i=1, 6 do
-            local start, duration, isReady = unpack(runeTable[i])
-            local point = self.p[i]
-            -- print(i, start, duration, isReady)
-            self:UpdateSingleRune(point, i, start, duration, isReady)
-        end
-end
-
-function NugComboBar:EnsureRuneChargeFrame(point)
-    if not point.RuneChargeFrame then
-        
-        local f
-        if isPrettyRuneCharger then
-            local t = point.bg
-            local ts = t.settings
-            f = self:Create3DPoint(point.id.."rcf", ts)
-        
-            if NugComboBarDB.vertical then
-                f:SetPoint("CENTER", t, "BOTTOMLEFT", -ts.poffset_y, ts.poffset_x)
-            else
-                f:SetPoint("CENTER", t, "TOPLEFT", ts.poffset_x, ts.poffset_y)
-            end
-            f.bg = t
-            f:SetPreset("_RuneCharger2")
-
-            f.bgmodel:SetFrameLevel(0)
-        else
-
-            f = self:CreatePixelBar()
-            f:SetWidth(pixelperfect(18))
-            f:SetColor(unpack(NugComboBarDB.colors.bar1))
-            f:SetMinMaxValues(0,1)
-            f:ClearAllPoints()
-            f:SetPoint("TOP", point, "CENTER", 0, -16)
-        end
-
-        f.frame = point
-        point.RuneChargeFrame = f
-	end
-end
-
-
 
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 
