@@ -448,6 +448,12 @@ do
                 NugComboBarDB_Character.charspec = true
             end
 
+            if NugComboBarDB_Character.charspec then
+                NugComboBarDBSource = NugComboBarDB_Character
+            else
+                NugComboBarDBSource = NugComboBarDB_Global
+            end
+
             if not NugComboBarDBSource.apoint and NugComboBarDBSource.point then NugComboBarDBSource.apoint = NugComboBarDBSource.point end
             SetupDefaults(NugComboBarDBSource, defaults)
             if not NugComboBarDB_Global.adjustX then NugComboBarDB_Global.adjustX = defaults.adjustX end
