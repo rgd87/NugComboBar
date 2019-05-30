@@ -733,7 +733,7 @@ end
 local CreateBGTexture = function(f)
     local bgtf = CreateFrame("Frame", nil,f)
     local size = f.bgmodel:GetWidth()
-    bgtf:SetFrameLevel(2)
+    bgtf:SetFrameLevel(0)
     bgtf:SetWidth(size)
     bgtf:SetHeight(size)
     bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
