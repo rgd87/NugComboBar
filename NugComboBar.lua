@@ -3,7 +3,6 @@ local NugComboBar = NugComboBar
 
 local user
 local RogueGetComboPoints = GetComboPoints
-local IsInPetBattle = C_PetBattles.IsInBattle
 local GetComboPoints = RogueGetComboPoints
 local allowedUnit = "player"
 local allowedCaster = "player"
@@ -35,6 +34,10 @@ local UnitPower = UnitPower
 local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
 
+--- Compatibility with Classic
+local isClassic = select(4,GetBuildInfo()) <= 19999
+local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
+local GetSpecialization = isClassic and function() return nil end or _G.GetSpecialization
 
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
@@ -103,8 +106,15 @@ local AuraTimerOnUpdate = function(self, time)
 end
 local dummy = function() return 0 end
 
-RogueGetComboPoints = function(unit)
-    return UnitPower("player", 4)
+if isClassic then
+    local OriginalGetComboPoints = _G.GetComboPoints
+    RogueGetComboPoints = function(unit)
+        return OriginalGetComboPoints(unit, "target")
+    end
+else
+    RogueGetComboPoints = function(unit)
+        return UnitPower("player", 4)
+    end
 end
 
 local makeDruidCP = function(anticipation, subtlety, maxFill, maxCP)
@@ -154,7 +164,11 @@ function NugComboBar:LoadClassSettings()
 					end
 					return cp, chargeStart, chargeDuration, 0, secondRowCount
 				end
-			end
+            end
+            
+            if isClassic then
+                self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            end
 
 
             self.SPELL_UPDATE_COOLDOWN = function(self, event)
@@ -822,7 +836,7 @@ local defaults = {
 	bar2_x = 13,
 	bar2_y = -20,
 	enableFullRuneTracker = true,
-    classThemes = false,
+    classThemes = not isClassic,
     secondLayer = true,
     colors3d = true,
     showAlways = false,
@@ -1152,8 +1166,10 @@ do
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        self:RegisterEvent("PET_BATTLE_OPENING_START")
-        self:RegisterEvent("PET_BATTLE_CLOSE")
+        if not isClassic then
+            self:RegisterEvent("PET_BATTLE_OPENING_START")
+            self:RegisterEvent("PET_BATTLE_CLOSE")
+        end
         self.PLAYER_ENTERING_WORLD = self.CheckComboPoints -- Update on looading screen to clear after battlegrounds
         self.PLAYER_REGEN_ENABLED = self.CheckComboPoints
         self.PLAYER_REGEN_DISABLED = self.CheckComboPoints
@@ -1315,7 +1331,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
         self:Show()
     end -- usually frame is set to 0 alpha
     -- local arg1, arg2
-	local comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints = GetComboPoints(unit);
+    local comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
 
 	    if self.bar and self.bar.enabled then

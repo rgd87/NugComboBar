@@ -35,12 +35,12 @@
 -- [622694] = "SPELLS/FlowingWater_High.m2"
 
 NugComboBar.presets = {
-    --- model, cameraReset, scale, xOffset, yOffset
     ["glowPurple"] = {
         NORMAL = { 166255, false, 1, 0, 0, 0 },
         BIG = { 166255, false, 1.2, 0, 0, 0 },
         name = "(colored)",
     },
+    
     ["glowPurple2"] = {
         NORMAL = { 166255, false, 1, 0, 0, 0 },
         BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 1394789, false, .75, 0.1,0,0},
@@ -202,9 +202,8 @@ NugComboBar.presets = {
     ["electricBlue"] = {
         NORMAL = { 166497, false, .9, 0, 0, 0 },
         BIG = { 166497, false, 1.1, 0, 0, 0 },
-    },
+    }
 }
-
 
 local barBottom = false
 
@@ -666,7 +665,11 @@ local SetPresetFunc = function ( self, name, noreset )
             t:SetSize(w*scale, h*scale)
             tf:Show()
             tf.ag.a:SetDuration(duration or 1)
-            tf.ag:Play()
+            if duration == 0 then
+                tf.ag:Stop()
+            else
+                tf.ag:Play()
+            end
         else
             self.bgtex:Hide()
         end
@@ -730,7 +733,7 @@ end
 local CreateBGTexture = function(f)
     local bgtf = CreateFrame("Frame", nil,f)
     local size = f.bgmodel:GetWidth()
-    bgtf:SetFrameLevel(0)
+    bgtf:SetFrameLevel(2)
     bgtf:SetWidth(size)
     bgtf:SetHeight(size)
     bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
@@ -770,7 +773,7 @@ function NugComboBar.Create3DPoint(self, id, opts)
     pm:SetAllPoints(f)
     pm:SetFrameLevel(3)
 
-    pm:SetModel(166255)
+    -- pm:SetModel(166255)
     pm:SetModelScale(1)
     pm:SetPosition(0,0,0)
     -- pm:SetScript("OnUpdateModel", function() print("PM model update")     end)
