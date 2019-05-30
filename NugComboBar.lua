@@ -1011,15 +1011,19 @@ end
 NugComboBar.soundFiles = {
     ["none"] = "none",
     ["gm_chatwarning"] = SOUNDKIT.GM_CHAT_WARNING,
+    ["coldblood"] = 6774,
     ["alarmclockwarning3"] = SOUNDKIT.ALARM_CLOCK_WARNING_3,
     ["auctionwindowopen"] = SOUNDKIT.AUCTION_WINDOW_OPEN,
+    ["wispwhat1"] = 6343,
     ["custom"] = "custom",
 }
 NugComboBar.soundChoices = {
     "none",
     "gm_chatwarning",
+    "coldblood",
     "alarmclockwarning3",
     "auctionwindowopen",
+    "wispwhat1",
     "custom",
 }
 
