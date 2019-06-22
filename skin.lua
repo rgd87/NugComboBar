@@ -1,38 +1,42 @@
--- [166255] = "spells\\gouge_precast_state_hand.m2"
--- [1394789] = "spells/7fx_nightborne_precasthand.m2"
--- [166817] = "SPELLS/Shadowflame_Cast_Hand.m2"
--- [654832] = "spells\\Holy_precast_med_hand_simple.m2"
--- [457274] = "spells\\Paladin_headlinghands_state_01.m2"
--- [166813] = "SPELLS/Shadow_Strikes_State_Hand.m2"
--- [165693] = "spells\\blessingoffreedom_state.m2"
--- [530798] = "spells/druid_wrath_impact_v2.m2"
--- [852939] = "SPELLS/Precast_Corrupted_01.m2"
--- [937416] = "spells/6fx_smallfire.m2"
--- [1333999] = "spells/cfx_mage_greaterpyroblast_missile.m2"
--- [165728] = "spells/bloodlust_state_hand.m2"
--- [915803] = "SPELLS/Monk_ChiBlast_Precast_Jade.m2"
--- [623723] = "SPELLS/Monk_ChiBlast_Precast.m2"
--- [610473] = "SPELLS/Monk_CracklingLightning_Impact_Blue.m2"
--- [1454964] = "spells/7fx_deathknight_scourgeofworlds_statechest.m2"
--- [1399809] = "spells/7fx_warlock_shadow_missile.m2"
--- [166923] = "spells\\soulfunnel_impact_chest.m2"
--- [166294] = "spells\\healrag_state_chest.m2"
--- [166003] = "spells/enchantments/greenflame_low.m2"
--- [165995] = "spells/enchantments/blueflame_low.m2"
--- [166011] = "spells/enchantments/redflame_low.m2"
--- [166030] = "spells/enchantments/whiteflame_low.m2"
--- [166012] = "spells/enchantments/redglow_high.m2"
--- [166033] = "spells/enchantments/yellowflame_low.m2"
--- [166008] = "spells/enchantments/purpleflame_low.m2"
--- [166471] = "spells\\lifetap_state_chest.m2"
--- [611982] = "spells/monk_avertharm_state_base.m2"
--- [588344] = "spells/divineshield_v2_chest.m2"
--- [804539] = "spells/weaponenchant_pvppandarias2.m2"
--- [1007525] = "spells/cast_arcane_pink_01.m2"
--- [1389209] = "spells/antimagic_precast_hand_02red.m2"
--- [165592] = "spells/arcaneshot_missile.m2"
--- [166497] = "spells\\lightningbolt_missile.m2"
--- [622694] = "SPELLS/FlowingWater_High.m2"
+--[[
+local fileIDtoPathMap = {
+    [166255] = "spells\\gouge_precast_state_hand.m2",
+    [1394789] = "spells/7fx_nightborne_precasthand.m2",
+    [166817] = "SPELLS/Shadowflame_Cast_Hand.m2",
+    [654832] = "spells\\Holy_precast_med_hand_simple.m2",
+    [457274] = "spells\\Paladin_headlinghands_state_01.m2",
+    [166813] = "SPELLS/Shadow_Strikes_State_Hand.m2",
+    [165693] = "spells\\blessingoffreedom_state.m2",
+    [530798] = "spells/druid_wrath_impact_v2.m2",
+    [852939] = "SPELLS/Precast_Corrupted_01.m2",
+    [937416] = "spells/6fx_smallfire.m2",
+    [1333999] = "spells/cfx_mage_greaterpyroblast_missile.m2",
+    [165728] = "spells/bloodlust_state_hand.m2",
+    [915803] = "SPELLS/Monk_ChiBlast_Precast_Jade.m2",
+    [623723] = "SPELLS/Monk_ChiBlast_Precast.m2",
+    [610473] = "SPELLS/Monk_CracklingLightning_Impact_Blue.m2",
+    [1454964] = "spells/7fx_deathknight_scourgeofworlds_statechest.m2",
+    [1399809] = "spells/7fx_warlock_shadow_missile.m2",
+    [166923] = "spells\\soulfunnel_impact_chest.m2",
+    [166294] = "spells\\healrag_state_chest.m2",
+    [166003] = "spells/enchantments/greenflame_low.m2",
+    [165995] = "spells/enchantments/blueflame_low.m2",
+    [166011] = "spells/enchantments/redflame_low.m2",
+    [166030] = "spells/enchantments/whiteflame_low.m2",
+    [166012] = "spells/enchantments/redglow_high.m2",
+    [166033] = "spells/enchantments/yellowflame_low.m2",
+    [166008] = "spells/enchantments/purpleflame_low.m2",
+    [166471] = "spells\\lifetap_state_chest.m2",
+    [611982] = "spells/monk_avertharm_state_base.m2",
+    [588344] = "spells/divineshield_v2_chest.m2",
+    [804539] = "spells/weaponenchant_pvppandarias2.m2",
+    [1007525] = "spells/cast_arcane_pink_01.m2",
+    [1389209] = "spells/antimagic_precast_hand_02red.m2",
+    [165592] = "spells/arcaneshot_missile.m2",
+    [166497] = "spells\\lightningbolt_missile.m2",
+    [622694] = "SPELLS/FlowingWater_High.m2",
+}
+]]
 
 NugComboBar.presets = {
     ["glowPurple"] = {
@@ -40,7 +44,11 @@ NugComboBar.presets = {
         BIG = { 166255, false, 1.2, 0, 0, 0 },
         name = "(colored)",
     },
-    
+    ["glowLifestealStatic"] = {
+        -- !!!!!!!!!!!!!!!!! SCALE SET TO 0
+        NORMAL = { 166008, false, 0.01, 2.2,0,1, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0, 2},
+        BIG = { 166008, false, 0.01, 2.9,0,1.3, "TEXTURE", "Interface\\AddOns\\NugComboBar\\tex\\purpleflame_tex.tga", 0.6, 1, 1, 1, 1, 0, 2},
+    },
     ["glowPurple2"] = {
         NORMAL = { 166255, false, 1, 0, 0, 0 },
         BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 1394789, false, .75, 0.1,0,0},
@@ -59,7 +67,7 @@ NugComboBar.presets = {
     ["glowShadowFlame"] = {
         NORMAL = { 166255, false, 1, 0, 0, 0 },
         BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28 },
-    },    
+    },
     ["glowHoly"] = {
         LEFT = { 654832, false, 1.3, 0, 0, 0 },
         NORMAL = { 654832, false, 1.6, 0, 0, 0 },
@@ -73,7 +81,7 @@ NugComboBar.presets = {
     ["_RuneCharger2"] = {
         -- NORMAL = { 166255, true, 0, 1, 1, 0, "MODEL", 165693,  true,  .002, 12.6, 12.5, 0 },
         -- NORMAL = { "spells\\fire_blue_precast_uber_hand.m2", true, 0.036, 0.70, 0.72, 0, "MODEL", 165693,  true,  .003, 8.35, 8.4, 0 }, --622694, true, 0.04, .62, .64, 0 },
-        
+
         -- NORMAL = { "spells/7fx_warlock_tormentedsoulspawn_missile.m2", false, 1, 0, 0, 0, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
         NORMAL = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
         BIG = { 166813, false, 0.7, -1.1, 0, -0.4, "MODEL", 166817, false, 1, 0, 0, 0.28, 1.3 },
@@ -179,10 +187,10 @@ NugComboBar.presets = {
     },
     ["glowFreedom2"] = {
         NORMAL = { 166255, false, 1, 0, 0, 0 },
-        
+
         -- BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 611982,  false,  .5, -5.7,0,0},
-        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 588344,  false,  0.8, -17.5, 0, -7.8},        
-        -- BIG = { 166255, false, 0.1, 0, 0, 0, "MODEL", 804539,  false,  2, -0.1,0,0, true},        
+        BIG = { 166255, false, 1.2, 0, 0, 0, "MODEL", 588344,  false,  0.8, -17.5, 0, -7.8},
+        -- BIG = { 166255, false, 0.1, 0, 0, 0, "MODEL", 804539,  false,  2, -0.1,0,0, true},
     },
     ["arcanePink"] = {
         NORMAL = { 1007525, false, 0.9, 0,0,0, "MODEL", 1389209, false, 2.3, 0,0,0, true },
@@ -193,8 +201,8 @@ NugComboBar.presets = {
         BIG = { 165592, false, 0.65, -0.35,0,0, "MODEL", 1389209, false, 2.8, 0,0,0, true },
         name = "(colored)",
     },
-    
-    
+
+
     -- ["fireGreen"] = {
     --     NORMAL = { "spells\\fel_fire_precast_hand.m2", true, 0.036, 0.70, 0.72, 0 },
     --     BIG = { "spells\\fel_fire_precast_hand.m2", true, 0.047, 0.53, 0.57, 0 },
@@ -656,9 +664,11 @@ local SetPresetFunc = function ( self, name, noreset )
 
     if self.bgtex then
         if bgType == "TEXTURE" then
-            local tex, scale, r,g,b,a, duration = unpack(settings, 8)
-            local tf = self.bgtex 
+            local tex, scale, r,g,b,a, duration, framelevel = unpack(settings, 8)
+            local tf = self.bgtex
             local t = self.bgtex.texture
+            framelevel = framelevel or 0
+            self.bgtex:SetFrameLevel(framelevel)
             t:SetTexture(tex)
             t:SetVertexColor(r,g,b,a)
             local w,h = tf:GetSize()
@@ -741,7 +751,7 @@ local CreateBGTexture = function(f)
     bgt:SetBlendMode("ADD")
     bgt:SetPoint("CENTER")
     bgtf.texture = bgt
-    
+
     local ag = f:CreateAnimationGroup()
     ag:SetLooping("REPEAT")
     local a = ag:CreateAnimation("Rotation")
@@ -752,7 +762,7 @@ local CreateBGTexture = function(f)
     bgtf.ag = ag
 
     -- ag:Play()
-    
+
     f.bgtex = bgtf
 end
 
@@ -868,7 +878,7 @@ local all_bars = {}
 
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
-   
+
     local p = pixelperfect(1)
 
     bar:SetWidth(pixelperfect(45)); bar:SetHeight(pixelperfect(4))
