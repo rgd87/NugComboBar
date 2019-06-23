@@ -1,6 +1,7 @@
 ### 8.2.0:
 
 - disabed progress bar in Fire Mage combined setup
+- reworked 2D mode for default skin
 - added Icefury for Shamans
 - Updated TOC for 80200
 
@@ -119,7 +120,7 @@
 ### 7.1.2:
 
 - Charge cooldown checkbox in GUI
-- Fixed a bug with charge cooldown when switching between Sub and other 
+- Fixed a bug with charge cooldown when switching between Sub and other
 spec
 
 ### 7.1.1:
@@ -134,7 +135,7 @@ spec
 ### 7.0.9:
 
 - double bar configs with top anchorpoint now centered
-- charge cooldown tracking (for BrM monk), /ncb chargecooldown to 
+- charge cooldown tracking (for BrM monk), /ncb chargecooldown to
 toggle
 
 ### 7.0.8:
@@ -171,7 +172,7 @@ toggle
 
 ### 7.0.4:
 
-- Rune Tracking, rune cooldowns option (Makina skin requires update to 
+- Rune Tracking, rune cooldowns option (Makina skin requires update to
 r7)
 - Sound enabled for Hunters and Warlocks
 
@@ -193,7 +194,7 @@ r7)
 
 - Legion Update
 - New 3d effects
-- Switched to PlayerModel from Model, aspect ratio bug workaround 
+- Switched to PlayerModel from Model, aspect ratio bug workaround
 removed
 
 ### 6.0.23:
@@ -240,14 +241,14 @@ removed
 
 ### 6.0.12:
 
-- Lightning Shield charges now go up to 20 and displayed as progress 
+- Lightning Shield charges now go up to 20 and displayed as progress
 bar
 
 ### 6.0.11:
 
 - Option to change alpha
 - Fixed a bug with Empowered Shadow Orbs not  being detected on login
-- "/ncb special" command for mages(missile procs) and 
+- "/ncb special" command for mages(missile procs) and
 deathknights(Scent of Blood)
 
 ### 6.0.10:
@@ -426,7 +427,7 @@ deathknights(Scent of Blood)
 
 - zhCN localization
 - bugfix for Show Always
- 
+
 ### 5.0.6:
 
 - Demonic Fury bar now fading as shards and embers
@@ -477,7 +478,7 @@ deathknights(Scent of Blood)
 ### 5.0b1:
 
 - GUI Options module
-- Updated skin 
+- Updated skin
 - Dynamic Class-specific switching
 - Support for 2-6 points instead of old 3/5
 

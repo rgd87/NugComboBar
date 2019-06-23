@@ -259,7 +259,7 @@ local pointtex = {
         coords = {0, 26/256, 0, 1},
         role = "LEFT",
         width = 26, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 19, poffset_y = -14,
     },
     [2] = {
@@ -267,7 +267,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [3] = {
@@ -275,7 +275,7 @@ local pointtex = {
         coords = {50/256, 74/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [4] = {
@@ -283,7 +283,7 @@ local pointtex = {
         coords = {74/256, 98/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [5] = {
@@ -291,7 +291,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [6] = { -- the big one
@@ -299,7 +299,7 @@ local pointtex = {
         coords = {98/256, 140/256, 0, 1},
         role = "BIG",
         width = 42, height = 32,
-        psize = 18,
+        psize = 64,
         poffset_x = 20, poffset_y = -14,
         bgeffect = true,
     },
@@ -311,7 +311,7 @@ local pointtex = {
         role = "NORMAL",
         width = 25, height = 32,
         toffset_x = -13, drawlayer = 1,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
 
@@ -320,7 +320,7 @@ local pointtex = {
         coords = {221/256, 1, 0, 1},
         role = "RIGHT",
         width = 35, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 16, poffset_y = -14,
     },
 
@@ -332,7 +332,7 @@ local pointtex = {
         role = "LEFT",
         chainreset = true, toffset_x = 13, toffset_y = -20,
         width = 26, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 19, poffset_y = -14,
     },
     [SR2] = {
@@ -340,7 +340,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR3] = {
@@ -348,7 +348,7 @@ local pointtex = {
         coords = {50/256, 74/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR4] = {
@@ -356,7 +356,7 @@ local pointtex = {
         coords = {74/256, 98/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR5] = {
@@ -364,7 +364,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR6] = { -- the big one
@@ -372,7 +372,7 @@ local pointtex = {
         coords = {98/256, 140/256, 0, 1},
         role = "BIG",
         width = 42, height = 32,
-        psize = 18,
+        psize = 64,
         poffset_x = 20, poffset_y = -14,
         bgeffect = true,
     },
@@ -382,7 +382,7 @@ local pointtex = {
         role = "NORMAL",
         width = 25, height = 32,
         toffset_x = -13, drawlayer = 1,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
 
@@ -391,7 +391,7 @@ local pointtex = {
         coords = {221/256, 1, 0, 1},
         role = "RIGHT",
         width = 35, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 16, poffset_y = -14,
     },
 
@@ -523,47 +523,98 @@ end
 -------------------------
 -- 2D Point
 -------------------------
+local function rgb2hsv (r, g, b)
+    local rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn
+    rabs = r
+    gabs = g
+    babs = b
+    v = math.max(rabs, gabs, babs)
+    diff = v - math.min(rabs, gabs, babs);
+    diffc = function(c) return (v - c) / 6 / diff + 1 / 2 end
+    -- percentRoundFn = function(num) return math.floor(num * 100) / 100 end
+    if (diff == 0) then
+        h = 0
+        s = 0
+    else
+        s = diff / v;
+        rr = diffc(rabs);
+        gg = diffc(gabs);
+        bb = diffc(babs);
+
+        if (rabs == v) then
+            h = bb - gg;
+        elseif (gabs == v) then
+            h = (1 / 3) + rr - bb;
+        elseif (babs == v) then
+            h = (2 / 3) + gg - rr;
+        end
+        if (h < 0) then
+            h = h + 1;
+        elseif (h > 1) then
+            h = h - 1;
+        end
+    end
+    return h, s, v
+end
+
+local function hsv2rgb(h,s,v)
+    local r,g,b
+    local i = math.floor(h * 6);
+    local f = h * 6 - i;
+    local p = v * (1 - s);
+    local q = v * (1 - f * s);
+    local t = v * (1 - (1 - f) * s);
+    local rem = i % 6
+    if rem == 0 then
+        r = v; g = t; b = p;
+    elseif rem == 1 then
+        r = q; g = v; b = p;
+    elseif rem == 2 then
+        r = p; g = v; b = t;
+    elseif rem == 3 then
+        r = p; g = q; b = v;
+    elseif rem == 4 then
+        r = t; g = p; b = v;
+    elseif rem == 5 then
+        r = v; g = p; b = q;
+    end
+
+    return r,g,b
+end
+
 local SetColorFunc = function(self,r,g,b)
-    self.t:SetVertexColor(r,g,b)
-    if self.ani then self.ani.tex:SetVertexColor(r,g,b) end
+    local h,s,v = rgb2hsv(r,g,b)
+    local h2 = h - 0.15
+    if h2 < 0 then h2 = h2 + 1 end
+    local r2,g2,b2 = hsv2rgb(h2, s, v)
+    local m1 = 0.7
+    local m2 = 1
+
+    self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
+    self.t2:SetVertexColor(r*m2,g*m2,b*m2)
 end
 
 function NugComboBar.Create2DPoint(self, id, opts)
     local size = opts.psize
-    local tex = [[Interface\Addons\NugComboBar\tex\ncbc_point]]
+    local tex = "Interface/Addons/NugComboBar/tex/greyflame_tex"
+    local tex2 = "Interface/Addons/NugComboBar/tex/greyflame2_tex"
     local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
     f:SetHeight(size); f:SetWidth(size);
 
     local t1 = f:CreateTexture(nil,"ARTWORK")
+    t1:SetBlendMode("ADD")
     t1:SetTexture(tex)
     t1:SetAllPoints(f)
     f.t = t1
 
-    local g2 = f:CreateTexture(nil,"OVERLAY")
-    g2:SetHeight(size+3); g2:SetWidth(size+3);
-    g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbc_point_shine]]
-    g2:SetPoint("CENTER",f,"CENTER",3,2)
+    local t2 = f:CreateTexture(nil,"ARTWORK")
+    t2:SetBlendMode("ADD")
+    t2:SetTexture(tex2)
+    t2:SetAllPoints(f)
+    -- t2:SetPoint("CENTER", f, "CENTER",0,0)
+    -- t2:SetSize(size*0.8, size*0.8)
+    f.t2 = t2
 
-    g2:SetAlpha(0)
-
-    local g2aag = g2:CreateAnimationGroup()
-    local g2a = g2aag:CreateAnimation("Alpha")
-    g2a:SetStartDelay(0.18)
-    g2a:SetFromAlpha(1)
-    g2a:SetToAlpha(1)
-    g2a:SetDuration(0.3)
-    g2a:SetOrder(1)
-    local g2d = g2aag:CreateAnimation("Alpha")
-    g2d:SetToAlpha(0)
-    g2d:SetFromAlpha(1)
-    g2d:SetDuration(0.4)
-    g2d:SetOrder(2)
-    --Required for 4.2
-    g2aag:SetScript("OnFinished",function(self)
-        self:GetParent():SetAlpha(0)
-    end)
-
-    f.glow2 = g2aag
     f.SetColor = SetColorFunc
     f.SetPreset = function() end
 
