@@ -165,7 +165,7 @@ function NugComboBar:LoadClassSettings()
 					return cp, chargeStart, chargeDuration, 0, secondRowCount
 				end
             end
-            
+
             if isClassic then
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
             end
@@ -452,7 +452,7 @@ function NugComboBar:LoadClassSettings()
                     chargeCooldown = NugComboBarDB.chargeCooldown
                     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
                     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    
+
                     if IsPlayerSpell(196721) then -- Light Brewing
                         self:SetMaxPoints(4)
                         defaultValue = 4
@@ -479,7 +479,7 @@ function NugComboBar:LoadClassSettings()
                         soundFullEnabled = true
                         self:SetMaxPoints(3)
                         defaultValue = 0
-                        GetComboPoints = GetAuraStack(202090) -- Teachings of the Monastery     
+                        GetComboPoints = GetAuraStack(202090) -- Teachings of the Monastery
                         showEmpty = NugComboBarDB.showEmpty
                         self:RegisterUnitEvent("UNIT_AURA", "player")
                     end
@@ -495,7 +495,7 @@ function NugComboBar:LoadClassSettings()
                     GetComboPoints = GetChi
                     showEmpty = NugComboBarDB.showEmpty
                     self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-                    
+
                 end
 
                 self:UNIT_COMBO_POINTS(nil,"player")
@@ -1083,7 +1083,7 @@ do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
         if NugComboBar.isDisabled then return end
-        
+
         local res = GetCVar("gxWindowedResolution") --select(GetCurrentResolution(), GetScreenResolutions())
         if res then
             local w,h = string.match(res, "(%d+)x(%d+)")
@@ -2138,7 +2138,7 @@ local runeSortFunc = function(a,b)
     end
 end
 function NugComboBar:UpdateRunes(index, isEnergize)
-        if not self.runeTable then 
+        if not self.runeTable then
             self.runeTable = {
                 {0, 1, false}, --start, duration, ready
                 {0, 1, false},
@@ -2167,13 +2167,13 @@ end
 
 function NugComboBar:EnsureRuneChargeFrame(point)
     if not point.RuneChargeFrame then
-        
+
         local f
         if isPrettyRuneCharger then
             local t = point.bg
             local ts = t.settings
             f = self:Create3DPoint(point.id.."rcf", ts)
-        
+
             if NugComboBarDB.vertical then
                 f:SetPoint("CENTER", t, "BOTTOMLEFT", -ts.poffset_y, ts.poffset_x)
             else
