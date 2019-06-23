@@ -113,7 +113,7 @@ do
                         get = function(info) return NugComboBarDB.scale end,
                         set = function(info, s) NugComboBarDB.scale = s; NugComboBar:SetScale(NugComboBarDB.scale); end,
                         min = 0.4,
-                        max = 2,
+                        max = 1.2,
                         step = 0.01,
                         order = 4,
                     },
