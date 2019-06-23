@@ -1870,7 +1870,6 @@ NugComboBar.Commands = {
     end,
     ["toggle3d"] = function(v)
         NugComboBarDB.enable3d = not NugComboBarDB.enable3d
-        print (string.format("NCB> 3D mode is %s, it will take effect after /reload", NugComboBarDB.enable3d and "enabled" or "disabled"))
     end,
     ["classthemes"] = function(v)
         NugComboBarDB.classThemes = not NugComboBarDB.classThemes
