@@ -93,7 +93,7 @@ do
                     nameplateOffsetY = {
                         name = L"Nameplate Y offset",
                         type = "range",
-                        
+
                         disabled = function() return not NugComboBarDB.nameplateAttach end,
                         get = function(info) return NugComboBarDB.nameplateOffsetY end,
                         set = function(info, s)
@@ -469,6 +469,7 @@ do
             enable2d = {
                         name = L"2D Mode",
                         type = 'toggle',
+                        -- disabled = function() return NugComboBar:IsDefaultSkin() end,
                         desc = L"(Color settings only available in 2D mode)",
                         order = 4,
                         get = function(info) return (not NugComboBarDB.enable3d) end,
@@ -488,12 +489,13 @@ do
                 -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 6,
-                args = {                    
+                args = {
 
                     preset = {
                         name = L"Preset",
                         type = 'select',
                         order = 1,
+                        disabled = function() return (NugComboBarDB.classThemes == true) end,
                         values = function()
                             local p = {}
                             for k,preset in pairs(NugComboBar.presets) do
@@ -511,6 +513,7 @@ do
                     preset_layer2 = {
                         name = L"Second Layer Preset",
                         type = 'select',
+                        disabled = function() return (NugComboBarDB.classThemes == true) end,
                         order = 2,
                         values = function()
                             local p = {}
@@ -526,6 +529,7 @@ do
                     preset_pointbar2 = {
                         name = L"Second Point Bar Preset",
                         type = 'select',
+                        disabled = function() return (NugComboBarDB.classThemes == true) end,
                         order = 3,
                         values = function()
                             local p = {}
@@ -570,7 +574,7 @@ do
                     },
                 },
             },
-           
+
             sound = {
                 type = "group",
                 name = L"Sounds",
