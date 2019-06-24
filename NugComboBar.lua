@@ -161,7 +161,7 @@ function NugComboBar:LoadClassSettings()
 					return cp, chargeStart, chargeDuration, 0, secondRowCount
 				end
             end
-            
+
             if isClassic then
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
             end
@@ -368,6 +368,8 @@ local defaults = {
     preset3dpointbar2 = "void",
 	bar2_x = 13,
 	bar2_y = -20,
+	enableFullRuneTracker = true,
+    classThemes = false,
     secondLayer = true,
     colors3d = true,
     showAlways = false,
@@ -502,15 +504,19 @@ end
 NugComboBar.soundFiles = {
     ["none"] = "none",
     ["gm_chatwarning"] = SOUNDKIT.GM_CHAT_WARNING,
+    ["coldblood"] = 6774,
     ["alarmclockwarning3"] = SOUNDKIT.ALARM_CLOCK_WARNING_3,
     ["auctionwindowopen"] = SOUNDKIT.AUCTION_WINDOW_OPEN,
+    ["wispwhat1"] = 6343,
     ["custom"] = "custom",
 }
 NugComboBar.soundChoices = {
     "none",
     "gm_chatwarning",
+    "coldblood",
     "alarmclockwarning3",
     "auctionwindowopen",
+    "wispwhat1",
     "custom",
 }
 
@@ -545,7 +551,7 @@ do
     local initial = true
     function NugComboBar.PLAYER_LOGIN(self, event)
         if NugComboBar.isDisabled then return end
-        
+
         local res = GetCVar("gxWindowedResolution") --select(GetCurrentResolution(), GetScreenResolutions())
         if res then
             local w,h = string.match(res, "(%d+)x(%d+)")
@@ -831,7 +837,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 	        targetBefore = UnitGUID(allowedTargetUnit)
 	    end
 
-        
+
     	    for i = 1, self.MAX_POINTS do
     	        local point = self.p[i]
     	        if i <= comboPoints then
@@ -1234,7 +1240,6 @@ NugComboBar.Commands = {
     end,
     ["toggle3d"] = function(v)
         NugComboBarDB.enable3d = not NugComboBarDB.enable3d
-        print (string.format("NCB> 3D mode is %s, it will take effect after /reload", NugComboBarDB.enable3d and "enabled" or "disabled"))
     end,
     ["classthemes"] = function(v)
         NugComboBarDB.classThemes = not NugComboBarDB.classThemes

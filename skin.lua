@@ -1,38 +1,42 @@
--- [166255] = "spells\\gouge_precast_state_hand.m2"
--- [1394789] = "spells/7fx_nightborne_precasthand.m2"
--- [166817] = "SPELLS/Shadowflame_Cast_Hand.m2"
--- [654832] = "spells\\Holy_precast_med_hand_simple.m2"
--- [457274] = "spells\\Paladin_headlinghands_state_01.m2"
--- [166813] = "SPELLS/Shadow_Strikes_State_Hand.m2"
--- [165693] = "spells\\blessingoffreedom_state.m2"
--- [530798] = "spells/druid_wrath_impact_v2.m2"
--- [852939] = "SPELLS/Precast_Corrupted_01.m2"
--- [937416] = "spells/6fx_smallfire.m2"
--- [1333999] = "spells/cfx_mage_greaterpyroblast_missile.m2"
--- [165728] = "spells/bloodlust_state_hand.m2"
--- [915803] = "SPELLS/Monk_ChiBlast_Precast_Jade.m2"
--- [623723] = "SPELLS/Monk_ChiBlast_Precast.m2"
--- [610473] = "SPELLS/Monk_CracklingLightning_Impact_Blue.m2"
--- [1454964] = "spells/7fx_deathknight_scourgeofworlds_statechest.m2"
--- [1399809] = "spells/7fx_warlock_shadow_missile.m2"
--- [166923] = "spells\\soulfunnel_impact_chest.m2"
--- [166294] = "spells\\healrag_state_chest.m2"
--- [166003] = "spells/enchantments/greenflame_low.m2"
--- [165995] = "spells/enchantments/blueflame_low.m2"
--- [166011] = "spells/enchantments/redflame_low.m2"
--- [166030] = "spells/enchantments/whiteflame_low.m2"
--- [166012] = "spells/enchantments/redglow_high.m2"
--- [166033] = "spells/enchantments/yellowflame_low.m2"
--- [166008] = "spells/enchantments/purpleflame_low.m2"
--- [166471] = "spells\\lifetap_state_chest.m2"
--- [611982] = "spells/monk_avertharm_state_base.m2"
--- [588344] = "spells/divineshield_v2_chest.m2"
--- [804539] = "spells/weaponenchant_pvppandarias2.m2"
--- [1007525] = "spells/cast_arcane_pink_01.m2"
--- [1389209] = "spells/antimagic_precast_hand_02red.m2"
--- [165592] = "spells/arcaneshot_missile.m2"
--- [166497] = "spells\\lightningbolt_missile.m2"
--- [622694] = "SPELLS/FlowingWater_High.m2"
+--[[
+local fileIDtoPathMap = {
+    [166255] = "spells\\gouge_precast_state_hand.m2",
+    [1394789] = "spells/7fx_nightborne_precasthand.m2",
+    [166817] = "SPELLS/Shadowflame_Cast_Hand.m2",
+    [654832] = "spells\\Holy_precast_med_hand_simple.m2",
+    [457274] = "spells\\Paladin_headlinghands_state_01.m2",
+    [166813] = "SPELLS/Shadow_Strikes_State_Hand.m2",
+    [165693] = "spells\\blessingoffreedom_state.m2",
+    [530798] = "spells/druid_wrath_impact_v2.m2",
+    [852939] = "SPELLS/Precast_Corrupted_01.m2",
+    [937416] = "spells/6fx_smallfire.m2",
+    [1333999] = "spells/cfx_mage_greaterpyroblast_missile.m2",
+    [165728] = "spells/bloodlust_state_hand.m2",
+    [915803] = "SPELLS/Monk_ChiBlast_Precast_Jade.m2",
+    [623723] = "SPELLS/Monk_ChiBlast_Precast.m2",
+    [610473] = "SPELLS/Monk_CracklingLightning_Impact_Blue.m2",
+    [1454964] = "spells/7fx_deathknight_scourgeofworlds_statechest.m2",
+    [1399809] = "spells/7fx_warlock_shadow_missile.m2",
+    [166923] = "spells\\soulfunnel_impact_chest.m2",
+    [166294] = "spells\\healrag_state_chest.m2",
+    [166003] = "spells/enchantments/greenflame_low.m2",
+    [165995] = "spells/enchantments/blueflame_low.m2",
+    [166011] = "spells/enchantments/redflame_low.m2",
+    [166030] = "spells/enchantments/whiteflame_low.m2",
+    [166012] = "spells/enchantments/redglow_high.m2",
+    [166033] = "spells/enchantments/yellowflame_low.m2",
+    [166008] = "spells/enchantments/purpleflame_low.m2",
+    [166471] = "spells\\lifetap_state_chest.m2",
+    [611982] = "spells/monk_avertharm_state_base.m2",
+    [588344] = "spells/divineshield_v2_chest.m2",
+    [804539] = "spells/weaponenchant_pvppandarias2.m2",
+    [1007525] = "spells/cast_arcane_pink_01.m2",
+    [1389209] = "spells/antimagic_precast_hand_02red.m2",
+    [165592] = "spells/arcaneshot_missile.m2",
+    [166497] = "spells\\lightningbolt_missile.m2",
+    [622694] = "SPELLS/FlowingWater_High.m2",
+}
+]]
 
 NugComboBar.presets = {
     ["glowLifesteal"] = {
@@ -105,7 +109,7 @@ local pointtex = {
         coords = {0, 26/256, 0, 1},
         role = "LEFT",
         width = 26, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 19, poffset_y = -14,
     },
     [2] = {
@@ -113,7 +117,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [3] = {
@@ -121,7 +125,7 @@ local pointtex = {
         coords = {50/256, 74/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [4] = {
@@ -129,7 +133,7 @@ local pointtex = {
         coords = {74/256, 98/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [5] = {
@@ -137,7 +141,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [6] = { -- the big one
@@ -145,7 +149,7 @@ local pointtex = {
         coords = {98/256, 140/256, 0, 1},
         role = "BIG",
         width = 42, height = 32,
-        psize = 18,
+        psize = 64,
         poffset_x = 20, poffset_y = -14,
         bgeffect = true,
     },
@@ -157,7 +161,7 @@ local pointtex = {
         role = "NORMAL",
         width = 25, height = 32,
         toffset_x = -13, drawlayer = 1,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
 
@@ -166,7 +170,7 @@ local pointtex = {
         coords = {221/256, 1, 0, 1},
         role = "RIGHT",
         width = 35, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 16, poffset_y = -14,
     },
 
@@ -178,7 +182,7 @@ local pointtex = {
         role = "LEFT",
         chainreset = true, toffset_x = 13, toffset_y = -20,
         width = 26, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 19, poffset_y = -14,
     },
     [SR2] = {
@@ -186,7 +190,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR3] = {
@@ -194,7 +198,7 @@ local pointtex = {
         coords = {50/256, 74/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR4] = {
@@ -202,7 +206,7 @@ local pointtex = {
         coords = {74/256, 98/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR5] = {
@@ -210,7 +214,7 @@ local pointtex = {
         coords = {26/256, 50/256, 0, 1},
         role = "NORMAL",
         width = 24, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
     [SR6] = { -- the big one
@@ -218,7 +222,7 @@ local pointtex = {
         coords = {98/256, 140/256, 0, 1},
         role = "BIG",
         width = 42, height = 32,
-        psize = 18,
+        psize = 64,
         poffset_x = 20, poffset_y = -14,
         bgeffect = true,
     },
@@ -228,7 +232,7 @@ local pointtex = {
         role = "NORMAL",
         width = 25, height = 32,
         toffset_x = -13, drawlayer = 1,
-        psize = 14,
+        psize = 50,
         poffset_x = 17, poffset_y = -14,
     },
 
@@ -237,7 +241,7 @@ local pointtex = {
         coords = {221/256, 1, 0, 1},
         role = "RIGHT",
         width = 35, height = 32,
-        psize = 14,
+        psize = 50,
         poffset_x = 16, poffset_y = -14,
     },
 
@@ -369,47 +373,98 @@ end
 -------------------------
 -- 2D Point
 -------------------------
+local function rgb2hsv (r, g, b)
+    local rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn
+    rabs = r
+    gabs = g
+    babs = b
+    v = math.max(rabs, gabs, babs)
+    diff = v - math.min(rabs, gabs, babs);
+    diffc = function(c) return (v - c) / 6 / diff + 1 / 2 end
+    -- percentRoundFn = function(num) return math.floor(num * 100) / 100 end
+    if (diff == 0) then
+        h = 0
+        s = 0
+    else
+        s = diff / v;
+        rr = diffc(rabs);
+        gg = diffc(gabs);
+        bb = diffc(babs);
+
+        if (rabs == v) then
+            h = bb - gg;
+        elseif (gabs == v) then
+            h = (1 / 3) + rr - bb;
+        elseif (babs == v) then
+            h = (2 / 3) + gg - rr;
+        end
+        if (h < 0) then
+            h = h + 1;
+        elseif (h > 1) then
+            h = h - 1;
+        end
+    end
+    return h, s, v
+end
+
+local function hsv2rgb(h,s,v)
+    local r,g,b
+    local i = math.floor(h * 6);
+    local f = h * 6 - i;
+    local p = v * (1 - s);
+    local q = v * (1 - f * s);
+    local t = v * (1 - (1 - f) * s);
+    local rem = i % 6
+    if rem == 0 then
+        r = v; g = t; b = p;
+    elseif rem == 1 then
+        r = q; g = v; b = p;
+    elseif rem == 2 then
+        r = p; g = v; b = t;
+    elseif rem == 3 then
+        r = p; g = q; b = v;
+    elseif rem == 4 then
+        r = t; g = p; b = v;
+    elseif rem == 5 then
+        r = v; g = p; b = q;
+    end
+
+    return r,g,b
+end
+
 local SetColorFunc = function(self,r,g,b)
-    self.t:SetVertexColor(r,g,b)
-    if self.ani then self.ani.tex:SetVertexColor(r,g,b) end
+    local h,s,v = rgb2hsv(r,g,b)
+    local h2 = h - 0.15
+    if h2 < 0 then h2 = h2 + 1 end
+    local r2,g2,b2 = hsv2rgb(h2, s, v)
+    local m1 = 0.7
+    local m2 = 1
+
+    self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
+    self.t2:SetVertexColor(r*m2,g*m2,b*m2)
 end
 
 function NugComboBar.Create2DPoint(self, id, opts)
     local size = opts.psize
-    local tex = [[Interface\Addons\NugComboBar\tex\ncbc_point]]
+    local tex = "Interface/Addons/NugComboBar/tex/greyflame_tex"
+    local tex2 = "Interface/Addons/NugComboBar/tex/greyflame2_tex"
     local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
     f:SetHeight(size); f:SetWidth(size);
 
     local t1 = f:CreateTexture(nil,"ARTWORK")
+    t1:SetBlendMode("ADD")
     t1:SetTexture(tex)
     t1:SetAllPoints(f)
     f.t = t1
 
-    local g2 = f:CreateTexture(nil,"OVERLAY")
-    g2:SetHeight(size+3); g2:SetWidth(size+3);
-    g2:SetTexture[[Interface\Addons\NugComboBar\tex\ncbc_point_shine]]
-    g2:SetPoint("CENTER",f,"CENTER",3,2)
+    local t2 = f:CreateTexture(nil,"ARTWORK")
+    t2:SetBlendMode("ADD")
+    t2:SetTexture(tex2)
+    t2:SetAllPoints(f)
+    -- t2:SetPoint("CENTER", f, "CENTER",0,0)
+    -- t2:SetSize(size*0.8, size*0.8)
+    f.t2 = t2
 
-    g2:SetAlpha(0)
-
-    local g2aag = g2:CreateAnimationGroup()
-    local g2a = g2aag:CreateAnimation("Alpha")
-    g2a:SetStartDelay(0.18)
-    g2a:SetFromAlpha(1)
-    g2a:SetToAlpha(1)
-    g2a:SetDuration(0.3)
-    g2a:SetOrder(1)
-    local g2d = g2aag:CreateAnimation("Alpha")
-    g2d:SetToAlpha(0)
-    g2d:SetFromAlpha(1)
-    g2d:SetDuration(0.4)
-    g2d:SetOrder(2)
-    --Required for 4.2
-    g2aag:SetScript("OnFinished",function(self)
-        self:GetParent():SetAlpha(0)
-    end)
-
-    f.glow2 = g2aag
     f.SetColor = SetColorFunc
     f.SetPreset = function() end
 
@@ -510,9 +565,11 @@ local SetPresetFunc = function ( self, name, noreset )
 
     if self.bgtex then
         if bgType == "TEXTURE" then
-            local tex, scale, r,g,b,a, duration = unpack(settings, 8)
-            local tf = self.bgtex 
+            local tex, scale, r,g,b,a, duration, framelevel = unpack(settings, 8)
+            local tf = self.bgtex
             local t = self.bgtex.texture
+            framelevel = framelevel or 0
+            self.bgtex:SetFrameLevel(framelevel)
             t:SetTexture(tex)
             t:SetVertexColor(r,g,b,a)
             local w,h = tf:GetSize()
@@ -587,7 +644,7 @@ end
 local CreateBGTexture = function(f)
     local bgtf = CreateFrame("Frame", nil,f)
     local size = f.bgmodel:GetWidth()
-    bgtf:SetFrameLevel(2)
+    bgtf:SetFrameLevel(0)
     bgtf:SetWidth(size)
     bgtf:SetHeight(size)
     bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
@@ -595,7 +652,7 @@ local CreateBGTexture = function(f)
     bgt:SetBlendMode("ADD")
     bgt:SetPoint("CENTER")
     bgtf.texture = bgt
-    
+
     local ag = f:CreateAnimationGroup()
     ag:SetLooping("REPEAT")
     local a = ag:CreateAnimation("Rotation")
@@ -606,7 +663,7 @@ local CreateBGTexture = function(f)
     bgtf.ag = ag
 
     -- ag:Play()
-    
+
     f.bgtex = bgtf
 end
 
@@ -722,7 +779,7 @@ local all_bars = {}
 
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
-   
+
     local p = pixelperfect(1)
 
     bar:SetWidth(pixelperfect(45)); bar:SetHeight(pixelperfect(4))

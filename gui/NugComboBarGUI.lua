@@ -75,7 +75,7 @@ do
                     nameplateOffsetY = {
                         name = L"Nameplate Y offset",
                         type = "range",
-                        
+
                         disabled = function() return not NugComboBarDB.nameplateAttach end,
                         get = function(info) return NugComboBarDB.nameplateOffsetY end,
                         set = function(info, s)
@@ -95,7 +95,7 @@ do
                         get = function(info) return NugComboBarDB.scale end,
                         set = function(info, s) NugComboBarDB.scale = s; NugComboBar:SetScale(NugComboBarDB.scale); end,
                         min = 0.4,
-                        max = 2,
+                        max = 1.2,
                         step = 0.01,
                         order = 4,
                     },
@@ -369,18 +369,23 @@ do
             enable2d = {
                         name = L"2D Mode",
                         type = 'toggle',
+                        -- disabled = function() return NugComboBar:IsDefaultSkin() end,
+                        confirm = true,
+						confirmText = "Warning: Requires UI reloading.",
                         desc = L"(Color settings only available in 2D mode)",
                         order = 4,
                         get = function(info) return (not NugComboBarDB.enable3d) end,
-                        set = function(info, s) NugComboBar.Commands.toggle3d() end,
+                        set = function(info, s) NugComboBarDB.enable3d = not NugComboBarDB.enable3d; ReloadUI(); end,
                     },
             enable3d = {
                         name = L"3D Mode",
                         -- desc = L"(Activates 3D Mode)",
                         type = "toggle",
+                        confirm = true,
+						confirmText = "Warning: Requires UI reloading.",
                         order = 5,
                         get = function(info) return NugComboBarDB.enable3d end,
-                        set = function(info, s) NugComboBar.Commands.toggle3d() end,
+                        set = function(info, s) NugComboBarDB.enable3d = not NugComboBarDB.enable3d; ReloadUI(); end,
                     },
             presets = {
                 type = "group",
@@ -388,12 +393,13 @@ do
                 -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
                 guiInline = true,
                 order = 6,
-                args = {                    
+                args = {
 
                     preset = {
                         name = L"Preset",
                         type = 'select',
                         order = 1,
+                        disabled = function() return (NugComboBarDB.classThemes == true) end,
                         values = function()
                             local p = {}
                             for k,preset in pairs(NugComboBar.presets) do
@@ -463,7 +469,7 @@ do
                     },
                 },
             },
-           
+
             sound = {
                 type = "group",
                 name = L"Sounds",
