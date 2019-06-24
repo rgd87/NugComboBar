@@ -63,32 +63,6 @@ do
                         set = function(info, s) NugComboBar.Commands.anchorpoint(s) end,
                         order = 3,
                     },
-                    nameplateAttach = {
-                        name = L"Attach to Player Nameplate",
-                        desc = L"Display below player nameplate\nOnly works if your have player nameplate enabled",
-                        type = "toggle",
-                        width = "double",
-                        get = function(info) return NugComboBarDB.nameplateAttach end,
-                        set = function(info, s) NugComboBar.Commands.nameplateattach() end,
-                        order = 3.1,
-                    },
-                    nameplateOffsetY = {
-                        name = L"Nameplate Y offset",
-                        type = "range",
-
-                        disabled = function() return not NugComboBarDB.nameplateAttach end,
-                        get = function(info) return NugComboBarDB.nameplateOffsetY end,
-                        set = function(info, s)
-                            NugComboBarDB.nameplateOffsetY = s
-                            if C_NamePlate.GetNamePlateForUnit("player") then
-                                NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
-                            end
-                        end,
-                        min = -100,
-                        max = 100,
-                        step = 1,
-                        order = 3.2,
-                    },
                     scale = {
                         name = L"Scale",
                         type = "range",
@@ -140,15 +114,6 @@ do
                         set = function(info, s) NugComboBar.Commands.hideslowly() end,
                         order = 8,
                     },
-                    secondLayer = {
-                        name = L"Second Layer",
-                        desc = L"For Anticipation talent",
-                        disabled = true,
-                        type = "toggle",
-                        get = function(info) return NugComboBarDB.secondLayer end,
-                        set = function(info, s) NugComboBar.Commands.secondlayer() end,
-                        order = 10,
-                    },
                     hideWithoutTarget = {
                         name = L"Hide w/o Target",
                         desc = L"(Only for combat points)",
@@ -156,21 +121,6 @@ do
                         get = function(info) return NugComboBarDB.hideWithoutTarget end,
                         set = function(info, s) NugComboBar.Commands.hidewotarget() end,
                         order = 11,
-                    },
-                    disableProgress = {
-                        name = L"Disable Progress Bar",
-                        type = "toggle",
-                        get = function(info) return NugComboBarDB.disableProgress end,
-                        set = function(info, s) NugComboBar.Commands.toggleprogress() end,
-                        order = 12,
-                    },
-                    chargeCooldown = {
-                        name = L"Charge Cooldowns",
-                        type = "toggle",
-                        disabled = true,
-                        get = function(info) return NugComboBarDB.chargeCooldown end,
-                        set = function(info, s) NugComboBar.Commands.chargecooldown() end,
-                        order = 12.5,
                     },
                     -- vertical = {
                     --     name = L"Vertical",
@@ -186,7 +136,7 @@ do
                         order = 14,
                         args = {
                             togglebliz = {
-                                name = L"Disable Class Frames",
+                                name = L"Disable Blizzard Frames",
                                 type = "toggle",
                                 width = "double",
                                 desc = L"Hides default class frames on player unit frame",
@@ -194,33 +144,9 @@ do
                                 set = function(info, s) NugComboBar.Commands.toggleblizz() end,
                                 order = 14,
                             },
-                            togglebliznp = {
-                                name = L"Disable Nameplate Class Frames",
-                                type = "toggle",
-                                width = "double",
-                                desc = L"Hides default class frames on player nameplate",
-                                get = function(info) return NugComboBarDB.disableBlizzNP end,
-                                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
-                                order = 16,
-                            },
                         },
                     },
                 }
-            },
-            resourcesGroup = {
-                type = "group",
-                name = L"Additional Resources",
-                guiInline = true,
-                order = 2.3,
-                args = {
-                    -- shadowDance = {
-                    --     name = "|cff673065"..(GetSpellInfo(185313) or "").."|r",
-                    --     type = 'toggle',
-                    --     order = 1,
-                    --     get = function(info) return NugComboBarDB.shadowDance end,
-                    --     set = function(info, s) NugComboBar.Commands.shadowdance() end,
-                    -- },
-                },
             },
             showColor = {
                 type = "group",
@@ -327,43 +253,6 @@ do
                             end
                         end,
                     },
-                    colorb1 = {
-                        name = "Bar1",
-                        type = 'color',
-                        -- desc = "Color of all Points",
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors["bar1"])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor("bar1",r,g,b)
-                        end,
-                    },
-                    colorb2 = {
-                        name = "Bar2",
-                        type = 'color',
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors["bar2"])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            NugComboBar.SetColor("bar2",r,g,b)
-                        end,
-                    },
-                    color_layer2 = {
-                        name = L"Second Layer",
-                        type = 'color',
-                        get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors["layer2"])
-                            return r,g,b
-                        end,
-                        set = function(info, r, g, b)
-                            local tbl = NugComboBarDB.colors["layer2"]
-                            tbl[1] = r
-                            tbl[2] = g
-                            tbl[3] = b
-                        end,
-                    },
                 },
             },
             enable2d = {
@@ -414,38 +303,6 @@ do
                         get = function(info) return NugComboBarDB.preset3d end,
                         set = function( info, v ) NugComboBar.Commands.preset3d(v) end,
                     },
-                    preset_layer2 = {
-                        name = L"Second Layer Preset",
-                        type = 'select',
-                        disabled = true,
-                        order = 2,
-                        values = function()
-                            local p = {}
-                            for k,_ in pairs(NugComboBar.presets) do
-                                p[k] = k
-                            end
-                            return p
-                        end,
-                        get = function(info) return NugComboBarDB.preset3dlayer2 end,
-                        set = function( info, v ) NugComboBar.Commands.preset3dlayer2(v) end,
-                    },
-
-                    preset_pointbar2 = {
-                        name = L"Second Point Bar Preset",
-                        type = 'select',
-                        disabled = true,
-                        order = 3,
-                        values = function()
-                            local p = {}
-                            for k,_ in pairs(NugComboBar.presets) do
-                                p[k] = k
-                            end
-                            return p
-                        end,
-                        get = function(info) return NugComboBarDB.preset3dpointbar2 end,
-                        set = function( info, v ) NugComboBar.Commands.preset3dpointbar2(v) end,
-                    },
-
                     colors3d = {
                         name = L"Use colors",
                         desc = L"Only some effects can be altered using colored lighting.\nfireXXXX presets are good for it",

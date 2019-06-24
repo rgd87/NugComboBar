@@ -345,7 +345,6 @@ local defaults = {
     showEmpty = false,
     hideSlowly = true,
     disableBlizz = false,
-    disableBlizzNP = false,
     colors = {
         [1] = {0.77,0.26,0.29},
         [2] = {0.77,0.26,0.29},
@@ -475,7 +474,6 @@ do
             self:RegisterEvent("PLAYER_LOGOUT")
 
             if NugComboBarDB.disableBlizz then NugComboBar.disableBlizzFrames() end
-            if NugComboBarDB.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
 
             if initial then
                 local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
@@ -1370,54 +1368,10 @@ end
 function NugComboBar.disableBlizzFrames()
     local class = select(2,UnitClass("player"))
         if class == "ROGUE" or class == "DRUID" then
-            HideBlizzFrame(ComboPointPlayerFrame)
-        end
-        if class == "WARLOCK" then
-			HideBlizzFrame(WarlockPowerFrame)
-        end
-        if class == "PALADIN" then
-			HideBlizzFrame(PaladinPowerBarFrame)
-        end
-        if class == "MAGE" then
-			HideBlizzFrame(MageArcaneChargesFrame)
-        end
-        if class == "MONK" then
-			MonkHarmonyBarFrame:UpdateMaxPower()
-			HideBlizzFrame(MonkHarmonyBarFrame)
-        end
-		if class == "DEATHKNIGHT" then
-			HideBlizzFrame(RuneFrame)
+            ComboFrame:UnregisterAllEvents()
+            ComboFrame:Hide()
         end
 end
-
-function NugComboBar.disableBlizzNameplates()
-    local class = select(2,UnitClass("player"))
-        if class == "ROGUE" or class == "DRUID" then
-            ClassNameplateBarRogueDruidFrame:UnregisterAllEvents()
-            ClassNameplateBarRogueDruidFrame:HideNameplateBar()
-        end
-        if class == "WARLOCK" then
-            ClassNameplateBarWarlockFrame:UnregisterAllEvents()
-            ClassNameplateBarWarlockFrame:HideNameplateBar()
-        end
-        if class == "PALADIN" then
-            ClassNameplateBarPaladinFrame:UnregisterAllEvents()
-            ClassNameplateBarPaladinFrame:HideNameplateBar()
-        end
-        if class == "MAGE" then
-            ClassNameplateBarMageFrame:UnregisterAllEvents()
-            ClassNameplateBarMageFrame:HideNameplateBar()
-        end
-        if class == "MONK" then
-            ClassNameplateBarWindwalkerMonkFrame:UnregisterAllEvents()
-            ClassNameplateBarWindwalkerMonkFrame:HideNameplateBar()
-        end
-		if class == "DEATHKNIGHT" then
-            DeathKnightResourceOverlayFrame:UnregisterAllEvents()
-            DeathKnightResourceOverlayFrame:HideNameplateBar()
-        end
-end
-
 
 function NugComboBar:OnSpecChanged()
     local spec = GetSpecialization()
