@@ -1,3 +1,8 @@
+### 1.13.1
+
+- Reworked 2D mode
+- Removed leftover bfa settings from gui
+
 ### 8.2-classic2
 
 - glowPurple preset now works like on live

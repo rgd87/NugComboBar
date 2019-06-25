@@ -6,5 +6,7 @@
 ## SavedVariables: NugComboBarDB_Global
 ## Version: @project-version@
 
+## X-WoWI-ID: 24935
+
 NugComboBar.lua
 skin.lua
