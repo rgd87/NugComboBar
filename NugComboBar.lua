@@ -829,6 +829,7 @@ local defaults = {
         ["layer2"] = { 0.74, 0.06, 0 },
 		["row2"] = { 0.80, 0.23, 0.79 },
     },
+    glowIntensity = 0.7,
     enable3d = true,
     preset3d = "glowPurple",
     preset3dlayer2 = "glowArcshot",

@@ -583,11 +583,12 @@ local function hsv2rgb(h,s,v)
 end
 
 local SetColorFunc = function(self,r,g,b)
+    if not r then return end
     local h,s,v = rgb2hsv(r,g,b)
     local h2 = h - 0.15
     if h2 < 0 then h2 = h2 + 1 end
     local r2,g2,b2 = hsv2rgb(h2, s, v)
-    local m1 = 0.7
+    local m1 = NugComboBarDB.glowIntensity
     local m2 = 1
 
     self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
