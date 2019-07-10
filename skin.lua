@@ -596,22 +596,25 @@ local SetColorFunc = function(self,r,g,b)
 end
 
 function NugComboBar.Create2DPoint(self, id, opts)
+    local framesize = 64
     local size = opts.psize
     local tex = "Interface/Addons/NugComboBar/tex/greyflame_tex"
     local tex2 = "Interface/Addons/NugComboBar/tex/greyflame2_tex"
     local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
-    f:SetHeight(size); f:SetWidth(size);
+    f:SetSize(framesize, framesize)
 
     local t1 = f:CreateTexture(nil,"ARTWORK")
     t1:SetBlendMode("ADD")
     t1:SetTexture(tex)
-    t1:SetAllPoints(f)
+    t1:SetSize(size,size)
+    t1:SetPoint("CENTER",0,0)
     f.t = t1
 
     local t2 = f:CreateTexture(nil,"ARTWORK")
     t2:SetBlendMode("ADD")
     t2:SetTexture(tex2)
-    t2:SetAllPoints(f)
+    t2:SetSize(size,size)
+    t2:SetPoint("CENTER",0,0)
     -- t2:SetPoint("CENTER", f, "CENTER",0,0)
     -- t2:SetSize(size*0.8, size*0.8)
     f.t2 = t2
