@@ -1531,6 +1531,15 @@ function NugComboBar.SetColor(point, r, g, b)
     if NugComboBar.bar and point == "bar1" then
         return NugComboBar.bar:SetColor(r,g,b)
     end
+    if point == "bar2" then
+        local self = NugComboBar
+        if self.MAX_POINTS2 then
+            for i = 1, self.MAX_POINTS2 do
+                local point = self.p[i+self.MAX_POINTS]
+                point:SetColor(r,g,b)
+            end
+        end
+    end
 
     local p = NugComboBar.p[point]
     if p then

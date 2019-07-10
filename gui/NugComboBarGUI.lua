@@ -436,6 +436,7 @@ do
                     },
                     colorb1 = {
                         name = "Bar1",
+                        desc = L"Cooldown bar color",
                         type = 'color',
                         order = 8,
                         -- desc = "Color of all Points",
@@ -448,7 +449,7 @@ do
                         end,
                     },
                     colorb2 = {
-                        name = "Bar2",
+                        name = "Second Row",
                         type = 'color',
                         order = 9,
                         get = function(info)
@@ -461,6 +462,7 @@ do
                     },
                     color_layer2 = {
                         name = L"Second Layer",
+                        desc = L"For anticipation or similar",
                         type = 'color',
                         order = 10,
                         get = function(info)
