@@ -69,7 +69,7 @@ do
                         get = function(info) return NugComboBarDB.scale end,
                         set = function(info, s) NugComboBarDB.scale = s; NugComboBar:SetScale(NugComboBarDB.scale); end,
                         min = 0.4,
-                        max = 1.2,
+                        max = 2,
                         step = 0.01,
                         order = 4,
                     },
@@ -158,6 +158,7 @@ do
                     color1 = {
                         name = "1",
                         type = 'color',
+                        order = 1,
                         --desc = "Color of first point",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[1])
@@ -170,6 +171,7 @@ do
                     color2 = {
                         name = "2",
                         type = 'color',
+                        order = 2,
                         --desc = "Color of second point",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[2])
@@ -182,6 +184,7 @@ do
                     color3 = {
                         name = "3",
                         type = 'color',
+                        order = 3,
                         --desc = "Color of third point",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[3])
@@ -194,6 +197,7 @@ do
                     color4 = {
                         name = "4",
                         type = 'color',
+                        order = 4,
                         --desc = "Color of fourth point",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[4])
@@ -206,6 +210,7 @@ do
                     color5 = {
                         name = "5",
                         type = 'color',
+                        order = 5,
                         --desc = "Color of fifth point",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[5])
@@ -218,6 +223,7 @@ do
                     color6 = {
                         name = "6",
                         type = 'color',
+                        order = 6,
                         --desc = "Color of six point",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[6])
@@ -242,6 +248,7 @@ do
                     color = {
                         name = L"All Points",
                         type = 'color',
+                        order = 7,
                         -- desc = "Color of all Points",
                         get = function(info)
                             local r,g,b = unpack(NugComboBarDB.colors[1])
@@ -252,6 +259,22 @@ do
                                 NugComboBar.SetColor(i,r,g,b)
                             end
                         end,
+                    },
+                    intensity = {
+                        name = L"2D Mode glow intensity",
+                        type = "range",
+                        get = function(info) return NugComboBarDB.glowIntensity end,
+                        set = function(info, s)
+                            NugComboBarDB.glowIntensity = s
+                            for i=1,6 do
+                                local color = NugComboBarDB.colors[i]
+                                NugComboBar.SetColor(i, unpack(color))
+                            end
+                        end,
+                        min = 0,
+                        max = 1,
+                        step = 0.01,
+                        order = 100,
                     },
                 },
             },

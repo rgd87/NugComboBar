@@ -353,13 +353,15 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         end
         prevt = point.bg
 
-        point:SetColor(unpack(NugComboBarDB.colors[i])) --+color_offset
+
         if i > n then
+            point:SetColor(unpack(NugComboBarDB.colors.bar2))
             if not (point:SetPreset(NugComboBarDB.preset3dpointbar2)) then
                 NugComboBarDB.preset3dpointbar2 = NugComboBar.defaults.preset3dpointbar2
                 point:SetPreset(NugComboBarDB.preset3dpointbar2)
             end
         else
+            point:SetColor(unpack(NugComboBarDB.colors[i]))
             if not (point:SetPreset(NugComboBarDB.preset3d)) then
                 NugComboBarDB.preset3d = NugComboBar.defaults.preset3d
                 point:SetPreset(NugComboBarDB.preset3d)
@@ -433,11 +435,12 @@ local function hsv2rgb(h,s,v)
 end
 
 local SetColorFunc = function(self,r,g,b)
+    if not r then return end
     local h,s,v = rgb2hsv(r,g,b)
     local h2 = h - 0.15
     if h2 < 0 then h2 = h2 + 1 end
     local r2,g2,b2 = hsv2rgb(h2, s, v)
-    local m1 = 0.7
+    local m1 = NugComboBarDB.glowIntensity
     local m2 = 1
 
     self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
@@ -445,22 +448,25 @@ local SetColorFunc = function(self,r,g,b)
 end
 
 function NugComboBar.Create2DPoint(self, id, opts)
+    local framesize = 64
     local size = opts.psize
     local tex = "Interface/Addons/NugComboBar/tex/greyflame_tex"
     local tex2 = "Interface/Addons/NugComboBar/tex/greyflame2_tex"
     local f = CreateFrame("Frame","NugComboBarPoint"..id,self)
-    f:SetHeight(size); f:SetWidth(size);
+    f:SetSize(framesize, framesize)
 
     local t1 = f:CreateTexture(nil,"ARTWORK")
     t1:SetBlendMode("ADD")
     t1:SetTexture(tex)
-    t1:SetAllPoints(f)
+    t1:SetSize(size,size)
+    t1:SetPoint("CENTER",0,0)
     f.t = t1
 
     local t2 = f:CreateTexture(nil,"ARTWORK")
     t2:SetBlendMode("ADD")
     t2:SetTexture(tex2)
-    t2:SetAllPoints(f)
+    t2:SetSize(size,size)
+    t2:SetPoint("CENTER",0,0)
     -- t2:SetPoint("CENTER", f, "CENTER",0,0)
     -- t2:SetSize(size*0.8, size*0.8)
     f.t2 = t2

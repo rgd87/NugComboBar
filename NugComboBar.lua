@@ -361,6 +361,7 @@ local defaults = {
         ["layer2"] = { 0.74, 0.06, 0 },
 		["row2"] = { 0.80, 0.23, 0.79 },
     },
+    glowIntensity = 0.7,
     enable3d = true,
     preset3d = "glowPurple",
     preset3dlayer2 = "glowArcshot",
@@ -945,6 +946,15 @@ function NugComboBar.SetColor(point, r, g, b)
     end
     if NugComboBar.bar and point == "bar1" then
         return NugComboBar.bar:SetColor(r,g,b)
+    end
+    if point == "bar2" then
+        local self = NugComboBar
+        if self.MAX_POINTS2 then
+            for i = 1, self.MAX_POINTS2 do
+                local point = self.p[i+self.MAX_POINTS]
+                point:SetColor(r,g,b)
+            end
+        end
     end
 
     local p = NugComboBar.p[point]
