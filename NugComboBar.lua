@@ -1804,6 +1804,12 @@ NugComboBar.Commands = {
     end,
     ["nameplateattach"] = function(v)
         NugComboBarDB.nameplateAttach = not NugComboBarDB.nameplateAttach
+        NugComboBarDB.nameplateAttachTarget = false
+        NugComboBar:Reinitialize()
+    end,
+    ["nameplateattachtarget"] = function(v)
+        NugComboBarDB.nameplateAttachTarget = not NugComboBarDB.nameplateAttachTarget
+        NugComboBarDB.nameplateAttach = false
         NugComboBar:Reinitialize()
     end,
     ["scale"] = function(v)
