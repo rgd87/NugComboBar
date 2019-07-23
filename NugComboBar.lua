@@ -617,17 +617,8 @@ do
             self.anchor:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
         end
 
-        local playerNameplateEnabled = GetCVar("nameplateShowSelf") == "1"
         if NugComboBarDB.nameplateAttachTarget then
             -- self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-            self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-        elseif playerNameplateEnabled and NugComboBarDB.nameplateAttach then
-            if C_NamePlate.GetNamePlateForUnit("player") then
-                NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
-            else
-                NugComboBar:NAME_PLATE_UNIT_REMOVED(nil, "player")
-            end
-            self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
             self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
         else
             self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
@@ -1459,21 +1450,4 @@ function NugComboBar.NAME_PLATE_UNIT_ADDED(self, event, unit)
         end
     end
 
-    if NugComboBarDB.nameplateAttach then
-        if UnitIsUnit(unit, "player") then
-            local frame = GetNamePlateForUnit(unit)
-            self:ClearAllPoints()
-            self:SetPoint("TOP", frame, "BOTTOM", NugComboBarDB.nameplateOffsetX, NugComboBarDB.nameplateOffsetY)
-        end
-    end
-end
-
-function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
-    if NugComboBarDB.nameplateAttach then
-        if UnitIsUnit(unit, "player") then
-            local frame = GetNamePlateForUnit(unit)
-            self:ClearAllPoints()
-            self:SetPoint("TOP", UIParent, "BOTTOM", 0,-500)
-        end
-    end
 end
