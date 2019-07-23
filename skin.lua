@@ -167,7 +167,7 @@ local pointtex = {
 
     [8] = {
         texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
-        coords = {221/256, 1, 0, 1},
+        coords = {221/256, 256/258, 0, 1},
         role = "RIGHT",
         width = 35, height = 32,
         psize = 50,
@@ -339,7 +339,7 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         point:Show()
         point.bg:Show()
         if i <= n then
-            framesize = framesize + popts.width
+            framesize = framesize + popts.width + toffset_x
         end
         if popts.chainreset then
             prevt = nil

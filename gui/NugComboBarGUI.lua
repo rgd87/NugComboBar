@@ -36,7 +36,7 @@ do
                         name = L"Unlock",
                         type = "execute",
                         -- width = "half",
-                        disabled = function() return NugComboBarDB.nameplateAttach end,
+                        disabled = function() return NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget end,
                         desc = L"Unlock dragging anchor",
                         func = function() NugComboBar.Commands.unlock() end,
                         order = 1,
@@ -45,7 +45,7 @@ do
                         name = L"Lock",
                         type = "execute",
                         -- width = "half",
-                        disabled = function() return NugComboBarDB.nameplateAttach end,
+                        disabled = function() return NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget end,
                         desc = L"Lock dragging anchor",
                         func = function() NugComboBar.Commands.lock() end,
                         order = 2,
@@ -58,10 +58,40 @@ do
                             RIGHT = "Right",
                             TOP = "Top",
                         },
-                        disabled = function() return NugComboBarDB.nameplateAttach end,
+                        disabled = function() return NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget end,
                         get = function() return NugComboBarDB.anchorpoint end,
                         set = function(info, s) NugComboBar.Commands.anchorpoint(s) end,
                         order = 3,
+                    },
+                    nameplateOffsetY = {
+                        name = L"Nameplate Y offset",
+                        type = "range",
+
+                        disabled = function() return not (NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget) end,
+                        get = function(info) return NugComboBarDB.nameplateOffsetY end,
+                        set = function(info, s)
+                            NugComboBarDB.nameplateOffsetY = s
+                            if NugComboBarDB.nameplateAttachTarget then
+                                NugComboBar:PLAYER_TARGET_CHANGED()
+                            elseif NugComboBarDB.nameplateAttach then
+                                if C_NamePlate.GetNamePlateForUnit("player") then
+                                    NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
+                                end
+                            end
+                        end,
+                        min = -150,
+                        max = 150,
+                        step = 1,
+                        order = 3.2,
+                    },
+                    nameplateAttachTarget = {
+                        name = L"Attach to Target Nameplate",
+                        desc = L"Display above target nameplate",
+                        type = "toggle",
+                        width = "full",
+                        get = function(info) return NugComboBarDB.nameplateAttachTarget end,
+                        set = function(info, s) NugComboBar.Commands.nameplateattachtarget() end,
+                        order = 3.3,
                     },
                     scale = {
                         name = L"Scale",

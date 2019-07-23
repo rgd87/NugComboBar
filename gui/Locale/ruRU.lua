@@ -3,7 +3,7 @@ if GetLocale() ~= "ruRU" then return end
 local L = NugComboBar.L
 
 L["Specialization-specific"] = "Для специализации"
-L["Character-specific"] = "Для персонажа" 
+L["Character-specific"] = "Для персонажа"
 L["Switch between global/character configuration"] = "Переключение между общей/персональной конфигурацией"
 L["Scale"] = "Масштаб"
 L["Anchorpoint"] = "Позиция якоря"
@@ -55,3 +55,4 @@ L["Disable Nameplate Class Frames"] = "Отключить фреймы на не
 L["2nd row X offset"] = "X смещение 2го ряда"
 L["2nd row Y offset"] = "Y смещение 2го ряда"
 L["Attach to Player Nameplate"] = "Прикрепить к неймплейту игрока"
+L["Attach to Target Nameplate"] = "Прикрепить к неймплейту цели"
