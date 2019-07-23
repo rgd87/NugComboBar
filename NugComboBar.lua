@@ -1,5 +1,6 @@
-NugComboBar = CreateFrame("Frame", "NugComboBar", UIParent)
-local NugComboBar = NugComboBar
+local addonName, ns = ...
+
+local NugComboBar = CreateFrame("Frame", "NugComboBar", UIParent)
 
 local user
 local RogueGetComboPoints = GetComboPoints
@@ -26,12 +27,14 @@ local Enum_PowerType_Chi = EPT.Chi
 local Enum_PowerType_HolyPower = EPT.HolyPower
 local Enum_PowerType_SoulShards = EPT.SoulShards
 local Enum_PowerType_ArcaneCharges = EPT.ArcaneCharges
-
+local chargeCooldown
+local chargeCooldownOnSecondBar
 local isDefaultSkin = nil
 
 local UnitAura = UnitAura
-
+local GetSpellCharges = GetSpellCharges
 local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
 
@@ -153,7 +156,8 @@ function NugComboBar:LoadClassSettings()
 			local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
 				local secondRowCount = 0
 
-				return function(unit)
+                return function(unit)
+                    local secondRowCount, chargeStart, chargeDuration
 					if subtlety then
 						secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
 					end
@@ -985,6 +989,7 @@ do
             else
                 NugComboBarDB = NugComboBarDBSource
             end
+            NugComboBar.db = NugComboBarDB
 
             NugComboBar.isDisabled = nil
             if type(NugComboBarDBSource.disabled) == "table" then NugComboBarDBSource.disabled = nil end --old format bugfix

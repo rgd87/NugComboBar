@@ -1,3 +1,4 @@
+local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
 local isClassic = select(4,GetBuildInfo()) <= 19999
