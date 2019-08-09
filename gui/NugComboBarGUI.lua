@@ -1,3 +1,4 @@
+local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
 -- local layoutChoices = { }
