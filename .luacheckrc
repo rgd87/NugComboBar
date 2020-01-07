@@ -126,6 +126,7 @@ globals = {
     "IsPlayerSpell",
     "RotateTexture",
 
+    "ComboFrame", -- classic
     "ComboPointPlayerFrame",
     "WarlockPowerFrame",
     "PaladinPowerBarFrame",
