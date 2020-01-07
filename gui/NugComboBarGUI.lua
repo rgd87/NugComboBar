@@ -1,7 +1,8 @@
 local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
-local isClassic = select(4,GetBuildInfo()) <= 19999
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local newFeatureIcon = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"
 
 -- local layoutChoices = { }
 -- for k,v in pairs(NugComboBar.mappings) do
@@ -509,7 +510,7 @@ do
                 },
             },
             enable2d = {
-                        name = L"2D Mode",
+                        name = L"2D Mode"..newFeatureIcon,
                         type = 'toggle',
                         -- disabled = function() return NugComboBar:IsDefaultSkin() end,
                         confirm = true,

@@ -39,7 +39,7 @@ local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
 
 --- Compatibility with Classic
-local isClassic = select(4,GetBuildInfo()) <= 19999
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
 local GetSpecialization = isClassic and function() return nil end or _G.GetSpecialization
 
@@ -946,11 +946,8 @@ do
                 NugComboBarDBSource = NugComboBarDB_Global
             end
 
-
-            if not NugComboBarDBSource.apoint and NugComboBarDBSource.point then NugComboBarDBSource.apoint = NugComboBarDBSource.point end
+            self:DoMigrations(NugComboBarDBSource)
             SetupDefaults(NugComboBarDBSource, defaults)
-            if not NugComboBarDB_Global.adjustX then NugComboBarDB_Global.adjustX = defaults.adjustX end
-            if not NugComboBarDB_Global.adjustY then NugComboBarDB_Global.adjustY = defaults.adjustY end
 
             if NugComboBarDBSource.classThemes then
                 NugComboBarDB = setmetatable({
@@ -2267,6 +2264,33 @@ function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
             local frame = GetNamePlateForUnit(unit)
             self:ClearAllPoints()
             self:SetPoint("TOP", UIParent, "BOTTOM", 0,-500)
+        end
+    end
+end
+
+
+do
+    local CURRENT_DB_VERSION = 1
+    function NugComboBar:DoMigrations(db)
+        if not next(db) or db.DB_VERSION == CURRENT_DB_VERSION then -- skip if db is empty or current
+            db.DB_VERSION = CURRENT_DB_VERSION
+            return
+        end
+
+        if db.DB_VERSION == nil then
+            -- if non-default preset selected
+            if db.preset3d or db.preset3dpointbar2 or db.classThemes then
+                db.enable3d = true -- keep 3d mode
+            else
+                -- otherwise switching to 2d mode with new default colors
+                print("[NugComboBar] Updated 2D mode is the new default. Migrating your settings...")
+                db.enabled3d = false
+                for i,c in ipairs(db.colors) do
+                    db.colors[i] = {1, 0.33, 0.74}
+                end
+            end
+
+            db.DB_VERSION = 1
         end
     end
 end
