@@ -1,6 +1,9 @@
 local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local newFeatureIcon = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"
+
 -- local layoutChoices = { }
 -- for k,v in pairs(NugComboBar.mappings) do
 --         table.insert(layoutChoices, tostring(k))
@@ -183,6 +186,7 @@ do
                 type = "group",
                 name = L"Colors",
                 -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
+                disabled = function() return (NugComboBarDB.classThemes == true) end,
                 guiInline = true,
                 order = 3,
                 args = {
@@ -291,26 +295,10 @@ do
                             end
                         end,
                     },
-                    intensity = {
-                        name = L"2D Mode glow intensity",
-                        type = "range",
-                        get = function(info) return NugComboBarDB.glowIntensity end,
-                        set = function(info, s)
-                            NugComboBarDB.glowIntensity = s
-                            for i=1,6 do
-                                local color = NugComboBarDB.colors[i]
-                                NugComboBar.SetColor(i, unpack(color))
-                            end
-                        end,
-                        min = 0,
-                        max = 1,
-                        step = 0.01,
-                        order = 100,
-                    },
                 },
             },
             enable2d = {
-                        name = L"2D Mode",
+                        name = L"2D Mode"..newFeatureIcon,
                         type = 'toggle',
                         -- disabled = function() return NugComboBar:IsDefaultSkin() end,
                         confirm = true,
@@ -330,6 +318,30 @@ do
                         get = function(info) return NugComboBarDB.enable3d end,
                         set = function(info, s) NugComboBarDB.enable3d = not NugComboBarDB.enable3d; ReloadUI(); end,
                     },
+            mode2dSettings = {
+                type = "group",
+                name = L"2D Mode settings",
+                guiInline = true,
+                order = 5.5,
+                args = {
+                    intensity = {
+                        name = L"2D Mode glow intensity",
+                        type = "range",
+                        get = function(info) return NugComboBarDB.glowIntensity end,
+                        set = function(info, s)
+                            NugComboBarDB.glowIntensity = s
+                            for i=1,6 do
+                                local color = NugComboBarDB.colors[i]
+                                NugComboBar.SetColor(i, unpack(color))
+                            end
+                        end,
+                        min = 0,
+                        max = 1,
+                        step = 0.01,
+                        order = 100,
+                    },
+                },
+            },
             presets = {
                 type = "group",
                 name = L"3D Mode settings",
