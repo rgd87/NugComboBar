@@ -1218,109 +1218,181 @@ end
 
 NugComboBar.themes = {}
 NugComboBar.themes["WARLOCK"] = {
-    [0] = {
-        preset3d = "glowPurple2",
-        colors = {
-            normal = { 0.5, 0.5 , 1 },
-            ["bar1"] = { 0.6, 0, 1 },
+    mode2d = {
+        [0] = {
+            colors = {
+                normal = { 1, 0.33, 0.74 },
+                ["bar1"] = { 0.6, 0, 1 },
+            },
+        },
+    },
+    mode3d = {
+        [0] = {
+            preset3d = "glowPurple2",
+            colors = {
+                normal = { 0.5, 0.5 , 1 },
+                ["bar1"] = { 0.6, 0, 1 },
+            },
         },
     },
 }
 
 NugComboBar.themes["DEMONHUNTER"] = {
-    [0] = {
-        preset3d = "glowPurple2",
-        colors = {
-            normal = { 0.5, 0.5 , 1 },
-            ["bar1"] = { 0.6, 0, 1 },
+    mode3d = {
+        [0] = {
+            preset3d = "glowPurple2",
+            colors = {
+                normal = { 0.5, 0.5 , 1 },
+            },
         },
     },
 }
 
 NugComboBar.themes["PALADIN"] = {
-    [0] = {
-        preset3d = "glowFreedom",
-        colors = {
-            normal = {0.77,0.26,0.29},
-            ["bar1"] = { 196/255, 66/255, 138/255 },
-        },
-    }
+    mode3d = {
+        [0] = {
+            preset3d = "glowFreedom",
+            colors = {
+                normal = {0.77,0.26,0.29},
+                ["bar1"] = { 196/255, 66/255, 138/255 },
+            },
+        }
+    },
 }
 
 NugComboBar.themes["SHAMAN"] = {
-    [0] = {
-        preset3d = "glowBlue",
-        colors = {
-            normal = {1,0.7,0.7},
+    mode2d = {
+        [0] = {
+            colors = {
+                normal = { 0, 0.18, 0.58 },
+            },
         },
-    }
+    },
+    mode3d = {
+        [0] = {
+            preset3d = "glowBlue",
+            colors = {
+                normal = {1,0.7,0.7},
+            },
+        }
+    },
 }
 
 NugComboBar.themes["MONK"] = {
-    [0] = {
-        preset3d = "glowBlue",
-        colors = {
-            normal = { 0, 0.73, 0.27 },
-            ["bar1"] = { 0, 0.66, 0.43 },
+    mode2d = {
+        [0] = {
+            colors = {
+                normal = { 0, 0.525, 0.5 },
+            },
+        },
+    },
+    mode3d = {
+        [0] = {
+            preset3d = "glowBlue",
+            colors = {
+                normal = { 0, 0.73, 0.27 },
+                ["bar1"] = { 0, 0.66, 0.43 },
+            },
         },
     },
 }
 
 NugComboBar.themes["ROGUE"] = {
-    [0] = {
-        preset3d = "glowPurple2",
-        colors = {
-            normal = {0.77,0.26,0.29},
-            ["bar1"] = { 0.6, 0, 1 },
+    mode2d = {
+        [3] = {
+            colors = {
+                normal = { 1, 0.33, 0.74 },
+                ["bar2"] = { 0.56, 0.02, 0.71 },
+            },
         },
     },
-    [3] ={
-        preset3d = "glowPurple2",
-        preset3dpointbar2 = "void",
-        colors = {
-            normal = {0.77,0.26,0.29},
-            ["bar1"] = { 0.6, 0, 1 },
+    mode3d = {
+        [0] = {
+            preset3d = "glowPurple2",
+            colors = {
+                normal = {0.77,0.26,0.29},
+                ["bar1"] = { 0.6, 0, 1 },
+            },
         },
-    }
+        [3] ={
+            preset3d = "glowPurple2",
+            preset3dpointbar2 = "void",
+            colors = {
+                normal = {0.77,0.26,0.29},
+                ["bar1"] = { 0.6, 0, 1 },
+            },
+        }
+    },
 }
 
 NugComboBar.themes["MAGE"] = {
-    [0] = {
-        preset3d = "glowPurple",
-    },
-    [1] ={
-        preset3d = "arcanePink",
-    },
-    [2] ={
-        preset3d = "glowOrange",
-        preset3dpointbar2 = "glowOrange",
-        colors = {
-            bar1 = { 1,0.15,0}
+    mode2d = {
+        [1] ={
+            colors = {
+                normal = { 1, 0.33, 0.74 },
+            },
+        },
+        [2] ={
+            colors = {
+                normal = { 0.87, 0.63, 0.015 },
+                bar2 = { 0.71, 0.16, 0 }
+            }
+        },
+        [3] = {
+            colors = {
+                normal = { 0.23, 0.10, 1 },
+            },
         }
     },
-    [3] = {
-        preset3d = "glowBlue",
-        colors = {
-            normal = { 0.36, 0.69, 0.76 },
+    mode3d = {
+        [0] = {
+            preset3d = "glowPurple",
         },
-    }
+        [1] ={
+            preset3d = "arcanePink",
+        },
+        [2] ={
+            preset3d = "glowOrange",
+            preset3dpointbar2 = "glowOrange",
+            colors = {
+                bar1 = { 1,0.15,0}
+            }
+        },
+        [3] = {
+            preset3d = "glowBlue",
+            colors = {
+                normal = { 0.36, 0.69, 0.76 },
+            },
+        }
+    },
 }
 
 
 NugComboBar.themes["WARRIOR"] = {
-    [0] = {
-        preset3d = "glowOrange",
+    mode2d = {
+        [0] = {
+            colors = {
+                normal = { 0.87, 0.63, 0.015 },
+            },
+        },
+    },
+    mode3d = {
+        [0] = {
+            preset3d = "glowOrange",
+        },
     },
 }
 
 NugComboBar.themes["DEATHKNIGHT"] = {
-    [0] = {
-        preset3d = "glowFreedom",
-        colors = {
-            normal = {0.77,0.26,0.29},
-            -- normal = {0.15,0.80,0.48},
-            [3] = {1, 0, 0},
-            bar1 = {1, 0.07, 0.65},
-        }
+    mode3d = {
+        [0] = {
+            preset3d = "glowFreedom",
+            colors = {
+                normal = {0.77,0.26,0.29},
+                -- normal = {0.15,0.80,0.48},
+                [3] = {1, 0, 0},
+                bar1 = {1, 0.07, 0.65},
+            }
+        },
     },
 }

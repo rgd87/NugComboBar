@@ -948,6 +948,10 @@ do
 
             self:DoMigrations(NugComboBarDBSource)
             SetupDefaults(NugComboBarDBSource, defaults)
+            if not self:IsDefaultSkin() then
+                NugComboBarDBSource.classThemes = false
+            end
+
 
             if NugComboBarDBSource.classThemes then
                 NugComboBarDB = setmetatable({
@@ -1064,9 +1068,15 @@ local ResolutionOffsets = {
 function NugComboBar:SetupClassTheme()
     if not NugComboBarDB.classThemes then return end
     local _, class = UnitClass("player")
-    local spec = GetSpecialization()
-    local cT = NugComboBar.themes[class]
+    local spec = GetSpecialization() or 0
+
+    local classTable = NugComboBar.themes[class]
+    if not classTable then return rawset(NugComboBarDB,"__classTheme", nil) end
+
+    local mode = NugComboBarDB.enable3d and "mode3d" or "mode2d"
+    local cT = NugComboBar.themes[class][mode]
     if not cT then return rawset(NugComboBarDB,"__classTheme", nil) end
+
     local sT = cT[spec] or cT[0]
     rawset(NugComboBarDB,"__classTheme", sT)
 end
@@ -2279,7 +2289,7 @@ do
 
         if db.DB_VERSION == nil then
             -- if non-default preset selected
-            if db.preset3d or db.preset3dpointbar2 or db.classThemes then
+            if db.preset3d or db.preset3dpointbar2 then
                 db.enable3d = true -- keep 3d mode
             else
                 -- otherwise switching to 2d mode with new default colors

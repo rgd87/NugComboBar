@@ -337,10 +337,19 @@ do
                     },
                 },
             },
+            classThemes = {
+                name = L"Use NCB Class Themes",
+                type = 'toggle',
+                width = "double",
+                order = 2.5,
+                get = function(info) return NugComboBarDB.classThemes end,
+                set = function(info, s) NugComboBar.Commands.classthemes() end,
+            },
             showColor = {
                 type = "group",
                 name = L"Colors",
                 -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
+                disabled = function() return (NugComboBarDB.classThemes == true) end,
                 guiInline = true,
                 order = 3,
                 args = {
@@ -491,22 +500,6 @@ do
                             tbl[3] = b
                         end,
                     },
-                    intensity = {
-                        name = L"2D Mode glow intensity",
-                        type = "range",
-                        get = function(info) return NugComboBarDB.glowIntensity end,
-                        set = function(info, s)
-                            NugComboBarDB.glowIntensity = s
-                            for i=1,6 do
-                                local color = NugComboBarDB.colors[i]
-                                NugComboBar.SetColor(i, unpack(color))
-                            end
-                        end,
-                        min = 0,
-                        max = 1,
-                        step = 0.01,
-                        order = 100,
-                    },
                 },
             },
             enable2d = {
@@ -530,6 +523,30 @@ do
                         get = function(info) return NugComboBarDB.enable3d end,
                         set = function(info, s) NugComboBarDB.enable3d = not NugComboBarDB.enable3d; ReloadUI(); end,
                     },
+            mode2dSettings = {
+                type = "group",
+                name = L"2D Mode settings",
+                guiInline = true,
+                order = 5.5,
+                args = {
+                    intensity = {
+                        name = L"2D Mode glow intensity",
+                        type = "range",
+                        get = function(info) return NugComboBarDB.glowIntensity end,
+                        set = function(info, s)
+                            NugComboBarDB.glowIntensity = s
+                            for i=1,6 do
+                                local color = NugComboBarDB.colors[i]
+                                NugComboBar.SetColor(i, unpack(color))
+                            end
+                        end,
+                        min = 0,
+                        max = 1,
+                        step = 0.01,
+                        order = 100,
+                    },
+                },
+            },
             presets = {
                 type = "group",
                 name = L"3D Mode settings",
@@ -588,16 +605,6 @@ do
                         get = function(info) return NugComboBarDB.preset3dpointbar2 end,
                         set = function( info, v ) NugComboBar.Commands.preset3dpointbar2(v) end,
                     },
-
-                    classThemes = {
-                        name = "|cffff5555"..L"Use NCB Class Themes".."|r",
-                        type = 'toggle',
-                        width = "double",
-                        order = 4,
-                        get = function(info) return NugComboBarDB.classThemes end,
-                        set = function(info, s) NugComboBar.Commands.classthemes() end,
-                    },
-
                     colors3d = {
                         name = L"Use colors",
                         desc = L"Only some effects can be altered using colored lighting.\nfireXXXX presets are good for it",
