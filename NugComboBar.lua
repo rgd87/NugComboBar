@@ -1066,6 +1066,7 @@ local ResolutionOffsets = {
 
 
 function NugComboBar:SetupClassTheme()
+    if isClassic then return end
     if not NugComboBarDB.classThemes then return end
     local _, class = UnitClass("player")
     local spec = GetSpecialization() or 0
@@ -2295,8 +2296,10 @@ do
                 -- otherwise switching to 2d mode with new default colors
                 print("[NugComboBar] Updated 2D mode is the new default. Migrating your settings...")
                 db.enabled3d = false
-                for i,c in ipairs(db.colors) do
-                    db.colors[i] = {1, 0.33, 0.74}
+                if db.colors then
+                    for i,c in ipairs(db.colors) do
+                        db.colors[i] = {1, 0.33, 0.74}
+                    end
                 end
             end
 
