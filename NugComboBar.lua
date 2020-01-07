@@ -2270,9 +2270,22 @@ end
 
 
 do
+    local IsClean = function(db)
+        local ignoredProperies = {
+            specspec = true,
+            charspec = true,
+        }
+        local propeties = 0
+        for k,v in pairs(db) do
+            if not ignoredProperies[k] then
+                propeties = propeties + 1
+            end
+        end
+        return propeties == 0
+    end
     local CURRENT_DB_VERSION = 1
     function NugComboBar:DoMigrations(db)
-        if not next(db) or db.DB_VERSION == CURRENT_DB_VERSION then -- skip if db is empty or current
+        if IsClean(db) or db.DB_VERSION == CURRENT_DB_VERSION then -- skip if db is empty or current
             db.DB_VERSION = CURRENT_DB_VERSION
             return
         end
@@ -2284,7 +2297,7 @@ do
             else
                 -- otherwise switching to 2d mode with new default colors
                 print("[NugComboBar] Updated 2D mode is the new default. Migrating your settings...")
-                db.enabled3d = false
+                db.enable3d = false
                 if db.colors then
                     for i,c in ipairs(db.colors) do
                         db.colors[i] = {1, 0.33, 0.74}
