@@ -246,17 +246,6 @@ function NugComboBar:LoadClassSettings()
                 return lunar, nil, nil, 0, solar
             end
 
-            local shrooms = function()
-                self:SetMaxPoints(3)
-                hideSlowly = false
-                self:RegisterEvent("PLAYER_TOTEM_UPDATE")
-                GetComboPoints = GetMushrooms
-                self.PLAYER_TOTEM_UPDATE = function(self, event, totemID)
-                    self:UNIT_COMBO_POINTS(nil, allowedUnit)
-                end
-                self:PLAYER_TOTEM_UPDATE()
-            end
-
             local empowerments = function()
                 self:SetMaxPoints(3, "MOONKIN", 3)
                 GetComboPoints = GetEmpowerments
