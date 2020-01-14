@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: NugComboBar
 ## Notes: Combopoints counter
 ## Author: d87
