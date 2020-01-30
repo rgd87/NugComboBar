@@ -2208,7 +2208,18 @@ function NugComboBar:UpdateRunes(index, isEnergize)
         end
 end
 
+
+
 function NugComboBar:EnsureRuneChargeFrame(point)
+
+    if point.RuneChargeFrame then
+        local existingRuneFrameIsPretty = point.RuneChargeFrame.SetPreset ~= nil
+        if isPrettyRuneCharger ~= existingRuneFrameIsPretty then
+            point.RuneChargeFrame:Hide()
+            point.RuneChargeFrame = isPrettyRuneCharger and point._RuneChargeFramePretty or point._RuneChargeFrameNormal
+        end
+    end
+
     if not point.RuneChargeFrame then
 
         local f
@@ -2225,6 +2236,8 @@ function NugComboBar:EnsureRuneChargeFrame(point)
             f.bg = t
             f:SetPreset("_RuneCharger2")
 
+            point._RuneChargeFramePretty = f
+
             f.bgmodel:SetFrameLevel(0)
         else
 
@@ -2234,6 +2247,8 @@ function NugComboBar:EnsureRuneChargeFrame(point)
             f:SetMinMaxValues(0,1)
             f:ClearAllPoints()
             f:SetPoint("TOP", point, "CENTER", 0, -16)
+
+            point._RuneChargeFrameNormal = f
         end
 
         f.frame = point
