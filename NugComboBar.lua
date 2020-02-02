@@ -837,6 +837,7 @@ local defaults = {
     showAlways = false,
     onlyCombat = false,
     disableProgress = false,
+    cooldownOnTop = false,
     chargeCooldown = true,
     adjustX = 2.05,
     adjustY = 2.1,
@@ -1191,36 +1192,7 @@ do
     end
 end
 
---~ function NugComboBar.UPDATE_STEALTH(self)
---~     if (IsStealthed() or UnitAffectingCombat("player")) and UnitPowerType("player") == 3 then
---~         self:UNIT_MAXENERGY()
---~         self:UpdateEnergy()
---~         self:Show()
---~     else
---~         self:Hide()
---~     end
---~ end
---~ function NugComboBar.UNIT_AURA(self, event, unit)
---~     if allowedUnits[unit] then self:UNIT_COMBO_POINTS(event,unit)end
---~ end
 
--- function NugComboBar.AddHidingAnimation(self)
---     local ag = self:CreateAnimationGroup()
---     local a1 = ag:CreateAnimation("Alpha")
---     a1:SetChange(0)
---     a1:SetDuration(4)
---     a1:SetOrder(1)
-
---     local a2 = ag:CreateAnimation("Alpha")
---     a2:SetChange(-1)
---     a2:SetDuration(2)
---     a2:SetOrder(2)
-
---     self.HideAnim = ag
---     ag:SetScript("OnFinished",function(self)
---         self:GetParent():SetAlpha(0)
---     end)
--- endir
 local fadeTime = 1
 local fader = CreateFrame("Frame")
 local HideTimer = function(self, time)
@@ -2253,7 +2225,16 @@ function NugComboBar:EnsureRuneChargeFrame(point)
 
         f.frame = point
         point.RuneChargeFrame = f
-	end
+    end
+
+    if not isPrettyRuneCharger then
+        point._RuneChargeFrameNormal:ClearAllPoints()
+        if NugComboBarDB.cooldownOnTop then
+            point._RuneChargeFrameNormal:SetPoint("BOTTOM", point, "TOP", 0,-17)
+        else
+            point._RuneChargeFrameNormal:SetPoint("TOP", point, "BOTTOM", 0,17)
+        end
+    end
 end
 
 

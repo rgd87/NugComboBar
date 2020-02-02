@@ -203,6 +203,13 @@ do
                         set = function(info, s) NugComboBar.Commands.chargecooldown() end,
                         order = 12.5,
                     },
+                    cooldownOnTop = {
+                        name = L"Cooldowns On Top",
+                        type = "toggle",
+                        get = function(info) return NugComboBarDB.cooldownOnTop end,
+                        set = function(info, s) NugComboBarDB.cooldownOnTop = not NugComboBarDB.cooldownOnTop end,
+                        order = 12.55,
+                    },
                     enablePrettyRunes = {
                         name = L"Pretty Runes",
                         desc = L"If disabled, rune charge timers will be displayed as simple bars",

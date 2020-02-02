@@ -446,7 +446,11 @@ NugComboBar.mappings = mappings
 
 function NugComboBar.MoveCharger(self, point)
     self.bar:ClearAllPoints()
-    self.bar:SetPoint("TOP", point, "BOTTOM", 0,16)
+    if NugComboBarDB.cooldownOnTop then
+        self.bar:SetPoint("BOTTOM", point, "TOP", 0,-17)
+    else
+        self.bar:SetPoint("TOP", point, "BOTTOM", 0,17)
+    end
     self.bar:SetWidth(29)
     self.bar:SetHeight(5)
 end
