@@ -250,20 +250,6 @@ function NugComboBar:LoadClassSettings()
                 self:SetMaxPoints(3, "MOONKIN", 3)
                 GetComboPoints = GetEmpowerments
                 self:RegisterEvent("UNIT_AURA")
-                -- self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                -- local charges, maxCharges, start, duration = GetSpellCharges(78674)
-                -- self:SetMaxPoints(maxCharges)
-                -- defaultValue = 3
-                -- -- self:EnableBar(0, duration, "Small")
-                -- -- if self.bar then self.bar:SetScript("OnUpdate", AuraTimerOnUpdate) end
-                -- GetComboPoints = function()
-                --     local charges, maxCharges, start, duration = GetSpellCharges(78674)
-                --     return charges, start, duration
-                -- end
-                -- self.SPELL_UPDATE_CHARGES = function(self, event, arg1)
-                --     self:UNIT_COMBO_POINTS(nil, allowedUnit)
-                -- end
-                -- self:SPELL_UPDATE_CHARGES()
             end
 
             local cat = function()
@@ -2304,4 +2290,62 @@ do
             db.DB_VERSION = 1
         end
     end
+end
+
+local configs = {}
+local currentConfigName
+local currentConfig
+local currentTriggerState
+
+function NugComboBar:RegisterConfig(name, config)
+    configs[name] = config
+end
+
+function NugComboBar:IsTriggerStateEqual(state1, state2)
+    if #state1 ~= #state2 then return false end
+    for i,v in ipairs(state1) do
+        if state2[i] ~= v then return false end
+    end
+    return true
+end
+
+function NugComboBar:GetTriggerState(config)
+    if not config.triggers then return {} end
+    local state = {}
+    for i, func in ipairs(config.triggers) do
+        table.insert(state, func())
+    end
+    return state
+end
+
+function NugComboBar:ResetConfig()
+    table.wipe(self.flags)
+    self.eventProxy:UnregisterAllEvents()
+    self:DisableBar()
+end
+
+function NugComboBar:SelectConfig(name)
+    self:ResetConfig()
+    self:ApplyConfig(name)
+    currentConfigName = name
+    currentConfig = configs[name]
+    currentTriggerState = self:GetTriggerState(currentConfig)
+end
+
+function NugComboBar:ApplyConfig(name)
+    local config = configs[name]
+    local spec = GetSpecialization()
+    config.setup(self, spec)
+end
+
+function NugComboBar:SetSourceUnit(unit)
+    allowedUnit = unit
+end
+
+function NugComboBar:SetTargetUnit(unit)
+    allowedTargetUnit = unit
+end
+
+function NugComboBar:SetPointGetter(func)
+    GetComboPoints = func
 end

@@ -11,3 +11,4 @@
 
 NugComboBar.lua
 skin.lua
+config.lua
