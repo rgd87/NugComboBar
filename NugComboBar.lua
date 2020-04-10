@@ -3,16 +3,11 @@ local addonName, ns = ...
 local NugComboBar = CreateFrame("Frame", "NugComboBar", UIParent)
 
 local user
-local RogueGetComboPoints = GetComboPoints
-local GetComboPoints = RogueGetComboPoints
+local flags
 local allowedUnit = "player"
 local allowedCaster = "player"
 local allowedTargetUnit = "player"
-local showEmpty, showAlways, onlyCombat
-local hideSlowly
-local secondLayerEnabled
 local fadeAfter = 6
-local soundFullEnabled = false
 local isRuneTracker = false
 local isPrettyRuneCharger = false
 local combatFade = true -- whether to fade in combat
@@ -27,8 +22,6 @@ local Enum_PowerType_Chi = EPT.Chi
 local Enum_PowerType_HolyPower = EPT.HolyPower
 local Enum_PowerType_SoulShards = EPT.SoulShards
 local Enum_PowerType_ArcaneCharges = EPT.ArcaneCharges
-local chargeCooldown
-local chargeCooldownOnSecondBar
 local isDefaultSkin = nil
 
 local UnitAura = UnitAura
@@ -64,39 +57,6 @@ local L = setmetatable({}, {
 })
 NugComboBar.L = L
 
-
-
-local function FindAura(unit, spellID, filter)
-    for i=1, 100 do
-        -- rank will be removed in bfa
-        local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
-        if not name then return nil end
-        if spellID == auraSpellID then
-            return name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID
-        end
-    end
-end
-
-local GetAuraStack = function(scanID, filter, unit, casterCheck)
-    if unit then allowedUnit = unit end
-    filter = filter or "HELPFUL"
-    return function(unit)
-        local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
-        if casterCheck and caster ~= casterCheck then count = nil end
-        if count then
-            return count --, expirationTime-duration, duration
-        else return 0,0,0 end
-    end
-end
-
-local MakeGetChargeFunc = function(spellID)
-    return function(unit)
-        local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
-        if charges == maxCharges then chargeStart = nil end
-        return charges, chargeStart, chargeDuration
-    end
-end
-
 local AuraTimerOnUpdate = function(self, time)
     self._elapsed = (self._elapsed or 0) + time
     if self._elapsed < 0.03 then return end
@@ -113,31 +73,6 @@ local AuraTimerOnUpdate = function(self, time)
 end
 local dummy = function() return 0 end
 
-if isClassic then
-    local OriginalGetComboPoints = _G.GetComboPoints
-    RogueGetComboPoints = function(unit)
-        return OriginalGetComboPoints(unit, "target")
-    end
-else
-    RogueGetComboPoints = function(unit)
-        return UnitPower("player", 4)
-    end
-end
-
-local makeDruidCP = function(anticipation, subtlety, maxFill, maxCP)
-	local secondRowCount = 0
-
-	return function(unit)
-		local cp = RogueGetComboPoints(unit)
-		if maxFill and cp == maxCP then
-			return cp, nil, nil, cp, secondRowCount
-		end
-		return cp, nil, nil, 0, secondRowCount
-	end
-end
-
-
-
 -- local min = math.min
 -- local max = math.max
 function NugComboBar:LoadClassSettings()
@@ -145,7 +80,6 @@ function NugComboBar:LoadClassSettings()
         self.MAX_POINTS = 2
         self:SetupClassTheme()
         self.isTempDisabled = nil
-        soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
 
         if class == "ROGUE" then
@@ -268,7 +202,7 @@ NugComboBar.SkinVersion = 500
 do
     local initial = true
     function NugComboBar.ADDON_LOADED(self,event,arg1)
-        if arg1 == "NugComboBar" then
+        if arg1 == addonName then
             if initial then
                 SLASH_NCBSLASH1 = "/ncb";
                 SLASH_NCBSLASH2 = "/nugcombobar";
@@ -508,11 +442,6 @@ do
             NugComboBar:DisableBar()
         end
 
-        showEmpty = NugComboBarDB.showEmpty
-        showAlways = NugComboBarDB.showAlways
-        onlyCombat = NugComboBarDB.onlyCombat
-        hideSlowly = NugComboBarDB.hideSlowly
-        if secondLayerEnabled == nil then secondLayerEnabled = NugComboBarDB.secondLayer end;
         self:SetAlpha(0)
 
         self:SetScale(NugComboBarDB.scale)
@@ -527,6 +456,7 @@ do
                 return NugComboBarDB[k]
             end
         })
+        flags = self.flags
 
         self:LoadClassSettings()
         if initial then
@@ -644,7 +574,7 @@ function NugComboBar.EnableBar(self, min, max, btype, isTimer, isReversed)
     end
     self.bar.isReversed = isReversed
     self.bar.max = max
-    if not chargeCooldown then
+    if not flags.chargeCooldown then
     	if not btype or btype == "Small" then
     		self.bar:SetWidth(45)
     	end
@@ -691,7 +621,7 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 end
 
 function NugComboBar:Update(unit, ...)
-    if onlyCombat and not UnitAffectingCombat("player") then
+    if flags.onlyCombat and not UnitAffectingCombat("player") then
         self:Hide()
         return
     else
@@ -719,7 +649,7 @@ function NugComboBar:Update(unit, ...)
 	        end
 	    end
 
-	    if soundFullEnabled then
+	    if flags.soundFullEnabled then
 			-- print(comboPoints, self.MAX_POINTS, comboPoints ~= comboPointsBefore)
 	        if  comboPoints == self.MAX_POINTS and
 	            comboPoints ~= comboPointsBefore and
@@ -775,7 +705,7 @@ function NugComboBar:Update(unit, ...)
     	    end
         end
 
-        if chargeCooldown and not chargeCooldownOnSecondBar then
+        if flags.chargeCooldown and not flags.chargeCooldownOnSecondBar then
             if isDefaultSkin then
                 if comboPoints ~= self.MAX_POINTS then
                     local point = self.p[comboPoints+1]
@@ -821,7 +751,7 @@ function NugComboBar:Update(unit, ...)
 
 	    end
 
-        if chargeCooldown and chargeCooldownOnSecondBar then
+        if flags.chargeCooldown and flags.chargeCooldownOnSecondBar then
             if isDefaultSkin then
                 if secondBarPoints ~= self.MAX_POINTS2 then
                     local point = self.p[self.MAX_POINTS+secondBarPoints+1]
@@ -832,19 +762,17 @@ function NugComboBar:Update(unit, ...)
 
 	    end
 
-    -- print("progress", progress)
-    -- print (comboPoints, defaultValue, comboPoints == defaultValue, (progress == nil or progress == defaultProgress), not UnitAffectingCombat("player"), not showEmpty)
     local forceHide = IsInPetBattle() or self.isTempDisabled
     if forceHide or
         (
-            not showAlways and
+            not flags.showAlways and
             comboPoints == defaultValue and -- or (defaultValue == -1 and lastChangeTime < GetTime() - 9)) and
             (progress == nil or progress == defaultProgress) and
-            (not UnitAffectingCombat("player") or not showEmpty)
+            (not UnitAffectingCombat("player") or not flags.showEmpty)
         )
         then
             local hidden = self:GetAlpha() == 0
-            if hideSlowly and not forceHide then
+            if flags.hideSlowly and not forceHide then
                 -- print("hiding, hidden:", self.hiding, hidden)
                 if (not self.hiding and not hidden)  then
                     -- print("start hiding")
@@ -1087,22 +1015,18 @@ NugComboBar.Commands = {
 	end,
     ["showempty"] = function(v)
         NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
-        showEmpty = NugComboBarDB.showEmpty
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["showalways"] = function(v)
         NugComboBarDB.showAlways = not NugComboBarDB.showAlways
-        showAlways = NugComboBarDB.showAlways
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["onlycombat"] = function(v)
         NugComboBarDB.onlyCombat = not NugComboBarDB.onlyCombat
-        onlyCombat = NugComboBarDB.onlyCombat
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["hideslowly"] = function(v)
         NugComboBarDB.hideSlowly = not NugComboBarDB.hideSlowly
-        hideSlowly = NugComboBarDB.hideSlowly
     end,
     ["toggleblizz"] = function(v)
         NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
@@ -1244,7 +1168,6 @@ NugComboBar.Commands = {
     end,
     ["secondlayer"] = function(v)
         NugComboBarDB.secondLayer = not NugComboBarDB.secondLayer
-        secondLayerEnabled = NugComboBarDB.secondLayer
     end,
     ["toggleprogress"] = function(v)
         NugComboBarDB.disableProgress = not NugComboBarDB.disableProgress
