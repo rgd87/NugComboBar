@@ -64,8 +64,9 @@ if isClassic then
         return OriginalGetComboPoints(unit, "target")
     end
 else
+    local Enum_PowerType_ComboPoints = Enum.PowerType.ComboPoints
     RogueGetComboPoints = function(unit)
-        return UnitPower("player", 4)
+        return UnitPower("player", Enum_PowerType_ComboPoints)
     end
 end
 
@@ -146,7 +147,6 @@ NugComboBar:RegisterConfig("ComboPointsDruid", {
         self:SetSourceUnit("player")
         self:SetTargetUnit("player")
         self:SetPointGetter(RogueGetComboPoints)
-        self:Update()
     end
 })
 
@@ -162,7 +162,6 @@ NugComboBar:RegisterConfig("Pulverize", {
         self:SetSourceUnit("player")
         self:SetTargetUnit("target")
         self:SetPointGetter(GetAuraStack(192090, "HARMFUL", "target", "player"))
-        self:Update()
     end
 })
 
@@ -202,5 +201,188 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
             end
         end
         self.UPDATE_SHAPESHIFT_FORM(self)
+    end
+})
+
+
+---------------------
+-- PALADIN
+---------------------
+
+local Enum_PowerType_HolyPower = Enum.PowerType.HolyPower
+local TheFiresOFJustice = 209785
+local GetHolyPowerWBuffs = function(unit)
+    local fojup = FindAura("player", TheFiresOFJustice, "HELPFUL")
+    local hp = UnitPower("player", Enum_PowerType_HolyPower)
+    local layer2 = 0
+    if fojup then
+        layer2 = 1
+    end
+    return hp, nil, nil, layer2
+end
+local GetHolyPower = function(unit)
+    return UnitPower("player", Enum_PowerType_HolyPower)
+end
+
+local HOLY_POWER_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
+    if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
+    self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+end
+
+NugComboBar:RegisterConfig("HolyPower", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        self.eventProxy.UNIT_POWER_UPDATE = HOLY_POWER_UNIT_POWER_UPDATE
+        self:SetMaxPoints(5, "PALADIN")
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetSourceUnit("player")
+        self:SetTargetUnit("player")
+        if IsPlayerSpell(203316) and NugComboBarDB.paladinBuffs then -- FoJ Talent
+            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+            self:SetPointGetter(GetHolyPowerWBuffs)
+        else
+            self:SetPointGetter(GetHolyPower)
+        end
+    end
+})
+
+NugComboBar:RegisterConfig("ShieldOfTheRighteousness", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
+        self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
+        self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
+        self:SetMaxPoints(3)
+        self:SetDefaultValue(3)
+        self.flags.showEmpty = true
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(MakeGetChargeFunc(53600)) -- Shield of the Righteous
+    end
+})
+
+---------------------
+-- MONK
+---------------------
+
+local Enum_PowerType_Chi = Enum.PowerType.Chi
+local GetChi = function(unit)
+    return UnitPower("player", Enum_PowerType_Chi)
+end
+
+local CHI_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
+    if ptype ~= "CHI" or unit ~= "player" then return end
+    self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+end
+
+NugComboBar:RegisterConfig("Chi", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        self.eventProxy.UNIT_POWER_UPDATE = CHI_UNIT_POWER_UPDATE
+        if IsPlayerSpell(115396)  -- Ascension
+            then self:SetMaxPoints(6)
+            else self:SetMaxPoints(5)
+        end
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetChi)
+    end
+})
+
+
+NugComboBar:RegisterConfig("IronskinBrew", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
+        self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
+        self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
+        if IsPlayerSpell(196721) then -- Light Brewing
+            self:SetMaxPoints(4)
+            self:SetDefaultValue(4)
+        else
+            self:SetMaxPoints(3)
+            self:SetDefaultValue(3)
+        end
+        self.flags.showEmpty = true
+        self.flags.soundFullEnabled = true
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(MakeGetChargeFunc(115308)) -- Ironskin Brew
+    end
+})
+
+NugComboBar:RegisterConfig("Teachings", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(3)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(GetAuraStack(202090)) -- Teachings of the Monastery
+    end
+})
+
+NugComboBar:RegisterConfig("RenewingMist", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
+        self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
+        self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
+        self:SetMaxPoints(2)
+        self:SetDefaultValue(2)
+        self.flags.showEmpty = true
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(MakeGetChargeFunc(115151)) -- Renewing Mist
+    end
+})
+
+---------------------
+-- WARLOCK
+---------------------
+
+local Enum_PowerType_SoulShards = Enum.PowerType.SoulShards
+
+local SOUL_SHARDS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
+    if ptype == "SOUL_SHARDS" then
+        return self:Update()
+    end
+end
+
+local GetShards = function(unit)
+    return UnitPower("player", Enum_PowerType_SoulShards)
+end
+
+local GetDestructionShards = function(unit)
+    local shards = UnitPower("player", Enum_PowerType_SoulShards)
+    local fragments = UnitPower("player", Enum_PowerType_SoulShards, true)
+    local rfragments = fragments - (shards*10)
+    if rfragments == 0 then rfragments = nil end
+    return shards, rfragments
+end
+
+NugComboBar:RegisterConfig("SoulShards", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        self.eventProxy.UNIT_POWER_UPDATE = SOUL_SHARDS_UNIT_POWER_UPDATE
+        local maxshards = UnitPowerMax( "player", Enum_PowerType_SoulShards )
+        self:SetMaxPoints(maxshards)
+        self:SetDefaultValue(3)
+        self.flags.soundFullEnabled = true
+        self.flags.showEmpty = true
+        if spec == 3 then
+            self:SetPointGetter(GetDestructionShards)
+            self:EnableBar(0, 10,"Small" )
+        else
+            self:SetPointGetter(GetShards)
+            self:DisableBar()
+        end
     end
 })

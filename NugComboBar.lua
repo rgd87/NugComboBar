@@ -15,13 +15,7 @@ local defaultValue = 0
 local defaultProgress = 0
 local currentSpec = -1
 local playerClass
-local EPT = Enum.PowerType
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
-local Enum_PowerType_ComboPoints = EPT.ComboPoints
-local Enum_PowerType_Chi = EPT.Chi
-local Enum_PowerType_HolyPower = EPT.HolyPower
-local Enum_PowerType_SoulShards = EPT.SoulShards
-local Enum_PowerType_ArcaneCharges = EPT.ArcaneCharges
 local isDefaultSkin = nil
 
 local UnitAura = UnitAura
@@ -86,7 +80,16 @@ function NugComboBar:LoadClassSettings()
             self:SelectConfig("ComboPointsRogue")
         elseif class == "DRUID" then
             self:SelectConfig("ShapeshiftDruid")
+        elseif class == "PALADIN" then
+            self:SelectConfig("ShieldOfTheRighteousness")
+        elseif class == "MONK" then
+            self:SelectConfig("IronskinBrew")
+        elseif class == "WARLOCK" then
+            self:SelectConfig("SoulShards")
+        else
+            self:Disable()
         end
+        self:Update()
 
         self:RegisterEvent("SPELLS_CHANGED")
 end
@@ -96,6 +99,7 @@ function NugComboBar:SPELLS_CHANGED()
     local newTriggerState = self:GetTriggerState(config)
     if not self:IsTriggerStateEqual(oldTriggerState, newTriggerState) then
         self:SelectConfig(currentConfigName)
+        self:Update()
     end
 end
 
@@ -1381,7 +1385,6 @@ function NugComboBar:Disable()
 	-- hideSlowly = old2
 
     -- self.isTempDisabled = true
-    print("Disabling")
 
 	self:DisableBar()
     if self.anchor then self.anchor:Hide() end
