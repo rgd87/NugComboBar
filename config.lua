@@ -543,3 +543,41 @@ NugComboBar:RegisterConfig("PhoenixFlamesFireblast", {
         end
     end
 })
+
+---------------------
+-- WARRIOR
+---------------------
+
+local MeatcleaverBuff = 85739
+local GetMeatcleaver = function()
+    local name, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
+    return name and count*2 or 0
+end
+
+NugComboBar:RegisterConfig("Meatcleaver", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(4)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetMeatcleaver)
+    end
+})
+
+NugComboBar:RegisterConfig("ShieldBlock", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
+        self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
+        self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
+        self:SetMaxPoints(2)
+        self:SetDefaultValue(2)
+        self.flags.showEmpty = true
+        self.flags.soundFullEnabled = true
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(MakeGetChargeFunc(2565)) -- Shield Block
+    end
+})

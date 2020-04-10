@@ -69,7 +69,7 @@ local dummy = function() return 0 end
 -- local max = math.max
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
-        self.MAX_POINTS = 2
+        self.MAX_POINTS = 0
         self:SetupClassTheme()
         self.isTempDisabled = nil
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
@@ -90,6 +90,8 @@ function NugComboBar:LoadClassSettings()
             self:SelectConfig("FesteringWounds")
         elseif class == "MAGE" then
             self:SelectConfig("Fireblast")
+        elseif class == "WARRIOR" then
+            self:SelectConfig("ShieldBlock")
         else
             self:Disable()
         end
