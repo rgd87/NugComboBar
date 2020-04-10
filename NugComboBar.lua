@@ -43,6 +43,9 @@ local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
 local GetSpecialization = isClassic and function() return nil end or _G.GetSpecialization
 
+local configs = {}
+local currentConfigName
+local oldTriggerState
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	return self[event](self, event, ...)
@@ -139,647 +142,29 @@ end
 -- local max = math.max
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
-        self.MAX_POINTS = nil
+        self.MAX_POINTS = 2
         self:SetupClassTheme()
         self.isTempDisabled = nil
         soundFullEnabled = false
         if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
+
         if class == "ROGUE" then
-            soundFullEnabled = true
-
-            local GetShadowdance = function()
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(185313) -- shadow dance
-				if charges == maxCharges then chargeStart = nil end
-                return charges, chargeStart, chargeDuration
-            end
-
-			local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
-				local secondRowCount = 0
-
-                return function(unit)
-                    local secondRowCount, chargeStart, chargeDuration
-					if subtlety then
-						secondRowCount, chargeStart, chargeDuration  = GetShadowdance()
-					end
-					local cp = RogueGetComboPoints(unit)
-					if anticipation and cp > 5 then
-						return 5, chargeStart, chargeDuration, cp-5, secondRowCount
-					elseif maxFill and cp == maxCP then
-						return cp, chargeStart, chargeDuration, cp, secondRowCount
-					end
-					return cp, chargeStart, chargeDuration, 0, secondRowCount
-				end
-            end
-
-            if isClassic then
-                self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            end
-
-
-            self.SPELL_UPDATE_COOLDOWN = function(self, event)
-                self:UNIT_COMBO_POINTS(nil, "player")
-            end
-            self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
-
-            GetComboPoints = RogueGetComboPoints
-
-            self:SetMaxPoints(5)
-            self:RegisterEvent("UNIT_POWER_FREQUENT")
-            self.UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
-                if unit ~= "player" then return end
-                if ptype == "COMBO_POINTS" then
-                    return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-                end
-            end
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self, event)
-                local isSub = (GetSpecialization() == 3) and IsPlayerSpell(185313)
-                local isAnticipation = IsPlayerSpell(114015)
-                local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
-				local maxFill = NugComboBarDB.maxFill
-                GetComboPoints = makeRCP(isAnticipation, isSub, maxFill, maxCP)--  RogueGetComboPoints
-                if isSub and NugComboBarDB.shadowDance then
-                    local maxShadowDance = IsPlayerSpell(238104) and 3 or 2
-                    local barSetup = "ROGUE"..maxCP..maxShadowDance
-                    self:SetMaxPoints(maxCP, barSetup, maxShadowDance)
-                    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:RegisterEvent("SPELL_UPDATE_CHARGES")
-					self:EnableBar(0, 6, 90, "Timer")
-                    chargeCooldown = NugComboBarDB.chargeCooldown
-                    chargeCooldownOnSecondBar = true
-                else
-					self:DisableBar()
-                    self:SetMaxPoints(maxCP)
-                    self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-                end
-            end
-            self:SPELLS_CHANGED()
+            self:SelectConfig("ComboPointsRogue")
         elseif class == "DRUID" then
-            self:RegisterEvent("PLAYER_TARGET_CHANGED") -- required for both
-            self:SetMaxPoints(5)
-
-            local enablePulverize = false
-
-            local reset = function()
-                defaultValue = 0
-                soundFullEnabled = false
-                hideSlowly = NugComboBarDB.hideSlowly
-                showEmpty = NugComboBarDB.showEmpty
-            end
-
-            self.UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
-                if unit ~= "player" then return end
-                if ptype == "COMBO_POINTS" then
-                    return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-                end
-            end
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-
-            local solar_aura = 164545
-            local lunar_aura = 164547
-            local GetEmpowerments = function(unit)
-                local _,_, solar = FindAura("player", solar_aura, "HELPFUL")
-                local _,_, lunar = FindAura("player", lunar_aura, "HELPFUL")
-                lunar = lunar or 0
-                solar = solar or 0
-                return lunar, nil, nil, 0, solar
-            end
-
-            local empowerments = function()
-                self:SetMaxPoints(3, "MOONKIN", 3)
-                GetComboPoints = GetEmpowerments
-                self:RegisterEvent("UNIT_AURA")
-            end
-
-            local cat = function()
-                self:SetMaxPoints(5)
-                soundFullEnabled = true
-                allowedTargetUnit = "player"
-                self:RegisterEvent("UNIT_POWER_FREQUENT")
-				local maxFill = NugComboBarDB.maxFill
-                GetComboPoints = makeDruidCP(nil, nil, maxFill, 5)
-                allowedUnit = "player"
-                self:UNIT_COMBO_POINTS(nil,allowedUnit)
-            end
-
-            local disable = function()
-                -- self:SetMaxPoints(3)
-                -- self:RegisterEvent("UNIT_AURA")
-                self.UNIT_AURA = self.UNIT_COMBO_POINTS
-                GetComboPoints = dummy -- disable
-                local old1 = showEmpty
-                local old2 = hideSlowly
-                showEmpty = false
-                hideSlowly = false
-                self:UNIT_COMBO_POINTS(nil,allowedUnit)
-                showEmpty = old1
-                hideSlowly = old2
-            end
-
-
-            local pulverize = function()
-                self:SetMaxPoints(3)
-                self:RegisterEvent("UNIT_AURA")
-                -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
-                self.UNIT_AURA = self.UNIT_COMBO_POINTS
-                soundFullEnabled = true
-                GetComboPoints = GetAuraStack(192090, "HARMFUL", "target") -- Lacerate`
-                self:UNIT_COMBO_POINTS(nil,allowedUnit)
-            end
-
-            self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-            self.UPDATE_SHAPESHIFT_FORM = function(self)
-                self:UnregisterEvent("UNIT_AURA")
-                self:UnregisterEvent("UNIT_POWER_FREQUENT")
-                -- self:UnregisterEvent("PLAYER_TARGET_CHANGED") -- it should be always on to hideWithoutTarget to work
-                self:UnregisterEvent("PLAYER_TOTEM_UPDATE")
-                local spec = GetSpecialization()
-                local form = GetShapeshiftFormID()
-                reset()
-                if form == BEAR_FORM then
-                    if spec == 3 and enablePulverize and IsPlayerSpell(80313) --pulverize
-                        then pulverize()
-                        else disable()
-                    end
-                elseif form == CAT_FORM then
-                    cat()
-                -- elseif spec == 1 then
-                    -- empowerments()
-                else
-                    disable()
-                end
-            end
-            self:UPDATE_SHAPESHIFT_FORM()
-        elseif class == "PALADIN" then
-
-            local TheFiresOFJustice = 209785
-            -- local DivinePurpose = GetSpellInfo(223819)
-            local GetHolyPowerWBuffs = function(unit)
-                local fojup = FindAura("player", TheFiresOFJustice, "HELPFUL")
-                local hp = UnitPower(unit, Enum_PowerType_HolyPower)
-                local layer2 = 0
-                -- if dpup then
-                    -- layer2 = hp
-                -- else
-                if fojup then
-                    layer2 = 1
-                end
-                return hp, nil, nil, layer2
-            end
-            local GetHolyPower = function(unit)
-                return UnitPower(unit, Enum_PowerType_HolyPower)
-            end
-
-            local GetShieldCharges = function(unit)
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(53600) -- Shield of the Righteous
-				if charges == maxCharges then chargeStart = nil end
-                return charges, chargeStart, chargeDuration
-            end
-            soundFullEnabled = true
-
-            self:SetMaxPoints(3)
-
-            self:RegisterEvent("UNIT_POWER_UPDATE")
-            self.UNIT_POWER_UPDATE = function(self,event,unit,ptype)
-                if ptype ~= "HOLY_POWER" or unit ~= "player" then return end
-                self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-            end
-
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-
-            self.SPELL_UPDATE_COOLDOWN = function(self, event)
-                self:UNIT_COMBO_POINTS(nil, "player")
-            end
-            self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self, event)
-                local spec = GetSpecialization()
-                if spec == 2  and IsPlayerSpell(53600) then
-                    soundFullEnabled = false
-                    self:SetMaxPoints(3)
-                    GetComboPoints = GetShieldCharges
-                    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    self:UnregisterEvent("UNIT_POWER_UPDATE")
-                    self:UnregisterEvent("UNIT_AURA")
-                    defaultValue = 3
-                    showEmpty = true
-                    chargeCooldown = NugComboBarDB.chargeCooldown
-					self:EnableBar(0, 6,"Small", "Timer")
-                else --if spec == 3 then
-					self:DisableBar()
-                    chargeCooldown = false
-                    soundFullEnabled = true
-
-
-                    local isFoJ = IsPlayerSpell(203316)
-
-                    self:SetMaxPoints(5, "PALADIN")
-                    defaultValue = 0
-                    showEmpty = NugComboBarDB.showEmpty
-
-                    if IsPlayerSpell(203316) and NugComboBarDB.paladinBuffs then
-                        GetComboPoints = GetHolyPowerWBuffs
-                        self:RegisterEvent("UNIT_POWER_UPDATE")
-                        self:RegisterEvent("UNIT_AURA")
-                    else
-                        GetComboPoints = GetHolyPower
-                        self:RegisterEvent("UNIT_POWER_UPDATE")
-                        self:UnregisterEvent("UNIT_AURA")
-                    end
-                    self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-                end
-            end
-            self:SPELLS_CHANGED()
-        elseif class == "MONK" then
-            local GetChi = function(unit)
-                return UnitPower(unit, Enum_PowerType_Chi)
-            end
-
-            -- local isCT = NugComboBarDB.classThemes
-            -- self:SetMaxPoints(4, isCT and "4NO6")
-
-            -- self:RegisterEvent("UNIT_POWER_UPDATE")
-            self.UNIT_POWER_UPDATE = function(self,event,unit,ptype)
-                if ptype ~= "CHI" or unit ~= "player" then return end
-                self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-            end
-            GetComboPoints = GetChi
-
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-
-            self.SPELL_UPDATE_COOLDOWN = function(self, event)
-                self:UNIT_COMBO_POINTS(nil, "player")
-            end
-            self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
-
-            local doRenewingMist = NugComboBarDB.renewingMist
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self, event)
-                local spec = GetSpecialization()
-
-                self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-                self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-                self:UnregisterEvent("UNIT_POWER_UPDATE")
-                self:UnregisterEvent("UNIT_AURA")
-                if spec == 1 and IsPlayerSpell(115308) then
-                    GetComboPoints = MakeGetChargeFunc(115308) -- Ironskin Brew
-                    soundFullEnabled = false
-                    chargeCooldown = NugComboBarDB.chargeCooldown
-                    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:RegisterEvent("SPELL_UPDATE_CHARGES")
-
-                    if IsPlayerSpell(196721) then -- Light Brewing
-                        self:SetMaxPoints(4)
-                        defaultValue = 4
-                    else
-                        self:SetMaxPoints(3)
-                        defaultValue = 3
-                    end
-                    showEmpty = true
-                    self:EnableBar(0, 6,"Small", "Timer")
-                elseif spec == 2 then
-                    if doRenewingMist then
-                        self:EnableBar(0, 6,"Small", "Timer")
-                        chargeCooldown = true
-                        soundFullEnabled = false
-                        self:SetMaxPoints(2)
-                        defaultValue = 2
-                        GetComboPoints = MakeGetChargeFunc(115151) -- Renewing Mist
-                        showEmpty = NugComboBarDB.showEmpty
-                        self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-                        self:RegisterEvent("SPELL_UPDATE_CHARGES")
-                    else
-                        self:DisableBar()
-                        chargeCooldown = false
-                        soundFullEnabled = true
-                        self:SetMaxPoints(3)
-                        defaultValue = 0
-                        GetComboPoints = GetAuraStack(202090) -- Teachings of the Monastery
-                        showEmpty = NugComboBarDB.showEmpty
-                        self:RegisterUnitEvent("UNIT_AURA", "player")
-                    end
-                else
-					self:DisableBar()
-                    chargeCooldown = false
-                    soundFullEnabled = true
-                    if IsPlayerSpell(115396)  -- Ascension
-                        then self:SetMaxPoints(6)
-                        else self:SetMaxPoints(5)
-                    end
-                    defaultValue = 0
-                    GetComboPoints = GetChi
-                    showEmpty = NugComboBarDB.showEmpty
-                    self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-
-                end
-
-                self:UNIT_COMBO_POINTS(nil,"player")
-            end
-            self:SPELLS_CHANGED()
-        elseif class == "SHAMAN" then
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            allowedUnit = "player"
-            self:SetMaxPoints(5)
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self)
-                local spec = GetSpecialization()
-                hideSlowly = NugComboBarDB.hideSlowly
-                if spec == 3 and NugComboBarDB.tidalWaves then
-                    self:SetMaxPoints(2)
-                    GetComboPoints = GetAuraStack(53390) -- Tidal Waves
-                    self:RegisterEvent("UNIT_AURA")
-                    self:UNIT_AURA(nil,allowedUnit)
-                elseif spec == 1 and IsPlayerSpell(210714) then -- Icefury
-                    self:SetMaxPoints(4)
-                    GetComboPoints = GetAuraStack(210714) -- Icefury
-                    hideSlowly = false
-                    self:RegisterEvent("UNIT_AURA")
-                    self:UNIT_AURA(nil,allowedUnit)
-                else
-                    self:Disable()
-                end
-
-            end
-            self:SPELLS_CHANGED()
-        elseif class == "WARLOCK" then
-            local GetShards = function(unit)
-                return UnitPower(unit, Enum_PowerType_SoulShards)
-            end
-
-            local GetDestructionShards = function(unit)
-                local shards = UnitPower(unit, Enum_PowerType_SoulShards)
-                local fragments = UnitPower(unit, Enum_PowerType_SoulShards, true)
-                local rfragments = fragments - (shards*10)
-                if rfragments == 0 then rfragments = nil end
-                return shards, rfragments
-            end
-
-            self:RegisterEvent("UNIT_POWER_UPDATE")
-            self.UNIT_POWER_UPDATE = function(self,event,unit,ptype)
-                if unit ~= "player" then return end
-                if ptype == "SOUL_SHARDS" then
-                    return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-                end
-            end
-
-            self:SetMaxPoints(5)
-            GetComboPoints = GetShards
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self, event)
-				soundFullEnabled = true
-                showEmpty = true
-                self:DisableBar()
-                local maxshards = UnitPowerMax( "player", Enum_PowerType_SoulShards )
-                defaultValue = 3
-                self:SetMaxPoints(maxshards)
-                GetComboPoints = GetShards
-                self:UNIT_POWER_UPDATE(nil,allowedUnit, "SOUL_SHARDS" )
-                if GetSpecialization() == 3 then
-                    GetComboPoints = GetDestructionShards
-                    chargeCooldown = NugComboBarDB.chargeCooldown
-                    self:EnableBar(0, 10,"Small" )
-                else
-                    GetComboPoints = GetShards
-                    chargeCooldown = nil
-                    self:DisableBar()
-                end
-            end
-
-            self:SPELLS_CHANGED()
-
-        elseif class == "WARRIOR" then
-            self:SetMaxPoints(4)
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            allowedUnit = "player"
-            GetComboPoints = dummy
-
-			local MeatcleaverBuff = 85739
-			local Meatcleaver = function()
-				local name, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
-				return name and count*2 or 0
-			end
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self)
-                local spec = GetSpecialization()
-				soundFullEnabled = true
-				if spec == 2 and NugComboBarDB.meatcleaver then
-					self:SetMaxPoints(4)
-					GetComboPoints = Meatcleaver
-					self:RegisterEvent("UNIT_AURA")
-				else
-					self:Disable()
-				end
-            end
-            self:SPELLS_CHANGED()
-        elseif class == "DEMONHUNTER" then
-            self:SetMaxPoints(5)
-            allowedUnit = "player"
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self)
-                local spec = GetSpecialization()
-				soundFullEnabled = true
-				if spec == 2 then
-					self:SetMaxPoints(5)
-					GetComboPoints = GetAuraStack(203981)
-                    self:RegisterUnitEvent("UNIT_AURA", "player")
-                else
-                    self:UnregisterEvent("UNIT_AURA")
-					self:Disable()
-				end
-            end
-            self:SPELLS_CHANGED()
-        elseif class == "HUNTER" then
-            -- self.SPELL_UPDATE_COOLDOWN = function(self, event)
-            --     self:UNIT_COMBO_POINTS(nil, "player")
-            -- end
-            -- self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
-            self:SetMaxPoints(5)
-            self:Disable()
-			-- soundFullEnabled = false
-            -- local survival = function()
-			-- 	soundFullEnabled = true
-            --     self:SetMaxPoints(3)
-            --     defaultValue = 3
-            --     showEmpty = true
-            --     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-            --     self:RegisterEvent("SPELL_UPDATE_CHARGES")
-            --     GetComboPoints = GetMongooseBite
-            -- end
-            -- self:RegisterEvent("SPELLS_CHANGED")
-            -- self.SPELLS_CHANGED = function(self)
-            --     local spec = GetSpecialization()
-            --     if spec == 3 then
-            --         return survival()
-            --     else
-            --         defaultValue = 0
-            --         self:Disable()
-            --     end
-            -- end
-            -- self:SPELLS_CHANGED()
-        elseif class == "DEATHKNIGHT" then
-            isRuneTracker = true --NugComboBarDB.enableFullRuneTracker
-            isPrettyRuneCharger = NugComboBarDB.enablePrettyRunes
-            if isPrettyRuneCharger then
-                self:SetMaxPoints(6, "DEATHKNIGHT")
-            else
-                self:SetMaxPoints(6, "6NO6")
-            end
-
-			defaultValue = 6
-
-			-- if IsAddOnLoaded("NugComboBarMakina") or IsAddOnLoaded("NugComboBarStriped") or not NugComboBarDB.enable3d then isRuneTracker = false end
-
-			local GetTotalRunes = function(self, unit)
-				local n = 0
-				for i=1,6 do
-					local _,_,isReady = GetRuneCooldown(i)
-					if isReady then  n = n + 1 end
-				end
-				return n
-			end
-			GetComboPoints = GetTotalRunes
-            self:RegisterEvent("RUNE_POWER_UPDATE")
-			-- self:RegisterEvent("RUNE_TYPE_UPDATE")
-
-			self.RUNE_POWER_UPDATE = function(self, event, runeIndex, isEnergize)
-				self:UNIT_COMBO_POINTS("RUNE_POWER_UPDATE", "player", runeIndex, isEnergize)
-			end
-
-			self:RUNE_POWER_UPDATE("RUNE_POWER_UPDATE", 1)
-
-        -- elseif class == "PRIEST" then
-            -- self:SetMaxPoints(3)
-            -- self:RegisterEvent("SPELLS_CHANGED")
-            -- self.SPELLS_CHANGED = function(self, event)
-            -- end
-            -- self:SPELLS_CHANGED()
-        elseif class == "MAGE" then
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-
-            local GetArcaneCharges = function(unit)
-                return UnitPower(unit, Enum_PowerType_ArcaneCharges)
-            end
-            local GetFireBlastCharges = function(unit)
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(108853) -- Fire Blast
-                if charges == maxCharges then chargeStart = nil end
-                return charges, chargeStart, chargeDuration
-            end
-
-			local GetPhoenixFlamesCharges = function(unit)
-                local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(194466) -- Phoenix's Flames
-                return charges
-            end
-
-			local FireMageCombined = function(unit)
-				local fb = GetFireBlastCharges()
-				local pf = GetPhoenixFlamesCharges()
-				return fb, nil, nil, 0, pf
-			end
-
-			-- local makeRCP = function(anticipation, subtlety)
-            --     local secondRowCount = 0
-            --     return function(unit)
-            --         if subtlety then
-            --             secondRowCount = GetShadowdance()
-            --         end
-            --         local cp = RogueGetComboPoints(unit)
-            --         if anticipation and cp > 5 then
-            --             return 5, nil, nil, cp-5, secondRowCount
-            --         end
-            --         return cp, nil, nil, 0, secondRowCount
-            --     end
-            -- end
-
-            self.UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
-                if unit ~= "player" then return end
-                if ptype == "ARCANE_CHARGES" then
-                    return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-                end
-            end
-            self.SPELL_UPDATE_COOLDOWN = function(self, event)
-                self:UNIT_COMBO_POINTS(nil, "player")
-            end
-            self.SPELL_UPDATE_CHARGES = self.SPELL_UPDATE_COOLDOWN
-
-
-            self:UnregisterEvent("UNIT_AURA")
-            self:UnregisterEvent("UNIT_POWER_FREQUENT")
-            self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-            self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-
-            self:RegisterEvent("SPELLS_CHANGED")
-            self.SPELLS_CHANGED = function(self, event)
-                local spec = GetSpecialization()
-                self:SetMaxPoints(4)
-                if spec == 3 then
-                    defaultValue = 0
-                    chargeCooldown = false
-                    soundFullEnabled = true
-                    showEmpty = NugComboBarDB.showEmpty
-                    self:SetMaxPoints(5)
-                    allowedUnit = "player"
-                    GetComboPoints = GetAuraStack(205473) -- Icicles
-                    self:RegisterEvent("UNIT_AURA")
-                    self:DisableBar()
-                elseif spec == 1 then
-					defaultValue = 0
-                    soundFullEnabled = true
-                    chargeCooldown = false
-                    showEmpty = NugComboBarDB.showEmpty
-                    self:SetMaxPoints(4)
-                    self:RegisterEvent("UNIT_POWER_FREQUENT")
-                    GetComboPoints = GetArcaneCharges
-                    self:DisableBar()
-                elseif spec == 2 then
-                    soundFullEnabled = false
-                    chargeCooldown = NugComboBarDB.chargeCooldown
-                    self:EnableBar(0, 6,"Small", "Timer")
-                    showEmpty = true
-					defaultValue = 3
-
-                    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-                    self:RegisterEvent("SPELL_UPDATE_CHARGES")
-
-                    local isFlameOn = IsPlayerSpell(205029)
-                    local isPhoenixFlames = IsPlayerSpell(257541)
-                    -- local isFlareUp = IsPlayerSpell(203282)
-                    local maxFireBlastCharges = 2 + (isFlameOn and 1 or 0) -- + (isFlareUp and 1 or 0)
-                    defaultValue = maxFireBlastCharges
-
-                    if NugComboBarDB.infernoBlast then
-                        if isPhoenixFlames then
-                            self:SetMaxPoints(maxFireBlastCharges, "FIREMAGE3", 3)
-                            GetComboPoints = FireMageCombined
-                            self:DisableBar()
-                        else
-                            self:SetMaxPoints(maxFireBlastCharges)
-                            GetComboPoints = GetFireBlastCharges
-                            self:EnableBar(0, 6,"Small", "Timer")
-                        end
-					else
-						self:Disable()
-					end
-                else
-                    GetComboPoints = RogueGetComboPoints
-                end
-            end
-            self:SPELLS_CHANGED()
-        else
-            self:SetMaxPoints(2)
-            self:Disable()
-            return
+            self:SelectConfig("ShapeshiftDruid")
         end
+
+        self:RegisterEvent("SPELLS_CHANGED")
 end
+function NugComboBar:SPELLS_CHANGED()
+    if not currentConfigName then return end
+    local config = configs[currentConfigName]
+    local newTriggerState = self:GetTriggerState(config)
+    if not self:IsTriggerStateEqual(oldTriggerState, newTriggerState) then
+        self:SelectConfig(currentConfigName)
+    end
+end
+
 
 local defaults = {
     apoint = "CENTER",
@@ -1132,6 +517,17 @@ do
 
         self:SetScale(NugComboBarDB.scale)
 
+        self.eventProxy = CreateFrame("Frame", nil, self)
+        self.eventProxy:SetScript("OnEvent", function(proxy, event, ...)
+            return proxy[event](NugComboBar, event, ...)
+        end)
+
+        self.flags = setmetatable({}, {
+            __index = function(t,k)
+                return NugComboBarDB[k]
+            end
+        })
+
         self:LoadClassSettings()
         if initial then
             self:CreateAnchor()
@@ -1198,8 +594,6 @@ end
 
 
 function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
-    self:UNIT_COMBO_POINTS(event, allowedUnit)
-
     if NugComboBarDB.nameplateAttachTarget then
         local targetFrame = C_NamePlate.GetNamePlateForUnit("target")
 
@@ -1289,21 +683,14 @@ end
 
 
 local comboPointsBefore = 0
--- local lastChangeTimer = CreateFrame("Frame")
--- local lastChangeOnUpdate = function(self, time)
---     self._elapsed = (self._elapsed or 0) + time
---     if self._elapsed < 10 then return end
---     self._elapsed = 0
---     print(GetTime(), "UNIT_COMBO_POINTS(nil, allowedUnit)")
---     NugComboBar:UNIT_COMBO_POINTS(nil, allowedUnit)
---     lastChangeTimer:SetScript("OnUpdate", nil)
--- end
--- local lastChangeValue
--- local lastChangeTime = GetTime()
 local targetBefore
+
 function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
     if unit ~= allowedUnit then return end
+    self:Update(unit, ...)
+end
 
+function NugComboBar:Update(unit, ...)
     if onlyCombat and not UnitAffectingCombat("player") then
         self:Hide()
         return
@@ -2060,20 +1447,18 @@ function NugComboBar:OnSpecChanged()
 end
 
 function NugComboBar:Disable()
-	self.UNIT_AURA = self.UNIT_COMBO_POINTS
+	-- self.UNIT_AURA = self.UNIT_COMBO_POINTS
 	GetComboPoints = dummy -- disable
-	local old1 = showEmpty
-	local old2 = hideSlowly
-	showEmpty = false
-	hideSlowly = false
-	self:UNIT_COMBO_POINTS(nil,allowedUnit)
-	showEmpty = old1
-	hideSlowly = old2
-	-- self:UnregisterEvent("UNIT_AURA")
-	-- self:UnregisterEvent("UNIT_POWER_UPDATE")
-	-- self:UnregisterEvent("SPELL_UPDATE_CHARGES")
-	-- self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
-	self.isTempDisabled = true
+	-- local old1 = showEmpty
+	-- local old2 = hideSlowly
+	-- showEmpty = false
+	-- hideSlowly = false
+	-- self:UNIT_COMBO_POINTS(nil,allowedUnit)
+	-- showEmpty = old1
+	-- hideSlowly = old2
+
+    -- self.isTempDisabled = true
+    print("Disabling")
 
 	self:DisableBar()
     if self.anchor then self.anchor:Hide() end
@@ -2292,10 +1677,6 @@ do
     end
 end
 
-local configs = {}
-local currentConfigName
-local currentConfig
-local currentTriggerState
 
 function NugComboBar:RegisterConfig(name, config)
     configs[name] = config
@@ -2328,14 +1709,18 @@ function NugComboBar:SelectConfig(name)
     self:ResetConfig()
     self:ApplyConfig(name)
     currentConfigName = name
-    currentConfig = configs[name]
-    currentTriggerState = self:GetTriggerState(currentConfig)
+    local newConfig = configs[name]
+    oldTriggerState = self:GetTriggerState(newConfig)
 end
 
 function NugComboBar:ApplyConfig(name)
     local config = configs[name]
     local spec = GetSpecialization()
     config.setup(self, spec)
+end
+
+function NugComboBar:SetDefaultValue(value)
+    defaultValue = value
 end
 
 function NugComboBar:SetSourceUnit(unit)

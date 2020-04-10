@@ -1,3 +1,6 @@
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+
+
 local GetSpell = function(spellId)
     return function()
         return IsPlayerSpell(spellId)
@@ -16,9 +19,8 @@ local function FindAura(unit, spellID, filter)
 end
 
 local GetAuraStack = function(scanID, filter, unit, casterCheck)
-    if unit then allowedUnit = unit end
     filter = filter or "HELPFUL"
-    return function(unit)
+    return function()
         local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
         if casterCheck and caster ~= casterCheck then count = nil end
         if count then
@@ -35,22 +37,37 @@ local MakeGetChargeFunc = function(spellID)
     end
 end
 
+---------------
+-- COMMON
+---------------
+
+local GENERAL_UPDATE = function(self)
+    self:Update()
+end
+
 ---------------------
 -- ROGUE
 ---------------------
 
+local COMBO_POINTS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
+    if unit ~= "player" then return end
+    if ptype == "COMBO_POINTS" then
+        return self:Update()
+    end
+end
+
 
 local RogueGetComboPoints
--- if isClassic then
---     local OriginalGetComboPoints = _G.GetComboPoints
---     RogueGetComboPoints = function(unit)
---         return OriginalGetComboPoints(unit, "target")
---     end
--- else
-RogueGetComboPoints = function(unit)
-    return UnitPower("player", 4)
+if isClassic then
+    local OriginalGetComboPoints = _G.GetComboPoints
+    RogueGetComboPoints = function(unit)
+        return OriginalGetComboPoints(unit, "target")
+    end
+else
+    RogueGetComboPoints = function(unit)
+        return UnitPower("player", 4)
+    end
 end
--- end
 
 local GetShadowdance = function()
     local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(185313) -- shadow dance
@@ -76,42 +93,41 @@ local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
     end
 end
 
-NugComboBar:RegisterConfig("ComboPoints", {
-    triggers = { GetSpecialization, GetSpell(185313) },
-    events = {
-        UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
-            if unit ~= "player" then return end
-            if ptype == "COMBO_POINTS" then
-                return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-            end
-        end,
-        SPELL_UPDATE_COOLDOWN = function(self, event)
-            self:UNIT_COMBO_POINTS(nil, "player")
-        end
-        -- if isClassic then
-        --     self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        -- end
-    },
-    forcedFlags = {
-        chargeCooldownOnSecondBar = true
-    },
+NugComboBar:RegisterConfig("ComboPointsRogue", {
+    triggers = { GetSpecialization, GetSpell(185313), GetSpell(193531), GetSpell(238104) }, -- Shadow Dance, Deeper Stratagem, Enveloping Shadows
     setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
 
-            local isSub = (GetSpecialization() == 3) and IsPlayerSpell(185313)
-            local isAnticipation = IsPlayerSpell(114015)
-            local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
-            local maxFill = NugComboBarDB.maxFill
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetSourceUnit("player")
+        self:SetTargetUnit("player")
+
+        if isClassic then
+            self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+            self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+        end
+
+        local isSub = (spec == 3) and IsPlayerSpell(185313) -- if Shadow Dance
+        local isAnticipation = false -- IsPlayerSpell(114015)
+        local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
+        local maxFill = NugComboBarDB.maxFill
         if isSub then
             local maxShadowDance = IsPlayerSpell(238104) and 3 or 2
             local barSetup = "ROGUE"..maxCP..maxShadowDance
+            self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+            self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
+            self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
+            self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
             self:SetMaxPoints(maxCP, barSetup, maxShadowDance)
             self:EnableBar(0, 6, 90, "Timer")
+            self.flags.chargeCooldownOnSecondBar = true
+            self:SetPointGetter(makeRCP(isAnticipation, isSub, maxFill, maxCP)) -- RogueGetComboPoints
         else
-            self:DisableBar()
             self:SetMaxPoints(maxCP)
+            self:SetPointGetter(RogueGetComboPoints)
         end
-
-        return makeRCP(isAnticipation, isSub, maxFill, maxCP)--  RogueGetComboPoints
     end,
 })
 
@@ -119,75 +135,42 @@ NugComboBar:RegisterConfig("ComboPoints", {
 -- DRUID
 ---------------------
 
-
-local COMBO_POINTS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
-    if unit ~= "player" then return end
-    if ptype == "COMBO_POINTS" then
-        return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-    end
-end
-
 NugComboBar:RegisterConfig("ComboPointsDruid", {
     triggers = { GetSpecialization },
-    events = {
-        -- PLAYER_TARGET_CHANGED = true, -- required for Pulverize?
-            -- UNIT_POWER_UPDATE = function(self,event,unit,ptype)
-            --     if unit ~= "player" then return end
-            --     if ptype == "COMBO_POINTS" then
-            --         return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-            --     end
-            -- end,
-        -- if isClassic then
-        --     self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        -- end
-    },
     setup = function(self, spec)
-        self.eventProxy:RegisterEvent("UNIT_POWER_UPDATE")
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
         self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
         self:SetSourceUnit("player")
         self:SetTargetUnit("player")
-        self:RegisterEvent("UNIT_POWER_FREQUENT")
         self:SetPointGetter(RogueGetComboPoints)
+        self:Update()
+    end
+})
+
+NugComboBar:RegisterConfig("Pulverize", {
+    triggers = { GetSpecialization, GetSpell(80313) },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "target")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+        self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+        self:SetMaxPoints(3)
+        self.flags.soundFullEnabled = true
+        self:SetSourceUnit("player")
+        self:SetTargetUnit("target")
+        self:SetPointGetter(GetAuraStack(192090, "HARMFUL", "target", "player"))
         self:Update()
     end
 })
 
 
 NugComboBar:RegisterConfig("ShapeshiftDruid", {
-    triggers = { GetSpecialization, GetSpell(80313) },
-    events = {
-        -- PLAYER_TARGET_CHANGED = true, -- required for Pulverize?
-        UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
-            if unit ~= "player" then return end
-            if ptype == "COMBO_POINTS" then
-                return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
-            end
-        end,
-        UNIT_AURA = function(self, event, unit)
-            -- self:Update()
-        end,
-        -- if isClassic then
-        --     self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        -- end
-    },
-    forcedFlags = {
-        chargeCooldownOnSecondBar = true
-    },
+    triggers = { GetSpecialization, GetSpell(80313), GetSpell(22568) }, -- Pulv, FerBite
+
     setup = function(self, spec)
-        self:SetMaxPoints(5)
-
-        local enablePulverize = false
-
-        -- local reset = function()
-        --     defaultValue = 0
-        --     soundFullEnabled = false
-        --     hideSlowly = NugComboBarDB.hideSlowly
-        --     showEmpty = NugComboBarDB.showEmpty
-        -- end
-
-
         -- local solar_aura = 164545
         -- local lunar_aura = 164547
         -- local GetEmpowerments = function(unit)
@@ -204,65 +187,20 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
         --     self:RegisterEvent("UNIT_AURA")
         -- end
 
-        local cat = function()
-            self:SetMaxPoints(5)
-            self.flags.soundFullEnabled = true
-            -- allowedTargetUnit = "player"
-            self:RegisterEvent("UNIT_POWER_FREQUENT")
-            local maxFill = NugComboBarDB.maxFill
-            GetComboPoints = RogueGetComboPoints
-            -- allowedUnit = "player"
-            self:Update()
-        end
-
-        -- local disable = function()
-        --     -- self:SetMaxPoints(3)
-        --     -- self:RegisterEvent("UNIT_AURA")
-        --     self.UNIT_AURA = self.UNIT_COMBO_POINTS
-        --     GetComboPoints = dummy -- disable
-        --     local old1 = showEmpty
-        --     local old2 = hideSlowly
-        --     showEmpty = false
-        --     hideSlowly = false
-        --     self:UNIT_COMBO_POINTS(nil,allowedUnit)
-        --     showEmpty = old1
-        --     hideSlowly = old2
-        -- end
-
-
-        local pulverize = function()
-            self:SetMaxPoints(3)
-            self:RegisterEvent("UNIT_AURA")
-            -- self:RegisterEvent("PLAYER_TARGET_CHANGED")
-            self.UNIT_AURA = self.UNIT_COMBO_POINTS
-            self.flags.soundFullEnabled = true
-            GetComboPoints = GetAuraStack(192090, "HARMFUL", "target") -- Lacerate`
-            self:UNIT_COMBO_POINTS(nil,allowedUnit)
-        end
-
-        self.eventProxy:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+        self:RegisterEvent("UPDATE_SHAPESHIFT_FORM") -- Registering on main addon, not event proxy
         self.UPDATE_SHAPESHIFT_FORM = function(self)
-            -- self:UnregisterEvent("PLAYER_TARGET_CHANGED") -- it should be always on to hideWithoutTarget to work
-
             local spec = GetSpecialization()
             local form = GetShapeshiftFormID()
-            self:Reset()
+            self:ResetConfig()
 
-            if form == BEAR_FORM then
-                if spec == 3 and enablePulverize and IsPlayerSpell(80313) --pulverize
-                    then pulverize()
-                    else self:Disable()
-                end
-            elseif form == CAT_FORM then
-                cat()
-                -- self:ApplyConfig("ComboPoints")
-
-            -- elseif spec == 1 then
-                -- empowerments()
+            if form == BEAR_FORM and spec == 3 and IsPlayerSpell(80313) then --Pulverize
+                self:ApplyConfig("Pulverize")
+            elseif form == CAT_FORM and IsPlayerSpell(22568) then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
+                self:ApplyConfig("ComboPointsDruid")
             else
                 self:Disable()
             end
         end
-        self.eventProxy:UPDATE_SHAPESHIFT_FORM()
+        self.UPDATE_SHAPESHIFT_FORM(self)
     end
 })
