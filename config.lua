@@ -1,5 +1,6 @@
 local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
+local UnitPower = UnitPower
 
 local GetSpell = function(spellId)
     return function()
@@ -9,7 +10,6 @@ end
 
 local function FindAura(unit, spellID, filter)
     for i=1, 100 do
-        -- rank will be removed in bfa
         local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
         if not name then return nil end
         if spellID == auraSpellID then
@@ -323,7 +323,6 @@ NugComboBar:RegisterConfig("Teachings", {
         self:SetMaxPoints(3)
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
-        self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(GetAuraStack(202090)) -- Teachings of the Monastery
     end
 })
@@ -383,6 +382,164 @@ NugComboBar:RegisterConfig("SoulShards", {
         else
             self:SetPointGetter(GetShards)
             self:DisableBar()
+        end
+    end
+})
+
+---------------------
+-- DEMON HUNTER
+---------------------
+
+NugComboBar:RegisterConfig("SoulFragments", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetAuraStack(203981, "HELPFUL", "player")) -- Soul Fragments
+    end
+})
+
+
+---------------------
+-- DEATH KNIGHT
+---------------------
+
+local GetTotalRunes = function(self, unit)
+    local n = 0
+    for i=1,6 do
+        local _,_,isReady = GetRuneCooldown(i)
+        if isReady then  n = n + 1 end
+    end
+    return n
+end
+
+local RUNE_POWER_UPDATE = function(self, event, runeIndex, isEnergize)
+    self:Update("player", runeIndex, isEnergize)
+end
+
+NugComboBar:RegisterConfig("Runes", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.flags.isRuneTracker = true
+        local isPrettyRuneCharger = self.flags.enablePrettyRunes
+        if isPrettyRuneCharger then
+            self:SetMaxPoints(6, "DEATHKNIGHT")
+        else
+            self:SetMaxPoints(6, "6NO6")
+        end
+        self:SetDefaultValue(6)
+
+        self.eventProxy:RegisterEvent("RUNE_POWER_UPDATE")
+        self.eventProxy.RUNE_POWER_UPDATE = RUNE_POWER_UPDATE
+
+        self:SetPointGetter(GetTotalRunes) -- Soul Fragments
+    end
+})
+
+
+NugComboBar:RegisterConfig("FesteringWounds", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "target")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+        self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+        self:SetMaxPoints(6)
+        self.flags.soundFullEnabled = true
+        self:SetSourceUnit("player")
+        self:SetTargetUnit("target")
+        self:SetPointGetter(GetAuraStack(194310, "HARMFUL", "target", "player")) -- Festering Wounds
+    end
+})
+
+
+---------------------
+-- MAGE
+---------------------
+
+local Enum_PowerType_ArcaneCharges = Enum.PowerType.ArcaneCharges
+
+local GetArcaneCharges = function(unit)
+    return UnitPower("player", Enum_PowerType_ArcaneCharges)
+end
+
+local ARCANE_CHARGES_UNIT_POWER_FREQUENT = function(self,event,unit,ptype)
+    if ptype == "ARCANE_CHARGES" then
+        return self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+    end
+end
+
+NugComboBar:RegisterConfig("ArcaneCharges", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        self.eventProxy.UNIT_POWER_UPDATE = ARCANE_CHARGES_UNIT_POWER_FREQUENT
+        self:SetMaxPoints(UnitPowerMax( "player", Enum_PowerType_ArcaneCharges ))
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetArcaneCharges)
+    end
+})
+
+NugComboBar:RegisterConfig("Icicles", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetAuraStack(205473, "HELPFUL", "player")) -- Icicles
+    end
+})
+
+
+local GetFireBlastCharges = MakeGetChargeFunc(108853) -- Fire Blast
+local GetPhoenixFlamesCharges = MakeGetChargeFunc(194466) -- Phoenix's Flames
+local FireMageGetCombined = function(unit)
+    local fb = GetFireBlastCharges()
+    local pf = GetPhoenixFlamesCharges()
+    return fb, nil, nil, 0, pf
+end
+
+NugComboBar:RegisterConfig("Fireblast", {
+    triggers = { GetSpecialization, GetSpell(205029) }, -- Flame On
+    setup = function(self, spec)
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
+        self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
+        self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
+
+        local maxFireBlastCharges = 2 + (IsPlayerSpell(205029) and 1 or 0) -- Flame On
+
+        self:SetMaxPoints(maxFireBlastCharges)
+        self:SetDefaultValue(maxFireBlastCharges)
+
+        self.flags.showEmpty = true
+        self.flags.soundFullEnabled = true
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(GetFireBlastCharges)
+    end
+})
+
+NugComboBar:RegisterConfig("PhoenixFlamesFireblast", {
+    triggers = { GetSpecialization, GetSpell(205029), GetSpell(257541) }, -- Flame On, PF
+    setup = function(self, spec)
+        self:ApplyConfig("Fireblast")
+
+        local isPhoenixFlames = IsPlayerSpell(257541)
+        local maxFireBlastCharges = 2 + (IsPlayerSpell(205029) and 1 or 0) -- Flame On
+
+        if isPhoenixFlames then
+            self:SetMaxPoints(maxFireBlastCharges, "FIREMAGE3", 3)
+            self:SetPointGetter(FireMageGetCombined)
+            self:DisableBar()
+        else
+            self:SetMaxPoints(maxFireBlastCharges)
+            self:SetPointGetter(GetFireBlastCharges)
         end
     end
 })

@@ -8,8 +8,6 @@ local allowedUnit = "player"
 local allowedCaster = "player"
 local allowedTargetUnit = "player"
 local fadeAfter = 6
-local isRuneTracker = false
-local isPrettyRuneCharger = false
 local combatFade = true -- whether to fade in combat
 local defaultValue = 0
 local defaultProgress = 0
@@ -86,6 +84,12 @@ function NugComboBar:LoadClassSettings()
             self:SelectConfig("IronskinBrew")
         elseif class == "WARLOCK" then
             self:SelectConfig("SoulShards")
+        elseif class == "DEMONHUNTER" then
+            self:SelectConfig("SoulFragments")
+        elseif class == "DEATHKNIGHT" then
+            self:SelectConfig("FesteringWounds")
+        elseif class == "MAGE" then
+            self:SelectConfig("Fireblast")
         else
             self:Disable()
         end
@@ -672,7 +676,7 @@ function NugComboBar:Update(unit, ...)
 	        targetBefore = UnitGUID(allowedTargetUnit)
 	    end
 
-        if isRuneTracker and isDefaultSkin then
+        if flags.isRuneTracker and isDefaultSkin then
             local runeIndex, isEnergize = ...
             self:UpdateRunes(runeIndex, isEnergize)
         else
@@ -1408,7 +1412,7 @@ local function RuneChargeOnUpdate(self, time)
 	if progress < 0 then progress = 0 end
     if progress > 1 then progress = 1 end
 
-    if isPrettyRuneCharger then
+    if flags.enablePrettyRunes then
         local pmp = progress*progress*progress+0.1
         self.playermodel:SetAlpha(pmp)--progress*0.8)
         self:SetAlpha(progress ~= 0 and 0.9 or 0)
@@ -1483,16 +1487,16 @@ function NugComboBar:EnsureRuneChargeFrame(point)
 
     if point.RuneChargeFrame then
         local existingRuneFrameIsPretty = point.RuneChargeFrame.SetPreset ~= nil
-        if isPrettyRuneCharger ~= existingRuneFrameIsPretty then
+        if flags.enablePrettyRunes ~= existingRuneFrameIsPretty then
             point.RuneChargeFrame:Hide()
-            point.RuneChargeFrame = isPrettyRuneCharger and point._RuneChargeFramePretty or point._RuneChargeFrameNormal
+            point.RuneChargeFrame = flags.enablePrettyRunes and point._RuneChargeFramePretty or point._RuneChargeFrameNormal
         end
     end
 
     if not point.RuneChargeFrame then
 
         local f
-        if isPrettyRuneCharger then
+        if flags.enablePrettyRunes then
             local t = point.bg
             local ts = t.settings
             f = self:Create3DPoint(point.id.."rcf", ts)
@@ -1524,7 +1528,7 @@ function NugComboBar:EnsureRuneChargeFrame(point)
         point.RuneChargeFrame = f
     end
 
-    if not isPrettyRuneCharger then
+    if not flags.enablePrettyRunes then
         point._RuneChargeFrameNormal:ClearAllPoints()
         if NugComboBarDB.cooldownOnTop then
             point._RuneChargeFrameNormal:SetPoint("BOTTOM", point, "TOP", 0,-17)
