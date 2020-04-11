@@ -9,6 +9,7 @@
 ## X-WoWI-ID: 6308
 ## X-Curse-Project-ID: 2538
 
+Libs\AceDB-3.0\AceDB-3.0.xml
 NugComboBar.lua
 skin.lua
 config.lua

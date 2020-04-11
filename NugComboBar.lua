@@ -72,7 +72,7 @@ function NugComboBar:LoadClassSettings()
         self.MAX_POINTS = 0
         self:SetupClassTheme()
         self.isTempDisabled = nil
-        if self.bar then self.bar:SetColor(unpack(NugComboBarDB.colors.bar1)) end
+        if self.bar then self.bar:SetColor(unpack(self.db.profile.colors.bar1)) end
 
         if class == "ROGUE" then
             self:SelectConfig("ComboPointsRogue")
@@ -109,104 +109,58 @@ function NugComboBar:SPELLS_CHANGED()
     end
 end
 
-
 local defaults = {
-    apoint = "CENTER",
-    parent = "UIParent",
-    point = "CENTER", --to
-    x = 0, y = 0,
-    anchorpoint = "LEFT",
-    frameparent = nil, -- for SetParent
-    scale = 1.0,
-    showEmpty = false,
-    hideSlowly = true,
-    disableBlizz = false,
-    disableBlizzNP = false,
-    colors = {
-        [1] = {1, 0.33, 0.74},
-        [2] = {1, 0.33, 0.74},
-        [3] = {1, 0.33, 0.74},
-        [4] = {1, 0.33, 0.74},
-        [5] = {1, 0.33, 0.74},
-        [6] = {1, 0.33, 0.74},
-        [7] = {1, 0.33, 0.74},
-        [8] = {1, 0.33, 0.74},
-        [9] = {1, 0.33, 0.74},
-        [10] = {1, 0.33, 0.74},
-        ["bar1"] = { 0.9,0.1,0.1 },
-        ["bar2"] = { 0.71, 0.16, 0 },
-        ["layer2"] = { 0.74, 0.06, 0 },
-		["row2"] = { 0.80, 0.23, 0.79 },
+    global = {
+        enable3d = false,
+        disableBlizz = false,
+        disableBlizzNP = false,
+        enablePrettyRunes = true,
     },
-    glowIntensity = 0.7,
-    enable3d = false,
-    preset3d = "glowPurple",
-    preset3dlayer2 = "glowArcshot",
-    preset3dpointbar2 = "void",
-	bar2_x = 13,
-	bar2_y = -20,
-	enableFullRuneTracker = true,
-    classThemes = false,
-    secondLayer = true,
-    colors3d = true,
-    showAlways = false,
-    onlyCombat = false,
-    disableProgress = false,
-    cooldownOnTop = false,
-    chargeCooldown = true,
-    adjustX = 2.05,
-    adjustY = 2.1,
-    alpha = 1,
-    nameplateAttach = false,
-    nameplateAttachTarget = false,
-    nameplateOffsetX = 0,
-    nameplateOffsetY = 0,
-    special1 = false,
-    shadowDance = true,
-    tidalWaves = true,
-    infernoBlast = true,
-	phoenixflames = true,
-    meatcleaver = true,
-    renewingMist = false,
-    maxFill = false,
-    enablePrettyRunes = true,
-    hideWithoutTarget = false,
-    vertical = false,
-    overrideLayout = false,
-    soundChannel = "SFX",
-    soundNameFull = "none",
-    soundNameFullCustom = "Interface\\AddOns\\YourSound.mp3",
-    disabled = false,
+    profile = {
+        apoint = "CENTER",
+        parent = "UIParent",
+        point = "CENTER", --to
+        x = 0, y = 0,
+        anchorpoint = "LEFT",
+        frameparent = nil, -- for SetParent
+        scale = 1.0,
+        showEmpty = false,
+        hideSlowly = true,
+        colors = {
+            ['*'] = {1, 0.33, 0.74}, -- points
+            ["bar1"] = { 0.9,0.1,0.1 },
+            ["bar2"] = { 0.71, 0.16, 0 },
+            ["layer2"] = { 0.74, 0.06, 0 },
+            ["row2"] = { 0.80, 0.23, 0.79 },
+        },
+        glowIntensity = 0.7,
+        preset3d = "glowPurple",
+        preset3dlayer2 = "glowArcshot",
+        preset3dpointbar2 = "void",
+        bar2_x = 13,
+        bar2_y = -20,
+        classThemes = false,
+        colors3d = true,
+        showAlways = false,
+        onlyCombat = false,
+        disableProgress = false,
+        cooldownOnTop = false,
+        chargeCooldown = true,
+        alpha = 1,
+        nameplateAttach = false,
+        nameplateAttachTarget = false,
+        nameplateOffsetX = 0,
+        nameplateOffsetY = 0,
+        hideWithoutTarget = false,
+        vertical = false,
+        overrideLayout = false,
+        soundChannel = "SFX",
+        soundNameFull = "none",
+        soundNameFullCustom = "Interface\\AddOns\\YourSound.mp3",
+        disabled = false,
+    },
 }
 NugComboBar.defaults = defaults
-
-local function SetupDefaults(t, defaults)
-    for k,v in pairs(defaults) do
-        if type(v) == "table" then
-            if t[k] == nil then
-                t[k] = CopyTable(v)
-            else
-                SetupDefaults(t[k], v)
-            end
-        else
-            if t[k] == nil then t[k] = v end
-        end
-    end
-end
-local function RemoveDefaults(t, defaults)
-    for k, v in pairs(defaults) do
-        if type(t[k]) == 'table' and type(v) == 'table' then
-            RemoveDefaults(t[k], v)
-            if next(t[k]) == nil then
-                t[k] = nil
-            end
-        elseif t[k] == v then
-            t[k] = nil
-        end
-    end
-    return t
-end
-
 
 NugComboBar.SkinVersion = 500
 do
@@ -222,42 +176,22 @@ do
 
             NugComboBarDB_Global = NugComboBarDB_Global or {}
             NugComboBarDB_Character = NugComboBarDB_Character or {}
-            NugComboBarDB_Character.specspec = NugComboBarDB_Character.specspec or {}
-            local _,class = UnitClass("player")
-            NugComboBarDB_Global.charspec = NugComboBarDB_Global.charspec or {}
-            user = UnitName("player").."@"..GetRealmName()
 
-            if not initial then
-                RemoveDefaults(NugComboBarDB, defaults)
-            end
+            self:DoMigrations(NugComboBarDB_Global)
+            self.db = LibStub("AceDB-3.0"):New("NugComboBarDB_Global", defaults, "Default") -- Create a DB using defaults and using a shared default profile
+            NugComboBarDB = self.db
 
-            if NugComboBarDB_Global.charspec[user] then -- old format compatibility
-                NugComboBarDB_Global.charspec[user] = nil
-                NugComboBarDB_Character.charspec = true
-            end
+            self.db.RegisterCallback(self, "OnProfileChanged", "Reconfigure")
+            self.db.RegisterCallback(self, "OnProfileCopied", "Reconfigure")
+            self.db.RegisterCallback(self, "OnProfileReset", "Reconfigure")
 
-            -- local NugComboBarDBSource
-            if NugComboBarDB_Character.charspec then
-                local spec = GetSpecialization()
-                if spec and NugComboBarDB_Character.specspec[spec] then
-                    NugComboBarDB_Character.specdb = NugComboBarDB_Character.specdb or {}
-                    NugComboBarDB_Character.specdb[spec] = NugComboBarDB_Character.specdb[spec] or {}
 
-                    NugComboBarDBSource = NugComboBarDB_Character.specdb[spec]
-                else
-                    NugComboBarDBSource = NugComboBarDB_Character
-                end
-            else
-                NugComboBarDBSource = NugComboBarDB_Global
-            end
-
-            self:DoMigrations(NugComboBarDBSource)
-            SetupDefaults(NugComboBarDBSource, defaults)
             if not self:IsDefaultSkin() then
-                NugComboBarDBSource.classThemes = false
+                self.db.profile.classThemes = false
             end
 
 
+            --[[
             if NugComboBarDBSource.classThemes then
                 NugComboBarDB = setmetatable({
                     __classTheme = nil,
@@ -295,23 +229,17 @@ do
             else
                 NugComboBarDB = NugComboBarDBSource
             end
-            NugComboBar.db = NugComboBarDB
+            ]]
 
             NugComboBar.isDisabled = nil
-            if type(NugComboBarDBSource.disabled) == "table" then NugComboBarDBSource.disabled = nil end --old format bugfix
-            NugComboBarDB_Global.disabled = nil
-            if NugComboBarDB.disabled then
-                NugComboBar.isDisabled = true
-                NugComboBar:SuperDisable()
-            end
 
             playerClass = select(2,UnitClass("player"))
 
             self:RegisterEvent("PLAYER_LOGIN")
-            self:RegisterEvent("PLAYER_LOGOUT")
+            -- self:RegisterEvent("PLAYER_LOGOUT")
 
-            if NugComboBarDB.disableBlizz then NugComboBar.disableBlizzFrames() end
-            if NugComboBarDB.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
+            if self.db.global.disableBlizz then NugComboBar.disableBlizzFrames() end
+            if self.db.global.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
 
             if initial then
                 local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
@@ -326,15 +254,9 @@ do
                 end)
             end
 
-    --~         self:RegisterEvent("UPDATE_STEALTH")
-    --~         self:RegisterEvent("UNIT_DISPLAYPOWER")
-    --~         self.UNIT_DISPLAYPOWER = self.UPDATE_STEALTH
             initial = false
         end
     end
-end
-function NugComboBar.PLAYER_LOGOUT(self, event)
-    RemoveDefaults(NugComboBarDB, defaults)
 end
 
 NugComboBar.soundFiles = {
@@ -372,7 +294,7 @@ local ResolutionOffsets = {
 
 function NugComboBar:SetupClassTheme()
     if isClassic then return end
-    if not NugComboBarDB.classThemes then return end
+    if not self.db.profile.classThemes then return end
     local _, class = UnitClass("player")
     local spec = GetSpecialization() or 0
 
@@ -417,8 +339,10 @@ do
         if initial then self:Create() end
         -- Always calling :Create will allow switching to vertical without reload?
 
-        if NugComboBarDB.frameparent and _G[NugComboBarDB.frameparent] then
-             NugComboBar:SetParent(_G[NugComboBarDB.frameparent])
+        local profile = self.db.profile
+
+        if profile.frameparent and _G[profile.frameparent] then
+             NugComboBar:SetParent(_G[profile.frameparent])
         end
 
         -- -- class themes
@@ -433,20 +357,20 @@ do
         -- end
 
         local presets = NugComboBar.presets
-        if not presets[NugComboBarDB.preset3dlayer2] then
-            NugComboBarDB.preset3dlayer2 = defaults.preset3dlayer2
-            if not presets[NugComboBarDB.preset3dlayer2] then
-                NugComboBarDB.preset3dlayer2 = next(presets)
+        if not presets[profile.preset3dlayer2] then
+            profile.preset3dlayer2 = defaults.preset3dlayer2
+            if not presets[profile.preset3dlayer2] then
+                profile.preset3dlayer2 = next(presets)
             end
         end
 
-        if not NugComboBar.soundFiles[NugComboBarDB.soundNameFull] then
-            NugComboBarDB.soundNameFull = "none"
+        if not NugComboBar.soundFiles[profile.soundNameFull] then
+            profile.soundNameFull = "none"
         end
 
 
 
-        if NugComboBarDB.disableProgress then
+        if profile.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
             NugComboBar.EnableBar = NugComboBar.DisableBar
             NugComboBar:DisableBar()
@@ -454,7 +378,7 @@ do
 
         self:SetAlpha(0)
 
-        self:SetScale(NugComboBarDB.scale)
+        self:SetScale(profile.scale)
 
         self.eventProxy = CreateFrame("Frame", nil, self)
         self.eventProxy:SetScript("OnEvent", function(proxy, event, ...)
@@ -463,7 +387,7 @@ do
 
         self.flags = setmetatable({}, {
             __index = function(t,k)
-                return NugComboBarDB[k]
+                return NugComboBar.db.profile[k]
             end
         })
         flags = self.flags
@@ -473,14 +397,14 @@ do
             self:CreateAnchor()
         else
             self.anchor:ClearAllPoints()
-            self.anchor:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+            self.anchor:SetPoint(profile.apoint, profile.parent, profile.point,profile.x,profile.y)
         end
 
         local playerNameplateEnabled = GetCVar("nameplateShowSelf") == "1"
-        if NugComboBarDB.nameplateAttachTarget then
+        if profile.nameplateAttachTarget then
             -- self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
             self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-        elseif playerNameplateEnabled and NugComboBarDB.nameplateAttach then
+        elseif playerNameplateEnabled and profile.nameplateAttach then
             if C_NamePlate.GetNamePlateForUnit("player") then
                 NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
             else
@@ -489,7 +413,7 @@ do
             self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
             self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
         else
-            self.Commands.anchorpoint(NugComboBarDB.anchorpoint)
+            self.Commands.anchorpoint(profile.anchorpoint)
             self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
             self:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
         end
@@ -514,6 +438,9 @@ do
     end
 end
 
+function NugComboBar:Reconfigure()
+end
+
 
 local fadeTime = 1
 local fader = CreateFrame("Frame")
@@ -523,7 +450,7 @@ local HideTimer = function(self, time)
 
     local ncb = NugComboBar
     local a = 1-((self.OnUpdateCounter - fadeAfter) / fadeTime)
-    ncb:SetAlpha(NugComboBarDB.alpha*a)
+    ncb:SetAlpha(NugComboBar.db.profile.alpha*a)
     if self.OnUpdateCounter >= fadeAfter + fadeTime then
         self:SetScript("OnUpdate",nil)
         ncb:SetAlpha(0)
@@ -534,19 +461,19 @@ end
 
 
 function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
-    if NugComboBarDB.nameplateAttachTarget then
+    if self.db.profile.nameplateAttachTarget then
         local targetFrame = C_NamePlate.GetNamePlateForUnit("target")
 
         if targetFrame then
             self:Show()
             self:ClearAllPoints()
-            self:SetPoint("BOTTOM", targetFrame, "TOP", NugComboBarDB.nameplateOffsetX, NugComboBarDB.nameplateOffsetY)
+            self:SetPoint("BOTTOM", targetFrame, "TOP", self.db.profile.nameplateOffsetX, self.db.profile.nameplateOffsetY)
         else
             self:Hide()
         end
     end
 
-    if not UnitExists("target") and NugComboBarDB.hideWithoutTarget and playerClass ~= "DEATHKNIGHT" then
+    if not UnitExists("target") and self.db.profile.hideWithoutTarget and playerClass ~= "DEATHKNIGHT" then
         self:Hide()
     end
 end
@@ -595,7 +522,6 @@ function NugComboBar.EnableBar(self, min, max, btype, isTimer, isReversed)
 	if isTimer then
 		self.bar:SetScript("OnUpdate", AuraTimerOnUpdate)
 	end
-    -- self.bar:Show()
 	return true
 end
 
@@ -606,11 +532,11 @@ function NugComboBar.DisableBar(self)
 end
 
 local function AnticipationIn(point, i)
-    local r,g,b = unpack(NugComboBarDB.colors["layer2"])
+    local r,g,b = unpack(NugComboBar.db.profile.colors["layer2"])
     point:SetColor(r,g,b)
     point.anticipationColor = true
 
-    point:SetPreset(NugComboBarDB.preset3dlayer2)
+    point:SetPreset(NugComboBar.db.profile.preset3dlayer2)
 end
 
 local function AnticipationOut(point, i)
@@ -631,11 +557,12 @@ function NugComboBar.UNIT_COMBO_POINTS(self, event, unit, ...)
 end
 
 function NugComboBar:Update(unit, ...)
+    local profile = self.db.profile
     if flags.onlyCombat and not UnitAffectingCombat("player") then
         self:Hide()
         return
     else
-        if not NugComboBarDB.nameplateAttachTarget then
+        if not profile.nameplateAttachTarget then
             self:Show()
         end
     end -- usually frame is set to 0 alpha
@@ -665,13 +592,13 @@ function NugComboBar:Update(unit, ...)
 	            comboPoints ~= comboPointsBefore and
 	            -- comboPointsBefore ~= 0 then
 	            UnitGUID(allowedTargetUnit) == targetBefore then
-                    local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                    local sound = NugComboBar.soundFiles[profile.soundNameFull]
                     if sound == "custom" then
-                        sound = NugComboBarDB.soundNameFullCustom
-                        PlaySoundFile(sound, NugComboBarDB.soundChannel)
+                        sound = profile.soundNameFullCustom
+                        PlaySoundFile(sound, profile.soundChannel)
                     else
                         if type(sound) == "number" then
-                            PlaySound(sound, NugComboBarDB.soundChannel)
+                            PlaySound(sound, profile.soundChannel)
                         end
                     end
 	        end
@@ -693,14 +620,14 @@ function NugComboBar:Update(unit, ...)
 
     	        if secondLayerPoints then -- Anticipation stuff
     	            if i <= secondLayerPoints then
-    	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3dlayer2)
+    	                if  (point.currentPreset and point.currentPreset ~= profile.preset3dlayer2)
     	                    or
     	                    (not point.anticipationColor) then
 
     	                    point:Reappear(AnticipationIn, i)
     	                end
     	            else
-    	                if  (point.currentPreset and point.currentPreset ~= NugComboBarDB.preset3d)
+    	                if  (point.currentPreset and point.currentPreset ~= profile.preset3d)
     	                    or
     	                    (point.anticipationColor) then
 
@@ -796,7 +723,7 @@ function NugComboBar:Update(unit, ...)
     else
         fader:SetScript("OnUpdate", nil)
         self.hiding = false
-        self:SetAlpha(NugComboBarDB.alpha)
+        self:SetAlpha(profile.alpha)
     end
 
     comboPointsBefore = comboPoints
@@ -828,9 +755,9 @@ end
 
 function NugComboBar.SetColor(point, r, g, b)
     if b then
-        NugComboBarDB.colors[point] = {r,g,b}
+        NugComboBar.db.profile.colors[point] = {r,g,b}
     else
-        local clr = NugComboBarDB.colors[point]
+        local clr = NugComboBar.db.profile.colors[point]
         if not clr then return end
         r,g,b = unpack(clr)
     end
@@ -878,10 +805,12 @@ function NugComboBar.CreateAnchor(frame)
 	self:SetBackdropColor(1, 0, 0, 0.8)
     self:SetFrameStrata("HIGH")
 
-    self:SetPoint(NugComboBarDB.apoint, NugComboBarDB.parent, NugComboBarDB.point,NugComboBarDB.x,NugComboBarDB.y)
+    local profile = NugComboBar.db.profile
+
+    self:SetPoint(profile.apoint, profile.parent, profile.point,profile.x,profile.y)
     frame.anchor = self
     frame.RestoreStaticPosition = function(self)
-        local p1 = NugComboBarDB.anchorpoint
+        local p1 = profile.anchorpoint
         local p2
         if      p1 == "LEFT" then p2 = "RIGHT"
         elseif  p1 == "RIGHT" then p2 = "LEFT"
@@ -901,8 +830,9 @@ function NugComboBar.CreateAnchor(frame)
         self:StopMovingOrSizing();
         self:SetUserPlaced(false)
         local parent
-        NugComboBarDB.apoint, parent, NugComboBarDB.point, NugComboBarDB.x, NugComboBarDB.y = self:GetPoint(1)
-        NugComboBarDB.parent = "UIParent"
+        local profile = NugComboBar.db.profile
+        profile.apoint, parent, profile.point, profile.x, profile.y = self:GetPoint(1)
+        profile.parent = "UIParent"
     end)
 
     self:Hide()
@@ -914,9 +844,9 @@ function NugComboBar.ShowColorPicker(self,color)
     ColorPickerFrame:Hide()
     local upcolor = (color > 0) and color or 5
     NugComboBar.colorPickerColor = color
-    ColorPickerFrame:SetColorRGB(unpack(NugComboBarDB.colors[upcolor]))
+    ColorPickerFrame:SetColorRGB(unpack(NugComboBar.db.profile.colors[upcolor]))
     ColorPickerFrame.hasOpacity = false
-    ColorPickerFrame.previousValues = {unpack(NugComboBarDB.colors[upcolor])} -- otherwise we'll get reference to changed table
+    ColorPickerFrame.previousValues = {unpack(NugComboBar.db.profile.colors[upcolor])} -- otherwise we'll get reference to changed table
     ColorPickerFrame.func = function(previousValues)
         local r,g,b
         local color = NugComboBar.colorPickerColor
@@ -943,8 +873,8 @@ function NugComboBar.ShowColorPicker(self,color)
 end
 
 function NugComboBar.Set3DPreset(self, preset, preset2)
-    local e1 = preset or NugComboBarDB.preset3d
-    local e2 = preset2 or NugComboBarDB.preset3dpointbar2
+    local e1 = preset or self.db.profile.preset3d
+    local e2 = preset2 or self.db.profile.preset3dpointbar2
     -- for _, point in pairs(self.point) do
     for i = 1, self.MAX_POINTS do
         local p = self.p[i]
@@ -984,14 +914,14 @@ NugComboBar.Commands = {
     ["unlock"] = function(v)
 		NugComboBar:Show()
         NugComboBar.anchor:Show()
-        NugComboBar:SetAlpha(NugComboBarDB.alpha)
+        NugComboBar:SetAlpha(NugComboBar.db.profile.alpha)
         for i=1,NugComboBar.MAX_POINTS do
             NugComboBar.p[i]:Activate()
         end
     end,
     ["lock"] = function(v)
         NugComboBar.anchor:Hide()
-        NugComboBar:UNIT_COMBO_POINTS(nil, allowedUnit)
+        NugComboBar:Update()
     end,
     ["reset"] = function(v)
         NugComboBar.anchor:ClearAllPoints()
@@ -1001,9 +931,9 @@ NugComboBar.Commands = {
     end,
     ["anchorpoint"] = function(v)
         local ap = v:upper()
-        if ap ~= "RIGHT" and ap ~="LEFT" and ap ~= "TOP" then print ("Current anchor point is: "..NugComboBarDB.anchorpoint); return end
-        NugComboBarDB.anchorpoint = ap
-        local p1 = NugComboBarDB.anchorpoint
+        if ap ~= "RIGHT" and ap ~="LEFT" and ap ~= "TOP" then print ("Current anchor point is: "..NugComboBar.db.profile.anchorpoint); return end
+        NugComboBar.db.profile.anchorpoint = ap
+        local p1 = NugComboBar.db.profile.anchorpoint
         local p2
         if      p1 == "LEFT" then p2 = "RIGHT"
         elseif  p1 == "RIGHT" then p2 = "LEFT"
@@ -1015,115 +945,68 @@ NugComboBar.Commands = {
 	["bar2offset"] = function(a,b)
 		if type(a) == "string" then
 			local p = ParseOpts(a)
-	        NugComboBarDB.bar2_x = p["x"] or NugComboBarDB.bar2_x
-	        NugComboBarDB.bar2_y = p["y"] or NugComboBarDB.bar2_y
+	        NugComboBar.db.profile.bar2_x = p["x"] or NugComboBar.db.profile.bar2_x
+	        NugComboBar.db.profile.bar2_y = p["y"] or NugComboBar.db.profile.bar2_y
 		else
-			NugComboBarDB.bar2_x = a or NugComboBarDB.bar2_x
-	        NugComboBarDB.bar2_y = b or NugComboBarDB.bar2_y
+			NugComboBar.db.profile.bar2_x = a or NugComboBar.db.profile.bar2_x
+	        NugComboBar.db.profile.bar2_y = b or NugComboBar.db.profile.bar2_y
 		end
 		NugComboBar:Reinitialize()
 	end,
     ["showempty"] = function(v)
-        NugComboBarDB.showEmpty = not NugComboBarDB.showEmpty
+        NugComboBar.db.profile.showEmpty = not NugComboBar.db.profile.showEmpty
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["showalways"] = function(v)
-        NugComboBarDB.showAlways = not NugComboBarDB.showAlways
+        NugComboBar.db.profile.showAlways = not NugComboBar.db.profile.showAlways
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["onlycombat"] = function(v)
-        NugComboBarDB.onlyCombat = not NugComboBarDB.onlyCombat
+        NugComboBar.db.profile.onlyCombat = not NugComboBar.db.profile.onlyCombat
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     ["hideslowly"] = function(v)
-        NugComboBarDB.hideSlowly = not NugComboBarDB.hideSlowly
+        NugComboBar.db.profile.hideSlowly = not NugComboBar.db.profile.hideSlowly
     end,
     ["toggleblizz"] = function(v)
-        NugComboBarDB.disableBlizz = not NugComboBarDB.disableBlizz
+        NugComboBar.db.global.disableBlizz = not NugComboBar.db.global.disableBlizz
         print ("NCB> Changes will take effect after /reload")
     end,
     ["toggleblizznp"] = function(v)
-        NugComboBarDB.disableBlizzNP = not NugComboBarDB.disableBlizzNP
+        NugComboBar.db.global.disableBlizzNP = not NugComboBar.db.global.disableBlizzNP
         print ("NCB> Changes will take effect after /reload")
     end,
-    ["special"] = function(v)
-        NugComboBarDB.special1 = not NugComboBarDB.special1
-        print ("NCB Special = ", NugComboBarDB.special1)
-    end,
-    ["shadowdance"] = function(v)
-        NugComboBarDB.shadowDance = not NugComboBarDB.shadowDance
-        NugComboBar:Reinitialize()
-        print ("NCB Shadow Dance = ", NugComboBarDB.shadowDance)
-    end,
-	["runecooldowns"] = function(v)
-        NugComboBarDB.enableFullRuneTracker = not NugComboBarDB.enableFullRuneTracker
-        print (string.format("NCB> Rune Cooldowns are %s, it will take effect after /reload", NugComboBarDB.enableFullRuneTracker and "enabled" or "disabled"))
-    end,
-    ["tidalwaves"] = function(v)
-        NugComboBarDB.tidalWaves = not NugComboBarDB.tidalWaves
-        NugComboBar:Reinitialize()
-        print ("NCB Tidal Waves = ", NugComboBarDB.tidalWaves)
-    end,
-    ["infernoblast"] = function(v)
-        NugComboBarDB.infernoBlast = not NugComboBarDB.infernoBlast
-        NugComboBar:Reinitialize()
-        print ("NCB Inferno Blast = ", NugComboBarDB.infernoBlast)
-    end,
-	["phoenixflames"] = function(v)
-        NugComboBarDB.phoenixflames = not NugComboBarDB.phoenixflames
-        NugComboBar:Reinitialize()
-        print ("NCB Phoenix's Flames = ", NugComboBarDB.phoenixflames)
-    end,
-	["meatcleaver"] = function(v)
-        NugComboBarDB.meatcleaver = not NugComboBarDB.meatcleaver
-        NugComboBar:Reinitialize()
-        print ("NCB Meatcleaver = ", NugComboBarDB.meatcleaver)
-    end,
-    ["renewingmist"] = function(v)
-        NugComboBarDB.renewingMist = not NugComboBarDB.renewingMist
-        NugComboBar:Reinitialize()
-    end,
     ["nameplateattach"] = function(v)
-        NugComboBarDB.nameplateAttach = not NugComboBarDB.nameplateAttach
-        NugComboBarDB.nameplateAttachTarget = false
+        NugComboBar.db.profile.nameplateAttach = not NugComboBar.db.profile.nameplateAttach
+        NugComboBar.db.profile.nameplateAttachTarget = false
         NugComboBar:Reinitialize()
     end,
     ["nameplateattachtarget"] = function(v)
-        NugComboBarDB.nameplateAttachTarget = not NugComboBarDB.nameplateAttachTarget
-        NugComboBarDB.nameplateAttach = false
+        NugComboBar.db.profile.nameplateAttachTarget = not NugComboBar.db.profile.nameplateAttachTarget
+        NugComboBar.db.profile.nameplateAttach = false
         NugComboBar:Reinitialize()
     end,
     ["scale"] = function(v)
         local num = tonumber(v)
         if num then
-            NugComboBarDB.scale = num; NugComboBar:SetScale(NugComboBarDB.scale);
-        else print ("Current scale is: ".. NugComboBarDB.scale)
+            NugComboBar.db.profile.scale = num; NugComboBar:SetScale(NugComboBar.db.profile.scale);
+        else print ("Current scale is: ".. NugComboBar.db.profile.scale)
         end
     end,
     ["alpha"] = function(v)
         local num = tonumber(v)
         if num then
-            NugComboBarDB.alpha = num; NugComboBar:SetAlpha(NugComboBarDB.alpha);
-        else print ("Current alpha is: ".. NugComboBarDB.alpha)
+            NugComboBar.db.profile.alpha = num; NugComboBar:SetAlpha(NugComboBar.db.profile.alpha);
+        else print ("Current alpha is: ".. NugComboBar.db.profile.alpha)
         end
     end,
 	["chargecooldown"] = function(v)
-		NugComboBarDB.chargeCooldown = not NugComboBarDB.chargeCooldown
+		NugComboBar.db.profile.chargeCooldown = not NugComboBar.db.profile.chargeCooldown
         NugComboBar:Reinitialize()
     end,
 	["maxfill"] = function(v)
-		NugComboBarDB.maxFill = not NugComboBarDB.maxFill
+		NugComboBar.db.profile.maxFill = not NugComboBar.db.profile.maxFill
         NugComboBar:Reinitialize()
-    end,
-    ["disable"] = function(v)
-        if not NugComboBarDB_Character.charspec then return end
-        if NugComboBarDB.disabled then
-            NugComboBarDB.disabled = false
-        else
-            NugComboBarDB.disabled = true
-        end
-        NugComboBar:Reinitialize()
-        -- print ("NCB> Disabled for current class. Changes will take effect after /reload")
     end,
     ["changecolor"] = function(v)
         local num = tonumber(v)
@@ -1131,57 +1014,15 @@ NugComboBar.Commands = {
             NugComboBar:ShowColorPicker(num)
         end
     end,
-    ["adjustx"] = function(v)
-        local num = tonumber(v)
-        if num then
-            NugComboBarDB_Global.adjustX = num
-            for i,point in ipairs(NugComboBar.point) do
-                point:SetPreset(point.currentPreset)
-            end
-        end
-    end,
-    ["adjusty"] = function(v)
-        local num = tonumber(v)
-        if num then
-            NugComboBarDB_Global.adjustY = num
-            for i,point in ipairs(NugComboBar.point) do
-                point:SetPreset(point.currentPreset)
-            end
-        end
-    end,
     ["hidewotarget"] = function(v)
         NugComboBarDB.hideWithoutTarget = not NugComboBarDB.hideWithoutTarget
     end,
-    ["charspec"] = function(v)
-        if NugComboBarDB_Character.charspec then
-            NugComboBarDB_Character.charspec = nil
-        else
-            NugComboBarDB_Character.charspec = true
-        end
-
-        NugComboBar:Reinitialize()
-    end,
-    ["specspec"] = function(v)
-        if not NugComboBarDB_Character.charspec then print("Character-specific should be enabled first"); return end
-
-        local spec = GetSpecialization()
-        if not spec or spec == 0 then
-            return
-        end
-        if NugComboBarDB_Character.specspec[spec] then
-            NugComboBarDB_Character.specspec[spec] = nil
-        else
-            NugComboBarDB_Character.specspec[spec] = true
-        end
-
-        NugComboBar:Reinitialize()
-    end,
-    ["secondlayer"] = function(v)
-        NugComboBarDB.secondLayer = not NugComboBarDB.secondLayer
-    end,
+    -- ["secondlayer"] = function(v)
+    --     NugComboBar.db.profile.secondLayer = not NugComboBar.db.profile.secondLayer
+    -- end,
     ["toggleprogress"] = function(v)
-        NugComboBarDB.disableProgress = not NugComboBarDB.disableProgress
-        if NugComboBarDB.disableProgress then
+        NugComboBar.db.profile.disableProgress = not NugComboBar.db.profile.disableProgress
+        if NugComboBar.db.profile.disableProgress then
             NugComboBar.EnableBar_ = NugComboBar.EnableBar
             NugComboBar.EnableBar = NugComboBar.DisableBar
             NugComboBar:DisableBar()
@@ -1191,34 +1032,34 @@ NugComboBar.Commands = {
         end
     end,
     ["toggle3d"] = function(v)
-        NugComboBarDB.enable3d = not NugComboBarDB.enable3d
+        NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d
     end,
     ["classthemes"] = function(v)
-        NugComboBarDB.classThemes = not NugComboBarDB.classThemes
+        NugComboBar.db.profile.classThemes = not NugComboBar.db.profile.classThemes
         NugComboBar:Reinitialize()
     end,
     ["preset3d"] = function(v)
         if not NugComboBar.presets[v] then
             return print(string.format("Preset '%s' does not exist", v))
         end
-        NugComboBarDB.preset3d = v
+        NugComboBar.db.profile.preset3d = v
         NugComboBar:Set3DPreset(v)
     end,
     ["preset3dlayer2"] = function(v)
         if not NugComboBar.presets[v] then
             return print(string.format("Preset '%s' does not exist", v))
         end
-        NugComboBarDB.preset3dlayer2 = v
+        NugComboBar.db.profile.preset3dlayer2 = v
     end,
     ["preset3dpointbar2"] = function(v)
         if not NugComboBar.presets[v] then
             return print(string.format("Preset '%s' does not exist", v))
         end
-        NugComboBarDB.preset3dpointbar2 = v
+        NugComboBar.db.profile.preset3dpointbar2 = v
         NugComboBar:Set3DPreset()
     end,
     ["colors3d"] = function(v)
-        NugComboBarDB.colors3d = not NugComboBarDB.colors3d
+        NugComboBar.db.profile.colors3d = not NugComboBar.db.profile.colors3d
         for i=1,#NugComboBar.point do
             NugComboBar.SetColor(i)
         end
@@ -1229,7 +1070,7 @@ NugComboBar.Commands = {
         InterfaceOptionsFrame_OpenToCategory("NugComboBar")
     end,
     ["vertical"] = function(v)
-        NugComboBarDB.vertical = not NugComboBarDB.vertical
+        NugComboBar.db.global.vertical = not NugComboBar.db.global.vertical
         NugComboBar:Create()
         NugComboBar:PLAYER_LOGIN(nil)
         NugComboBar:PLAYER_ENTERING_WORLD(nil)
@@ -1238,27 +1079,27 @@ NugComboBar.Commands = {
         if not NugComboBar.soundFiles[v] then
             return print(string.format("Sound '%s' does not exist", v))
         end
-        NugComboBarDB.soundNameFull = v
+        NugComboBar.db.profile.soundNameFull = v
     end,
     ["setpos"] = function(v)
         local p = ParseOpts(v)
-        NugComboBarDB.apoint = p["point"] or NugComboBarDB.apoint
-        NugComboBarDB.parent = p["parent"] or NugComboBarDB.parent
-        NugComboBarDB.point = p["to"] or NugComboBarDB.point
-        NugComboBarDB.x = p["x"] or NugComboBarDB.x
-        NugComboBarDB.y = p["y"] or NugComboBarDB.y
-        local pos = NugComboBarDB
+        NugComboBar.db.profile.apoint = p["point"] or NugComboBar.db.profile.apoint
+        NugComboBar.db.profile.parent = p["parent"] or NugComboBar.db.profile.parent
+        NugComboBar.db.profile.point = p["to"] or NugComboBar.db.profile.point
+        NugComboBar.db.profile.x = p["x"] or NugComboBar.db.profile.x
+        NugComboBar.db.profile.y = p["y"] or NugComboBar.db.profile.y
+        local pos = NugComboBar.db.profile
         NugComboBar.anchor:SetPoint(pos.apoint, pos.parent, pos.point, pos.x, pos.y)
     end,
     ["overridelayout"] = function(newLayout)
         if not newLayout or newLayout == "none" or newLayout == "Default" then newLayout = false end
-        NugComboBarDB.overrideLayout = newLayout
+        NugComboBar.db.profile.overrideLayout = newLayout
         NugComboBar:Reinitialize()
     end,
 
     ["setparent"] = function(v)
         if _G[v] then
-            NugComboBarDB.frameparent = v
+            NugComboBar.db.profile.frameparent = v
             NugComboBar:SetParent(_G[v])
         end
     end,
@@ -1276,7 +1117,6 @@ local helpMessage = {
     "|cff55ff55/ncb anchorpoint|r <left | right | top >",
     "|cff55ff55/ncb showempty|r",
     "|cff55ff55/ncb hideslowly|r",
-    "|cff55ff55/ncb vertical|r",
     "|cff55ff55/ncb hidewotarget|r",
     "|cff55ff55/ncb toggleblizz|r",
     "|cff55ff55/ncb disable|enable|r (for current class)",
@@ -1568,48 +1408,6 @@ function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
 end
 
 
-do
-    local IsClean = function(db)
-        local ignoredProperies = {
-            specspec = true,
-            charspec = true,
-        }
-        local propeties = 0
-        for k,v in pairs(db) do
-            if not ignoredProperies[k] then
-                propeties = propeties + 1
-            end
-        end
-        return propeties == 0
-    end
-    local CURRENT_DB_VERSION = 1
-    function NugComboBar:DoMigrations(db)
-        if IsClean(db) or db.DB_VERSION == CURRENT_DB_VERSION then -- skip if db is empty or current
-            db.DB_VERSION = CURRENT_DB_VERSION
-            return
-        end
-
-        if db.DB_VERSION == nil then
-            -- if non-default preset selected
-            if db.preset3d or db.preset3dpointbar2 then
-                db.enable3d = true -- keep 3d mode
-            else
-                -- otherwise switching to 2d mode with new default colors
-                print("[NugComboBar] Updated 2D mode is the new default. Migrating your settings...")
-                db.enable3d = false
-                if db.colors then
-                    for i,c in ipairs(db.colors) do
-                        db.colors[i] = {1, 0.33, 0.74}
-                    end
-                end
-            end
-
-            db.DB_VERSION = 1
-        end
-    end
-end
-
-
 function NugComboBar:RegisterConfig(name, config)
     configs[name] = config
 end
@@ -1665,4 +1463,152 @@ end
 
 function NugComboBar:SetPointGetter(func)
     GetComboPoints = func
+end
+
+
+
+do
+    local IsClean = function(db)
+        local ignoredProperies = {
+            specspec = true,
+            charspec = true,
+        }
+        local propeties = 0
+        for k,v in pairs(db) do
+            if not ignoredProperies[k] then
+                propeties = propeties + 1
+            end
+        end
+        return propeties == 0
+    end
+    local CURRENT_DB_VERSION = 2
+    function NugComboBar:DoMigrations(db)
+        if IsClean(db) or db.DB_VERSION == CURRENT_DB_VERSION then -- skip if db is empty or current
+            db.DB_VERSION = CURRENT_DB_VERSION
+            return
+        end
+
+        if db.DB_VERSION == nil then
+            -- if non-default preset selected
+            if db.preset3d or db.preset3dpointbar2 then
+                db.enable3d = true -- keep 3d mode
+            else
+                -- otherwise switching to 2d mode with new default colors
+                print("[NugComboBar] Updated 2D mode is the new default. Migrating your settings...")
+                db.enable3d = false
+                if db.colors then
+                    for i,c in ipairs(db.colors) do
+                        db.colors[i] = {1, 0.33, 0.74}
+                    end
+                end
+            end
+
+            db.DB_VERSION = 1
+        end
+
+        if db.DB_VERSION == 1 then
+            db.global = {}
+            db.global.enable3d = db.enable3d
+            db.global.disableBlizz = db.disableBlizz
+            db.global.disableBlizzNP = db.disableBlizzNP
+            db.global.enablePrettyRunes = db.enablePrettyRunes
+            db.global.vertical = db.vertical
+
+            db.profiles = {
+                Default = {}
+            }
+            local default_profile = db.profiles["Default"]
+            local CopyProfile = function(old, new)
+                new.apoint = old.apoint
+                new.parent = old.parent
+                new.point = old.point
+                new.x = old.x
+                new.y = old.y
+                new.anchorpoint = old.anchorpoint
+                new.frameparent = old.frameparent
+                new.scale = old.scale
+                new.showEmpty = old.showEmpty
+                new.hideSlowly = old.hideSlowly
+                new.colors = old.colors
+                new.glowIntensity = old.glowIntensity
+                new.preset3d = old.preset3d
+                new.preset3dlayer2 = old.preset3dlayer2
+                new.preset3dpointbar2 = old.preset3dpointbar2
+                new.bar2_x = old.bar2_x
+                new.bar2_y = old.bar2_y
+                new.classThemes = old.classThemes
+                new.colors3d = old.colors3d
+                new.showAlways = old.showAlways
+                new.onlyCombat = old.onlyCombat
+                new.disableProgress = old.disableProgress
+                new.cooldownOnTop = old.cooldownOnTop
+                new.chargeCooldown = old.chargeCooldown
+                new.alpha = old.alpha
+                new.nameplateAttach = old.nameplateAttach
+                new.nameplateAttachTarget = old.nameplateAttachTarget
+                new.nameplateOffsetX = old.nameplateOffsetX
+                new.nameplateOffsetY = old.nameplateOffsetY
+                new.hideWithoutTarget = old.hideWithoutTarget
+                -- new.vertical = old.vertical
+                new.overrideLayout = old.overrideLayout
+                new.soundChannel = old.soundChannel
+                new.soundNameFull = old.soundNameFull
+                new.soundNameFullCustom = old.soundNameFullCustom
+                -- -- new.disabled = old.disabled
+
+                old.enable3d = nil
+                old.disableBlizz = nil
+                old.disableBlizzNP = nil
+                old.enablePrettyRunes = nil
+                old.vertical = nil
+
+                old.apoint = nil
+                old.parent = nil
+                old.point = nil
+                old.x = nil
+                old.y = nil
+                old.anchoropint = nil
+                old.frameparent = nil
+                old.scale = nil
+                old.showEmpty = nil
+                old.hideSlowly = nil
+                old.colors = nil
+                old.glowIntensity = nil
+                old.preset3d = nil
+                old.preset3dlayer2 = nil
+                old.preset3dpointbar2 = nil
+                old.bar2_x = nil
+                old.bar2_y = nil
+                old.classThemes = nil
+                old.colors3d = nil
+                old.showAlways = nil
+                old.onlyCombat = nil
+                old.disableProgress = nil
+                old.cooldownOnTop = nil
+                old.chargeCooldown = nil
+                old.alpha = nil
+                old.nameplateAttach = nil
+                old.nameplateAttachTarget = nil
+                old.nameplateOffsetX = nil
+                old.nameplateOffsetY = nil
+                old.hideWithoutTarget = nil
+                old.vertical = nil
+                old.overrideLayout = nil
+                old.soundChannel = nil
+                old.soundNameFull = nil
+                old.soundNameFullCustom = nil
+                old.disabled = nil
+            end
+
+            CopyProfile(db, default_profile)
+            if NugComboBarDB_Character.charspec and NugComboBarDB_Character.DB_VERSION == 1 then
+                local pKey = UnitName("player").." - "..GetRealmName()
+                db.profiles[pKey] = {}
+                CopyProfile(NugComboBarDB_Character, db.profiles[pKey])
+                NugComboBarDB_Character.charspec = nil
+            end
+
+            db.DB_VERSION = 2
+        end
+    end
 end

@@ -414,7 +414,7 @@ end
 
 
 local IsVertical = function()
-    return NugComboBar.db.vertical
+    return NugComboBar.db.profile.vertical
 end
 
 
@@ -446,7 +446,7 @@ NugComboBar.mappings = mappings
 
 function NugComboBar.MoveCharger(self, point)
     self.bar:ClearAllPoints()
-    if NugComboBarDB.cooldownOnTop then
+    if self.db.profile.cooldownOnTop then
         self.bar:SetPoint("BOTTOM", point, "TOP", 0,-17)
     else
         self.bar:SetPoint("TOP", point, "BOTTOM", 0,17)
@@ -471,15 +471,15 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
 
     local totalpoints = n + (n2 or 0)
 
-    if NugComboBar.db.overrideLayout then
-        local layout = NugComboBar.db.overrideLayout
+    if NugComboBar.db.profile.overrideLayout then
+        local layout = NugComboBar.db.profile.overrideLayout
         layout = tonumber(layout) or layout
         local customLayout = mappings[layout]
         if customLayout and #customLayout >= totalpoints then
             special = layout
         end
         -- if not customLayout then
-            -- NugComboBar.db.overrideLayout = false -- remove override if it was deleted from skin settings
+            -- NugComboBar.db.profile.overrideLayout = false -- remove override if it was deleted from skin settings
         -- end
     end
 
@@ -500,8 +500,8 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         end
         if popts.chainreset then
             prevt = nil
-            toffset_x = NugComboBar.db.bar2_x or toffset_x
-            toffset_y = NugComboBar.db.bar2_y or toffset_y
+            toffset_x = NugComboBar.db.profile.bar2_x or toffset_x
+            toffset_y = NugComboBar.db.profile.bar2_y or toffset_y
         end
         if IsVertical() then
             point.bg:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(toffset_y or 0), toffset_x or 0)
@@ -512,16 +512,16 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
 
 
         if i > n then
-            point:SetColor(unpack(NugComboBar.db.colors.bar2))
-            if not (point:SetPreset(NugComboBar.db.preset3dpointbar2)) then
-                NugComboBar.db.preset3dpointbar2 = NugComboBar.defaults.preset3dpointbar2
-                point:SetPreset(NugComboBar.db.preset3dpointbar2)
+            point:SetColor(unpack(NugComboBar.db.profile.colors.bar2))
+            if not (point:SetPreset(NugComboBar.db.profile.preset3dpointbar2)) then
+                NugComboBar.db.profile.preset3dpointbar2 = NugComboBar.defaults.preset3dpointbar2
+                point:SetPreset(NugComboBar.db.profile.preset3dpointbar2)
             end
         else
-            point:SetColor(unpack(NugComboBar.db.colors[i]))
-            if not (point:SetPreset(NugComboBar.db.preset3d)) then
-                NugComboBar.db.preset3d = NugComboBar.defaults.preset3d
-                point:SetPreset(NugComboBar.db.preset3d)
+            point:SetColor(unpack(NugComboBar.db.profile.colors[i]))
+            if not (point:SetPreset(NugComboBar.db.profile.preset3d)) then
+                NugComboBar.db.profile.preset3d = NugComboBar.defaults.preset3d
+                point:SetPreset(NugComboBar.db.profile.preset3d)
             end
         end
     end
@@ -597,7 +597,7 @@ local SetColorFunc = function(self,r,g,b)
     local h2 = h - 0.15
     if h2 < 0 then h2 = h2 + 1 end
     local r2,g2,b2 = hsv2rgb(h2, s, v)
-    local m1 = NugComboBar.db.glowIntensity
+    local m1 = NugComboBar.db.profile.glowIntensity
     local m2 = 1
 
     self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
@@ -794,7 +794,7 @@ NugComboBar.ResetTransformations = ResetTransformations
 
 local SetColor3DFunc = function(self, r,g,b, force)
     local enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB
-    if NugComboBar.db.colors3d or force then
+    if NugComboBar.db.profile.colors3d or force then
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = true, false, 0, 1, 0, 1, r,g,b, 1, r,g,b
     else
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = true, false, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
@@ -1022,7 +1022,7 @@ NugComboBar.Create = function(self)
 
     local initial = not _G["NugComboBarBackgroundTexture1"]
 
-    local is3D = NugComboBar.db.enable3d
+    local is3D = NugComboBar.db.global.enable3d
 
     if initial then
         self.point = self.point or {}
