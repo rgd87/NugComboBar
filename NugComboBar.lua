@@ -30,7 +30,7 @@ local GetSpecialization = isClassic and function() return nil end or _G.GetSpeci
 
 local configs = {}
 local currentConfigName
-local oldTriggerState
+local currentTriggerState = {}
 
 NugComboBar:SetScript("OnEvent", function(self, event, ...)
 	return self[event](self, event, ...)
@@ -74,37 +74,21 @@ function NugComboBar:LoadClassSettings()
         self.isTempDisabled = nil
         if self.bar then self.bar:SetColor(unpack(self.db.profile.colors.bar1)) end
 
-        if class == "ROGUE" then
-            self:SelectConfig("ComboPointsRogue")
-        elseif class == "DRUID" then
-            self:SelectConfig("ShapeshiftDruid")
-        elseif class == "PALADIN" then
-            self:SelectConfig("ShieldOfTheRighteousness")
-        elseif class == "MONK" then
-            self:SelectConfig("IronskinBrew")
-        elseif class == "WARLOCK" then
-            self:SelectConfig("SoulShards")
-        elseif class == "DEMONHUNTER" then
-            self:SelectConfig("SoulFragments")
-        elseif class == "DEATHKNIGHT" then
-            self:SelectConfig("FesteringWounds")
-        elseif class == "MAGE" then
-            self:SelectConfig("Fireblast")
-        elseif class == "WARRIOR" then
-            self:SelectConfig("ShieldBlock")
-        else
-            self:Disable()
-        end
-        self:Update()
-
         self:RegisterEvent("SPELLS_CHANGED")
 end
 function NugComboBar:SPELLS_CHANGED()
-    if not currentConfigName then return end
-    local config = configs[currentConfigName]
-    local newTriggerState = self:GetTriggerState(config)
-    if not self:IsTriggerStateEqual(oldTriggerState, newTriggerState) then
-        self:SelectConfig(currentConfigName)
+    local spec = GetSpecialization()
+    local class = select(2,UnitClass("player"))
+    local newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
+
+    if not currentConfigName then
+        currentConfigName = newConfigName
+    end
+
+    local currentConfig = configs[currentConfigName]
+    local newTriggerState = self:GetTriggerState(currentConfig)
+    if currentConfigName ~= newConfigName or not self:IsTriggerStateEqual(currentTriggerState, newTriggerState) then
+        self:SelectConfig(newConfigName)
         self:Update()
     end
 end
@@ -115,6 +99,20 @@ local defaults = {
         disableBlizz = false,
         disableBlizzNP = false,
         enablePrettyRunes = true,
+        classConfig = {
+            ROGUE = { "ComboPointsRogue", "ComboPointsRogue", "ComboPointsRogue" },
+            DRUID = { "ShapeshiftDruid", "ShapeshiftDruid", "ShapeshiftDruid", "ShapeshiftDruid" },
+            PALADIN = { "Disabled", "ShieldOfTheRighteousness", "HolyPower" },
+            MONK = { "IronskinBrew", "Teachings", "Chi" },
+            WARLOCK = { "SoulShards", "SoulShards", "SoulShards" },
+            DEMONHUNTER = { "Disabled", "SoulFragments" },
+            DEATHKNIGHT = { "Runes", "Runes", "Runes" },
+            MAGE = { "ArcaneCharges", "Fireblast", "Icicles" },
+            WARRIOR = { "Disabled", "Meatcleaver", "ShieldBlock" },
+            SHAMAN = { "Disabled", "Disabled", "Disabled" },
+            HUNTER = { "Disabled", "Disabled", "Disabled" },
+            PRIEST = { "Disabled", "Disabled", "Disabled" },
+        }
     },
     profile = {
         apoint = "CENTER",
@@ -1440,7 +1438,7 @@ function NugComboBar:SelectConfig(name)
     self:ApplyConfig(name)
     currentConfigName = name
     local newConfig = configs[name]
-    oldTriggerState = self:GetTriggerState(newConfig)
+    currentTriggerState = self:GetTriggerState(newConfig)
 end
 
 function NugComboBar:ApplyConfig(name)
