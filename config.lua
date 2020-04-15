@@ -130,7 +130,7 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
             self:SetPointGetter(RogueGetComboPoints)
         end
     end,
-})
+}, "ROGUE")
 
 ---------------------
 -- DRUID
@@ -148,7 +148,7 @@ NugComboBar:RegisterConfig("ComboPointsDruid", {
         self:SetTargetUnit("player")
         self:SetPointGetter(RogueGetComboPoints)
     end
-})
+}, "DRUID")
 
 NugComboBar:RegisterConfig("Pulverize", {
     triggers = { GetSpecialization, GetSpell(80313) },
@@ -163,7 +163,7 @@ NugComboBar:RegisterConfig("Pulverize", {
         self:SetTargetUnit("target")
         self:SetPointGetter(GetAuraStack(192090, "HARMFUL", "target", "player"))
     end
-})
+}, "DRUID", 3)
 
 
 NugComboBar:RegisterConfig("ShapeshiftDruid", {
@@ -202,7 +202,7 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
         end
         self.UPDATE_SHAPESHIFT_FORM(self)
     end
-})
+}, "DRUID")
 
 
 ---------------------
@@ -247,7 +247,7 @@ NugComboBar:RegisterConfig("HolyPower", {
             self:SetPointGetter(GetHolyPower)
         end
     end
-})
+}, "PALADIN")
 
 NugComboBar:RegisterConfig("ShieldOfTheRighteousness", {
     triggers = { GetSpecialization },
@@ -262,7 +262,7 @@ NugComboBar:RegisterConfig("ShieldOfTheRighteousness", {
         self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(MakeGetChargeFunc(53600)) -- Shield of the Righteous
     end
-})
+}, "PALADIN", 2)
 
 ---------------------
 -- MONK
@@ -291,7 +291,7 @@ NugComboBar:RegisterConfig("Chi", {
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetChi)
     end
-})
+}, "MONK", 3)
 
 
 NugComboBar:RegisterConfig("IronskinBrew", {
@@ -313,7 +313,7 @@ NugComboBar:RegisterConfig("IronskinBrew", {
         self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(MakeGetChargeFunc(115308)) -- Ironskin Brew
     end
-})
+}, "MONK", 1)
 
 NugComboBar:RegisterConfig("Teachings", {
     triggers = { GetSpecialization },
@@ -325,7 +325,7 @@ NugComboBar:RegisterConfig("Teachings", {
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetAuraStack(202090)) -- Teachings of the Monastery
     end
-})
+}, "MONK", 2)
 
 NugComboBar:RegisterConfig("RenewingMist", {
     triggers = { GetSpecialization },
@@ -340,7 +340,7 @@ NugComboBar:RegisterConfig("RenewingMist", {
         self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(MakeGetChargeFunc(115151)) -- Renewing Mist
     end
-})
+}, "MONK", 2)
 
 ---------------------
 -- WARLOCK
@@ -384,7 +384,7 @@ NugComboBar:RegisterConfig("SoulShards", {
             self:DisableBar()
         end
     end
-})
+}, "WARLOCK")
 
 ---------------------
 -- DEMON HUNTER
@@ -437,7 +437,7 @@ NugComboBar:RegisterConfig("Runes", {
 
         self:SetPointGetter(GetTotalRunes) -- Soul Fragments
     end
-})
+}, "DEATHKNIGHT")
 
 
 NugComboBar:RegisterConfig("FesteringWounds", {
@@ -453,7 +453,7 @@ NugComboBar:RegisterConfig("FesteringWounds", {
         self:SetTargetUnit("target")
         self:SetPointGetter(GetAuraStack(194310, "HARMFUL", "target", "player")) -- Festering Wounds
     end
-})
+}, "DEATHKNIGHT", 3)
 
 
 ---------------------
@@ -482,7 +482,7 @@ NugComboBar:RegisterConfig("ArcaneCharges", {
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetArcaneCharges)
     end
-})
+}, "MAGE", 1)
 
 NugComboBar:RegisterConfig("Icicles", {
     triggers = { GetSpecialization },
@@ -494,7 +494,7 @@ NugComboBar:RegisterConfig("Icicles", {
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetAuraStack(205473, "HELPFUL", "player")) -- Icicles
     end
-})
+}, "MAGE", 3)
 
 
 local GetFireBlastCharges = MakeGetChargeFunc(108853) -- Fire Blast
@@ -523,7 +523,7 @@ NugComboBar:RegisterConfig("Fireblast", {
         self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(GetFireBlastCharges)
     end
-})
+}, "MAGE", 2)
 
 NugComboBar:RegisterConfig("PhoenixFlamesFireblast", {
     triggers = { GetSpecialization, GetSpell(205029), GetSpell(257541) }, -- Flame On, PF
@@ -542,7 +542,7 @@ NugComboBar:RegisterConfig("PhoenixFlamesFireblast", {
             self:SetPointGetter(GetFireBlastCharges)
         end
     end
-})
+}, "MAGE", 2)
 
 ---------------------
 -- WARRIOR
@@ -564,7 +564,7 @@ NugComboBar:RegisterConfig("Meatcleaver", {
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetMeatcleaver)
     end
-})
+}, "WARRIOR", 2)
 
 NugComboBar:RegisterConfig("ShieldBlock", {
     triggers = { GetSpecialization },
@@ -580,4 +580,4 @@ NugComboBar:RegisterConfig("ShieldBlock", {
         self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(MakeGetChargeFunc(2565)) -- Shield Block
     end
-})
+}, "WARRIOR", 3)

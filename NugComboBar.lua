@@ -112,6 +112,20 @@ local defaults = {
             SHAMAN = { "Disabled", "Disabled", "Disabled" },
             HUNTER = { "Disabled", "Disabled", "Disabled" },
             PRIEST = { "Disabled", "Disabled", "Disabled" },
+        },
+        specProfiles = {
+            ROGUE = { "Default", "Default", "Default" },
+            DRUID = { "Default", "Default", "Default", "Default" },
+            PALADIN = { "Default", "Default", "Default" },
+            MONK = { "Default", "Default", "Default" },
+            WARLOCK = { "Default", "Default", "Default" },
+            DEMONHUNTER = { "Default", "Default" },
+            DEATHKNIGHT = { "Default", "Default", "Default" },
+            MAGE = { "Default", "Default", "Default" },
+            WARRIOR = { "Default", "Default", "Default" },
+            SHAMAN = { "Default", "Default", "Default" },
+            HUNTER = { "Default", "Default", "Default" },
+            PRIEST = { "Default", "Default", "Default" },
         }
     },
     profile = {
@@ -1406,8 +1420,21 @@ function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
 end
 
 
-function NugComboBar:RegisterConfig(name, config)
+function NugComboBar:RegisterConfig(name, config, class, specIndex)
+    config.class = class
+    config.specIndex = specIndex
     configs[name] = config
+end
+
+function NugComboBar:GetAvailableConfigsForSpec(specIndex)
+    local _, class = UnitClass("player")
+    local avConfigs = {}
+    for name, config in pairs(configs) do
+        if config.class == class and (config.specIndex == specIndex or config.specIndex == nil) then
+            avConfigs[name] = name
+        end
+    end
+    return avConfigs
 end
 
 function NugComboBar:IsTriggerStateEqual(state1, state2)
