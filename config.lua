@@ -20,6 +20,7 @@ end
 
 local GetAuraStack = function(scanID, filter, unit, casterCheck)
     filter = filter or "HELPFUL"
+    unit = unit or "player"
     return function()
         local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
         if casterCheck and caster ~= casterCheck then count = nil end
@@ -519,7 +520,7 @@ NugComboBar:RegisterConfig("Fireblast", {
         self:SetDefaultValue(maxFireBlastCharges)
 
         self.flags.showEmpty = true
-        self.flags.soundFullEnabled = true
+        -- self.flags.soundFullEnabled = true
         self:EnableBar(0, 6,"Small", "Timer")
         self:SetPointGetter(GetFireBlastCharges)
     end

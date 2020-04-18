@@ -458,7 +458,9 @@ end
 
 function NugComboBar.SetMaxPoints(self, n, special, n2)
     -- n2 is second row length
-    if NugComboBar.MAX_POINTS == n and NugComboBar.MAX_POINTS2 == n2 then return end
+    -- !!! Currently it's important to always run this, even if config is the same.
+    ---     because it also updates colors and preset when switching profiles
+    -- if NugComboBar.MAX_POINTS == n and NugComboBar.MAX_POINTS2 == n2 then return end
     NugComboBar.MAX_POINTS = n
     NugComboBar.MAX_POINTS2 = n2
 
@@ -512,17 +514,11 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
 
 
         if i > n then
-            point:SetColor(unpack(NugComboBar.db.profile.colors.bar2))
-            if not (point:SetPreset(NugComboBar.db.profile.preset3dpointbar2)) then
-                NugComboBar.db.profile.preset3dpointbar2 = NugComboBar.defaults.preset3dpointbar2
-                point:SetPreset(NugComboBar.db.profile.preset3dpointbar2)
-            end
+            point:SetColor(unpack(self:GetColor("bar2")))
+            point:SetPreset(self:Get3DPreset("preset3dpointbar2"))
         else
-            point:SetColor(unpack(NugComboBar.db.profile.colors[i]))
-            if not (point:SetPreset(NugComboBar.db.profile.preset3d)) then
-                NugComboBar.db.profile.preset3d = NugComboBar.defaults.preset3d
-                point:SetPreset(NugComboBar.db.profile.preset3d)
-            end
+            point:SetColor(unpack(self:GetColor(i)))
+            point:SetPreset(self:Get3DPreset("preset3d"))
         end
     end
     self:SetWidth(framesize)
