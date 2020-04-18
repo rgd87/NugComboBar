@@ -79,7 +79,11 @@ function NugComboBar:SPELLS_CHANGED()
     local spec = GetSpecialization()
     local class = select(2,UnitClass("player"))
 
-    -- TODO: Profile switch should happen before config switch
+    local currentProfile = self.db:GetCurrentProfile()
+    local newSpecProfile = self.db.global.specProfiles[class][spec] or "Default"
+    if newSpecProfile ~= currentProfile then
+        self.db:SetProfile(newSpecProfile)
+    end
 
     local newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
 
@@ -354,6 +358,7 @@ function NugComboBar:Reconfigure()
 
     if currentConfigName then
         self:SelectConfig(currentConfigName)
+        self:Update() -- will update alpha
     end
 
     -- colors & col 3d & glow int:
@@ -363,8 +368,6 @@ function NugComboBar:Reconfigure()
     --              but only if frame was actually reconstructed by config switch
     -- disable progress: Reselect config
     -- -- cd on top -- Nothing?
-
-    self:Update() -- will update alpha
 end
 
 
