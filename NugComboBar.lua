@@ -15,7 +15,7 @@ local currentSpec = -1
 local playerClass
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local isDefaultSkin = nil
-
+local enablePrettyRunes = nil
 local UnitAura = UnitAura
 local GetSpellCharges = GetSpellCharges
 local UnitPower = UnitPower
@@ -304,8 +304,8 @@ do
             profile.soundNameFull = "none"
         end
 
+        enablePrettyRunes = self.db.global.enablePrettyRunes
         self:SetAlpha(0)
-
         self:SetScale(profile.scale)
 
         self.eventProxy = CreateFrame("Frame", nil, self)
@@ -1146,7 +1146,7 @@ local function RuneChargeOnUpdate(self, time)
 	if progress < 0 then progress = 0 end
     if progress > 1 then progress = 1 end
 
-    if flags.enablePrettyRunes then
+    if enablePrettyRunes then
         local pmp = progress*progress*progress+0.1
         self.playermodel:SetAlpha(pmp)--progress*0.8)
         self:SetAlpha(progress ~= 0 and 0.9 or 0)
@@ -1221,16 +1221,16 @@ function NugComboBar:EnsureRuneChargeFrame(point)
 
     if point.RuneChargeFrame then
         local existingRuneFrameIsPretty = point.RuneChargeFrame.SetPreset ~= nil
-        if flags.enablePrettyRunes ~= existingRuneFrameIsPretty then
+        if enablePrettyRunes ~= existingRuneFrameIsPretty then
             point.RuneChargeFrame:Hide()
-            point.RuneChargeFrame = flags.enablePrettyRunes and point._RuneChargeFramePretty or point._RuneChargeFrameNormal
+            point.RuneChargeFrame = enablePrettyRunes and point._RuneChargeFramePretty or point._RuneChargeFrameNormal
         end
     end
 
     if not point.RuneChargeFrame then
 
         local f
-        if flags.enablePrettyRunes then
+        if enablePrettyRunes then
             local t = point.bg
             local ts = t.settings
             f = self:Create3DPoint(point.id.."rcf", ts)
@@ -1262,7 +1262,7 @@ function NugComboBar:EnsureRuneChargeFrame(point)
         point.RuneChargeFrame = f
     end
 
-    if not flags.enablePrettyRunes then
+    if not enablePrettyRunes then
         point._RuneChargeFrameNormal:ClearAllPoints()
         if NugComboBar.db.profile.cooldownOnTop then
             point._RuneChargeFrameNormal:SetPoint("BOTTOM", point, "TOP", 0,-17)

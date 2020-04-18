@@ -425,7 +425,7 @@ NugComboBar:RegisterConfig("Runes", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
         self.flags.isRuneTracker = true
-        local isPrettyRuneCharger = self.flags.enablePrettyRunes
+        local isPrettyRuneCharger = self.db.global.enablePrettyRunes
         if isPrettyRuneCharger then
             self:SetMaxPoints(6, "DEATHKNIGHT")
         else
