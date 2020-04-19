@@ -292,20 +292,6 @@ do
                         set = function(info, s) NugComboBar.db.profile.cooldownOnTop = not NugComboBar.db.profile.cooldownOnTop end,
                         order = 12.55,
                     },
-                    enablePrettyRunes = {
-                        name = L"Pretty Runes",
-                        desc = L"If disabled, rune charge timers will be displayed as simple bars",
-                        width = "full",
-                        type = "toggle",
-                        confirm = true,
-						confirmText = "Warning: Requires UI reloading.",
-                        get = function(info) return NugComboBar.db.global.enablePrettyRunes end,
-                        set = function(info, s)
-                            NugComboBar.db.global.enablePrettyRunes = not NugComboBar.db.global.enablePrettyRunes
-                            ReloadUI()
-                        end,
-                        order = 12.6,
-                    },
                     -- vertical = {
                     --     name = L"Vertical",
                     --     type = "toggle",
@@ -313,32 +299,7 @@ do
                     --     set = function(info, s) NugComboBar.Commands.vertical() end,
                     --     order = 13,
                     -- },
-                    resourcesGroup = {
-                        type = "group",
-                        name = "",
-                        guiInline = true,
-                        order = 14,
-                        args = {
-                            togglebliz = {
-                                name = L"Disable Class Frames",
-                                type = "toggle",
-                                width = "double",
-                                desc = L"Hides default class frames on player unit frame",
-                                get = function(info) return NugComboBar.db.global.disableBlizz end,
-                                set = function(info, s) NugComboBar.Commands.toggleblizz() end,
-                                order = 14,
-                            },
-                            togglebliznp = {
-                                name = L"Disable Nameplate Class Frames",
-                                type = "toggle",
-                                width = "double",
-                                desc = L"Hides default class frames on player nameplate",
-                                get = function(info) return NugComboBar.db.global.disableBlizzNP end,
-                                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
-                                order = 16,
-                            },
-                        },
-                    },
+
 
                     bar2offset = {
                         type = "group",
@@ -369,16 +330,18 @@ do
                             },
                         },
                     },
+
+                    classThemes = {
+                        name = L"Use NCB Class Themes",
+                        type = 'toggle',
+                        width = "full",
+                        order = 16,
+                        get = function(info) return NugComboBar.db.profile.classThemes end,
+                        set = function(info, s) NugComboBar.Commands.classthemes() end,
+                    },
                 }
             },
-            classThemes = {
-                name = L"Use NCB Class Themes",
-                type = 'toggle',
-                width = "double",
-                order = 2.5,
-                get = function(info) return NugComboBar.db.profile.classThemes end,
-                set = function(info, s) NugComboBar.Commands.classthemes() end,
-            },
+
             showColor = {
                 type = "group",
                 name = L"Colors",
@@ -536,27 +499,6 @@ do
                     },
                 },
             },
-            enable2d = {
-                        name = L"2D Mode"..newFeatureIcon,
-                        type = 'toggle',
-                        -- disabled = function() return NugComboBar:IsDefaultSkin() end,
-                        confirm = true,
-						confirmText = "Warning: Requires UI reloading.",
-                        desc = L"(Color settings only available in 2D mode)",
-                        order = 4,
-                        get = function(info) return (not NugComboBar.db.global.enable3d) end,
-                        set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
-                    },
-            enable3d = {
-                        name = L"3D Mode",
-                        -- desc = L"(Activates 3D Mode)",
-                        type = "toggle",
-                        confirm = true,
-						confirmText = "Warning: Requires UI reloading.",
-                        order = 5,
-                        get = function(info) return NugComboBar.db.global.enable3d end,
-                        set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
-                    },
             mode2dSettings = {
                 type = "group",
                 name = L"2D Mode settings",
@@ -780,6 +722,7 @@ do
             set = function(info, v)
                 NugComboBar.db.global.classConfig[class][specIndex] = v
                 NugComboBar:SPELLS_CHANGED()
+                NugComboBar:NotifyGUI()
             end,
             order = specIndex*10+2,
         }
@@ -794,14 +737,75 @@ do
             get = function(info) return NugComboBar.db.global.specProfiles[class][specIndex] end,
             set = function(info, v)
                 NugComboBar.db.global.specProfiles[class][specIndex] = v
+                NugComboBar:SPELLS_CHANGED()
             end,
         }
     end
 
-    if isClassic then
-        opt.args.specspec = nil
-        opt.args.resourcesGroup = nil
-    end
+    local global_opts = {
+        type = "group",
+        name = "Global Settings",
+        guiInline = true,
+        order = 2.5,
+        args = {
+            enablePrettyRunes = {
+                name = L"Pretty Runes",
+                desc = L"If disabled, rune charge timers will be displayed as simple bars",
+                width = "full",
+                type = "toggle",
+                confirm = true,
+                confirmText = "Warning: Requires UI reloading.",
+                get = function(info) return NugComboBar.db.global.enablePrettyRunes end,
+                set = function(info, s)
+                    NugComboBar.db.global.enablePrettyRunes = not NugComboBar.db.global.enablePrettyRunes
+                    ReloadUI()
+                end,
+                order = 1,
+            },
+            togglebliz = {
+                name = L"Disable Class Frames",
+                type = "toggle",
+                -- width = "double",
+                desc = L"Hides default class frames on player unit frame",
+                get = function(info) return NugComboBar.db.global.disableBlizz end,
+                set = function(info, s) NugComboBar.Commands.toggleblizz() end,
+                order = 2,
+            },
+            togglebliznp = {
+                name = L"Disable Nameplate Class Frames",
+                type = "toggle",
+                width = "double",
+                desc = L"Hides default class frames on player nameplate",
+                get = function(info) return NugComboBar.db.global.disableBlizzNP end,
+                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
+                order = 3,
+            },
+
+            enable2d = {
+                name = L"2D Mode"..newFeatureIcon,
+                type = 'toggle',
+                -- disabled = function() return NugComboBar:IsDefaultSkin() end,
+                confirm = true,
+                confirmText = "Warning: Requires UI reloading.",
+                -- desc = L"(Color settings only available in 2D mode)",
+                order = 4,
+                get = function(info) return (not NugComboBar.db.global.enable3d) end,
+                set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
+            },
+            enable3d = {
+                name = L"3D Mode",
+                desc = L"Less stable, bad coloring support",
+                type = "toggle",
+                confirm = true,
+                confirmText = "Warning: Requires UI reloading.",
+                order = 5,
+                get = function(info) return NugComboBar.db.global.enable3d end,
+                set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
+            },
+        },
+    }
+
+    opt.args.global = global_opts
 
     local Config = LibStub("AceConfigRegistry-3.0")
     local Dialog = LibStub("AceConfigDialog-3.0")

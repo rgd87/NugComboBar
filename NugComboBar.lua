@@ -81,6 +81,10 @@ function NugComboBar:SPELLS_CHANGED()
 
     local currentProfile = self.db:GetCurrentProfile()
     local newSpecProfile = self.db.global.specProfiles[class][spec] or "Default"
+    if not self.db.profiles[newSpecProfile] then
+        self.db.global.specProfiles[class][spec] = "Default"
+        newSpecProfile = "Default"
+    end
     if newSpecProfile ~= currentProfile then
         self.db:SetProfile(newSpecProfile)
     end
@@ -829,14 +833,15 @@ function NugComboBar.Set3DPreset(self, preset, preset2)
     end
 end
 
-function NugComboBar.Reinitialize(self)
+function NugComboBar:NotifyGUI()
     if LibStub then
         local cfgreg = LibStub("AceConfigRegistry-3.0", true)
         if cfgreg then cfgreg:NotifyChange("NugComboBar-General") end
     end
-    if not NugComboBar.isDisabled then
-        NugComboBar:Reconfigure()
-    end
+end
+function NugComboBar.Reinitialize(self)
+    self:NotifyGUI()
+    NugComboBar:Reconfigure()
 end
 
 local ParseOpts = function(str)
