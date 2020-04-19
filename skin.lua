@@ -528,6 +528,46 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
 end
 
 
+
+local BGTexConfigure = function(self, tex, scale, r,g,b,a, duration, framelevel)
+    local tf = self
+    local t = self.texture
+    framelevel = framelevel or 0
+    tf:SetFrameLevel(framelevel)
+    t:SetTexture(tex)
+    t:SetVertexColor(r,g,b,a)
+    local w,h = tf:GetSize()
+    t:SetSize(w*scale, h*scale)
+    tf:Show()
+    tf.ag.a:SetDuration(duration or 1)
+end
+
+local CreateBGTexture = function(f)
+    local bgtf = CreateFrame("Frame", nil,f)
+    local size = f:GetWidth()
+    bgtf:SetFrameLevel(0)
+    bgtf:SetWidth(size)
+    bgtf:SetHeight(size)
+    bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
+    local bgt = bgtf:CreateTexture(nil, "ARTWORK", nil, 0)
+    bgt:SetBlendMode("ADD")
+    bgt:SetPoint("CENTER")
+    bgtf.texture = bgt
+
+    local ag = bgtf:CreateAnimationGroup()
+    ag:SetLooping("REPEAT")
+    local a = ag:CreateAnimation("Rotation")
+    a:SetDuration(1)
+    a:SetDegrees(360)
+    ag.a = a
+
+    bgtf.Configure = BGTexConfigure
+
+    bgtf.ag = ag
+
+    return bgtf
+end
+
 -------------------------
 -- 2D Point
 -------------------------
@@ -626,6 +666,8 @@ function NugComboBar.Create2DPoint(self, id, opts)
     -- t2:SetPoint("CENTER", f, "CENTER",0,0)
     -- t2:SetSize(size*0.8, size*0.8)
     f.t2 = t2
+
+    f.CreateBGTexture = CreateBGTexture
 
     f.SetColor = SetColorFunc
     f.SetPreset = function() end
@@ -795,45 +837,6 @@ local SetColor3DFunc = function(self, r,g,b, force)
     self.bgmodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 end
 
-
-local BGTexConfigure = function(self, tex, scale, r,g,b,a, duration, framelevel)
-    local tf = self
-    local t = self.texture
-    framelevel = framelevel or 0
-    tf:SetFrameLevel(framelevel)
-    t:SetTexture(tex)
-    t:SetVertexColor(r,g,b,a)
-    local w,h = tf:GetSize()
-    t:SetSize(w*scale, h*scale)
-    tf:Show()
-    tf.ag.a:SetDuration(duration or 1)
-end
-
-local CreateBGTexture = function(f)
-    local bgtf = CreateFrame("Frame", nil,f)
-    local size = f.bgmodel:GetWidth()
-    bgtf:SetFrameLevel(0)
-    bgtf:SetWidth(size)
-    bgtf:SetHeight(size)
-    bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
-    local bgt = bgtf:CreateTexture(nil, "ARTWORK", nil, 0)
-    bgt:SetBlendMode("ADD")
-    bgt:SetPoint("CENTER")
-    bgtf.texture = bgt
-
-    local ag = bgtf:CreateAnimationGroup()
-    ag:SetLooping("REPEAT")
-    local a = ag:CreateAnimation("Rotation")
-    a:SetDuration(1)
-    a:SetDegrees(360)
-    ag.a = a
-
-    bgtf.Configure = BGTexConfigure
-
-    bgtf.ag = ag
-
-    return bgtf
-end
 
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64

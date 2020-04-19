@@ -472,6 +472,7 @@ end
 
 function NugComboBar:SelectPoint(i)
     local point = self:GetPoint(i)
+    print(point)
     point:Select()
 end
 
