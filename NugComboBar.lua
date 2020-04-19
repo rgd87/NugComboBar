@@ -460,6 +460,15 @@ local function AnticipationOut(point, i)
     point:SetPreset(NugComboBar:Get3DPreset("preset3d"))
 end
 
+function NugComboBar:GetPoint(i)
+    return self.p[i]
+end
+
+function NugComboBar:SelectPoint(i)
+    local point = self:GetPoint(i)
+    point:Select()
+end
+
 
 local comboPointsBefore = 0
 local targetBefore

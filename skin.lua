@@ -224,6 +224,9 @@ local ActivateFunc = function(self)
     if self:GetAlpha() == 1 then return end
     self.aag:Play()
     if self.glow2 then self.glow2:Play() end
+    self.gather:Play()
+    self.shine1:Play()
+    self.shine2:Play()
 end
 local DeactivateFunc = function(self)
     if self.aag:IsPlaying() then self.aag:Stop() end
@@ -719,22 +722,14 @@ local SetPresetFunc = function ( self, name, noreset )
     end
 
     if bgType == "TEXTURE" and not self.bgtex then
-        self:CreateBGTexture()
+        self.bgtex = self:CreateBGTexture()
     end
 
     if self.bgtex then
         if bgType == "TEXTURE" then
             local tex, scale, r,g,b,a, duration, framelevel = unpack(settings, 8)
             local tf = self.bgtex
-            local t = self.bgtex.texture
-            framelevel = framelevel or 0
-            self.bgtex:SetFrameLevel(framelevel)
-            t:SetTexture(tex)
-            t:SetVertexColor(r,g,b,a)
-            local w,h = tf:GetSize()
-            t:SetSize(w*scale, h*scale)
-            tf:Show()
-            tf.ag.a:SetDuration(duration or 1)
+            tf:Configure(tex, scale, r,g,b,a, duration, framelevel)
             if duration == 0 then
                 tf.ag:Stop()
             else
@@ -800,6 +795,20 @@ local SetColor3DFunc = function(self, r,g,b, force)
     self.bgmodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 end
 
+
+local BGTexConfigure = function(self, tex, scale, r,g,b,a, duration, framelevel)
+    local tf = self
+    local t = self.texture
+    framelevel = framelevel or 0
+    tf:SetFrameLevel(framelevel)
+    t:SetTexture(tex)
+    t:SetVertexColor(r,g,b,a)
+    local w,h = tf:GetSize()
+    t:SetSize(w*scale, h*scale)
+    tf:Show()
+    tf.ag.a:SetDuration(duration or 1)
+end
+
 local CreateBGTexture = function(f)
     local bgtf = CreateFrame("Frame", nil,f)
     local size = f.bgmodel:GetWidth()
@@ -812,18 +821,18 @@ local CreateBGTexture = function(f)
     bgt:SetPoint("CENTER")
     bgtf.texture = bgt
 
-    local ag = f:CreateAnimationGroup()
+    local ag = bgtf:CreateAnimationGroup()
     ag:SetLooping("REPEAT")
     local a = ag:CreateAnimation("Rotation")
     a:SetDuration(1)
     a:SetDegrees(360)
     ag.a = a
 
+    bgtf.Configure = BGTexConfigure
+
     bgtf.ag = ag
 
-    -- ag:Play()
-
-    f.bgtex = bgtf
+    return bgtf
 end
 
 function NugComboBar.Create3DPoint(self, id, opts)
@@ -1147,6 +1156,149 @@ NugComboBar.Create = function(self)
                 self.r2:SetDuration(0.40*mul)
             end
 
+            local gather = CreateFrame("Frame",nil,f)
+            gather:SetHeight(45); gather:SetWidth(45);
+            gather:SetPoint("CENTER", f, "CENTER", 0,0)
+            local gt = gather:CreateTexture(nil,"OVERLAY")
+            gt:SetAllPoints(gather)
+            gt:SetBlendMode("ADD")
+            -- gt:SetPoint("CENTER", gater, "CENTER", 11, -18)
+            gt:SetTexture[[Interface\Addons\NugComboBar\tex\circle]]
+            gt:SetVertexColor(1, 0.5 ,0.2)
+            gt:SetAlpha(0)
+
+            local g1ag = gt:CreateAnimationGroup()
+            local g1a1 = g1ag:CreateAnimation("Alpha")
+            g1a1:SetFromAlpha(0)
+            g1a1:SetToAlpha(0.8)
+            g1a1:SetDuration(0.3)
+            g1a1:SetOrder(1)
+            local g1a2 = g1ag:CreateAnimation("Scale")
+            g1a2:SetFromScale(1,1)
+            g1a2:SetToScale(0.47, 0.47)
+            g1a2:SetDuration(0.3)
+            g1a2:SetOrder(1)
+            local g1a3 = g1ag:CreateAnimation("Alpha")
+            g1a3:SetStartDelay(0.25)
+            g1a3:SetFromAlpha(1)
+            g1a3:SetToAlpha(0)
+            g1a3:SetDuration(0.25)
+            g1a3:SetOrder(2)
+            local g1a4 = g1ag:CreateAnimation("Alpha")
+            g1a4:SetFromAlpha(1)
+            g1a4:SetToAlpha(0)
+            g1a4:SetDuration(0)
+            g1a4:SetOrder(3)
+
+            g1ag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
+
+            f.gather = g1ag
+
+
+
+
+
+
+
+            local shine = CreateFrame("Frame",nil,f)
+            shine:SetHeight(45); shine:SetWidth(45);
+            shine:SetPoint("CENTER", f, "CENTER", 0,0)
+            local shinesize = 45*0.8
+            local shinetex1 = shine:CreateTexture(nil,"OVERLAY")
+            shinetex1:SetWidth(shinesize); shinetex1:SetHeight(shinesize)
+            shinetex1:SetBlendMode("ADD")
+            shinetex1:SetPoint("CENTER", shine, "CENTER", 11*45/128, -18*45/128)
+            shinetex1:SetTexture[[Interface\Addons\NugComboBar\tex\spark]]
+            shinetex1:SetAlpha(0)
+
+            local shinetex2 = shine:CreateTexture(nil,"OVERLAY")
+            shinetex2:SetWidth(shinesize); shinetex2:SetHeight(shinesize)
+            shinetex2:SetPoint("CENTER", shine, "CENTER", -11*45/128, 18*45/128)
+            shinetex2:SetTexture[[Interface\Addons\NugComboBar\tex\spark]]
+            shinetex2:SetAlpha(0)
+            -- f2:SetPoint("CENTER",f,"CENTER",3,2)
+
+            -- shine:SetAlpha(0)
+            -- shinetex1:SetAlpha(0)
+            -- shinetex2:SetAlpha(0)
+
+            local s1aag = shinetex1:CreateAnimationGroup()
+            local s1a1 = s1aag:CreateAnimation("Alpha")
+            -- s1a1:SetStartDelay(0.18)
+            s1a1:SetFromAlpha(0)
+            s1a1:SetToAlpha(1)
+            s1a1:SetDuration(0.15)
+            s1a1:SetOrder(1)
+            local s1a2 = s1aag:CreateAnimation("Rotation")
+            s1a2:SetOrigin("CENTER",-7*45/128, 16*45/128)
+            s1a2:SetDegrees(-50)
+            s1a2:SetDuration(0.25)
+            s1a2:SetOrder(2)
+            local s1a3 = s1aag:CreateAnimation("Alpha")
+            s1a3:SetFromAlpha(1)
+            s1a3:SetToAlpha(0)
+            s1a3:SetDuration(0.25)
+            s1a3:SetOrder(3)
+            -- these trailing alpha animations basically do nothing but prevent bug that makes effects visible at login
+            local s1a4 = s1aag:CreateAnimation("Alpha")
+            s1a4:SetFromAlpha(1)
+            s1a4:SetToAlpha(0)
+            s1a4:SetDuration(0)
+            s1a4:SetOrder(4)
+
+            --Required for 4.2
+            s1aag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
+
+            local s2aag = shinetex2:CreateAnimationGroup()
+            local s2a1 = s2aag:CreateAnimation("Alpha")
+            -- s2a1:SetStartDelay(0.18)
+            s2a1:SetFromAlpha(0)
+            s2a1:SetToAlpha(1)
+            s2a1:SetDuration(0.15)
+            s2a1:SetOrder(1)
+            local s2a2 = s2aag:CreateAnimation("Rotation")
+            s2a2:SetOrigin("CENTER",7*45/128, -16*45/128)
+            s2a2:SetDegrees(-50)
+            s2a2:SetDuration(0.25)
+            s2a2:SetOrder(2)
+            local s2a3 = s2aag:CreateAnimation("Alpha")
+            s2a3:SetFromAlpha(1)
+            s2a3:SetToAlpha(0)
+            s2a3:SetDuration(0.25)
+            s2a3:SetOrder(3)
+            local s2a4 = s2aag:CreateAnimation("Alpha")
+            s2a4:SetFromAlpha(1)
+            s2a4:SetToAlpha(0)
+            s2a4:SetDuration(0)
+            s2a4:SetOrder(4)
+
+            s2aag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
+
+            f.shine1 = s1aag
+            f.shine2 = s2aag
+
+        end
+
+        f.Select = function(self)
+            local selectTex = self.selectTex
+            if not selectTex then
+                self.selectTex = self:CreateBGTexture()
+                self.selectTex:Configure("Interface\\AddOns\\NugComboBar\\tex\\paladin_blessingofspellwarding_runeplane.tga", 0.65, 1, 0.5, 0, 0.6, 1.5)
+                self.selectTex:SetParent(NugComboBar)
+                self.selectTex:SetFrameStrata("BACKGROUND")
+                self.selectTex:SetFrameLevel(1)
+                self.selectTex:SetPoint("TOPLEFT", self, "TOPLEFT",0,0)
+                self.selectTex:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT",0,0)
+                self.selectTex:SetScale(0.8)
+                selectTex = self.selectTex
+            end
+            selectTex.ag:Play()
         end
 
         f.Activate = ActivateFunc
