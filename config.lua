@@ -96,7 +96,7 @@ local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
 end
 
 NugComboBar:RegisterConfig("ComboPointsRogue", {
-    triggers = { GetSpecialization, GetSpell(185313), GetSpell(193531), GetSpell(238104) }, -- Shadow Dance, Deeper Stratagem, Enveloping Shadows
+    triggers = { GetSpecialization, GetSpell(193531) }, -- Shadow Dance, Deeper Stratagem, Enveloping Shadows
     setup = function(self, spec)
         self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
@@ -110,6 +110,18 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
             self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         end
+
+        local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
+
+        self:SetMaxPoints(maxCP)
+        self:SetPointGetter(RogueGetComboPoints)
+    end,
+}, "ROGUE")
+
+NugComboBar:RegisterConfig("ComboPointsAndShadowdance", {
+    triggers = { GetSpecialization, GetSpell(185313), GetSpell(193531), GetSpell(238104) }, -- Shadow Dance, Deeper Stratagem, Enveloping Shadows
+    setup = function(self, spec)
+        self:ApplyConfig("ComboPointsRogue")
 
         local isSub = (spec == 3) and IsPlayerSpell(185313) -- if Shadow Dance
         local isAnticipation = false -- IsPlayerSpell(114015)
@@ -126,12 +138,9 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
             self:EnableBar(0, 6, 90, "Timer")
             self.flags.chargeCooldownOnSecondBar = true
             self:SetPointGetter(makeRCP(isAnticipation, isSub, maxFill, maxCP)) -- RogueGetComboPoints
-        else
-            self:SetMaxPoints(maxCP)
-            self:SetPointGetter(RogueGetComboPoints)
         end
     end,
-}, "ROGUE")
+}, "ROGUE", 3)
 
 ---------------------
 -- DRUID

@@ -777,7 +777,10 @@ do
             type = "select",
             values = NugComboBar:GetAvailableConfigsForSpec(specIndex),
             get = function(info) return NugComboBar.db.global.classConfig[class][specIndex] end,
-            set = function(info, v) NugComboBar.db.global.classConfig[class][specIndex] = v end,
+            set = function(info, v)
+                NugComboBar.db.global.classConfig[class][specIndex] = v
+                NugComboBar:SPELLS_CHANGED()
+            end,
             order = specIndex*10+2,
         }
         specsTable["profile"..specIndex] = {
