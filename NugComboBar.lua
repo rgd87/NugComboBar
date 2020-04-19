@@ -87,19 +87,25 @@ function NugComboBar:SPELLS_CHANGED()
 
     local newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
 
-    if not currentConfigName then
-        currentConfigName = newConfigName
-    end
-
     if newConfigName == "Disabled" then
         self:ResetConfig()
         self:Disable()
+        currentConfigName = nil
         return
     end
 
     local currentConfig = configs[currentConfigName]
-    local newTriggerState = self:GetTriggerState(currentConfig)
-    if currentConfigName ~= newConfigName or not self:IsTriggerStateEqual(currentTriggerState, newTriggerState) then
+
+    local needUpdate
+    local changedConfig = currentConfigName ~= newConfigName
+    if changedConfig then
+        needUpdate = true
+    else
+        local newTriggerState = self:GetTriggerState(currentConfig)
+        needUpdate = not self:IsTriggerStateEqual(currentTriggerState, newTriggerState)
+    end
+
+    if needUpdate then
         self:SelectConfig(newConfigName)
         self:Update()
     end
@@ -1323,6 +1329,7 @@ function NugComboBar:GetAvailableConfigsForSpec(specIndex)
             avConfigs[name] = name
         end
     end
+    avConfigs["Disabled"] = "Disabled"
     return avConfigs
 end
 
