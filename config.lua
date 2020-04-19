@@ -591,3 +591,31 @@ NugComboBar:RegisterConfig("ShieldBlock", {
         self:SetPointGetter(MakeGetChargeFunc(2565)) -- Shield Block
     end
 }, "WARRIOR", 3)
+
+
+---------------------
+-- SHAMAN
+---------------------
+
+NugComboBar:RegisterConfig("TidalWaves", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(2)
+        self:SetDefaultValue(0)
+        self:SetPointGetter(GetAuraStack(53390, "HELPFUL", "player")) -- Tidal Waves
+    end
+}, "SHAMAN", 3)
+
+NugComboBar:RegisterConfig("Icefury", {
+    triggers = { GetSpecialization, GetSpell(210714) },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(4)
+        self:SetDefaultValue(0)
+        self.flags.hideSlowly = false
+        self:SetPointGetter(GetAuraStack(210714, "HELPFUL", "player")) -- Icefury
+    end
+}, "SHAMAN", 1)
