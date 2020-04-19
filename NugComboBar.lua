@@ -65,8 +65,6 @@ local AuraTimerOnUpdate = function(self, time)
 end
 local dummy = function() return 0 end
 
--- local min = math.min
--- local max = math.max
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = 0
@@ -195,7 +193,7 @@ local defaults = {
 }
 NugComboBar.defaults = defaults
 
-NugComboBar.SkinVersion = 500
+NugComboBar.SkinVersion = 600
 do
     function NugComboBar.ADDON_LOADED(self,event,arg1)
         if arg1 == addonName then
