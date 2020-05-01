@@ -416,7 +416,7 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
 end
 
 function NugComboBar.CheckComboPoints(self)
-	if not self.isDisabled then
+	if GetComboPoints ~= dummy  then
     	self:UNIT_COMBO_POINTS(nil, allowedUnit, nil)
 	end
 end
