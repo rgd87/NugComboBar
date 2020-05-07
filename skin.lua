@@ -1110,6 +1110,8 @@ NugComboBar.Create = function(self)
         self.point[i] = f
 
         if initial then
+            local isBig = ts.role == "BIG"
+
             local aag = f:CreateAnimationGroup()
             f.aag = aag
             local a1 = aag:CreateAnimation("Alpha")
@@ -1128,6 +1130,13 @@ NugComboBar.Create = function(self)
             d1:SetToAlpha(0)
             d1:SetDuration(0.5)
             d1:SetOrder(1)
+
+            -- local sh1 = dag:CreateAnimation("Scale")
+            -- sh1:SetFromScale(1,1)
+            -- sh1:SetToScale(0.05, 0.05)
+            -- sh1:SetOrder(1)
+            -- sh1:SetDuration(0.1)
+
             dag:SetScript("OnFinished",function(self)
                 self:GetParent():SetAlpha(0)
             end)
@@ -1203,22 +1212,23 @@ NugComboBar.Create = function(self)
 
 
 
-
+            local m = 1
+            if isBig then m = 1.3 end
 
             local shine = CreateFrame("Frame",nil,f)
-            shine:SetHeight(45); shine:SetWidth(45);
+            shine:SetHeight(45*m); shine:SetWidth(45*m);
             shine:SetPoint("CENTER", f, "CENTER", 0,0)
-            local shinesize = 45*0.8
+            local shinesize = 45*0.8*m
             local shinetex1 = shine:CreateTexture(nil,"OVERLAY")
             shinetex1:SetWidth(shinesize); shinetex1:SetHeight(shinesize)
             shinetex1:SetBlendMode("ADD")
-            shinetex1:SetPoint("CENTER", shine, "CENTER", 11*45/128, -18*45/128)
+            shinetex1:SetPoint("CENTER", shine, "CENTER", 11*45*m/128, -18*45*m/128)
             shinetex1:SetTexture[[Interface\Addons\NugComboBar\tex\spark]]
             shinetex1:SetAlpha(0)
 
             local shinetex2 = shine:CreateTexture(nil,"OVERLAY")
             shinetex2:SetWidth(shinesize); shinetex2:SetHeight(shinesize)
-            shinetex2:SetPoint("CENTER", shine, "CENTER", -11*45/128, 18*45/128)
+            shinetex2:SetPoint("CENTER", shine, "CENTER", -11*45*m/128, 18*45*m/128)
             shinetex2:SetTexture[[Interface\Addons\NugComboBar\tex\spark]]
             shinetex2:SetAlpha(0)
             -- f2:SetPoint("CENTER",f,"CENTER",3,2)
@@ -1235,7 +1245,7 @@ NugComboBar.Create = function(self)
             s1a1:SetDuration(0.15)
             s1a1:SetOrder(1)
             local s1a2 = s1aag:CreateAnimation("Rotation")
-            s1a2:SetOrigin("CENTER",-7*45/128, 16*45/128)
+            s1a2:SetOrigin("CENTER",-7*45*m/128, 16*45*m/128)
             s1a2:SetDegrees(-50)
             s1a2:SetDuration(0.25)
             s1a2:SetOrder(2)
@@ -1264,7 +1274,7 @@ NugComboBar.Create = function(self)
             s2a1:SetDuration(0.15)
             s2a1:SetOrder(1)
             local s2a2 = s2aag:CreateAnimation("Rotation")
-            s2a2:SetOrigin("CENTER",7*45/128, -16*45/128)
+            s2a2:SetOrigin("CENTER",7*45*m/128, -16*45*m/128)
             s2a2:SetDegrees(-50)
             s2a2:SetDuration(0.25)
             s2a2:SetOrder(2)
