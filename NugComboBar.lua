@@ -178,6 +178,7 @@ local defaults = {
         disableProgress = false,
         cooldownOnTop = false,
         chargeCooldown = true,
+        animationLevel = 2,
         alpha = 1,
         nameplateAttach = false,
         nameplateAttachTarget = false,
@@ -497,6 +498,8 @@ function NugComboBar:Update(unit, ...)
             self:Show()
         end
     end -- usually frame is set to 0 alpha
+
+    local animationLevel = self.db.profile.animationLevel
     -- local arg1, arg2
     local comboPoints, arg1, arg2, secondLayerPoints, secondBarPoints = GetComboPoints(unit);
     local progress = not arg2 and arg1 or nil
@@ -543,10 +546,10 @@ function NugComboBar:Update(unit, ...)
     	    for i = 1, self.MAX_POINTS do
     	        local point = self.p[i]
     	        if i <= comboPoints then
-    	            point:Activate()
+    	            point:Activate(animationLevel)
     	        end
     	        if i > comboPoints then
-    	            point:Deactivate()
+    	            point:Deactivate(animationLevel)
     	        end
 
     	        if secondLayerPoints then -- Anticipation stuff
@@ -589,10 +592,10 @@ function NugComboBar:Update(unit, ...)
 	    for i = 1, self.MAX_POINTS2 do
 	        local point = self.p[i+self.MAX_POINTS]
 	        if i <= secondBarPoints then
-	            point:Activate()
+	            point:Activate(animationLevel)
 	        end
 	        if i > secondBarPoints then
-	            point:Deactivate()
+	            point:Deactivate(animationLevel)
 	        end
 
 	    end
@@ -1186,13 +1189,13 @@ end
 function NugComboBar:UpdateSingleRune(point, index, start, duration, runeReady)
     self:EnsureRuneChargeFrame(point)
 	if runeReady then
-        point:Activate()
+        point:Activate(self.db.profile.animationLevel)
         point.RuneChargeFrame:Hide()
 	else
         point.runeStart = start
         point.runeDuration = duration
 
-        point:Deactivate()
+        point:Deactivate(self.db.profile.animationLevel)
         point.RuneChargeFrame:SetScript("OnUpdate", RuneChargeOnUpdate)
         point.RuneChargeFrame:Show()
 	end

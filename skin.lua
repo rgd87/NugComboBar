@@ -218,20 +218,35 @@ NugComboBar.presets = {
 
 local barBottom = false
 
-local ActivateFunc = function(self)
+local ActivateFunc = function(self, animLevel)
     if self.dag:IsPlaying() then self.dag:Stop() end
     if self.rag:IsPlaying() then self.rag:Stop() end
     if self:GetAlpha() == 1 then return end
+
+    if animLevel and animLevel == 0 then
+        self:SetAlpha(1)
+        return
+    end
+
     self.aag:Play()
     if self.glow2 then self.glow2:Play() end
-    self.gather:Play()
-    self.shine1:Play()
-    self.shine2:Play()
+
+    if animLevel and animLevel >= 2 then
+        self.gather:Play()
+        self.shine1:Play()
+        self.shine2:Play()
+    end
 end
-local DeactivateFunc = function(self)
+local DeactivateFunc = function(self, animLevel)
     if self.aag:IsPlaying() then self.aag:Stop() end
     if self.rag:IsPlaying() then self.rag:Stop() end
     if self:GetAlpha() == 0 then return end
+
+    if animLevel and animLevel == 0 then
+        self:SetAlpha(0)
+        return
+    end
+
     self.dag:Play()
 end
     local OnFinishedScript = function(self)
