@@ -1429,6 +1429,13 @@ NugComboBar.themes["DEMONHUNTER"] = {
 }
 
 NugComboBar.themes["PALADIN"] = {
+    mode2d = {
+        [0] = {
+            colors = {
+                normal = { 0.823, 0.686, 0.372 },
+            },
+        }
+    },
     mode3d = {
         [0] = {
             preset3d = "glowFreedom",
