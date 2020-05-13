@@ -258,6 +258,7 @@ do
                     secondLayer = {
                         name = L"Second Layer",
                         desc = L"For Anticipation talent",
+                        disabled = true,
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.secondLayer end,
                         set = function(info, s) NugComboBar.Commands.secondlayer() end,
@@ -291,6 +292,16 @@ do
                         get = function(info) return NugComboBar.db.profile.cooldownOnTop end,
                         set = function(info, s) NugComboBar.db.profile.cooldownOnTop = not NugComboBar.db.profile.cooldownOnTop end,
                         order = 12.55,
+                    },
+                    animationLevel = {
+                        name = L"Animation Level",
+                        type = "range",
+                        get = function(info) return NugComboBar.db.profile.animationLevel end,
+                        set = function(info, v) NugComboBar.db.profile.animationLevel = v end,
+                        min = 0,
+                        max = 2,
+                        step = 1,
+                        order = 13,
                     },
                     -- vertical = {
                     --     name = L"Vertical",
