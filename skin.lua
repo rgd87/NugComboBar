@@ -247,6 +247,12 @@ local DeactivateFunc = function(self, animLevel)
         return
     end
 
+    if animLevel and animLevel >= 2 then
+        if self.gather:IsPlaying() then self.gather:Stop() end
+        if self.shine1:IsPlaying() then self.shine1:Stop() end
+        if self.shine2:IsPlaying() then self.shine2:Stop() end
+    end
+
     self.dag:Play()
 end
     local OnFinishedScript = function(self)

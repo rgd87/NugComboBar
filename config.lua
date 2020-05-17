@@ -204,8 +204,10 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
 
             if form == BEAR_FORM and spec == 3 and IsPlayerSpell(80313) then --Pulverize
                 self:ApplyConfig("Pulverize")
+                self:Update()
             elseif form == CAT_FORM and IsPlayerSpell(22568) then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
                 self:ApplyConfig("ComboPointsDruid")
+                self:Update()
             else
                 self:Disable()
             end
@@ -214,6 +216,46 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
     end
 }, "DRUID")
 
+
+--[[
+NugComboBar:RegisterConfig("ShapeshiftDruidCatweaving", {
+    triggers = { GetSpecialization, GetSpell(80313), GetSpell(22568) }, -- Pulv, FerBite
+
+    setup = function(self, spec)
+        self:RegisterEvent("UPDATE_SHAPESHIFT_FORM") -- Registering on main addon, not event proxy
+        local oldConfig = nil
+        self.UPDATE_SHAPESHIFT_FORM = function(self)
+            local spec = GetSpecialization()
+            local form = GetShapeshiftFormID()
+
+            local newConfig
+            if form == BEAR_FORM then
+                if spec == 3 and IsPlayerSpell(80313) then  --Pulverize
+                    newConfig = "Pulverize"
+                else
+                    newConfig = nil
+                end
+            elseif IsPlayerSpell(22568) then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
+                newConfig = "ComboPointsDruid"
+            else
+                newConfig = nil
+            end
+
+            if newConfig then
+                if newConfig ~= oldConfig then
+                    self:ResetConfig()
+                    self:ApplyConfig(newConfig)
+                    self:Update()
+                end
+            else
+                self:Disable()
+            end
+            oldConfig = newConfig
+        end
+        self.UPDATE_SHAPESHIFT_FORM(self)
+    end
+}, "DRUID")
+]]
 
 ---------------------
 -- PALADIN
