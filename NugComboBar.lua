@@ -706,8 +706,10 @@ end
 function NugComboBar:GetCurrentTheme()
     local theme
     if isDefaultSkin and self.db.profile.classThemes then
+        local classTable = self.themes[playerClass]
+        if not classTable then return end
         local modeCategory = self.db.global.enable3d and "mode3d" or "mode2d"
-        local specThemes = self.themes[playerClass][modeCategory]
+        local specThemes = classTable[modeCategory]
         if not specThemes then return end
         local spec = GetSpecialization()
         theme = specThemes[spec] or specThemes[0]
