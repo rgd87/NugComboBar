@@ -155,7 +155,7 @@ local defaults = {
         x = 0, y = 0,
         anchorpoint = "LEFT",
         frameparent = nil, -- for SetParent
-        scale = 1.0,
+        scale = 1.3,
         showEmpty = false,
         hideSlowly = true,
         colors = {
@@ -1438,6 +1438,11 @@ do
         end
 
         if db.DB_VERSION == 1 then
+            print('|cffff99bb[NugComboBar]|r === 8.3.3 Update Changes ===')
+            print(' -- New texture that scales up much bettar. New default scale is 1.3')
+            print(' -- Profiles that can be assigned to each individual spec. This replaces the old system and some per-character settings may be lost.')
+            print(' -- Some specs now have an option to pick from several available things to track.')
+
             db.global = {}
             db.global.enable3d = db.enable3d
             db.global.disableBlizz = db.disableBlizz
@@ -1542,4 +1547,64 @@ do
             db.DB_VERSION = 2
         end
     end
+end
+
+
+function NugComboBar.rgb2hsv (r, g, b)
+    local rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn
+    rabs = r
+    gabs = g
+    babs = b
+    v = math.max(rabs, gabs, babs)
+    diff = v - math.min(rabs, gabs, babs);
+    diffc = function(c) return (v - c) / 6 / diff + 1 / 2 end
+    -- percentRoundFn = function(num) return math.floor(num * 100) / 100 end
+    if (diff == 0) then
+        h = 0
+        s = 0
+    else
+        s = diff / v;
+        rr = diffc(rabs);
+        gg = diffc(gabs);
+        bb = diffc(babs);
+
+        if (rabs == v) then
+            h = bb - gg;
+        elseif (gabs == v) then
+            h = (1 / 3) + rr - bb;
+        elseif (babs == v) then
+            h = (2 / 3) + gg - rr;
+        end
+        if (h < 0) then
+            h = h + 1;
+        elseif (h > 1) then
+            h = h - 1;
+        end
+    end
+    return h, s, v
+end
+
+function NugComboBar.hsv2rgb(h,s,v)
+    local r,g,b
+    local i = math.floor(h * 6);
+    local f = h * 6 - i;
+    local p = v * (1 - s);
+    local q = v * (1 - f * s);
+    local t = v * (1 - (1 - f) * s);
+    local rem = i % 6
+    if rem == 0 then
+        r = v; g = t; b = p;
+    elseif rem == 1 then
+        r = q; g = v; b = p;
+    elseif rem == 2 then
+        r = p; g = v; b = t;
+    elseif rem == 3 then
+        r = p; g = q; b = v;
+    elseif rem == 4 then
+        r = t; g = p; b = v;
+    elseif rem == 5 then
+        r = v; g = p; b = q;
+    end
+
+    return r,g,b
 end
