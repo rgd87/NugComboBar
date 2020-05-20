@@ -601,7 +601,9 @@ local SetColorFunc = function(self,r,g,b)
     local h2 = h - 0.15
     if h2 < 0 then h2 = h2 + 1 end
     local r2,g2,b2 = hsv2rgb(h2, s, v)
-    local m1 = NugComboBar.db.profile.glowIntensity
+    local theme = NugComboBar:GetCurrentTheme()
+    local themeIntensity = theme and theme.glowIntensity
+    local m1 = themeIntensity or NugComboBar.db.profile.glowIntensity
     local m2 = 1
 
     self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
@@ -1421,6 +1423,19 @@ NugComboBar.themes["MONK"] = {
             colors = {
                 normal = { 0, 0.525, 0.5 },
             },
+            glowIntensity = 0.4,
+        },
+        -- [1] = {
+        --     colors = {
+        --         normal = { 0.67, 0.33, 0.23 },
+        --     },
+        --     glowIntensity = 0.5,
+        -- },
+        [3] = {
+            colors = {
+                normal = { 1, 0.62, 0.98 },
+            },
+            glowIntensity = 0.5,
         },
     },
     mode3d = {
