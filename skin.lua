@@ -232,6 +232,10 @@ local ActivateFunc = function(self, animLevel)
     if self.glow2 then self.glow2:Play() end
 
     if animLevel and animLevel >= 2 then
+        self.gather:Stop()
+        self.shine1:Stop()
+        self.shine2:Stop()
+
         self.gather:Play()
         self.shine1:Play()
         self.shine2:Play()
