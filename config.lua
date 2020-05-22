@@ -500,6 +500,7 @@ NugComboBar:RegisterConfig("FesteringWounds", {
         self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
         self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         self:SetMaxPoints(6)
+        self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
         self:SetSourceUnit("player")
         self:SetTargetUnit("target")
