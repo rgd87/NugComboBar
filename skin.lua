@@ -252,9 +252,13 @@ local DeactivateFunc = function(self, animLevel)
     end
 
     if animLevel and animLevel >= 2 then
-        if self.gather:IsPlaying() then self.gather:Stop() end
-        if self.shine1:IsPlaying() then self.shine1:Stop() end
-        if self.shine2:IsPlaying() then self.shine2:Stop() end
+        self.gather:Stop()
+        self.shine1:Stop()
+        self.shine2:Stop()
+
+        self.gather:GetParent():SetAlpha(0)
+        self.shine1:GetParent():SetAlpha(0)
+        self.shine2:GetParent():SetAlpha(0)
     end
 
     self.dag:Play()
