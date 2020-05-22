@@ -274,7 +274,8 @@ end
 
 local pmult = 1
 function NugComboBar.pixelperfect(size)
-    return floor(size/pmult + 0.5)*pmult
+    -- return floor(size/pmult + 0.5)*pmult
+    return PixelUtil.GetNearestPixelSize(size, NugComboBar:GetEffectiveScale(), size)
 end
 local pixelperfect = NugComboBar.pixelperfect
 
@@ -437,10 +438,12 @@ function NugComboBar.EnableBar(self, min, max, btype, isTimer, isReversed)
     self.bar.max = max
     if not flags.chargeCooldown then
     	if not btype or btype == "Small" then
-    		self.bar:SetWidth(45)
+            self.bar:SetWidth(pixelperfect(45))
+            self.bar:SetHeight(pixelperfect(4))
     	end
     	if type(btype) == "number" then
-    		self.bar:SetWidth(btype)
+            self.bar:SetWidth(pixelperfect(btype))
+            self.bar:SetHeight(pixelperfect(4))
     	end
     end
 	if isTimer then

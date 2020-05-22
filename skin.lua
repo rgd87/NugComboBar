@@ -1,6 +1,6 @@
 local addonName, ns = ...
 local NugComboBar = _G.NugComboBar
-
+local pixelperfect = NugComboBar.pixelperfect
 --[[
 local fileIDtoPathMap = {
     [166255] = "spells\\gouge_precast_state_hand.m2",
@@ -479,8 +479,8 @@ function NugComboBar.MoveCharger(self, point)
     else
         self.bar:SetPoint("TOP", point, "BOTTOM", 0,17)
     end
-    self.bar:SetWidth(29)
-    self.bar:SetHeight(5)
+    self.bar:SetWidth(pixelperfect(29)-0.1)
+    self.bar:SetHeight(pixelperfect(5))
 end
 
 
@@ -914,8 +914,6 @@ local CreateTextureBar = function(self)
     return bar
 end
 
-
-local pixelperfect = NugComboBar.pixelperfect
 
 local all_bars = {}
 
