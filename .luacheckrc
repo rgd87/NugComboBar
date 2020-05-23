@@ -157,4 +157,5 @@ globals = {
     "ReloadUI",
     "GetNumSpecializations",
     "GetSpecializationInfo",
+    "PixelUtil",
 }
