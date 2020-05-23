@@ -1012,9 +1012,7 @@ NugComboBar.Commands = {
     end,
     ["vertical"] = function(v)
         NugComboBar.db.global.vertical = not NugComboBar.db.global.vertical
-        NugComboBar:Create()
-        NugComboBar:PLAYER_LOGIN(nil)
-        NugComboBar:PLAYER_ENTERING_WORLD(nil)
+        ReloadUI()
     end,
     ["playsound"] = function(v)
         if not NugComboBar.soundFiles[v] then
