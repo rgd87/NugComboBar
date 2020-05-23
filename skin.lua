@@ -446,7 +446,7 @@ end
 
 
 local IsVertical = function()
-    return NugComboBar.db.profile.vertical
+    return NugComboBar.db.global.vertical
 end
 
 
@@ -478,13 +478,25 @@ NugComboBar.mappings = mappings
 
 function NugComboBar.MoveCharger(self, point)
     self.bar:ClearAllPoints()
-    if self.db.profile.cooldownOnTop then
-        self.bar:SetPoint("BOTTOM", point, "TOP", 0,-17)
+    if IsVertical() then
+        if self.db.profile.cooldownOnTop then
+            self.bar:SetPoint("RIGHT", point, "LEFT", 17,0)
+        else
+            self.bar:SetPoint("LEFT", point, "RIGHT", -17, 0 )
+        end
+        self.bar:SetHeight(pixelperfect(29)-0.1)
+        self.bar:SetWidth(pixelperfect(5))
+        self.bar:SetOrientation("VERTICAL")
     else
-        self.bar:SetPoint("TOP", point, "BOTTOM", 0,17)
+        if self.db.profile.cooldownOnTop then
+            self.bar:SetPoint("BOTTOM", point, "TOP", 0,-17)
+        else
+            self.bar:SetPoint("TOP", point, "BOTTOM", 0,17)
+        end
+        self.bar:SetWidth(pixelperfect(29)-0.1)
+        self.bar:SetHeight(pixelperfect(5))
+        self.bar:SetOrientation("HORIZONTAL")
     end
-    self.bar:SetWidth(pixelperfect(29)-0.1)
-    self.bar:SetHeight(pixelperfect(5))
 end
 
 
