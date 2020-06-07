@@ -960,6 +960,8 @@ NugComboBar.Commands = {
     end,
     ["hidewotarget"] = function(v)
         NugComboBar.db.profile.hideWithoutTarget = not NugComboBar.db.profile.hideWithoutTarget
+        NugComboBar.forceHidden = false
+        NugComboBar:PLAYER_TARGET_CHANGED()
     end,
     -- ["secondlayer"] = function(v)
     --     NugComboBar.db.profile.secondLayer = not NugComboBar.db.profile.secondLayer
