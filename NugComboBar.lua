@@ -366,6 +366,8 @@ function NugComboBar:Reconfigure()
     local profile = self.db.profile
     self:SetScale(profile.scale)
 
+    self.forceHidden = false
+
     if currentConfigName then
         self:SelectConfig(currentConfigName)
         self:Update() -- will update alpha
@@ -412,8 +414,9 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
         end
     end
 
-    if not UnitExists("target") and self.db.profile.hideWithoutTarget and playerClass ~= "DEATHKNIGHT" then
-        self:Hide()
+    if self.db.profile.hideWithoutTarget then
+        self.forceHidden = not UnitExists("target")
+        self:Update()
     end
 end
 
@@ -614,7 +617,7 @@ function NugComboBar:Update(unit, ...)
 
 	    end
 
-    local forceHide = IsInPetBattle() or self.isTempDisabled
+    local forceHide = IsInPetBattle() or self.forceHidden
     if forceHide or
         (
             not flags.showAlways and
