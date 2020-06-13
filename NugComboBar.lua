@@ -273,8 +273,8 @@ end
 
 local pmult = 1
 function NugComboBar.pixelperfect(size)
-    -- return floor(size/pmult + 0.5)*pmult
-    return PixelUtil.GetNearestPixelSize(size, NugComboBar:GetEffectiveScale(), size)
+    return floor(size/pmult + 0.5)*pmult
+    -- return PixelUtil.GetNearestPixelSize(size, NugComboBar:GetEffectiveScale(), size) -- No PixelUtil on classic
 end
 local pixelperfect = NugComboBar.pixelperfect
 
