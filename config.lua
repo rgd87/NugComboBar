@@ -1,4 +1,5 @@
 local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local GetSpecialization = isClassic and function() return 1 end or _G.GetSpecialization
 
 local UnitPower = UnitPower
 
@@ -62,6 +63,7 @@ local RogueGetComboPoints
 if isClassic then
     local OriginalGetComboPoints = _G.GetComboPoints
     RogueGetComboPoints = function(unit)
+        unit = unit or "player"
         return OriginalGetComboPoints(unit, "target")
     end
 else
@@ -154,6 +156,12 @@ NugComboBar:RegisterConfig("ComboPointsDruid", {
         self:SetMaxPoints(5)
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
+
+        if isClassic then
+            self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+            self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+        end
+
         self:SetSourceUnit("player")
         self:SetTargetUnit("player")
         self:SetPointGetter(RogueGetComboPoints)
