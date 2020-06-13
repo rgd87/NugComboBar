@@ -1,8 +1,9 @@
-## Interface: 11302
+## Interface: 11305
 ## Title: NugComboBarGUI
 ## Notes: NugComboBar Configuration Panel
+## Version: @project-version@
 ## Dependencies: NugComboBar
 ## Author: d87
 ## LoadOnDemand: 1
-..\NugComboBar\gui\includes.xml
+..\NugComboBar\Options\includes.xml
 

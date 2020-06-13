@@ -1,3 +1,5 @@
+local addonName, ns = ...
+
 local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
@@ -11,24 +13,120 @@ local newFeatureIcon = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIco
 -- table.sort(layoutChoices)
 -- table.insert(layoutChoices, 1, "Default" )
 
+function ns.GetProfileList(db)
+    local profiles = db:GetProfiles()
+    local t = {}
+    for i,v in ipairs(profiles) do
+        t[v] = v
+    end
+    return t
+end
+local GetProfileList = ns.GetProfileList
+
 do
     local opt = {
         type = "group",
         name = "NugComboBar",
         order = 1,
         args = {
-            charspec = {
-                type = 'toggle',
-                name = L"Character-specific",
-                desc = L"Switch between global/character configuration",
-                width = "normal",
-                order = 0,
-                get = function(info)
-                    return NugComboBarDB_Character.charspec
-                end,
-                set = function( info, s )
-                    NugComboBar.Commands.charspec()
-                end
+            resourceSelection = {
+                type = "group",
+                name = "",
+                guiInline = true,
+                order = 1,
+                args = {
+
+                },
+            },
+            currentProfile = {
+                type = 'group',
+                order = 1.5,
+                name = L"Current Profile",
+                guiInline = true,
+                args = {
+                    curProfile = {
+                        name = "",
+                        type = 'select',
+                        width = 1.5,
+                        order = 1,
+                        values = function()
+                            return ns.GetProfileList(NugComboBar.db)
+                        end,
+                        get = function(info)
+                            return NugComboBar.db:GetCurrentProfile()
+                        end,
+                        set = function(info, v)
+                            NugComboBar.db:SetProfile(v)
+                        end,
+                    },
+                    copyButton = {
+                        name = L"Copy",
+                        type = 'execute',
+                        order = 2,
+                        width = 0.5,
+                        func = function(info)
+                            local p = NugComboBar.db:GetCurrentProfile()
+                            ns.storedProfile = p
+                        end,
+                    },
+                    pasteButton = {
+                        name = L"Paste",
+                        type = 'execute',
+                        order = 3,
+                        width = 0.5,
+                        disabled = function()
+                            return ns.storedProfile == nil
+                        end,
+                        func = function(info)
+                            if ns.storedProfile then
+                                NugComboBar.db:CopyProfile(ns.storedProfile, true)
+                            end
+                        end,
+                    },
+                    deleteButton = {
+                        name = L"Delete",
+                        type = 'execute',
+                        order = 4,
+                        confirm = true,
+                        confirmText = L"Are you sure?",
+                        width = 0.5,
+                        disabled = function()
+                            return NugComboBar.db:GetCurrentProfile() == "Default"
+                        end,
+                        func = function(info)
+                            local p = NugComboBar.db:GetCurrentProfile()
+                            NugComboBar.db:SetProfile("Default")
+                            NugComboBar.db:DeleteProfile(p, true)
+                        end,
+                    },
+                    newProfileName = {
+                        name = L"New Profile Name",
+                        type = 'input',
+                        order = 5,
+                        width = 2,
+                        get = function(info) return ns.newProfileName end,
+                        set = function(info, v)
+                            ns.newProfileName = v
+                        end,
+                    },
+                    createButton = {
+                        name = L"Create New Profile",
+                        type = 'execute',
+                        order = 6,
+                        disabled = function()
+                            return not ns.newProfileName
+                            or strlenutf8(ns.newProfileName) == 0
+                            or NugComboBar.db.profiles[ns.newProfileName]
+                        end,
+                        func = function(info)
+                            if ns.newProfileName and strlenutf8(ns.newProfileName) > 0 then
+                                NugComboBar.db:SetProfile(ns.newProfileName)
+                                NugComboBar.db:CopyProfile("Default", true)
+                                ns.newProfileName = ""
+                            end
+                        end,
+                    },
+                },
             },
             showGeneral = {
                 type = "group",
@@ -40,7 +138,7 @@ do
                         name = L"Unlock",
                         type = "execute",
                         -- width = "half",
-                        disabled = function() return NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget end,
+                        disabled = function() return NugComboBar.db.profile.nameplateAttach or NugComboBar.db.profile.nameplateAttachTarget end,
                         desc = L"Unlock dragging anchor",
                         func = function() NugComboBar.Commands.unlock() end,
                         order = 1,
@@ -49,7 +147,7 @@ do
                         name = L"Lock",
                         type = "execute",
                         -- width = "half",
-                        disabled = function() return NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget end,
+                        disabled = function() return NugComboBar.db.profile.nameplateAttach or NugComboBar.db.profile.nameplateAttachTarget end,
                         desc = L"Lock dragging anchor",
                         func = function() NugComboBar.Commands.lock() end,
                         order = 2,
@@ -62,8 +160,8 @@ do
                             RIGHT = "Right",
                             TOP = "Top",
                         },
-                        disabled = function() return NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget end,
-                        get = function() return NugComboBarDB.anchorpoint end,
+                        disabled = function() return NugComboBar.db.profile.nameplateAttach or NugComboBar.db.profile.nameplateAttachTarget end,
+                        get = function() return NugComboBar.db.profile.anchorpoint end,
                         set = function(info, s) NugComboBar.Commands.anchorpoint(s) end,
                         order = 3,
                     },
@@ -71,13 +169,13 @@ do
                         name = L"Nameplate Y offset",
                         type = "range",
 
-                        disabled = function() return not (NugComboBarDB.nameplateAttach or NugComboBarDB.nameplateAttachTarget) end,
-                        get = function(info) return NugComboBarDB.nameplateOffsetY end,
+                        disabled = function() return not (NugComboBar.db.profile.nameplateAttach or NugComboBar.db.profile.nameplateAttachTarget) end,
+                        get = function(info) return NugComboBar.db.profile.nameplateOffsetY end,
                         set = function(info, s)
-                            NugComboBarDB.nameplateOffsetY = s
-                            if NugComboBarDB.nameplateAttachTarget then
+                            NugComboBar.db.profile.nameplateOffsetY = s
+                            if NugComboBar.db.profile.nameplateAttachTarget then
                                 NugComboBar:PLAYER_TARGET_CHANGED()
-                            elseif NugComboBarDB.nameplateAttach then
+                            elseif NugComboBar.db.profile.nameplateAttach then
                                 if C_NamePlate.GetNamePlateForUnit("player") then
                                     NugComboBar:NAME_PLATE_UNIT_ADDED(nil, "player")
                                 end
@@ -93,15 +191,15 @@ do
                         desc = L"Display above target nameplate",
                         type = "toggle",
                         width = "full",
-                        get = function(info) return NugComboBarDB.nameplateAttachTarget end,
+                        get = function(info) return NugComboBar.db.profile.nameplateAttachTarget end,
                         set = function(info, s) NugComboBar.Commands.nameplateattachtarget() end,
                         order = 3.3,
                     },
                     scale = {
                         name = L"Scale",
                         type = "range",
-                        get = function(info) return NugComboBarDB.scale end,
-                        set = function(info, s) NugComboBarDB.scale = s; NugComboBar:SetScale(NugComboBarDB.scale); end,
+                        get = function(info) return NugComboBar.db.profile.scale end,
+                        set = function(info, s) NugComboBar.db.profile.scale = s; NugComboBar:SetScale(NugComboBar.db.profile.scale); end,
                         min = 0.4,
                         max = 2,
                         step = 0.01,
@@ -110,8 +208,8 @@ do
                     alpha = {
                         name = L"Alpha",
                         type = "range",
-                        get = function(info) return NugComboBarDB.alpha end,
-                        set = function(info, s) NugComboBarDB.alpha = s; NugComboBar:SetAlpha(NugComboBarDB.alpha); end,
+                        get = function(info) return NugComboBar.db.profile.alpha end,
+                        set = function(info, s) NugComboBar.db.profile.alpha = s; NugComboBar:SetAlpha(NugComboBar.db.profile.alpha); end,
                         min = 0.1,
                         max = 1,
                         step = 0.01,
@@ -121,7 +219,7 @@ do
                         name = L"Show Empty",
                         type = "toggle",
                         desc = L"Keep when there's no points IN COMBAT",
-                        get = function(info) return NugComboBarDB.showEmpty end,
+                        get = function(info) return NugComboBar.db.profile.showEmpty end,
                         set = function(info, s) NugComboBar.Commands.showempty() end,
                         order = 5,
                     },
@@ -129,7 +227,7 @@ do
                         name = L"Show Always",
                         desc = L"Don't hide at all",
                         type = "toggle",
-                        get = function(info) return NugComboBarDB.showAlways end,
+                        get = function(info) return NugComboBar.db.profile.showAlways end,
                         set = function(info, s) NugComboBar.Commands.showalways() end,
                         order = 6,
                     },
@@ -137,14 +235,14 @@ do
                         name = L"Hide OOC",
                         desc = L"Always hide out of combat",
                         type = "toggle",
-                        get = function(info) return NugComboBarDB.onlyCombat end,
+                        get = function(info) return NugComboBar.db.profile.onlyCombat end,
                         set = function(info, s) NugComboBar.Commands.onlycombat() end,
                         order = 7,
                     },
                     hideslowly = {
                         name = L"Fade out",
                         type = "toggle",
-                        get = function(info) return NugComboBarDB.hideSlowly end,
+                        get = function(info) return NugComboBar.db.profile.hideSlowly end,
                         set = function(info, s) NugComboBar.Commands.hideslowly() end,
                         order = 8,
                     },
@@ -152,9 +250,19 @@ do
                         name = L"Hide w/o Target",
                         desc = L"(Only for combat points)",
                         type = "toggle",
-                        get = function(info) return NugComboBarDB.hideWithoutTarget end,
+                        get = function(info) return NugComboBar.db.profile.hideWithoutTarget end,
                         set = function(info, s) NugComboBar.Commands.hidewotarget() end,
                         order = 11,
+                    },
+                    animationLevel = {
+                        name = L"Animation Level",
+                        type = "range",
+                        get = function(info) return NugComboBar.db.profile.animationLevel end,
+                        set = function(info, v) NugComboBar.db.profile.animationLevel = v end,
+                        min = 0,
+                        max = 2,
+                        step = 1,
+                        order = 13,
                     },
                     -- vertical = {
                     --     name = L"Vertical",
@@ -163,30 +271,23 @@ do
                     --     set = function(info, s) NugComboBar.Commands.vertical() end,
                     --     order = 13,
                     -- },
-                    resourcesGroup = {
-                        type = "group",
-                        name = "",
-                        guiInline = true,
-                        order = 14,
-                        args = {
-                            togglebliz = {
-                                name = L"Disable Blizzard Frames",
-                                type = "toggle",
-                                width = "double",
-                                desc = L"Hides default class frames on player unit frame",
-                                get = function(info) return NugComboBarDB.disableBlizz end,
-                                set = function(info, s) NugComboBar.Commands.toggleblizz() end,
-                                order = 14,
-                            },
-                        },
+
+                    classThemes = {
+                        name = L"Use NCB Class Themes",
+                        type = 'toggle',
+                        width = "full",
+                        order = 16,
+                        get = function(info) return NugComboBar.db.profile.classThemes end,
+                        set = function(info, s) NugComboBar.Commands.classthemes() end,
                     },
                 }
             },
+
             showColor = {
                 type = "group",
                 name = L"Colors",
-                -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
-                disabled = function() return (NugComboBarDB.classThemes == true) end,
+                -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBar.db.profile.classThemes and NugComboBar.db.profile.enable3d end,
+                disabled = function() return (NugComboBar.db.profile.classThemes == true) end,
                 guiInline = true,
                 order = 3,
                 args = {
@@ -196,7 +297,7 @@ do
                         order = 1,
                         --desc = "Color of first point",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[1])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[1])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -209,7 +310,7 @@ do
                         order = 2,
                         --desc = "Color of second point",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[2])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[2])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -222,7 +323,7 @@ do
                         order = 3,
                         --desc = "Color of third point",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[3])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[3])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -235,7 +336,7 @@ do
                         order = 4,
                         --desc = "Color of fourth point",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[4])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[4])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -248,7 +349,7 @@ do
                         order = 5,
                         --desc = "Color of fifth point",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[5])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[5])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -261,7 +362,7 @@ do
                         order = 6,
                         --desc = "Color of six point",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[6])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[6])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -273,7 +374,7 @@ do
                         type = 'color',
                         desc = "If enabled, overrides color",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[5])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[5])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -286,7 +387,7 @@ do
                         order = 7,
                         -- desc = "Color of all Points",
                         get = function(info)
-                            local r,g,b = unpack(NugComboBarDB.colors[1])
+                            local r,g,b = unpack(NugComboBar.db.profile.colors[1])
                             return r,g,b
                         end,
                         set = function(info, r, g, b)
@@ -297,41 +398,21 @@ do
                     },
                 },
             },
-            enable2d = {
-                        name = L"2D Mode"..newFeatureIcon,
-                        type = 'toggle',
-                        -- disabled = function() return NugComboBar:IsDefaultSkin() end,
-                        confirm = true,
-						confirmText = "Warning: Requires UI reloading.",
-                        desc = L"(Color settings only available in 2D mode)",
-                        order = 4,
-                        get = function(info) return (not NugComboBarDB.enable3d) end,
-                        set = function(info, s) NugComboBarDB.enable3d = not NugComboBarDB.enable3d; ReloadUI(); end,
-                    },
-            enable3d = {
-                        name = L"3D Mode",
-                        -- desc = L"(Activates 3D Mode)",
-                        type = "toggle",
-                        confirm = true,
-						confirmText = "Warning: Requires UI reloading.",
-                        order = 5,
-                        get = function(info) return NugComboBarDB.enable3d end,
-                        set = function(info, s) NugComboBarDB.enable3d = not NugComboBarDB.enable3d; ReloadUI(); end,
-                    },
             mode2dSettings = {
                 type = "group",
                 name = L"2D Mode settings",
+                disabled = function() return NugComboBar.db.global.enable3d end,
                 guiInline = true,
                 order = 5.5,
                 args = {
                     intensity = {
                         name = L"2D Mode glow intensity",
                         type = "range",
-                        get = function(info) return NugComboBarDB.glowIntensity end,
+                        get = function(info) return NugComboBar.db.profile.glowIntensity end,
                         set = function(info, s)
-                            NugComboBarDB.glowIntensity = s
+                            NugComboBar.db.profile.glowIntensity = s
                             for i=1,6 do
-                                local color = NugComboBarDB.colors[i]
+                                local color = NugComboBar.db.profile.colors[i]
                                 NugComboBar.SetColor(i, unpack(color))
                             end
                         end,
@@ -345,7 +426,7 @@ do
             presets = {
                 type = "group",
                 name = L"3D Mode settings",
-                -- disabled = function() return NugComboBar:IsDefaultSkin() and NugComboBarDB.classThemes and NugComboBarDB.enable3d end,
+                disabled = function() return (not NugComboBar:IsDefaultSkin() or not NugComboBar.db.global.enable3d) or NugComboBar.db.profile.classThemes end,
                 guiInline = true,
                 order = 6,
                 args = {
@@ -354,7 +435,6 @@ do
                         name = L"Preset",
                         type = 'select',
                         order = 1,
-                        disabled = function() return (NugComboBarDB.classThemes == true) end,
                         values = function()
                             local p = {}
                             for k,preset in pairs(NugComboBar.presets) do
@@ -366,7 +446,7 @@ do
                             end
                             return p
                         end,
-                        get = function(info) return NugComboBarDB.preset3d end,
+                        get = function(info) return NugComboBar.db.profile.preset3d end,
                         set = function( info, v ) NugComboBar.Commands.preset3d(v) end,
                     },
                     colors3d = {
@@ -375,7 +455,7 @@ do
                         width = "double",
                         type = 'toggle',
                         order = 5,
-                        get = function(info) return NugComboBarDB.colors3d end,
+                        get = function(info) return NugComboBar.db.profile.colors3d end,
                         set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
                     },
                     description1 = {
@@ -410,8 +490,8 @@ do
                             Ambience = L"Ambience",
                             Master = L"Master",
                         },
-                        get = function(info) return NugComboBarDB.soundChannel end,
-                        set = function( info, v ) NugComboBarDB.soundChannel = v end,
+                        get = function(info) return NugComboBar.db.profile.soundChannel end,
+                        set = function( info, v ) NugComboBar.db.profile.soundChannel = v end,
                     },
 
                     soundNameFull = {
@@ -422,7 +502,7 @@ do
                         values = NugComboBar.soundChoices,
                         get = function(info)
                             for i,v in ipairs(NugComboBar.soundChoices) do
-                                if v == NugComboBarDB.soundNameFull then return i end
+                                if v == NugComboBar.db.profile.soundNameFull then return i end
                             end
                         end,
                         set = function( info, v )
@@ -435,15 +515,15 @@ do
                         type = 'execute',
                         width = "half",
                         order = 1.5,
-                        disabled = function() return (NugComboBarDB.soundNameFull == "none") end,
+                        disabled = function() return (NugComboBar.db.profile.soundNameFull == "none") end,
                         func = function()
-                            local sound = NugComboBar.soundFiles[NugComboBarDB.soundNameFull]
+                            local sound = NugComboBar.soundFiles[NugComboBar.db.profile.soundNameFull]
                             if sound == "custom" then
-                                sound = NugComboBarDB.soundNameFullCustom
-                                PlaySoundFile(sound, NugComboBarDB.soundChannel)
+                                sound = NugComboBar.db.profile.soundNameFullCustom
+                                PlaySoundFile(sound, NugComboBar.db.profile.soundChannel)
                             else
                                 if type(sound) == "number" then
-                                    PlaySound(sound, NugComboBarDB.soundChannel)
+                                    PlaySound(sound, NugComboBar.db.profile.soundChannel)
                                 end
                             end
                         end,
@@ -453,10 +533,10 @@ do
                         type = 'input',
                         width = "full",
                         order = 2,
-                        disabled = function() return (NugComboBarDB.soundNameFull ~= "custom") end,
-                        get = function(info) return NugComboBarDB.soundNameFullCustom end,
+                        disabled = function() return (NugComboBar.db.profile.soundNameFull ~= "custom") end,
+                        get = function(info) return NugComboBar.db.profile.soundNameFullCustom end,
                         set = function( info, v )
-                            NugComboBarDB.soundNameFullCustom = v
+                            NugComboBar.db.profile.soundNameFullCustom = v
                         end,
                     },
                 },
@@ -474,7 +554,7 @@ do
             --             order = 6.4,
             --             values = layoutChoices,
             --             get = function(info)
-            --                 local overrideLayout = NugComboBarDB.overrideLayout
+            --                 local overrideLayout = NugComboBar.db.profile.overrideLayout
             --                 if not overrideLayout then return 1 end
             --                 for i,v in ipairs(layoutChoices) do
             --                     if v == overrideLayout then return i end
@@ -487,40 +567,115 @@ do
             --         },
             --     },
             -- },
-
-            disable = {
-                type = "group",
-                name = "",
-                guiInline = true,
-                order = 7,
-                args = {
-                    desc = {
-                        type = 'description',
-                        name = L"Disable for current character or spec",
-                        order = 1,
-                    },
-                    disabled = {
-                        name = L"Disabled",
-                        type = 'toggle',
-                        disabled = function() return not NugComboBarDB_Character.charspec end,
-                        get = function(info)
-                            if NugComboBarDB == NugComboBarDB_Global then return nil end
-                            return NugComboBarDB.disabled
-                        end,
-                        set = function(info, s) NugComboBar.Commands.disable(s) end,
-                        order = 2,
-                    },
-                    -- reloadui = {
-                    --     order = 3,
-                    --     type = "execute",
-                    --     name = L"ReloadUI",
-                    --     func = function() ReloadUI() end
-                    -- },
-                },
-            },
-
         },
     }
+
+    local specsTable = opt.args.resourceSelection.args
+    for specIndex=1,GetNumSpecializations() do
+        local id, name, description, icon = GetSpecializationInfo(specIndex)
+        local _, class = UnitClass('player')
+        specsTable["desc"..specIndex] = {
+            name = "",
+            type = "description",
+            width = 0.25,
+            imageWidth = 23,
+            imageHeight = 23,
+            image = icon,
+            order = specIndex*10+1,
+        }
+        specsTable["conf"..specIndex] = {
+            name = "",
+            width = 1.5,
+            type = "select",
+            values = NugComboBar:GetAvailableConfigsForSpec(specIndex),
+            get = function(info) return NugComboBar.db.global.classConfig[class][specIndex] end,
+            set = function(info, v)
+                NugComboBar.db.global.classConfig[class][specIndex] = v
+                NugComboBar:SPELLS_CHANGED()
+                NugComboBar:NotifyGUI()
+            end,
+            order = specIndex*10+2,
+        }
+        specsTable["profile"..specIndex] = {
+            name = "",
+            type = 'select',
+            order = specIndex*10+3,
+            width = 1.5,
+            values = function()
+                return GetProfileList(NugComboBar.db)
+            end,
+            get = function(info) return NugComboBar.db.global.specProfiles[class][specIndex] end,
+            set = function(info, v)
+                NugComboBar.db.global.specProfiles[class][specIndex] = v
+                NugComboBar:SPELLS_CHANGED()
+            end,
+        }
+    end
+
+    local global_opts = {
+        type = "group",
+        name = "Global Settings",
+        guiInline = true,
+        order = 2.5,
+        args = {
+            enablePrettyRunes = {
+                name = L"Pretty Runes",
+                desc = L"If disabled, rune charge timers will be displayed as simple bars",
+                width = "full",
+                type = "toggle",
+                confirm = true,
+                confirmText = "Warning: Requires UI reloading.",
+                get = function(info) return NugComboBar.db.global.enablePrettyRunes end,
+                set = function(info, s)
+                    NugComboBar.db.global.enablePrettyRunes = not NugComboBar.db.global.enablePrettyRunes
+                    ReloadUI()
+                end,
+                order = 1,
+            },
+            togglebliz = {
+                name = L"Disable Class Frames",
+                type = "toggle",
+                -- width = "double",
+                desc = L"Hides default class frames on player unit frame",
+                get = function(info) return NugComboBar.db.global.disableBlizz end,
+                set = function(info, s) NugComboBar.Commands.toggleblizz() end,
+                order = 2,
+            },
+            togglebliznp = {
+                name = L"Disable Nameplate Class Frames",
+                type = "toggle",
+                width = "double",
+                desc = L"Hides default class frames on player nameplate",
+                get = function(info) return NugComboBar.db.global.disableBlizzNP end,
+                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
+                order = 3,
+            },
+
+            enable2d = {
+                name = L"2D Mode"..newFeatureIcon,
+                type = 'toggle',
+                -- disabled = function() return NugComboBar:IsDefaultSkin() end,
+                confirm = true,
+                confirmText = "Warning: Requires UI reloading.",
+                -- desc = L"(Color settings only available in 2D mode)",
+                order = 4,
+                get = function(info) return (not NugComboBar.db.global.enable3d) end,
+                set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
+            },
+            enable3d = {
+                name = L"3D Mode",
+                desc = L"Less stable, bad coloring support",
+                type = "toggle",
+                confirm = true,
+                confirmText = "Warning: Requires UI reloading.",
+                order = 5,
+                get = function(info) return NugComboBar.db.global.enable3d end,
+                set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
+            },
+        },
+    }
+
+    opt.args.global = global_opts
 
     local Config = LibStub("AceConfigRegistry-3.0")
     local Dialog = LibStub("AceConfigDialog-3.0")

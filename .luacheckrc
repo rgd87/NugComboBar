@@ -88,6 +88,7 @@ globals = {
     "tremove",
     "wipe",
 
+    "LibStub",
     "CreateFrame",
     "UIParent",
     "GetTime",
@@ -154,7 +155,7 @@ globals = {
     "InterfaceOptionsFrame",
     "CopyTable",
     "ReloadUI",
-
-    "LibStub",
-
+    "GetNumSpecializations",
+    "GetSpecializationInfo",
+    "PixelUtil",
 }

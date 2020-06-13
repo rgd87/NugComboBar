@@ -1,4 +1,4 @@
-## Interface: 11303
+## Interface: 11305
 ## Title: NugComboBar
 ## Notes: Combopoints counter
 ## Author: d87
@@ -9,5 +9,9 @@
 ## X-WoWI-ID: 6308
 ## X-Curse-Project-ID: 2538
 
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\AceDB-3.0\AceDB-3.0.xml
 NugComboBar.lua
 skin.lua
+config.lua

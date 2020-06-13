@@ -1,6 +1,6 @@
 local addonName, ns = ...
 local NugComboBar = _G.NugComboBar
-
+local pixelperfect = NugComboBar.pixelperfect
 --[[
 local fileIDtoPathMap = {
     [166255] = "spells\\gouge_precast_state_hand.m2",
@@ -68,17 +68,49 @@ NugComboBar.presets = {
 
 local barBottom = false
 
-local ActivateFunc = function(self)
+local ActivateFunc = function(self, animLevel)
     if self.dag:IsPlaying() then self.dag:Stop() end
     if self.rag:IsPlaying() then self.rag:Stop() end
     if self:GetAlpha() == 1 then return end
+
+    if animLevel and animLevel == 0 then
+        self:SetAlpha(1)
+        return
+    end
+
     self.aag:Play()
     if self.glow2 then self.glow2:Play() end
+
+    if animLevel and animLevel >= 2 then
+        self.gather:Stop()
+        self.shine1:Stop()
+        self.shine2:Stop()
+
+        self.gather:Play()
+        self.shine1:Play()
+        self.shine2:Play()
+    end
 end
-local DeactivateFunc = function(self)
+local DeactivateFunc = function(self, animLevel)
     if self.aag:IsPlaying() then self.aag:Stop() end
     if self.rag:IsPlaying() then self.rag:Stop() end
     if self:GetAlpha() == 0 then return end
+
+    if animLevel and animLevel == 0 then
+        self:SetAlpha(0)
+        return
+    end
+
+    if animLevel and animLevel >= 2 then
+        self.gather:Stop()
+        self.shine1:Stop()
+        self.shine2:Stop()
+
+        self.gather:GetParent():SetAlpha(0)
+        self.shine1:GetParent():SetAlpha(0)
+        self.shine2:GetParent():SetAlpha(0)
+    end
+
     self.dag:Play()
 end
     local OnFinishedScript = function(self)
@@ -264,7 +296,7 @@ end
 
 
 local IsVertical = function()
-    return NugComboBar.db.vertical
+    return NugComboBar.db.global.vertical
 end
 
 
@@ -296,15 +328,33 @@ NugComboBar.mappings = mappings
 
 function NugComboBar.MoveCharger(self, point)
     self.bar:ClearAllPoints()
-    self.bar:SetPoint("TOP", point, "BOTTOM", 0,16)
-    self.bar:SetWidth(29)
-    self.bar:SetHeight(5)
+    if IsVertical() then
+        if self.db.profile.cooldownOnTop then
+            self.bar:SetPoint("RIGHT", point, "LEFT", 17,0)
+        else
+            self.bar:SetPoint("LEFT", point, "RIGHT", -17, 0 )
+        end
+        self.bar:SetHeight(pixelperfect(29)-0.1)
+        self.bar:SetWidth(pixelperfect(5))
+        self.bar:SetOrientation("VERTICAL")
+    else
+        if self.db.profile.cooldownOnTop then
+            self.bar:SetPoint("BOTTOM", point, "TOP", 0,-17)
+        else
+            self.bar:SetPoint("TOP", point, "BOTTOM", 0,17)
+        end
+        self.bar:SetWidth(pixelperfect(29)-0.1)
+        self.bar:SetHeight(pixelperfect(5))
+        self.bar:SetOrientation("HORIZONTAL")
+    end
 end
 
 
 function NugComboBar.SetMaxPoints(self, n, special, n2)
     -- n2 is second row length
-    if NugComboBar.MAX_POINTS == n and NugComboBar.MAX_POINTS2 == n2 then return end
+    -- !!! Currently it's important to always run this, even if config is the same.
+    ---     because it also updates colors and preset when switching profiles
+    -- if NugComboBar.MAX_POINTS == n and NugComboBar.MAX_POINTS2 == n2 then return end
     NugComboBar.MAX_POINTS = n
     NugComboBar.MAX_POINTS2 = n2
 
@@ -317,15 +367,15 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
 
     local totalpoints = n + (n2 or 0)
 
-    if NugComboBar.db.overrideLayout then
-        local layout = NugComboBar.db.overrideLayout
+    if NugComboBar.db.profile.overrideLayout then
+        local layout = NugComboBar.db.profile.overrideLayout
         layout = tonumber(layout) or layout
         local customLayout = mappings[layout]
         if customLayout and #customLayout >= totalpoints then
             special = layout
         end
         -- if not customLayout then
-            -- NugComboBar.db.overrideLayout = false -- remove override if it was deleted from skin settings
+            -- NugComboBar.db.profile.overrideLayout = false -- remove override if it was deleted from skin settings
         -- end
     end
 
@@ -346,8 +396,8 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
         end
         if popts.chainreset then
             prevt = nil
-            toffset_x = NugComboBar.db.bar2_x or toffset_x
-            toffset_y = NugComboBar.db.bar2_y or toffset_y
+            toffset_x = NugComboBar.db.profile.bar2_x or toffset_x
+            toffset_y = NugComboBar.db.profile.bar2_y or toffset_y
         end
         if IsVertical() then
             point.bg:SetPoint("BOTTOMLEFT", prevt or self, prevt and "TOPLEFT" or "BOTTOMLEFT", -(toffset_y or 0), toffset_x or 0)
@@ -358,84 +408,62 @@ function NugComboBar.SetMaxPoints(self, n, special, n2)
 
 
         if i > n then
-            point:SetColor(unpack(NugComboBar.db.colors.bar2))
-            if not (point:SetPreset(NugComboBar.db.preset3dpointbar2)) then
-                NugComboBar.db.preset3dpointbar2 = NugComboBar.defaults.preset3dpointbar2
-                point:SetPreset(NugComboBar.db.preset3dpointbar2)
-            end
+            point:SetColor(unpack(self:GetColor("bar2")))
+            point:SetPreset(self:Get3DPreset("preset3dpointbar2"))
         else
-            point:SetColor(unpack(NugComboBar.db.colors[i]))
-            if not (point:SetPreset(NugComboBar.db.preset3d)) then
-                NugComboBar.db.preset3d = NugComboBar.defaults.preset3d
-                point:SetPreset(NugComboBar.db.preset3d)
-            end
+            point:SetColor(unpack(self:GetColor(i)))
+            point:SetPreset(self:Get3DPreset("preset3d"))
         end
     end
     self:SetWidth(framesize)
 end
 
 
+
+local BGTexConfigure = function(self, tex, scale, r,g,b,a, duration, framelevel)
+    local tf = self
+    local t = self.texture
+    framelevel = framelevel or 0
+    tf:SetFrameLevel(framelevel)
+    t:SetTexture(tex)
+    t:SetVertexColor(r,g,b,a)
+    local w,h = tf:GetSize()
+    t:SetSize(w*scale, h*scale)
+    tf:Show()
+    tf.ag.a:SetDuration(duration or 1)
+end
+
+local CreateBGTexture = function(f)
+    local bgtf = CreateFrame("Frame", nil,f)
+    local size = f:GetWidth()
+    bgtf:SetFrameLevel(0)
+    bgtf:SetWidth(size)
+    bgtf:SetHeight(size)
+    bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
+    local bgt = bgtf:CreateTexture(nil, "ARTWORK", nil, 0)
+    bgt:SetBlendMode("ADD")
+    bgt:SetPoint("CENTER")
+    bgtf.texture = bgt
+
+    local ag = bgtf:CreateAnimationGroup()
+    ag:SetLooping("REPEAT")
+    local a = ag:CreateAnimation("Rotation")
+    a:SetDuration(1)
+    a:SetDegrees(360)
+    ag.a = a
+
+    bgtf.Configure = BGTexConfigure
+
+    bgtf.ag = ag
+
+    return bgtf
+end
+
 -------------------------
 -- 2D Point
 -------------------------
-local function rgb2hsv (r, g, b)
-    local rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn
-    rabs = r
-    gabs = g
-    babs = b
-    v = math.max(rabs, gabs, babs)
-    diff = v - math.min(rabs, gabs, babs);
-    diffc = function(c) return (v - c) / 6 / diff + 1 / 2 end
-    -- percentRoundFn = function(num) return math.floor(num * 100) / 100 end
-    if (diff == 0) then
-        h = 0
-        s = 0
-    else
-        s = diff / v;
-        rr = diffc(rabs);
-        gg = diffc(gabs);
-        bb = diffc(babs);
-
-        if (rabs == v) then
-            h = bb - gg;
-        elseif (gabs == v) then
-            h = (1 / 3) + rr - bb;
-        elseif (babs == v) then
-            h = (2 / 3) + gg - rr;
-        end
-        if (h < 0) then
-            h = h + 1;
-        elseif (h > 1) then
-            h = h - 1;
-        end
-    end
-    return h, s, v
-end
-
-local function hsv2rgb(h,s,v)
-    local r,g,b
-    local i = math.floor(h * 6);
-    local f = h * 6 - i;
-    local p = v * (1 - s);
-    local q = v * (1 - f * s);
-    local t = v * (1 - (1 - f) * s);
-    local rem = i % 6
-    if rem == 0 then
-        r = v; g = t; b = p;
-    elseif rem == 1 then
-        r = q; g = v; b = p;
-    elseif rem == 2 then
-        r = p; g = v; b = t;
-    elseif rem == 3 then
-        r = p; g = q; b = v;
-    elseif rem == 4 then
-        r = t; g = p; b = v;
-    elseif rem == 5 then
-        r = v; g = p; b = q;
-    end
-
-    return r,g,b
-end
+local rgb2hsv = NugComboBar.rgb2hsv
+local hsv2rgb = NugComboBar.hsv2rgb
 
 local SetColorFunc = function(self,r,g,b)
     if not r then return end
@@ -443,7 +471,9 @@ local SetColorFunc = function(self,r,g,b)
     local h2 = h - 0.15
     if h2 < 0 then h2 = h2 + 1 end
     local r2,g2,b2 = hsv2rgb(h2, s, v)
-    local m1 = NugComboBar.db.glowIntensity
+    local theme = NugComboBar:GetCurrentTheme()
+    local themeIntensity = theme and theme.glowIntensity
+    local m1 = themeIntensity or NugComboBar.db.profile.glowIntensity
     local m2 = 1
 
     self.t:SetVertexColor(r2*m1,g2*m1,b2*m1)
@@ -473,6 +503,8 @@ function NugComboBar.Create2DPoint(self, id, opts)
     -- t2:SetPoint("CENTER", f, "CENTER",0,0)
     -- t2:SetSize(size*0.8, size*0.8)
     f.t2 = t2
+
+    f.CreateBGTexture = CreateBGTexture
 
     f.SetColor = SetColorFunc
     f.SetPreset = function() end
@@ -569,22 +601,14 @@ local SetPresetFunc = function ( self, name, noreset )
     end
 
     if bgType == "TEXTURE" and not self.bgtex then
-        self:CreateBGTexture()
+        self.bgtex = self:CreateBGTexture()
     end
 
     if self.bgtex then
         if bgType == "TEXTURE" then
             local tex, scale, r,g,b,a, duration, framelevel = unpack(settings, 8)
             local tf = self.bgtex
-            local t = self.bgtex.texture
-            framelevel = framelevel or 0
-            self.bgtex:SetFrameLevel(framelevel)
-            t:SetTexture(tex)
-            t:SetVertexColor(r,g,b,a)
-            local w,h = tf:GetSize()
-            t:SetSize(w*scale, h*scale)
-            tf:Show()
-            tf.ag.a:SetDuration(duration or 1)
+            tf:Configure(tex, scale, r,g,b,a, duration, framelevel)
             if duration == 0 then
                 tf.ag:Stop()
             else
@@ -640,7 +664,7 @@ NugComboBar.ResetTransformations = ResetTransformations
 
 local SetColor3DFunc = function(self, r,g,b, force)
     local enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB
-    if NugComboBar.db.colors3d or force then
+    if NugComboBar.db.profile.colors3d or force then
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = true, false, 0, 1, 0, 1, r,g,b, 1, r,g,b
     else
         enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB = true, false, 0, 1, 0, 1, 0.69999, 0.69999, 0.69999, 1, 0.8, 0.8, 0.63999
@@ -650,31 +674,6 @@ local SetColor3DFunc = function(self, r,g,b, force)
     self.bgmodel:SetLight(enabled, omni, dirX, dirY, dirZ, ambIntensity, ambR, ambG, ambB, dirIntensity, dirR, dirG, dirB )
 end
 
-local CreateBGTexture = function(f)
-    local bgtf = CreateFrame("Frame", nil,f)
-    local size = f.bgmodel:GetWidth()
-    bgtf:SetFrameLevel(0)
-    bgtf:SetWidth(size)
-    bgtf:SetHeight(size)
-    bgtf:SetPoint("CENTER", f, "CENTER", 0, 0)
-    local bgt = bgtf:CreateTexture(nil, "ARTWORK", nil, 0)
-    bgt:SetBlendMode("ADD")
-    bgt:SetPoint("CENTER")
-    bgtf.texture = bgt
-
-    local ag = f:CreateAnimationGroup()
-    ag:SetLooping("REPEAT")
-    local a = ag:CreateAnimation("Rotation")
-    a:SetDuration(1)
-    a:SetDegrees(360)
-    ag.a = a
-
-    bgtf.ag = ag
-
-    -- ag:Play()
-
-    f.bgtex = bgtf
-end
 
 function NugComboBar.Create3DPoint(self, id, opts)
     local size = 64
@@ -782,8 +781,6 @@ local CreateTextureBar = function(self)
 end
 
 
-local pixelperfect = NugComboBar.pixelperfect
-
 local all_bars = {}
 
 local CreatePixelBar = function(self)
@@ -868,7 +865,7 @@ NugComboBar.Create = function(self)
 
     local initial = not _G["NugComboBarBackgroundTexture1"]
 
-    local is3D = NugComboBar.db.enable3d
+    local is3D = NugComboBar.db.global.enable3d
 
     if initial then
         self.point = self.point or {}
@@ -948,6 +945,8 @@ NugComboBar.Create = function(self)
         self.point[i] = f
 
         if initial then
+            local isBig = ts.role == "BIG"
+
             local aag = f:CreateAnimationGroup()
             f.aag = aag
             local a1 = aag:CreateAnimation("Alpha")
@@ -966,6 +965,13 @@ NugComboBar.Create = function(self)
             d1:SetToAlpha(0)
             d1:SetDuration(0.5)
             d1:SetOrder(1)
+
+            -- local sh1 = dag:CreateAnimation("Scale")
+            -- sh1:SetFromScale(1,1)
+            -- sh1:SetToScale(0.05, 0.05)
+            -- sh1:SetOrder(1)
+            -- sh1:SetDuration(0.1)
+
             dag:SetScript("OnFinished",function(self)
                 self:GetParent():SetAlpha(0)
             end)
@@ -997,6 +1003,150 @@ NugComboBar.Create = function(self)
                 self.r2:SetDuration(0.40*mul)
             end
 
+            local gather = CreateFrame("Frame",nil,f)
+            gather:SetHeight(45); gather:SetWidth(45);
+            gather:SetPoint("CENTER", f, "CENTER", 0,0)
+            local gt = gather:CreateTexture(nil,"OVERLAY")
+            gt:SetAllPoints(gather)
+            gt:SetBlendMode("ADD")
+            -- gt:SetPoint("CENTER", gater, "CENTER", 11, -18)
+            gt:SetTexture[[Interface\Addons\NugComboBar\tex\circle]]
+            gt:SetVertexColor(1, 0.5 ,0.2)
+            gt:SetAlpha(0)
+
+            local g1ag = gt:CreateAnimationGroup()
+            local g1a1 = g1ag:CreateAnimation("Alpha")
+            g1a1:SetFromAlpha(0)
+            g1a1:SetToAlpha(0.8)
+            g1a1:SetDuration(0.3)
+            g1a1:SetOrder(1)
+            local g1a2 = g1ag:CreateAnimation("Scale")
+            g1a2:SetFromScale(1,1)
+            g1a2:SetToScale(0.47, 0.47)
+            g1a2:SetDuration(0.3)
+            g1a2:SetOrder(1)
+            local g1a3 = g1ag:CreateAnimation("Alpha")
+            g1a3:SetStartDelay(0.25)
+            g1a3:SetFromAlpha(1)
+            g1a3:SetToAlpha(0)
+            g1a3:SetDuration(0.25)
+            g1a3:SetOrder(2)
+            local g1a4 = g1ag:CreateAnimation("Alpha")
+            g1a4:SetFromAlpha(1)
+            g1a4:SetToAlpha(0)
+            g1a4:SetDuration(0)
+            g1a4:SetOrder(3)
+
+            g1ag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
+
+            f.gather = g1ag
+
+
+
+
+
+            local m = 1
+            if isBig then m = 1.3 end
+
+            local shine = CreateFrame("Frame",nil,f)
+            shine:SetHeight(45*m); shine:SetWidth(45*m);
+            shine:SetPoint("CENTER", f, "CENTER", 0,0)
+            local shinesize = 45*0.8*m
+            local shinetex1 = shine:CreateTexture(nil,"OVERLAY")
+            shinetex1:SetWidth(shinesize); shinetex1:SetHeight(shinesize)
+            shinetex1:SetBlendMode("ADD")
+            shinetex1:SetPoint("CENTER", shine, "CENTER", 11*45*m/128, -18*45*m/128)
+            shinetex1:SetTexture[[Interface\Addons\NugComboBar\tex\spark]]
+            shinetex1:SetAlpha(0)
+
+            local shinetex2 = shine:CreateTexture(nil,"OVERLAY")
+            shinetex2:SetWidth(shinesize); shinetex2:SetHeight(shinesize)
+            shinetex2:SetPoint("CENTER", shine, "CENTER", -11*45*m/128, 18*45*m/128)
+            shinetex2:SetTexture[[Interface\Addons\NugComboBar\tex\spark]]
+            shinetex2:SetAlpha(0)
+            -- f2:SetPoint("CENTER",f,"CENTER",3,2)
+
+            -- shine:SetAlpha(0)
+            -- shinetex1:SetAlpha(0)
+            -- shinetex2:SetAlpha(0)
+
+            local s1aag = shinetex1:CreateAnimationGroup()
+            local s1a1 = s1aag:CreateAnimation("Alpha")
+            -- s1a1:SetStartDelay(0.18)
+            s1a1:SetFromAlpha(0)
+            s1a1:SetToAlpha(1)
+            s1a1:SetDuration(0.15)
+            s1a1:SetOrder(1)
+            local s1a2 = s1aag:CreateAnimation("Rotation")
+            s1a2:SetOrigin("CENTER",-7*45*m/128, 16*45*m/128)
+            s1a2:SetDegrees(-50)
+            s1a2:SetDuration(0.25)
+            s1a2:SetOrder(2)
+            local s1a3 = s1aag:CreateAnimation("Alpha")
+            s1a3:SetFromAlpha(1)
+            s1a3:SetToAlpha(0)
+            s1a3:SetDuration(0.25)
+            s1a3:SetOrder(3)
+            -- these trailing alpha animations basically do nothing but prevent bug that makes effects visible at login
+            local s1a4 = s1aag:CreateAnimation("Alpha")
+            s1a4:SetFromAlpha(1)
+            s1a4:SetToAlpha(0)
+            s1a4:SetDuration(0)
+            s1a4:SetOrder(4)
+
+            --Required for 4.2
+            s1aag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
+
+            local s2aag = shinetex2:CreateAnimationGroup()
+            local s2a1 = s2aag:CreateAnimation("Alpha")
+            -- s2a1:SetStartDelay(0.18)
+            s2a1:SetFromAlpha(0)
+            s2a1:SetToAlpha(1)
+            s2a1:SetDuration(0.15)
+            s2a1:SetOrder(1)
+            local s2a2 = s2aag:CreateAnimation("Rotation")
+            s2a2:SetOrigin("CENTER",7*45*m/128, -16*45*m/128)
+            s2a2:SetDegrees(-50)
+            s2a2:SetDuration(0.25)
+            s2a2:SetOrder(2)
+            local s2a3 = s2aag:CreateAnimation("Alpha")
+            s2a3:SetFromAlpha(1)
+            s2a3:SetToAlpha(0)
+            s2a3:SetDuration(0.25)
+            s2a3:SetOrder(3)
+            local s2a4 = s2aag:CreateAnimation("Alpha")
+            s2a4:SetFromAlpha(1)
+            s2a4:SetToAlpha(0)
+            s2a4:SetDuration(0)
+            s2a4:SetOrder(4)
+
+            s2aag:SetScript("OnFinished",function(self)
+                self:GetParent():SetAlpha(0)
+            end)
+
+            f.shine1 = s1aag
+            f.shine2 = s2aag
+
+        end
+
+        f.Select = function(self)
+            local selectTex = self.selectTex
+            if not selectTex then
+                self.selectTex = self:CreateBGTexture()
+                self.selectTex:Configure("Interface\\AddOns\\NugComboBar\\tex\\paladin_blessingofspellwarding_runeplane.tga", 0.65, 1, 0.5, 0, 0.6, 1.5)
+                self.selectTex:SetParent(NugComboBar)
+                self.selectTex:SetFrameStrata("BACKGROUND")
+                self.selectTex:SetFrameLevel(1)
+                self.selectTex:SetPoint("TOPLEFT", self, "TOPLEFT",0,0)
+                self.selectTex:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT",0,0)
+                self.selectTex:SetScale(0.8)
+                selectTex = self.selectTex
+            end
+            selectTex.ag:Play()
         end
 
         f.Activate = ActivateFunc
@@ -1099,6 +1249,13 @@ NugComboBar.themes["DEMONHUNTER"] = {
 }
 
 NugComboBar.themes["PALADIN"] = {
+    mode2d = {
+        [0] = {
+            colors = {
+                normal = { 0.823, 0.686, 0.372 },
+            },
+        }
+    },
     mode3d = {
         [0] = {
             preset3d = "glowFreedom",
@@ -1134,6 +1291,19 @@ NugComboBar.themes["MONK"] = {
             colors = {
                 normal = { 0, 0.525, 0.5 },
             },
+            glowIntensity = 0.4,
+        },
+        -- [1] = {
+        --     colors = {
+        --         normal = { 0.67, 0.33, 0.23 },
+        --     },
+        --     glowIntensity = 0.5,
+        -- },
+        [3] = {
+            colors = {
+                normal = { 1, 0.62, 0.98 },
+            },
+            glowIntensity = 0.5,
         },
     },
     mode3d = {
