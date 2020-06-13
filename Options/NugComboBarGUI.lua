@@ -571,16 +571,19 @@ do
     }
 
     local specsTable = opt.args.resourceSelection.args
-    for specIndex=1,GetNumSpecializations() do
-        local id, name, description, icon = GetSpecializationInfo(specIndex)
+    do
+        local specIndex = 1
         local _, class = UnitClass('player')
+        local coords = CLASS_ICON_TCOORDS[class];
+
         specsTable["desc"..specIndex] = {
             name = "",
             type = "description",
             width = 0.25,
             imageWidth = 23,
             imageHeight = 23,
-            image = icon,
+            imageCoords = coords,
+            image = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",
             order = specIndex*10+1,
         }
         specsTable["conf"..specIndex] = {

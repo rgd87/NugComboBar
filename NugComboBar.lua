@@ -25,7 +25,7 @@ local tsort = table.sort
 --- Compatibility with Classic
 local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
-local GetSpecialization = isClassic and function() return nil end or _G.GetSpecialization
+local GetSpecialization = isClassic and function() return 1 end or _G.GetSpecialization
 
 local configs = {}
 local currentConfigName
