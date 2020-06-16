@@ -271,15 +271,6 @@ do
                     --     set = function(info, s) NugComboBar.Commands.vertical() end,
                     --     order = 13,
                     -- },
-
-                    classThemes = {
-                        name = L"Use NCB Class Themes",
-                        type = 'toggle',
-                        width = "full",
-                        order = 16,
-                        get = function(info) return NugComboBar.db.profile.classThemes end,
-                        set = function(info, s) NugComboBar.Commands.classthemes() end,
-                    },
                 }
             },
 
@@ -638,20 +629,11 @@ do
             togglebliz = {
                 name = L"Disable Class Frames",
                 type = "toggle",
-                -- width = "double",
+                width = "full",
                 desc = L"Hides default class frames on player unit frame",
                 get = function(info) return NugComboBar.db.global.disableBlizz end,
                 set = function(info, s) NugComboBar.Commands.toggleblizz() end,
                 order = 2,
-            },
-            togglebliznp = {
-                name = L"Disable Nameplate Class Frames",
-                type = "toggle",
-                width = "double",
-                desc = L"Hides default class frames on player nameplate",
-                get = function(info) return NugComboBar.db.global.disableBlizzNP end,
-                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
-                order = 3,
             },
 
             enable2d = {
