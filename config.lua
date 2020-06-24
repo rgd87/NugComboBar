@@ -185,35 +185,18 @@ NugComboBar:RegisterConfig("Pulverize", {
 
 
 NugComboBar:RegisterConfig("ShapeshiftDruid", {
-    triggers = { GetSpecialization, GetSpell(80313), GetSpell(22568) }, -- Pulv, FerBite
+    triggers = { GetSpecialization }, -- Pulv, FerBite
 
     setup = function(self, spec)
-        -- local solar_aura = 164545
-        -- local lunar_aura = 164547
-        -- local GetEmpowerments = function(unit)
-        --     local _,_, solar = FindAura("player", solar_aura, "HELPFUL")
-        --     local _,_, lunar = FindAura("player", lunar_aura, "HELPFUL")
-        --     lunar = lunar or 0
-        --     solar = solar or 0
-        --     return lunar, nil, nil, 0, solar
-        -- end
-
-        -- local empowerments = function()
-        --     self:SetMaxPoints(3, "MOONKIN", 3)
-        --     GetComboPoints = GetEmpowerments
-        --     self:RegisterEvent("UNIT_AURA")
-        -- end
 
         self:RegisterEvent("UPDATE_SHAPESHIFT_FORM") -- Registering on main addon, not event proxy
         self.UPDATE_SHAPESHIFT_FORM = function(self)
+
             local spec = GetSpecialization()
             local form = GetShapeshiftFormID()
             self:ResetConfig()
 
-            if form == BEAR_FORM and spec == 3 and IsPlayerSpell(80313) then --Pulverize
-                self:ApplyConfig("Pulverize")
-                self:Update()
-            elseif form == CAT_FORM and IsPlayerSpell(22568) then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
+            if form == CAT_FORM then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
                 self:ApplyConfig("ComboPointsDruid")
                 self:Update()
             else
