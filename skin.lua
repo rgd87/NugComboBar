@@ -438,7 +438,7 @@ local pointtex = {
 }
 
 
-function RotateTexture(coords, degrees)
+local function RotateTexture(coords, degrees)
         local l,r,t,b = unpack(coords)
         -- return { l, b, r, b, l, t, r, t }
         return { r, t, l, t, r, b, l, b }
