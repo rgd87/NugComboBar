@@ -933,6 +933,14 @@ end
 
 local all_bars = {}
 
+local MakeBorder = function(self, tex, left, right, top, bottom, drawLayer, level)
+    local t = self:CreateTexture(nil, drawLayer, nil,level)
+    t:SetTexture(tex)
+    t:SetPoint("TOPLEFT", self, "TOPLEFT", left, -top)
+    t:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -right, bottom)
+    return t
+end
+
 local CreatePixelBar = function(self)
     local bar = CreateFrame("StatusBar",nil, self)
 
@@ -950,18 +958,13 @@ local CreatePixelBar = function(self)
     barbg:SetAllPoints(bar)
     bar.bg = barbg
 
-    local backdrop = {
-        bgFile = [[Interface\BUTTONS\WHITE8X8]],
-        tile = true, tileSize = 0,
-        insets = {left = -1*p, right = -p, top = -p, bottom = -p},
-    }
-    bar:SetBackdrop(backdrop)
-    bar:SetBackdropColor(0, 0, 0, 1)
+    local outline = MakeBorder(bar, "Interface\\BUTTONS\\WHITE8X8", -p, -p, -p, -p, "BACKGROUND", -2)
+    outline:SetVertexColor(0, 0, 0, 1)
+    bar.outline = outline
 
     bar.SetColor1 = function(self, r,g,b)
         self:SetStatusBarColor(r,g,b)
         self.bg:SetVertexColor(r*0.3,g*0.3,b*0.3)
-        self:SetBackdropColor(0,0,0,1)
     end
 
     bar.SetColor = function(self,r,g,b)
