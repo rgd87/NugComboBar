@@ -22,7 +22,8 @@ local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
-local GetComboPoints = GetComboPoints
+local dummy = function() return 0 end
+local GetComboPoints = dummy
 
 --- Compatibility with Classic
 local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
@@ -64,7 +65,6 @@ local AuraTimerOnUpdate = function(self, time)
     end
     self:SetValue(progress)
 end
-local dummy = function() return 0 end
 
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
