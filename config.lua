@@ -625,7 +625,11 @@ NugComboBar:RegisterConfig("Meatcleaver", {
         self:SetMaxPoints(4)
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
-        self:SetPointGetter(GetMeatcleaver)
+        if IsPlayerSpell(280392) then
+            self:SetPointGetter(GetAuraStack(85739, "HELPFUL", "player"))
+        else
+            self:SetPointGetter(GetMeatcleaver)
+        end
     end
 }, "WARRIOR", 2)
 
