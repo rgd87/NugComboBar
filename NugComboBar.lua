@@ -66,53 +66,7 @@ local AuraTimerOnUpdate = function(self, time)
     self:SetValue(progress)
 end
 
-function NugComboBar:LoadClassSettings()
-        local class = select(2,UnitClass("player"))
-        self.MAX_POINTS = 0
-        self.isTempDisabled = nil
-        if self.bar then self.bar:SetColor(unpack(self.db.profile.colors.bar1)) end
 
-        self:RegisterEvent("SPELLS_CHANGED")
-end
-function NugComboBar:SPELLS_CHANGED()
-    local spec = GetSpecialization()
-    local class = select(2,UnitClass("player"))
-
-    local currentProfile = self.db:GetCurrentProfile()
-    local newSpecProfile = self.db.global.specProfiles[class][spec] or "Default"
-    if not self.db.profiles[newSpecProfile] then
-        self.db.global.specProfiles[class][spec] = "Default"
-        newSpecProfile = "Default"
-    end
-    if newSpecProfile ~= currentProfile then
-        self.db:SetProfile(newSpecProfile)
-    end
-
-    local newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
-
-    if newConfigName == "Disabled" then
-        self:ResetConfig()
-        self:Disable()
-        currentConfigName = nil
-        return
-    end
-
-    local currentConfig = configs[currentConfigName]
-
-    local needUpdate
-    local changedConfig = currentConfigName ~= newConfigName
-    if changedConfig then
-        needUpdate = true
-    else
-        local newTriggerState = self:GetTriggerState(currentConfig)
-        needUpdate = not self:IsTriggerStateEqual(currentTriggerState, newTriggerState)
-    end
-
-    if needUpdate then
-        self:SelectConfig(newConfigName)
-        self:Update()
-    end
-end
 
 local defaults = {
     global = {
@@ -194,6 +148,60 @@ local defaults = {
     },
 }
 NugComboBar.defaults = defaults
+
+function NugComboBar:LoadClassSettings()
+        local class = select(2,UnitClass("player"))
+        self.MAX_POINTS = 0
+        self.isTempDisabled = nil
+        if self.bar then self.bar:SetColor(unpack(self.db.profile.colors.bar1)) end
+
+        self:RegisterEvent("SPELLS_CHANGED")
+end
+function NugComboBar:SPELLS_CHANGED()
+    local spec = GetSpecialization()
+    local class = select(2,UnitClass("player"))
+
+    local currentProfile = self.db:GetCurrentProfile()
+    local newSpecProfile = self.db.global.specProfiles[class][spec] or "Default"
+    if not self.db.profiles[newSpecProfile] then
+        self.db.global.specProfiles[class][spec] = "Default"
+        newSpecProfile = "Default"
+    end
+    if newSpecProfile ~= currentProfile then
+        self.db:SetProfile(newSpecProfile)
+    end
+
+    local newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
+
+    -- If using missing config reset to default
+    if not configs[newConfigName] then
+        self.db.global.classConfig[class][spec] = defaults.global.classConfig[class][spec]
+        newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
+    end
+
+    if newConfigName == "Disabled" then
+        self:ResetConfig()
+        self:Disable()
+        currentConfigName = nil
+        return
+    end
+
+    local currentConfig = configs[currentConfigName]
+
+    local needUpdate
+    local changedConfig = currentConfigName ~= newConfigName
+    if changedConfig then
+        needUpdate = true
+    else
+        local newTriggerState = self:GetTriggerState(currentConfig)
+        needUpdate = not self:IsTriggerStateEqual(currentTriggerState, newTriggerState)
+    end
+
+    if needUpdate then
+        self:SelectConfig(newConfigName)
+        self:Update()
+    end
+end
 
 NugComboBar.SkinVersion = 600
 do
