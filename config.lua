@@ -120,6 +120,7 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
     end,
 }, "ROGUE")
 
+--[[
 NugComboBar:RegisterConfig("ComboPointsAndShadowdance", {
     triggers = { GetSpecialization, GetSpell(185313), GetSpell(193531), GetSpell(238104) }, -- Shadow Dance, Deeper Stratagem, Enveloping Shadows
     setup = function(self, spec)
@@ -143,6 +144,7 @@ NugComboBar:RegisterConfig("ComboPointsAndShadowdance", {
         end
     end,
 }, "ROGUE", 3)
+]]
 
 ---------------------
 -- DRUID
