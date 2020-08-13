@@ -311,21 +311,6 @@ NugComboBar:RegisterConfig("HolyPower", {
     end
 }, "PALADIN")
 
-NugComboBar:RegisterConfig("ShieldOfTheRighteousness", {
-    triggers = { GetSpecialization },
-    setup = function(self, spec)
-        self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-        self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
-        self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
-        self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
-        self:SetMaxPoints(3)
-        self:SetDefaultValue(3)
-        self.flags.showEmpty = true
-        self:EnableBar(0, 6,"Small", "Timer")
-        self:SetPointGetter(MakeGetChargeFunc(53600)) -- Shield of the Righteous
-    end
-}, "PALADIN", 2)
-
 ---------------------
 -- MONK
 ---------------------
@@ -356,24 +341,19 @@ NugComboBar:RegisterConfig("Chi", {
 }, "MONK", 3)
 
 
-NugComboBar:RegisterConfig("IronskinBrew", {
+NugComboBar:RegisterConfig("PurifyingBrew", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
         self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
         self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
         self.eventProxy.SPELL_UPDATE_COOLDOWN = GENERAL_UPDATE
         self.eventProxy.SPELL_UPDATE_CHARGES = GENERAL_UPDATE
-        if IsPlayerSpell(196721) then -- Light Brewing
-            self:SetMaxPoints(4)
-            self:SetDefaultValue(4)
-        else
-            self:SetMaxPoints(3)
-            self:SetDefaultValue(3)
-        end
+        self:SetMaxPoints(2)
+        self:SetDefaultValue(2)
         self.flags.showEmpty = true
         self.flags.soundFullEnabled = true
         self:EnableBar(0, 6,"Small", "Timer")
-        self:SetPointGetter(MakeGetChargeFunc(115308)) -- Ironskin Brew
+        self:SetPointGetter(MakeGetChargeFunc(119582)) -- Purifying Brew
     end
 }, "MONK", 1)
 
