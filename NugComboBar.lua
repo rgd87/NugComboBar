@@ -490,8 +490,16 @@ end
 
 function NugComboBar:SelectPoint(i)
     local point = self:GetPoint(i)
-    print(point)
+    if not point.Select then return end
     point:Select()
+end
+
+function NugComboBar:DeselectAllPoints()
+    for i, point in ipairs(self.point) do
+        if point.Deselect then
+            point:Deselect()
+        end
+    end
 end
 
 

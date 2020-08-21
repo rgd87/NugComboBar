@@ -1302,6 +1302,13 @@ NugComboBar.Create = function(self)
             selectTex.ag:Play()
         end
 
+        f.Deselect = function(self)
+            if self.selectTex then
+                -- self.selectTex.ag:Stop()
+                self.selectTex:Hide()
+            end
+        end
+
         f.Activate = ActivateFunc
         f.Deactivate = DeactivateFunc
         f.Reappear = ReappearFunc
