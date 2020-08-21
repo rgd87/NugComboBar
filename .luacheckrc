@@ -158,4 +158,5 @@ globals = {
     "GetNumSpecializations",
     "GetSpecializationInfo",
     "PixelUtil",
+    "GetUnitChargedPowerPoints",
 }

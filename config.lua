@@ -117,35 +117,13 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
 
         self:SetMaxPoints(maxCP)
         self:SetPointGetter(RogueGetComboPoints)
-    end,
-}, "ROGUE")
 
-NugComboBar:RegisterConfig("ComboPointsKyrian", {
-    triggers = { GetSpecialization, GetSpell(193531), GetSpell(323547) }, -- Deeper Stratagem, Echoing Reprimand
-    setup = function(self, spec)
-        self:ApplyConfig("ComboPointsRogue")
-
-        local isKyrian = true --IsPlayerSpell(323547) -- if Echoing Reprimand known
-        -- local isAnticipation = false -- IsPlayerSpell(114015)
-        local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
-        -- local maxFill = NugComboBarDB.maxFill
-        if isKyrian then
-            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        if not isClassic then -- Kyrian Covenant Ability
+            self.eventProxy:RegisterUnitEvent("UNIT_POWER_POINT_CHARGE", "player")
             local selectedPoint = nil
-            self.eventProxy.UNIT_AURA = function(self, event, unit)
-                -- 323558 - 2
-                -- 323559 - 3
-                -- 323560 - 4
-                local echoingReprimand
-                for i=1, 100 do
-                    local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
-                    if not name then break end
-                    if auraSpellID == 323558 or auraSpellID == 323559 or auraSpellID == 323560 then
-                        echoingReprimand = count
-                        break
-                    end
-                end
-
+            self.eventProxy.UNIT_POWER_POINT_CHARGE = function(self, event, unit)
+                local chargedPoints = GetUnitChargedPowerPoints("player") -- returns table or nil
+                local echoingReprimand = chargedPoints and chargedPoints[1]
                 if echoingReprimand ~= selectedPoint then
                     selectedPoint = echoingReprimand
                     if selectedPoint ~= nil then
