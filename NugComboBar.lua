@@ -184,6 +184,8 @@ function NugComboBar:SPELLS_CHANGED()
         self:Disable()
         currentConfigName = nil
         return
+    else
+        self:Enable()
     end
 
     local currentConfig = configs[currentConfigName]
@@ -423,7 +425,7 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
         end
     end
 
-    if self.db.profile.hideWithoutTarget then
+    if self.db.profile.hideWithoutTarget and not self:IsDisabled() then
         self.forceHidden = not UnitExists("target")
         self:Update()
     end
@@ -1172,10 +1174,19 @@ function NugComboBar:Disable()
 
     -- self.isTempDisabled = true
 
+    self.isDisabled = true
+
 	self:DisableBar()
     if self.anchor then self.anchor:Hide() end
     self:SetAlpha(0)
 	self:Hide()
+end
+
+function NugComboBar:Enable()
+    self.isDisabled = false
+end
+function NugComboBar:IsDisabled()
+    return self.isDisabled
 end
 
 function NugComboBar:SuperDisable()
