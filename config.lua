@@ -460,7 +460,7 @@ NugComboBar:RegisterConfig("SoulFragments", {
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetAuraStack(203981, "HELPFUL", "player")) -- Soul Fragments
     end
-})
+}, "DEMONHUNTER")
 
 
 ---------------------
