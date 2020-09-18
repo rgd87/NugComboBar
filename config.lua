@@ -309,7 +309,7 @@ local HOLY_POWER_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
 end
 
 NugComboBar:RegisterConfig("HolyPower", {
-    triggers = { GetSpecialization },
+    triggers = { GetSpecialization, GetSpell(203316) },
     setup = function(self, spec)
         self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         self.eventProxy.UNIT_POWER_UPDATE = HOLY_POWER_UNIT_POWER_UPDATE
@@ -343,7 +343,7 @@ local CHI_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
 end
 
 NugComboBar:RegisterConfig("Chi", {
-    triggers = { GetSpecialization },
+    triggers = { GetSpecialization, GetSpell(115396) },
     setup = function(self, spec)
         self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         self.eventProxy.UNIT_POWER_UPDATE = CHI_UNIT_POWER_UPDATE
