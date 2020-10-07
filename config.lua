@@ -137,7 +137,6 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
     end,
 }, "ROGUE")
 
---[[
 NugComboBar:RegisterConfig("ComboPointsAndShadowdance", {
     triggers = { GetSpecialization, GetSpell(185313), GetSpell(193531), GetSpell(238104) }, -- Shadow Dance, Deeper Stratagem, Enveloping Shadows
     setup = function(self, spec)
@@ -147,8 +146,8 @@ NugComboBar:RegisterConfig("ComboPointsAndShadowdance", {
         local isAnticipation = false -- IsPlayerSpell(114015)
         local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
         local maxFill = NugComboBarDB.maxFill
-        if isSub then
-            local maxShadowDance = IsPlayerSpell(238104) and 3 or 2
+        local maxShadowDance = IsPlayerSpell(238104) and 2 or 1
+        if isSub and maxShadowDance == 2 then
             local barSetup = "ROGUE"..maxCP..maxShadowDance
             self.eventProxy:RegisterEvent("SPELL_UPDATE_COOLDOWN")
             self.eventProxy:RegisterEvent("SPELL_UPDATE_CHARGES")
@@ -161,7 +160,6 @@ NugComboBar:RegisterConfig("ComboPointsAndShadowdance", {
         end
     end,
 }, "ROGUE", 3)
-]]
 
 ---------------------
 -- DRUID
