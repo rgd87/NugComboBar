@@ -133,6 +133,7 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
                     end
                 end
             end
+            self.eventProxy.UNIT_POWER_POINT_CHARGE(self, nil, "player")
         end
     end,
 }, "ROGUE")

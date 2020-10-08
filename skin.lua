@@ -1299,6 +1299,7 @@ NugComboBar.Create = function(self)
                 self.selectTex:SetScale(0.8)
                 selectTex = self.selectTex
             end
+            selectTex:Show()
             selectTex.ag:Play()
         end
 
