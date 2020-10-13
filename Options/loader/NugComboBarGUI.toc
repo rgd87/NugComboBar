@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: NugComboBarGUI
 ## Notes: NugComboBar Configuration Panel
 ## Version: @project-version@
