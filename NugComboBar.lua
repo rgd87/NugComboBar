@@ -1103,10 +1103,11 @@ end
 local HideBlizzFrame = function(frame)
 	frame:UnregisterAllEvents()
 	frame:Hide()
-	frame._Show = frame.Show
-	frame.Show = frame.Hide
-	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", UIParent, "BOTTOMRIGHT", 100, -100)
+	hooksecurefunc(frame, "Show", function(self)
+        self:Hide()
+    end)
+	-- frame:ClearAllPoints()
+	-- frame:SetPoint("TOPLEFT", UIParent, "BOTTOMRIGHT", 100, -100)
 end
 
 function NugComboBar.disableBlizzFrames()
