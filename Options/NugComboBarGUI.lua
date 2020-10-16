@@ -56,6 +56,10 @@ do
                             return NugComboBar.db:GetCurrentProfile()
                         end,
                         set = function(info, v)
+                            local spec = GetSpecialization()
+                            local class = select(2,UnitClass("player"))
+                            NugComboBar.db.global.specProfiles[class][spec] = v
+
                             NugComboBar.db:SetProfile(v)
                         end,
                     },
