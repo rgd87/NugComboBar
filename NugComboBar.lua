@@ -84,7 +84,7 @@ local defaults = {
             DEATHKNIGHT = { "Runes", "Runes", "Runes" },
             MAGE = { "ArcaneCharges", "Fireblast", "Icicles" },
             WARRIOR = { "Disabled", "Meatcleaver", "ShieldBlock" },
-            SHAMAN = { "Icefury", "Disabled", "Disabled" },
+            SHAMAN = { "Icefury", "MaelstromWeapon", "Disabled" },
             HUNTER = { "Disabled", "Disabled", "Disabled" },
             PRIEST = { "Disabled", "Disabled", "Disabled" },
         },

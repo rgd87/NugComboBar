@@ -159,4 +159,5 @@ globals = {
     "GetSpecializationInfo",
     "PixelUtil",
     "GetUnitChargedPowerPoints",
+    "GetPlayerAuraBySpellID",
 }

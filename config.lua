@@ -672,3 +672,23 @@ NugComboBar:RegisterConfig("Icefury", {
         self:SetPointGetter(GetAuraStack(210714, "HELPFUL", "player")) -- Icefury
     end
 }, "SHAMAN", 1)
+
+
+local function GetMaelstromWaapon()
+    local name, icon, count, debuffType, duration, expirationTime, caster = GetPlayerAuraBySpellID(344179) -- new API function
+    if not name then return 0 end
+    local c1 = math.min(count, 5)
+    local c2 = math.max(count - 5, 0)
+    return c1, nil, nil, c2
+end
+
+NugComboBar:RegisterConfig("MaelstromWeapon", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
+        self:SetPointGetter(GetMaelstromWaapon)
+    end
+}, "SHAMAN", 2)
