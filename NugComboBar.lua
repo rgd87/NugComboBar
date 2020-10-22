@@ -1100,12 +1100,18 @@ function NugComboBar.SlashCmd(msg)
     end
 end
 
-local HideBlizzFrame = function(frame)
+local HideBlizzFrame = function(frame, nosetup)
 	frame:UnregisterAllEvents()
 	frame:Hide()
 	hooksecurefunc(frame, "Show", function(self)
         self:Hide()
     end)
+    if not nosetup then
+        hooksecurefunc(frame, "Setup", function(self)
+            self:Hide()
+            self:UnregisterAllEvents()
+        end)
+    end
 	-- frame:ClearAllPoints()
 	-- frame:SetPoint("TOPLEFT", UIParent, "BOTTOMRIGHT", 100, -100)
 end
@@ -1116,7 +1122,7 @@ function NugComboBar.disableBlizzFrames()
             HideBlizzFrame(ComboPointPlayerFrame)
         end
         if class == "WARLOCK" then
-			HideBlizzFrame(WarlockPowerFrame)
+            HideBlizzFrame(WarlockPowerFrame)
         end
         if class == "PALADIN" then
 			HideBlizzFrame(PaladinPowerBarFrame)
@@ -1129,7 +1135,7 @@ function NugComboBar.disableBlizzFrames()
 			HideBlizzFrame(MonkHarmonyBarFrame)
         end
 		if class == "DEATHKNIGHT" then
-			HideBlizzFrame(RuneFrame)
+			HideBlizzFrame(RuneFrame, true)
         end
 end
 
