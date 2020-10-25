@@ -174,7 +174,7 @@ function NugComboBar:SPELLS_CHANGED()
     local newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
 
     -- If using missing config reset to default
-    if not configs[newConfigName] then
+    if newConfigName ~= "Disabled" and not configs[newConfigName] then
         self.db.global.classConfig[class][spec] = defaults.global.classConfig[class][spec]
         newConfigName = self.db.global.classConfig[class][spec] or "Disabled"
     end
