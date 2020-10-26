@@ -194,8 +194,8 @@ do
                                 end
                             end
                         end,
-                        min = -150,
-                        max = 150,
+                        min = -250,
+                        max = 250,
                         step = 1,
                         order = 3.2,
                     },
