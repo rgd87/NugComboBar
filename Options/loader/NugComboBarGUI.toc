@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 9000w
 ## Title: NugComboBarGUI
 ## Notes: NugComboBar Configuration Panel
 ## Version: @project-version@
