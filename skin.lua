@@ -471,7 +471,8 @@ local mappings = {
     ["5NO6"] = { 1, 2, 3, 4, 8 },
     ["6NO6"] = { 1, 2, 3, 4, 5, 8 },
     ["MOONKIN"] = { 1, 2, 8, SR1, SR2, SR8 },
-    ["FIREMAGE3"] = { 1, 6, SR1, SR2, SR8 },
+    ["FIREMAGE_CIND2"] = { 1, 6, SR1, SR2, SR8 },
+    ["FIREMAGE_CIND3"] = { 1, 2, 6, SR1, SR2, SR8 },
 }
 NugComboBar.mappings = mappings
 

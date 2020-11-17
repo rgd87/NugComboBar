@@ -593,7 +593,7 @@ NugComboBar:RegisterConfig("PhoenixFlamesFireblast", {
         local maxFireBlastCharges = 2 + (IsPlayerSpell(205029) and 1 or 0) -- Flame On
 
         if isPhoenixFlames then
-            self:SetMaxPoints(maxFireBlastCharges, "FIREMAGE3", 3)
+            self:SetMaxPoints(maxFireBlastCharges, "FIREMAGE_CIND"..maxFireBlastCharges, 3)
             self:SetPointGetter(FireMageGetCombined)
             self:DisableBar()
         else
