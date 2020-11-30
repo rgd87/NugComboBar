@@ -494,12 +494,21 @@ function NugComboBar:SelectPoint(i)
     local point = self:GetPoint(i)
     if not point.Select then return end
     point:Select()
+    point.isSelected = true
+    self:Update()
 end
 
 function NugComboBar:DeselectAllPoints()
+    for i = 1, self.MAX_POINTS do
+        local point = self.p[i]
+        if point.isSelected then
+            AnticipationOut(point, i)
+        end
+    end
     for i, point in ipairs(self.point) do
         if point.Deselect then
             point:Deselect()
+            point.isSelected = nil
         end
     end
 end
@@ -571,7 +580,10 @@ function NugComboBar:Update(unit, ...)
     	    for i = 1, self.MAX_POINTS do
     	        local point = self.p[i]
     	        if i <= comboPoints then
-    	            point:Activate(animationLevel)
+                    point:Activate(animationLevel)
+                    if point.isSelected then
+                        AnticipationIn(point, i)
+                    end
     	        end
     	        if i > comboPoints then
     	            point:Deactivate(animationLevel)
