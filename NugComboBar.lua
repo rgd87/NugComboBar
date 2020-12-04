@@ -130,6 +130,7 @@ local defaults = {
         colors3d = true,
         showAlways = false,
         onlyCombat = false,
+        secondLayer = true,
         disableProgress = false,
         cooldownOnTop = false,
         chargeCooldown = true,
@@ -581,35 +582,39 @@ function NugComboBar:Update(unit, ...)
     	        local point = self.p[i]
     	        if i <= comboPoints then
                     point:Activate(animationLevel)
-                    if point.isSelected then
-                        AnticipationIn(point, i)
+                    if flags.secondLayer then
+                        if point.isSelected then
+                            AnticipationIn(point, i)
+                        end
                     end
     	        end
     	        if i > comboPoints then
     	            point:Deactivate(animationLevel)
     	        end
 
-    	        if secondLayerPoints then -- Anticipation stuff
-    	            if i <= secondLayerPoints then
-    	                if  (point.currentPreset and point.currentPreset ~= profile.preset3dlayer2)
-    	                    or
-    	                    (not point.anticipationColor) then
+                if flags.secondLayer then
+                    if secondLayerPoints then -- Anticipation stuff
+                        if i <= secondLayerPoints then
+                            if  (point.currentPreset and point.currentPreset ~= profile.preset3dlayer2)
+                                or
+                                (not point.anticipationColor) then
 
-    	                    point:Reappear(AnticipationIn, i)
-    	                end
-    	            else
-    	                if  (point.currentPreset and point.currentPreset ~= profile.preset3d)
-    	                    or
-    	                    (point.anticipationColor) then
+                                point:Reappear(AnticipationIn, i)
+                            end
+                        else
+                            if  (point.currentPreset and point.currentPreset ~= profile.preset3d)
+                                or
+                                (point.anticipationColor) then
 
-    	                    if i <= comboPoints then
-    	                        point:Reappear(AnticipationOut, i)
-    	                    else
-    	                        AnticipationOut(point, i)
-    	                    end
-    	                end
-    	            end
-    	        end
+                                if i <= comboPoints then
+                                    point:Reappear(AnticipationOut, i)
+                                else
+                                    AnticipationOut(point, i)
+                                end
+                            end
+                        end
+                    end
+                end
     	    end
         end
 
@@ -994,9 +999,9 @@ NugComboBar.Commands = {
         NugComboBar.forceHidden = false
         NugComboBar:PLAYER_TARGET_CHANGED()
     end,
-    -- ["secondlayer"] = function(v)
-    --     NugComboBar.db.profile.secondLayer = not NugComboBar.db.profile.secondLayer
-    -- end,
+    ["secondlayer"] = function(v)
+        NugComboBar.db.profile.secondLayer = not NugComboBar.db.profile.secondLayer
+    end,
     ["toggleprogress"] = function(v)
         NugComboBar.db.profile.disableProgress = not NugComboBar.db.profile.disableProgress
         if NugComboBar.db.profile.disableProgress then

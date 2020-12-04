@@ -261,8 +261,7 @@ do
                     },
                     secondLayer = {
                         name = L"Second Layer",
-                        desc = L"For Anticipation talent",
-                        disabled = true,
+                        desc = L"Used for Maelstrom / Echoing Reprimand",
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.secondLayer end,
                         set = function(info, s) NugComboBar.Commands.secondlayer() end,
