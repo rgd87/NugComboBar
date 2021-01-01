@@ -160,4 +160,5 @@ globals = {
     "PixelUtil",
     "GetUnitChargedPowerPoints",
     "GetPlayerAuraBySpellID",
+    "CombatLogGetCurrentEventInfo",
 }
