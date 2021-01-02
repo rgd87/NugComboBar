@@ -599,7 +599,7 @@ function NugComboBar:Update(unit, ...)
                                 or
                                 (not point.anticipationColor) then
 
-                                point:Reappear(AnticipationIn, i)
+                                point:Reappear(animationLevel, AnticipationIn, i)
                             end
                         else
                             if  (point.currentPreset and point.currentPreset ~= profile.preset3d)
@@ -607,7 +607,7 @@ function NugComboBar:Update(unit, ...)
                                 (point.anticipationColor) then
 
                                 if i <= comboPoints then
-                                    point:Reappear(AnticipationOut, i)
+                                    point:Reappear(animationLevel, AnticipationOut, i)
                                 else
                                     AnticipationOut(point, i)
                                 end
