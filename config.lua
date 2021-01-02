@@ -661,6 +661,27 @@ NugComboBar:RegisterConfig("TidalWaves", {
     end
 }, "SHAMAN", 3)
 
+
+--[[
+local function GetTestData()
+    local cp = math.random(10)
+    local l2 = math.max(cp - 5, 0)
+    if cp > 5 then cp = 5 end
+    return cp, nil, nil, l2
+end
+
+NugComboBar:RegisterConfig("TestConfig", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
+        self:SetPointGetter(GetTestData) -- Tidal Waves
+    end
+}, "SHAMAN")
+]]
+
 do
 
 local undulationCharge = 0
