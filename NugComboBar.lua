@@ -112,9 +112,11 @@ local defaults = {
         frameparent = nil, -- for SetParent
         scale = 1.3,
         showEmpty = false,
+        enableFullColor = false,
         hideSlowly = true,
         colors = {
             ['*'] = {1, 0.33, 0.74}, -- points
+            ["full"] = { 1, 0.7, 0.2 },
             ["bar1"] = { 0.9,0.1,0.1 },
             ["bar2"] = { 0.71, 0.16, 0 },
             ["layer2"] = { 0.74, 0.06, 0 },
@@ -578,8 +580,15 @@ function NugComboBar:Update(unit, ...)
             local runeIndex, isEnergize = ...
             self:UpdateRunes(runeIndex, isEnergize)
         else
+            local isFull = comboPoints == self.MAX_POINTS
     	    for i = 1, self.MAX_POINTS do
-    	        local point = self.p[i]
+                local point = self.p[i]
+
+                if self.db.profile.enableFullColor then
+                    local r,g,b = unpack(NugComboBar:GetColor(isFull and "full" or i))
+                    point:SetColor(r,g,b)
+                end
+
     	        if i <= comboPoints then
                     point:Activate(animationLevel)
                     if flags.secondLayer then
