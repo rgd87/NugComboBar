@@ -401,6 +401,22 @@ NugComboBar:RegisterConfig("RenewingMist", {
 }, "MONK", 2)
 
 ---------------------
+-- PRIEST
+---------------------
+
+NugComboBar:RegisterConfig("FlashConcentration", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
+        -- self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetAuraStack(336267)) -- Flash Concentration
+    end
+}, "PRIEST", 2)
+
+---------------------
 -- WARLOCK
 ---------------------
 
