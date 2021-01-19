@@ -31,6 +31,18 @@ local GetAuraStack = function(scanID, filter, unit, casterCheck)
     end
 end
 
+local GetAuraStackWTimer = function(scanID, filter, unit, casterCheck)
+    filter = filter or "HELPFUL"
+    unit = unit or "player"
+    return function()
+        local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
+        if casterCheck and caster ~= casterCheck then count = nil end
+        if count then
+            return count, expirationTime-duration, duration
+        else return 0,0,0 end
+    end
+end
+
 local MakeGetChargeFunc = function(spellID)
     return function(unit)
         local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
@@ -412,7 +424,8 @@ NugComboBar:RegisterConfig("FlashConcentration", {
         self:SetMaxPoints(5)
         self:SetDefaultValue(0)
         -- self.flags.soundFullEnabled = true
-        self:SetPointGetter(GetAuraStack(336267)) -- Flash Concentration
+        self:EnableBar(0, 6,"Small", "Timer")
+        self:SetPointGetter(GetAuraStackWTimer(336267)) -- Flash Concentration
     end
 }, "PRIEST", 2)
 
