@@ -28,7 +28,17 @@ local GetComboPoints = dummy
 --- Compatibility with Classic
 local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
-local GetSpecialization = isClassic and function() return nil end or _G.GetSpecialization
+
+local function GetSpecializationWithFallback()
+    local spec = _G.GetSpecialization()
+    if spec == 5 then -- spec below lvl 10
+        return 1
+        -- windwalker 3
+    end
+    return spec
+end
+
+local GetSpecialization = isClassic and function() return nil end or GetSpecializationWithFallback
 
 local configs = {}
 local currentConfigName
