@@ -24,9 +24,10 @@ local tsort = table.sort
 local GetComboPoints = GetComboPoints
 
 --- Compatibility with Classic
-local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
-local GetSpecialization = isClassic and function() return 1 end or _G.GetSpecialization
+local apiLevel = math.floor(select(4,GetBuildInfo())/10000)
+-- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local IsInPetBattle = apiLevel <= 3 and function() end or C_PetBattles.IsInBattle
+local GetSpecialization = apiLevel <= 3 and function() return 1 end or _G.GetSpecialization
 
 local configs = {}
 local currentConfigName
@@ -344,7 +345,7 @@ do
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        if not isClassic then
+        if apiLevel >= 5 then
             self:RegisterEvent("PET_BATTLE_OPENING_START")
             self:RegisterEvent("PET_BATTLE_CLOSE")
         end

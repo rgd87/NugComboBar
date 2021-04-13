@@ -1,5 +1,6 @@
-local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local GetSpecialization = isClassic and function() return 1 end or _G.GetSpecialization
+-- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local apiLevel = math.floor(select(4,GetBuildInfo())/10000)
+local GetSpecialization = apiLevel <= 3 and function() return 1 end or _G.GetSpecialization
 
 local UnitPower = UnitPower
 
@@ -60,7 +61,7 @@ end
 
 
 local RogueGetComboPoints
-if isClassic then
+if apiLevel < 6 then
     local OriginalGetComboPoints = _G.GetComboPoints
     RogueGetComboPoints = function(unit)
         unit = unit or "player"
@@ -108,7 +109,7 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
         self:SetSourceUnit("player")
         self:SetTargetUnit("player")
 
-        if isClassic then
+        if apiLevel < 6 then
             self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         end
@@ -157,7 +158,7 @@ NugComboBar:RegisterConfig("ComboPointsDruid", {
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
 
-        if isClassic then
+        if apiLevel < 6 then
             self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         end
