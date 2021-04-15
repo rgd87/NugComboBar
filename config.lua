@@ -208,3 +208,18 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
     end
 }, "DRUID")
 
+---------------------
+-- MAGE
+---------------------
+
+NugComboBar:RegisterConfig("ArcaneBlast", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(3)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Teachings of the Monastery
+    end
+}, "MAGE")
