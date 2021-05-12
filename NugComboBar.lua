@@ -429,7 +429,10 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
     if self.db.profile.nameplateAttachTarget then
         local targetFrame = C_NamePlate.GetNamePlateForUnit("target")
 
-        if targetFrame then
+        local isAttackable = UnitCanAttack("player", "target")
+        local isFriendly = (UnitReaction("target", "player") or 0) >= 4
+
+        if targetFrame and isAttackable and not isFriendly then
             self:Show()
             self:ClearAllPoints()
             self:SetPoint("BOTTOM", targetFrame, "TOP", self.db.profile.nameplateOffsetX, self.db.profile.nameplateOffsetY)

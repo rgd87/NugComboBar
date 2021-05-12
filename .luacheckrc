@@ -161,4 +161,6 @@ globals = {
     "GetUnitChargedPowerPoints",
     "GetPlayerAuraBySpellID",
     "CombatLogGetCurrentEventInfo",
+    "UnitCanAttack",
+    "UnitReaction",
 }
