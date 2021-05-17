@@ -163,4 +163,5 @@ globals = {
     "CombatLogGetCurrentEventInfo",
     "UnitCanAttack",
     "UnitReaction",
+    "GetBuildInfo",
 }
