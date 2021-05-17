@@ -284,7 +284,6 @@ do
                     },
                     disableProgress = {
                         name = L"Disable Progress Bar",
-                        disabled = isClassic,
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.disableProgress end,
                         set = function(info, s) NugComboBar.Commands.toggleprogress() end,

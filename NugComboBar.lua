@@ -164,6 +164,26 @@ local defaults = {
 }
 NugComboBar.defaults = defaults
 
+if APILevel <= 2 then
+    defaults.global.classConfig = {
+        ROGUE = { "ComboPointsRogue", "ComboPointsRogue", "ComboPointsRogue" },
+        DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
+        PALADIN = { "Disabled", "Disabled", "Disabled" },
+        MONK = { "Disabled", "Disabled", "Disabled" },
+        WARLOCK = { "Disabled", "Disabled", "Disabled" },
+        DEMONHUNTER = { "Disabled", "Disabled" },
+        DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
+        MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
+        WARRIOR = { "Disabled", "Disabled", "Disabled" },
+        SHAMAN = { "Disabled", "Disabled", "Disabled" },
+        HUNTER = { "Disabled", "Disabled", "Disabled" },
+        PRIEST = { "Disabled", "Disabled", "Disabled" },
+    }
+    if APILevel == 1 then
+        defaults.global.classConfig.MAGE = { "Disabled", "Disabled", "Disabled" }
+    end
+end
+
 function NugComboBar:LoadClassSettings()
         local class = select(2,UnitClass("player"))
         self.MAX_POINTS = 0

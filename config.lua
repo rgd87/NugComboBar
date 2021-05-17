@@ -60,10 +60,6 @@ local GENERAL_UPDATE = function(self)
     self:Update()
 end
 
----------------------
--- ROGUE
----------------------
-
 local COMBO_POINTS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
     if unit ~= "player" then return end
     if ptype == "COMBO_POINTS" then
@@ -71,19 +67,15 @@ local COMBO_POINTS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
     end
 end
 
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 
-local RogueGetComboPoints
-if APILevel <= 5 then
-    local OriginalGetComboPoints = _G.GetComboPoints
-    RogueGetComboPoints = function(unit)
-        unit = unit or "player"
-        return OriginalGetComboPoints(unit, "target")
-    end
-else
-    local Enum_PowerType_ComboPoints = Enum.PowerType.ComboPoints
-    RogueGetComboPoints = function(unit)
-        return UnitPower("player", Enum_PowerType_ComboPoints)
-    end
+---------------------
+-- ROGUE
+---------------------
+
+local Enum_PowerType_ComboPoints = Enum.PowerType.ComboPoints
+local RogueGetComboPoints = function(unit)
+    return UnitPower("player", Enum_PowerType_ComboPoints)
 end
 
 local GetShadowdance = function()
@@ -821,16 +813,98 @@ NugComboBar:RegisterConfig("MaelstromWeapon", {
     end
 }, "SHAMAN", 2)
 
+end -- end of retail configs
+
 -- Classic
 
-NugComboBar:RegisterConfig("ArcaneBlastClassic", {
-    triggers = { GetSpecialization },
-    setup = function(self, spec)
-        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-        self:SetMaxPoints(3)
-        self:SetDefaultValue(0)
-        self.flags.soundFullEnabled = true
-        self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Teachings of the Monastery
+if APILevel <= 2 then
+
+    local OriginalGetComboPoints = _G.GetComboPoints
+    local RogueGetComboPoints = function(unit)
+        unit = unit or "player"
+        return OriginalGetComboPoints(unit, "target")
     end
-}, "MAGE")
+
+    NugComboBar:RegisterConfig("ComboPointsRogueClassic", {
+        triggers = { GetSpecialization, GetSpell(193531) }, -- Deeper Stratagem,
+        setup = function(self, spec)
+            self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+            self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
+
+            self:SetDefaultValue(0)
+            self.flags.soundFullEnabled = true
+            self:SetSourceUnit("player")
+            self:SetTargetUnit("player")
+
+            if APILevel <= 5 then
+                self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+                self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+            end
+
+            local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
+
+            self:SetMaxPoints(maxCP)
+            self:SetPointGetter(RogueGetComboPoints)
+        end,
+    }, "ROGUE")
+
+
+    NugComboBar:RegisterConfig("ComboPointsDruid", {
+        triggers = { GetSpecialization },
+        setup = function(self, spec)
+            self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+            self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
+            self:SetMaxPoints(5)
+            self:SetDefaultValue(0)
+            self.flags.soundFullEnabled = true
+
+            if APILevel <= 5 then
+                self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+                self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+            end
+
+            self:SetSourceUnit("player")
+            self:SetTargetUnit("player")
+            self:SetPointGetter(RogueGetComboPoints)
+        end
+    }, "DRUID")
+
+
+    NugComboBar:RegisterConfig("ShapeshiftDruid", {
+        triggers = { GetSpecialization },
+
+        setup = function(self, spec)
+
+            self:RegisterEvent("UPDATE_SHAPESHIFT_FORM") -- Registering on main addon, not event proxy
+            self.UPDATE_SHAPESHIFT_FORM = function(self)
+
+                local spec = GetSpecialization()
+                local form = GetShapeshiftFormID()
+                self:ResetConfig()
+
+                if form == CAT_FORM then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
+                    self:ApplyConfig("ComboPointsDruid")
+                    self:Update()
+                else
+                    self:Disable()
+                end
+            end
+            self.UPDATE_SHAPESHIFT_FORM(self)
+        end
+    }, "DRUID")
+
+    if APILevel == 2 then
+    NugComboBar:RegisterConfig("ArcaneBlastClassic", {
+        triggers = { GetSpecialization },
+        setup = function(self, spec)
+            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+            self:SetMaxPoints(3)
+            self:SetDefaultValue(0)
+            self.flags.soundFullEnabled = true
+            self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Teachings of the Monastery
+        end
+    }, "MAGE")
+    end
+
+end
