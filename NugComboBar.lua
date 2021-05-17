@@ -25,9 +25,7 @@ local tsort = table.sort
 local dummy = function() return 0 end
 local GetComboPoints = dummy
 
---- Compatibility with Classic
-local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local IsInPetBattle = isClassic and function() end or C_PetBattles.IsInBattle
+
 
 local function GetSpecializationWithFallback()
     local spec = _G.GetSpecialization()
@@ -38,7 +36,11 @@ local function GetSpecializationWithFallback()
     return spec
 end
 
-local GetSpecialization = isClassic and function() return nil end or GetSpecializationWithFallback
+--- Compatibility with Classic
+local APILevel = math.floor(select(4,GetBuildInfo())/10000)
+-- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local IsInPetBattle = APILevel <= 3 and function() end or C_PetBattles.IsInBattle
+local GetSpecialization = APILevel <= 3 and function() return 1 end or GetSpecializationWithFallback
 
 local configs = {}
 local currentConfigName
@@ -368,7 +370,7 @@ do
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
-        if not isClassic then
+        if APILevel >= 5 then
             self:RegisterEvent("PET_BATTLE_OPENING_START")
             self:RegisterEvent("PET_BATTLE_CLOSE")
         end
@@ -1157,6 +1159,7 @@ end
 
 function NugComboBar.disableBlizzFrames()
     local class = select(2,UnitClass("player"))
+    if APILevel >= 5 then
         if class == "ROGUE" or class == "DRUID" then
             HideBlizzFrame(ComboPointPlayerFrame)
         end
@@ -1176,6 +1179,12 @@ function NugComboBar.disableBlizzFrames()
 		if class == "DEATHKNIGHT" then
 			HideBlizzFrame(RuneFrame, true)
         end
+    elseif APILevel <= 2 then
+        if class == "ROGUE" or class == "DRUID" then
+            ComboFrame:UnregisterAllEvents()
+            ComboFrame:Hide()
+        end
+    end
 end
 
 function NugComboBar.disableBlizzNameplates()

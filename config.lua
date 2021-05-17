@@ -1,4 +1,5 @@
-local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local APILevel = math.floor(select(4,GetBuildInfo())/10000)
+local isClassic = APILevel <= 2
 local GetSpecialization = isClassic and function() return 1 end or _G.GetSpecialization
 
 local UnitPower = UnitPower
@@ -72,7 +73,7 @@ end
 
 
 local RogueGetComboPoints
-if isClassic then
+if APILevel <= 5 then
     local OriginalGetComboPoints = _G.GetComboPoints
     RogueGetComboPoints = function(unit)
         unit = unit or "player"
@@ -120,7 +121,7 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
         self:SetSourceUnit("player")
         self:SetTargetUnit("player")
 
-        if isClassic then
+        if APILevel <= 5 then
             self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         end
@@ -187,7 +188,7 @@ NugComboBar:RegisterConfig("ComboPointsDruid", {
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
 
-        if isClassic then
+        if APILevel <= 5 then
             self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         end
@@ -819,3 +820,17 @@ NugComboBar:RegisterConfig("MaelstromWeapon", {
         self:SetPointGetter(GetMaelstromWaapon)
     end
 }, "SHAMAN", 2)
+
+-- Classic
+
+NugComboBar:RegisterConfig("ArcaneBlastClassic", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(3)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Teachings of the Monastery
+    end
+}, "MAGE")

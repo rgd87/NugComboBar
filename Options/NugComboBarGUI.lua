@@ -3,7 +3,12 @@ local addonName, ns = ...
 local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
-local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local APILevel = math.floor(select(4,GetBuildInfo())/10000)
+local isClassic = APILevel <= 2
+
+local GetNumSpecializations = isClassic and function() return 1 end or _G.GetNumSpecializations
+local GetSpecializationInfo = isClassic and function() return nil end or _G.GetSpecializationInfo
+
 local newFeatureIcon = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"
 
 -- local layoutChoices = { }
@@ -171,6 +176,7 @@ do
                     },
                     nameplateAttach = {
                         name = L"Attach to Player Nameplate",
+                        disabled = isClassic,
                         desc = L"Display below player nameplate\nOnly works if your have player nameplate enabled",
                         type = "toggle",
                         width = "double",
@@ -261,6 +267,7 @@ do
                     },
                     secondLayer = {
                         name = L"Second Layer",
+                        disabled = isClassic,
                         desc = L"Used for Maelstrom / Echoing Reprimand",
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.secondLayer end,
@@ -277,6 +284,7 @@ do
                     },
                     disableProgress = {
                         name = L"Disable Progress Bar",
+                        disabled = isClassic,
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.disableProgress end,
                         set = function(info, s) NugComboBar.Commands.toggleprogress() end,
@@ -284,6 +292,7 @@ do
                     },
                     chargeCooldown = {
                         name = L"Charge Cooldowns",
+                        disabled = isClassic,
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.chargeCooldown end,
                         set = function(info, s) NugComboBar.Commands.chargecooldown() end,
@@ -291,6 +300,7 @@ do
                     },
                     cooldownOnTop = {
                         name = L"Cooldowns On Top",
+                        disabled = isClassic,
                         type = "toggle",
                         get = function(info) return NugComboBar.db.profile.cooldownOnTop end,
                         set = function(info, s) NugComboBar.db.profile.cooldownOnTop = not NugComboBar.db.profile.cooldownOnTop end,
@@ -325,6 +335,7 @@ do
                     bar2offset = {
                         type = "group",
                         name = "",
+                        disabled = isClassic,
                         guiInline = true,
                         order = 15,
                         args = {
@@ -356,6 +367,7 @@ do
                         name = L"Use NCB Class Themes",
                         type = 'toggle',
                         width = "full",
+                        disabled = isClassic,
                         order = 16,
                         get = function(info) return NugComboBar.db.profile.classThemes end,
                         set = function(info, s) NugComboBar.Commands.classthemes() end,
@@ -738,6 +750,12 @@ do
     local specsTable = opt.args.resourceSelection.args
     for specIndex=1,GetNumSpecializations() do
         local id, name, description, icon = GetSpecializationInfo(specIndex)
+        local iconCoords = nil
+        if APILevel <= 2 then
+            icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
+            local _, class = UnitClass('player')
+            iconCoords = CLASS_ICON_TCOORDS[class];
+        end
         local _, class = UnitClass('player')
         specsTable["desc"..specIndex] = {
             name = "",
@@ -746,6 +764,7 @@ do
             imageWidth = 23,
             imageHeight = 23,
             image = icon,
+            imageCoords = iconCoords,
             order = specIndex*10+1,
         }
         specsTable["conf"..specIndex] = {
