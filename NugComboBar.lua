@@ -166,7 +166,7 @@ NugComboBar.defaults = defaults
 
 if APILevel <= 2 then
     defaults.global.classConfig = {
-        ROGUE = { "ComboPointsRogue", "ComboPointsRogue", "ComboPointsRogue" },
+        ROGUE = { "ComboPointsRogueClassic", "ComboPointsRogueClassic", "ComboPointsRogueClassic" },
         DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
         PALADIN = { "Disabled", "Disabled", "Disabled" },
         MONK = { "Disabled", "Disabled", "Disabled" },
