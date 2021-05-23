@@ -452,7 +452,7 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
         local targetFrame = C_NamePlate.GetNamePlateForUnit("target")
 
         local isAttackable = UnitCanAttack("player", "target")
-        local isFriendly = (UnitReaction("target", "player") or 0) >= 4
+        local isFriendly = (UnitReaction("target", "player") or 0) > 4
 
         if targetFrame and isAttackable and not isFriendly then
             self:Show()
