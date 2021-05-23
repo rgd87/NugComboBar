@@ -568,6 +568,8 @@ function NugComboBar:Update(unit, ...)
     else
         if not profile.nameplateAttachTarget then
             self:Show()
+        else
+            self:PLAYER_TARGET_CHANGED()
         end
     end -- usually frame is set to 0 alpha
 
@@ -845,7 +847,7 @@ function NugComboBar:UpdatePosition()
     local playerNameplateEnabled = GetCVar("nameplateShowSelf") == "1"
     local profile = self.db.profile
     if profile.nameplateAttachTarget then
-        -- self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+        self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
         self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     elseif playerNameplateEnabled and profile.nameplateAttach then
         if C_NamePlate.GetNamePlateForUnit("player") then
@@ -1424,6 +1426,12 @@ function NugComboBar.NAME_PLATE_UNIT_ADDED(self, event, unit)
 end
 
 function NugComboBar.NAME_PLATE_UNIT_REMOVED(self, event, unit)
+    if self.db.profile.nameplateAttachTarget then
+        if UnitIsUnit(unit, "target") then
+            self:Hide()
+        end
+    end
+
     if self.db.profile.nameplateAttach then
         if UnitIsUnit(unit, "player") then
             local frame = GetNamePlateForUnit(unit)
