@@ -825,16 +825,25 @@ if APILevel <= 2 then
         return OriginalGetComboPoints(unit, "target")
     end
 
+    local COMBO_POINTS_UNIT_POWER_UPDATE_CLASSIC = function(self,event,unit,ptype)
+        if unit ~= "player" then return end
+        -- In classic often when you switch targets the first UNIT_POWER_UPDATE for CPs is simply not firing,
+        -- It's still fired for ENERGY power type tho, so just checking on all power updates
+        -- if ptype == "COMBO_POINTS" then
+            return self:Update()
+        -- end
+    end
+
     NugComboBar:RegisterConfig("ComboPointsRogueClassic", {
         triggers = { GetSpecialization, GetSpell(193531) }, -- Deeper Stratagem,
         setup = function(self, spec)
             self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-            self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
+            self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE_CLASSIC
 
             self:SetDefaultValue(0)
             self.flags.soundFullEnabled = true
             self:SetSourceUnit("player")
-            self:SetTargetUnit("player")
+            self:SetTargetUnit("target")
 
             if APILevel <= 5 then
                 self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -853,7 +862,7 @@ if APILevel <= 2 then
         triggers = { GetSpecialization },
         setup = function(self, spec)
             self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-            self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
+            self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE_CLASSIC
             self:SetMaxPoints(5)
             self:SetDefaultValue(0)
             self.flags.soundFullEnabled = true
