@@ -67,7 +67,7 @@ local COMBO_POINTS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
     end
 end
 
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 
 ---------------------
 -- ROGUE
@@ -125,19 +125,30 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
 
         if not isClassic then -- Kyrian Covenant Ability
             self.eventProxy:RegisterUnitEvent("UNIT_POWER_POINT_CHARGE", "player")
-            local selectedPoint = nil
+
             self.eventProxy.UNIT_POWER_POINT_CHARGE = function(self, event, unit)
                 local chargedPoints = GetUnitChargedPowerPoints("player") -- returns table or nil
-                local echoingReprimand = chargedPoints and chargedPoints[1]
-                if echoingReprimand ~= selectedPoint then
-                    selectedPoint = echoingReprimand
-                    if selectedPoint ~= nil then
-                        self:SelectPoint(selectedPoint)
-                    else
-                        self:DeselectAllPoints()
+                for i = 1, self.MAX_POINTS do
+                    local isSelected
+                    if chargedPoints then
+                        for _, pointIndex in ipairs(chargedPoints) do
+                            if i == pointIndex then
+                                isSelected = true
+                                break
+                            end
+                        end
                     end
+
+                    if isSelected then
+                        self:SelectPoint(i)
+                    else
+                        self:DeselectPoint(i)
+                    end
+                    self:Update()
                 end
             end
+
+            self:DeselectAllPoints()
             self.eventProxy.UNIT_POWER_POINT_CHARGE(self, nil, "player")
         end
     end,

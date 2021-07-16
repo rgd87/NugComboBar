@@ -533,7 +533,16 @@ function NugComboBar:SelectPoint(i)
     if not point.Select then return end
     point:Select()
     point.isSelected = true
-    self:Update()
+end
+
+function NugComboBar:DeselectPoint(i)
+    local point = self:GetPoint(i)
+    if not point.Deselect then return end
+    if point.isSelected then
+        AnticipationOut(point, i)
+    end
+    point:Deselect()
+    point.isSelected = nil
 end
 
 function NugComboBar:DeselectAllPoints()
@@ -648,9 +657,10 @@ function NugComboBar:Update(unit, ...)
                                 point:Reappear(animationLevel, AnticipationIn, i)
                             end
                         else
-                            if  (point.currentPreset and point.currentPreset ~= profile.preset3d)
+                            if  not point.isSelected and
+                                ((point.currentPreset and point.currentPreset ~= profile.preset3d)
                                 or
-                                (point.anticipationColor) then
+                                (point.anticipationColor)) then
 
                                 if i <= comboPoints then
                                     point:Reappear(animationLevel, AnticipationOut, i)
