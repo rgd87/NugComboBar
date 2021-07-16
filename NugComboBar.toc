@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: NugComboBar
 ## Notes: Combopoints counter
 ## Author: d87
