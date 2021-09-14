@@ -461,11 +461,9 @@ function NugComboBar.PLAYER_TARGET_CHANGED(self, event)
         else
             self:Hide()
         end
-    end
-
-    if self.db.profile.hideWithoutTarget and not self:IsDisabled() then
-        self.forceHidden = not UnitExists("target")
-        self:Update()
+    elseif self.db.profile.hideWithoutTarget and not self:IsDisabled() then
+            self.forceHidden = not UnitExists("target")
+            self:Update()
     end
 end
 
