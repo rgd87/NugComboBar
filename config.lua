@@ -1,6 +1,6 @@
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
-local isClassic = APILevel <= 2
-local GetSpecialization = isClassic and function() return 1 end or _G.GetSpecialization
+local isClassic = APILevel <= 3
+local GetSpecialization = APILevel <= 3 and function() return 1 end or _G.GetSpecialization
 
 local UnitPower = UnitPower
 
@@ -828,7 +828,7 @@ end -- end of retail configs
 
 -- Classic
 
-if APILevel <= 2 then
+if APILevel <= 3 then
 
     local OriginalGetComboPoints = _G.GetComboPoints
     local RogueGetComboPoints = function(unit)
@@ -922,9 +922,92 @@ if APILevel <= 2 then
             self:SetMaxPoints(3)
             self:SetDefaultValue(0)
             self.flags.soundFullEnabled = true
-            self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Teachings of the Monastery
+            self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Arcane Blast
         end
     }, "MAGE")
     end
 
+    if APILevel == 3 then
+        NugComboBar:RegisterConfig("ArcaneBlastClassic", {
+            triggers = { GetSpecialization },
+            setup = function(self, spec)
+                self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+                self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+                self:SetMaxPoints(4)
+                self:SetDefaultValue(0)
+                self.flags.soundFullEnabled = true
+                self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Arcane Blast
+            end
+        }, "MAGE")
+
+        NugComboBar:RegisterConfig("MaelstromWeapon", {
+            triggers = { GetSpecialization },
+            setup = function(self, spec)
+                self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+                self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+                self:SetMaxPoints(5)
+                self:SetDefaultValue(0)
+                self.flags.soundFullEnabled = true
+                self:SetPointGetter(GetAuraStack(53817, "HELPFUL")) -- Maelstrom Weapon
+            end
+        }, "SHAMAN")
+    end
+
+
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+-- -- Wrath of the Lich King
+
+-- if APILevel == 3 then
+
+--     local OriginalGetComboPoints = _G.GetComboPoints
+--     local RogueGetComboPoints = function(unit)
+--         unit = unit or "player"
+--         return OriginalGetComboPoints(unit, "target")
+--     end
+
+--     local COMBO_POINTS_UNIT_POWER_UPDATE_CLASSIC = function(self,event,unit,ptype)
+--         if unit ~= "player" then return end
+--         -- In classic often when you switch targets the first UNIT_POWER_UPDATE for CPs is simply not firing,
+--         -- It's still fired for ENERGY power type tho, so just checking on all power updates
+--         -- if ptype == "COMBO_POINTS" then
+--             return self:Update()
+--         -- end
+--     end
+
+--     NugComboBar:RegisterConfig("ComboPointsRogueClassic", {
+--         triggers = { GetSpecialization, GetSpell(193531) }, -- Deeper Stratagem,
+--         setup = function(self, spec)
+--             self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+--             self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE_CLASSIC
+
+--             self:SetDefaultValue(0)
+--             self.flags.soundFullEnabled = true
+--             self:SetSourceUnit("player")
+--             self:SetTargetUnit("target")
+
+--             if APILevel <= 5 then
+--                 self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+--                 self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+--             end
+
+--             local maxCP = IsPlayerSpell(193531) and 6 or 5 -- Deeper Stratagem
+
+--             self:SetMaxPoints(maxCP)
+--             self:SetPointGetter(RogueGetComboPoints)
+--         end,
+--     }, "ROGUE")
+
+-- end

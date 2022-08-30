@@ -4,7 +4,7 @@ local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
-local isClassic = APILevel <= 2
+local isClassic = APILevel <= 3
 
 local GetNumSpecializations = isClassic and function() return 1 end or _G.GetNumSpecializations
 local GetSpecializationInfo = isClassic and function() return nil end or _G.GetSpecializationInfo
@@ -750,7 +750,7 @@ do
     for specIndex=1,GetNumSpecializations() do
         local id, name, description, icon = GetSpecializationInfo(specIndex)
         local iconCoords = nil
-        if APILevel <= 2 then
+        if APILevel <= 3 then
             icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
             local _, class = UnitClass('player')
             iconCoords = CLASS_ICON_TCOORDS[class];
