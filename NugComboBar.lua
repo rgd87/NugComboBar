@@ -723,7 +723,7 @@ function NugComboBar:Update(unit, ...)
 
 	    end
 
-    local forceHide = IsInPetBattle() or self.forceHidden
+    local forceHide = IsInPetBattle() or self.forceHidden or self.isDisabled
     if forceHide or
         (
             not flags.showAlways and

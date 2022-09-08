@@ -894,7 +894,6 @@ if APILevel <= 3 then
         triggers = { GetSpecialization },
 
         setup = function(self, spec)
-
             self:RegisterEvent("UPDATE_SHAPESHIFT_FORM") -- Registering on main addon, not event proxy
             self.UPDATE_SHAPESHIFT_FORM = function(self)
 
@@ -903,6 +902,7 @@ if APILevel <= 3 then
                 self:ResetConfig()
 
                 if form == CAT_FORM then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
+                    self:Enable()
                     self:ApplyConfig("ComboPointsDruid")
                     self:Update()
                 else
