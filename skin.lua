@@ -1053,6 +1053,15 @@ NugComboBar.CreatePixelBar = CreatePixelBar
 --     end
 -- end
 
+local function MakeCompatibleAnimation(anim)
+    if anim:GetObjectType() == "Scale" and anim.SetScaleFrom then
+        return anim
+    else
+        anim.SetScaleFrom = anim.SetFromScale
+        anim.SetScaleTo = anim.SetToScale
+    end
+end
+
 NugComboBar.Create = function(self)
     NugComboBar:IsDefaultSkin(true)
 
@@ -1169,8 +1178,8 @@ NugComboBar.Create = function(self)
             d1:SetOrder(1)
 
             -- local sh1 = dag:CreateAnimation("Scale")
-            -- sh1:SetFromScale(1,1)
-            -- sh1:SetToScale(0.05, 0.05)
+            -- sh1:SetScaleFrom(1,1)
+            -- sh1:SetScaleTo(0.05, 0.05)
             -- sh1:SetOrder(1)
             -- sh1:SetDuration(0.1)
 
@@ -1222,9 +1231,9 @@ NugComboBar.Create = function(self)
             g1a1:SetToAlpha(0.8)
             g1a1:SetDuration(0.3)
             g1a1:SetOrder(1)
-            local g1a2 = g1ag:CreateAnimation("Scale")
-            g1a2:SetFromScale(1,1)
-            g1a2:SetToScale(0.47, 0.47)
+            local g1a2 = MakeCompatibleAnimation(g1ag:CreateAnimation("Scale"))
+            g1a2:SetScaleFrom(1,1)
+            g1a2:SetScaleTo(0.47, 0.47)
             g1a2:SetDuration(0.3)
             g1a2:SetOrder(1)
             local g1a3 = g1ag:CreateAnimation("Alpha")

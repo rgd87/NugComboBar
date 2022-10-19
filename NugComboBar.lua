@@ -22,6 +22,7 @@ local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
+local math_max = math.max
 local dummy = function() return 0 end
 local GetComboPoints = dummy
 
@@ -452,7 +453,7 @@ local HideTimer = function(self, time)
     if self.OnUpdateCounter < fadeAfter then return end
 
     local ncb = NugComboBar
-    local a = 1-((self.OnUpdateCounter - fadeAfter) / fadeTime)
+    local a = math_max(0, 1-((self.OnUpdateCounter - fadeAfter) / fadeTime))
     ncb:SetAlpha(NugComboBar.db.profile.alpha*a)
     if self.OnUpdateCounter >= fadeAfter + fadeTime then
         self:SetScript("OnUpdate",nil)
