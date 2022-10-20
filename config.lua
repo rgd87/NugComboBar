@@ -478,6 +478,83 @@ NugComboBar:RegisterConfig("SoulShards", {
 }, "WARLOCK")
 
 ---------------------
+-- EVOKER
+---------------------
+
+local Enum_PowerType_Essence = Enum.PowerType.Essence
+
+local essencePointsPrev = -1
+local essenceRegenStart = GetTime()
+local essenceRegenDuration = 5
+local essenceRegenOn = false
+
+local function GetEssenceOnUpdate(_, elapsed)
+    local self = NugComboBar
+    local now = GetTime()
+    if now > essenceRegenStart + essenceRegenDuration then
+        essenceRegenStart = essenceRegenStart + essenceRegenDuration
+        self.UNIT_COMBO_POINTS(self,event, "player", "ESSENCE")
+    end
+end
+
+local GetEssence = function(unit)
+    local points = UnitPower("player", Enum_PowerType_Essence)
+    local pointsMax = UnitPowerMax("player", Enum_PowerType_Essence)
+
+    if points ~= essencePointsPrev then
+        local essenceRegenOnNow = points ~= pointsMax
+        local now = GetTime()
+
+        if essenceRegenOnNow ~= essenceRegenOn then
+            essenceRegenOn = essenceRegenOnNow
+            essenceRegenStart = now
+        end
+
+        if points > essencePointsPrev then
+            essenceRegenStart = now
+        end
+        essencePointsPrev = points
+    end
+
+    local isAtMaxPoints = points == pointsMax
+    if not isAtMaxPoints then
+        local peace, interrupted = GetPowerRegenForPowerType(Enum_PowerType_Essence)
+        if (peace == nil or peace == 0) then
+            peace = 0.2;
+        end
+        essenceRegenDuration = 1 / peace
+        return points, essenceRegenStart, essenceRegenDuration
+    else
+        return points, nil, nil
+    end
+end
+
+local ESSENCE_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
+    if ptype ~= "ESSENCE" or unit ~= "player" then return end
+    self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+end
+
+NugComboBar:RegisterConfig("Essence", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        self.eventProxy.UNIT_POWER_UPDATE = ESSENCE_UNIT_POWER_UPDATE
+
+        self.eventProxy:SetScript("OnUpdate", GetEssenceOnUpdate)
+
+        local max = UnitPowerMax( "player", Enum_PowerType_Essence )
+        self:SetMaxPoints(max)
+        self:SetDefaultValue(max)
+        -- self.flags.soundFullEnabled = true
+        self.flags.shouldBeFull = true
+        self.flags.showEmpty = true
+
+        self:SetPointGetter(GetEssence)
+        self:EnableBar(0, 10, "Small", "Timer")
+    end
+}, "EVOKER")
+
+---------------------
 -- DEMON HUNTER
 ---------------------
 

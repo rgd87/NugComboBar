@@ -164,4 +164,5 @@ globals = {
     "UnitCanAttack",
     "UnitReaction",
     "GetBuildInfo",
+    "GetPowerRegenForPowerType",
 }

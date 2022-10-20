@@ -100,6 +100,7 @@ local defaults = {
             SHAMAN = { "Icefury", "MaelstromWeapon", "Undulation" },
             HUNTER = { "Disabled", "Disabled", "Disabled" },
             PRIEST = { "Disabled", "Disabled", "Disabled" },
+            EVOKER = { "Essence", "Essence" },
         },
         specProfiles = {
             ROGUE = { "Default", "Default", "Default" },
@@ -114,6 +115,7 @@ local defaults = {
             SHAMAN = { "Default", "Default", "Default" },
             HUNTER = { "Default", "Default", "Default" },
             PRIEST = { "Default", "Default", "Default" },
+            EVOKER = { "Default", "Default" },
         }
     },
     profile = {
@@ -1505,6 +1507,7 @@ end
 function NugComboBar:ResetConfig()
     table.wipe(self.flags)
     self.eventProxy:UnregisterAllEvents()
+    self.eventProxy:SetScript("OnUpdate", nil)
     self:DisableBar()
 end
 
