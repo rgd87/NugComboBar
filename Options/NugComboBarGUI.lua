@@ -759,7 +759,7 @@ do
         specsTable["desc"..specIndex] = {
             name = "",
             type = "description",
-            width = 0.25,
+            width = APILevel >= 10 and 0.4 or 0.25,
             imageWidth = 23,
             imageHeight = 23,
             image = icon,
