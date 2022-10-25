@@ -327,14 +327,14 @@ local ReappearFunc = function(self, animLevel, func, arg, speed)
     self.rag:Play()
 end
 
-local SR1 = 9
-local SR2 = 10
-local SR3 = 11
-local SR4 = 12
-local SR5 = 13
-local SR6 = 14
-local SR7 = 15
-local SR8 = 16
+local SR1 = 10
+local SR2 = 11
+local SR3 = 12
+local SR4 = 13
+local SR5 = 14
+local SR6 = 15
+local SR7 = 16
+local SR8 = 17
 
 local pointtex = {
     [1] = {
@@ -405,6 +405,15 @@ local pointtex = {
         width = 35, height = 32,
         psize = 50,
         poffset_x = 16, poffset_y = -14,
+    },
+
+    [9] = {
+        texture = "Interface\\Addons\\NugComboBar\\tex\\ncbc_bg5",
+        coords = {50/256, 74/256, 0, 1},
+        role = "NORMAL",
+        width = 24, height = 32,
+        psize = 50,
+        poffset_x = 17, poffset_y = -14,
     },
 
 
@@ -505,6 +514,7 @@ local mappings = {
     [4] = { 1, 2, 3, 6 },
     [5] = { 1, 2, 3, 4, 6 },
     [6] = { 1, 2, 3, 4, 5, 6 },
+    [7] = { 1, 2, 3, 4, 5, 9, 6 },
     -- ["SHAMAN7"] = { 1, 2, 3, 4, 6, 7, 8 },
     -- ["SHAMAN5"] = { 1, 2, 3, 6, 7 },
     -- ["SHAMANDOUBLE"] = { 1, 2, 3, 4, 6, SR1, SR2, SR3, SR4, SR6},

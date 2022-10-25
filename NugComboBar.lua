@@ -97,7 +97,7 @@ local defaults = {
             DEATHKNIGHT = { "Runes", "Runes", "Runes" },
             MAGE = { "ArcaneCharges", "Fireblast", "Icicles" },
             WARRIOR = { "Disabled", "Meatcleaver", "ShieldBlock" },
-            SHAMAN = { "Icefury", "MaelstromWeapon", "Undulation" },
+            SHAMAN = { "Icefury", "MaelstromWeapon", "Disabled" },
             HUNTER = { "Disabled", "Disabled", "Disabled" },
             PRIEST = { "Disabled", "Disabled", "Disabled" },
             EVOKER = { "Essence", "Essence" },
@@ -280,7 +280,7 @@ do
             -- self:RegisterEvent("PLAYER_LOGOUT")
 
             if self.db.global.disableBlizz then NugComboBar.disableBlizzFrames() end
-            if self.db.global.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
+            -- if self.db.global.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
 
             local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
             f:SetScript('OnShow', function(self)
