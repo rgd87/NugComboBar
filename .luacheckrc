@@ -165,4 +165,6 @@ globals = {
     "UnitReaction",
     "GetBuildInfo",
     "GetPowerRegenForPowerType",
+    "CreateColor",
+    "CreateVector3D"
 }

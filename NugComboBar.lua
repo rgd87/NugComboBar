@@ -23,6 +23,7 @@ local UnitPowerMax = UnitPowerMax
 local GetRuneCooldown = GetRuneCooldown
 local tsort = table.sort
 local math_max = math.max
+local math_min = math.min
 local dummy = function() return 0 end
 local GetComboPoints = dummy
 
@@ -1314,7 +1315,7 @@ local function RuneChargeOnUpdate(self, time)
     if progress > 1 then progress = 1 end
 
     if enablePrettyRunes then
-        local pmp = progress*progress*progress+0.1
+        local pmp = math_min(math_max( progress*progress*progress+0.1, 0), 1)
         self.playermodel:SetAlpha(pmp)--progress*0.8)
         self:SetAlpha(progress ~= 0 and 0.9 or 0)
         self.bgmodel:SetAlpha(progress)

@@ -103,7 +103,8 @@ local makeRCP = function(anticipation, subtlety, maxFill, maxCP)
 end
 
 NugComboBar:RegisterConfig("ComboPointsRogue", {
-    triggers = { GetSpecialization, GetSpell(193531), GetSpell(394321) }, -- Deeper Stratagem, Devious Stratagem
+    -- Deeper Stratagem, Devious Stratagem(Outlaw), Secret Stratagem(Sub)
+    triggers = { GetSpecialization, GetSpell(193531), GetSpell(394321), GetSpell(394320) },
     setup = function(self, spec)
         self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         self.eventProxy.UNIT_POWER_UPDATE = COMBO_POINTS_UNIT_POWER_UPDATE
@@ -120,7 +121,8 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
 
         local DeeperStratagem = IsPlayerSpell(193531) and 1 or 0 -- Deeper Stratagem
         local DeviousStratagem = IsPlayerSpell(394321) and 1 or 0 -- Deeper Stratagem
-        local maxCP = 5 + DeeperStratagem + DeviousStratagem
+        local SecretStratagem = IsPlayerSpell(394320) and 1 or 0 -- Secret Stratagem
+        local maxCP = 5 + DeeperStratagem + DeviousStratagem + SecretStratagem
 
         self:SetMaxPoints(maxCP)
         self:SetPointGetter(RogueGetComboPoints)
