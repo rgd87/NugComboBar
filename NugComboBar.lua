@@ -656,7 +656,11 @@ function NugComboBar:Update(unit, ...)
                     point:Activate(animationLevel)
                     if flags.secondLayer then
                         if point.isSelected then
-                            AnticipationIn(point, i)
+                            if comboPoints == i then
+                                AnticipationIn(point, i)
+                            else
+                                AnticipationOut(point, i)
+                            end
                         end
                     end
     	        end
