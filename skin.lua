@@ -1103,6 +1103,7 @@ local function MakeCompatibleAnimation(anim)
         anim.SetScaleFrom = anim.SetFromScale
         anim.SetScaleTo = anim.SetToScale
     end
+    return anim
 end
 
 NugComboBar.Create = function(self)
