@@ -572,8 +572,9 @@ do
             },
             presets = {
                 type = "group",
-                name = L"3D Mode settings",
-                disabled = function() return (not NugComboBar:IsDefaultSkin() or not NugComboBar.db.global.enable3d) or NugComboBar.db.profile.classThemes end,
+                name = L"3D Mode settings".."   (DISABLED)",
+                -- disabled = function() return (not NugComboBar:IsDefaultSkin() or not NugComboBar.db.global.enable3d) or NugComboBar.db.profile.classThemes end,
+                disabled = true,
                 guiInline = true,
                 order = 6,
                 args = {
@@ -834,6 +835,7 @@ do
                 order = 3,
             },
 
+            --[[
             enable2d = {
                 name = L"2D Mode"..newFeatureIcon,
                 type = 'toggle',
@@ -855,6 +857,7 @@ do
                 get = function(info) return NugComboBar.db.global.enable3d end,
                 set = function(info, s) NugComboBar.db.global.enable3d = not NugComboBar.db.global.enable3d; ReloadUI(); end,
             },
+            ]]
         },
     }
 

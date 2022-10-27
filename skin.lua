@@ -1120,7 +1120,8 @@ NugComboBar.Create = function(self)
 
     local initial = not _G["NugComboBarBackgroundTexture1"]
 
-    local is3D = NugComboBar.db.global.enable3d
+    -- local is3D = NugComboBar.db.global.enable3d
+    local is3D = false
 
     if initial then
         self.point = self.point or {}
