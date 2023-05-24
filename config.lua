@@ -494,40 +494,23 @@ local essenceRegenOn = false
 
 local function GetEssenceOnUpdate(_, elapsed)
     local self = NugComboBar
-    local now = GetTime()
-    if now > essenceRegenStart + essenceRegenDuration then
-        essenceRegenStart = essenceRegenStart + essenceRegenDuration
-        self.UNIT_COMBO_POINTS(self, nil, "player", "ESSENCE")
-    end
+    -- local now = GetTime()
+    -- if now > essenceRegenStart + essenceRegenDuration then
+    --     essenceRegenStart = essenceRegenStart + essenceRegenDuration
+    --     self.UNIT_COMBO_POINTS(self, nil, "player", "ESSENCE")
+    -- end
 end
 
 local GetEssence = function(unit)
     local points = UnitPower("player", Enum_PowerType_Essence)
     local pointsMax = UnitPowerMax("player", Enum_PowerType_Essence)
 
-    if points ~= essencePointsPrev then
-        local essenceRegenOnNow = points ~= pointsMax
-        local now = GetTime()
-
-        if essenceRegenOnNow ~= essenceRegenOn then
-            essenceRegenOn = essenceRegenOnNow
-            essenceRegenStart = now
-        end
-
-        if points > essencePointsPrev then
-            essenceRegenStart = now
-        end
-        essencePointsPrev = points
-    end
-
     local isAtMaxPoints = points == pointsMax
     if not isAtMaxPoints then
-        local peace, interrupted = GetPowerRegenForPowerType(Enum_PowerType_Essence)
-        if (peace == nil or peace == 0) then
-            peace = 0.2;
-        end
-        essenceRegenDuration = 1 / peace
-        return points, essenceRegenStart, essenceRegenDuration
+        local partialPoint = UnitPartialPower("player", Enum_PowerType_Essence);
+		local elapsedPortion = (partialPoint / 1000.0);
+
+        return points, elapsedPortion
     else
         return points, nil, nil
     end
@@ -536,6 +519,19 @@ end
 local ESSENCE_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
     if ptype ~= "ESSENCE" or unit ~= "player" then return end
     self.UNIT_COMBO_POINTS(self,event,unit,ptype)
+end
+
+local EssenseProgressBarOnUpdate = function(self, time)
+    self._elapsed = (self._elapsed or 0) + time
+    if self._elapsed < 0.03 then return end
+    self._elapsed = 0
+
+    local point, progress = GetEssence("player")
+    if progress then
+        self:SetValue(progress)
+    else
+        self:Hide()
+    end
 end
 
 NugComboBar:RegisterConfig("Essence", {
@@ -556,7 +552,8 @@ NugComboBar:RegisterConfig("Essence", {
         self.flags.showEmpty = true
 
         self:SetPointGetter(GetEssence)
-        self:EnableBar(0, 10, "Small", "Timer")
+        self:EnableBar(0, 1, "Small", "Timer")
+        self.bar:SetScript("OnUpdate", EssenseProgressBarOnUpdate)
     end
 }, "EVOKER")
 

@@ -123,6 +123,7 @@ globals = {
     "UnitIsUnit",
     "GetRealmName",
     "UnitPowerMax",
+    "UnitPartialPower",
     "GetCVar",
     "IsPlayerSpell",
     "RotateTexture",

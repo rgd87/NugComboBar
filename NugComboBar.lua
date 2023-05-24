@@ -524,6 +524,7 @@ end
 
 function NugComboBar.DisableBar(self)
     if not self.bar then return end
+    self.bar:SetScript("OnUpdate", nil)
     self.bar.enabled = false
     self.bar:Hide()
 end
