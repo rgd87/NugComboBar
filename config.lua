@@ -487,37 +487,52 @@ NugComboBar:RegisterConfig("SoulShards", {
 
 local Enum_PowerType_Essence = Enum.PowerType.Essence
 
-local essencePointsPrev = -1
-local essenceRegenStart = GetTime()
-local essenceRegenDuration = 5
-local essenceRegenOn = false
 
-local function GetEssenceOnUpdate(_, elapsed)
-    local self = NugComboBar
-    -- local now = GetTime()
-    -- if now > essenceRegenStart + essenceRegenDuration then
-    --     essenceRegenStart = essenceRegenStart + essenceRegenDuration
-    --     self.UNIT_COMBO_POINTS(self, nil, "player", "ESSENCE")
-    -- end
-end
+local essenceLastProgress = 0.0
+local essenceLastResetTime = 0
+local essenceLastPoints = 0
+local essenceLastPointGainTime = 0
+local essenceWasFull = false
 
 local GetEssence = function(unit)
     local points = UnitPower("player", Enum_PowerType_Essence)
     local pointsMax = UnitPowerMax("player", Enum_PowerType_Essence)
 
+    local now = GetTime()
+    if points - essenceLastPoints == 1 then
+        essenceLastPointGainTime = now
+        -- print(GetTime(), "point GAIN")
+    end
+    essenceLastPoints = points
+
+    local bankedPoint = 0
+
+    -- if not quiet then print(essenceWasFull, now - essenceLastPointGainTime, now - essenceLastPointGainTime > 3.5, now - essenceLastResetTime < 1, now - essenceLastResetTime) end
+    local sinceLastReset = now - essenceLastResetTime
+    if not essenceWasFull and now - essenceLastPointGainTime > 3.5 and sinceLastReset > 0.05 and sinceLastReset < 1 then
+        bankedPoint = 1
+    end
+    points = points + bankedPoint
+
     local isAtMaxPoints = points == pointsMax
     if not isAtMaxPoints then
+        essenceWasFull = false
         local partialPoint = UnitPartialPower("player", Enum_PowerType_Essence);
 		local elapsedPortion = (partialPoint / 1000.0);
 
         return points, elapsedPortion
     else
+        essenceWasFull = true
         return points, nil, nil
     end
 end
 
+
+
+
 local ESSENCE_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
     if ptype ~= "ESSENCE" or unit ~= "player" then return end
+    -- print(GetTime(),ptype, unit)
     self.UNIT_COMBO_POINTS(self,event,unit,ptype)
 end
 
@@ -529,6 +544,13 @@ local EssenseProgressBarOnUpdate = function(self, time)
     local point, progress = GetEssence("player")
     if progress then
         self:SetValue(progress)
+
+        if progress - essenceLastProgress < -0.7 then
+            essenceLastResetTime = GetTime()
+            -- print(GetTime(), "Reset")
+            NugComboBar:Update("player", "ESSENCE")
+        end
+        essenceLastProgress = progress
     else
         self:Hide()
     end
@@ -540,7 +562,7 @@ NugComboBar:RegisterConfig("Essence", {
         self.eventProxy:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         self.eventProxy.UNIT_POWER_UPDATE = ESSENCE_UNIT_POWER_UPDATE
 
-        self.eventProxy:SetScript("OnUpdate", GetEssenceOnUpdate)
+        -- self.eventProxy:SetScript("OnUpdate", GetEssenceOnUpdate)
 
         -- local max = UnitPowerMax( "player", Enum_PowerType_Essence ) -- not updated quick enough on talent change
         local max = 5

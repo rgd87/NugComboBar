@@ -130,6 +130,7 @@ globals = {
 
     "ComboFrame", -- classic
     "ComboPointPlayerFrame",
+    "RogueComboPointBarFrame",
     "WarlockPowerFrame",
     "PaladinPowerBarFrame",
     "MageArcaneChargesFrame",
