@@ -1198,6 +1198,7 @@ function NugComboBar.SlashCmd(msg)
 end
 
 local HideBlizzFrame = function(frame, nosetup)
+    if not frame then return end
 	frame:UnregisterAllEvents()
 	frame:Hide()
 	hooksecurefunc(frame, "Show", function(self)
@@ -1218,6 +1219,7 @@ function NugComboBar.disableBlizzFrames()
     if APILevel >= 5 then
         if class == "ROGUE" or class == "DRUID" then
             HideBlizzFrame(ComboPointPlayerFrame)
+            HideBlizzFrame(RogueComboPointBarFrame)
         end
         if class == "WARLOCK" then
             HideBlizzFrame(WarlockPowerFrame)
