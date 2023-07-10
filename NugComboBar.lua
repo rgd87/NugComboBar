@@ -101,7 +101,7 @@ local defaults = {
             SHAMAN = { "Icefury", "MaelstromWeapon", "Disabled" },
             HUNTER = { "Disabled", "Disabled", "Disabled" },
             PRIEST = { "Disabled", "Disabled", "Disabled" },
-            EVOKER = { "Essence", "Essence" },
+            EVOKER = { "Essence", "Essence", "Essence" },
         },
         specProfiles = {
             ROGUE = { "Default", "Default", "Default" },
@@ -116,7 +116,7 @@ local defaults = {
             SHAMAN = { "Default", "Default", "Default" },
             HUNTER = { "Default", "Default", "Default" },
             PRIEST = { "Default", "Default", "Default" },
-            EVOKER = { "Default", "Default" },
+            EVOKER = { "Default", "Default", "Default" },
         }
     },
     profile = {
