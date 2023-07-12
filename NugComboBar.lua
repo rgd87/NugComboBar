@@ -283,7 +283,7 @@ do
             if self.db.global.disableBlizz then NugComboBar.disableBlizzFrames() end
             -- if self.db.global.disableBlizzNP then NugComboBar.disableBlizzNameplates() end
 
-            local f = CreateFrame('Frame', nil, InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
+            local f = CreateFrame('Frame', nil, SettingsPanel or InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
             f:SetScript('OnShow', function(self)
                 self:SetScript('OnShow', nil)
                 LoadAddOn('NugComboBarGUI')

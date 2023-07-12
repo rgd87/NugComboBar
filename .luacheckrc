@@ -155,6 +155,7 @@ globals = {
     "InterfaceOptionsFrame_OpenToCategory",
     "InterfaceOptions_AddCategory",
     "InterfaceOptionsFrame",
+    "SettingsPanel",
     "CopyTable",
     "ReloadUI",
     "GetNumSpecializations",
