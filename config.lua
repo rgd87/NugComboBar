@@ -1029,6 +1029,21 @@ if APILevel <= 3 then
     }, "MAGE")
     end
 
+    -- Season of Discovery
+    if APILevel == 1 then
+    NugComboBar:RegisterConfig("ArcaneBlastClassic", {
+        triggers = { GetSpecialization },
+        setup = function(self, spec)
+            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+            self:SetMaxPoints(4)
+            self:SetDefaultValue(0)
+            self.flags.soundFullEnabled = true
+            self:SetPointGetter(GetAuraStack(400573, "HARMFUL")) -- Arcane Blast
+        end
+    }, "MAGE")
+    end
+
     if APILevel == 3 then
         NugComboBar:RegisterConfig("ArcaneBlastClassic", {
             triggers = { GetSpecialization },

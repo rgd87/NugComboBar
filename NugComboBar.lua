@@ -183,9 +183,9 @@ if APILevel <= 2 then
         HUNTER = { "Disabled", "Disabled", "Disabled" },
         PRIEST = { "Disabled", "Disabled", "Disabled" },
     }
-    if APILevel == 1 then
-        defaults.global.classConfig.MAGE = { "Disabled", "Disabled", "Disabled" }
-    end
+    -- if APILevel == 1 then -- Now there's Arcane Blast in SoD
+    --     defaults.global.classConfig.MAGE = { "ArcaneBlastSoD", "ArcaneBlastSoD", "ArcaneBlastSoD" }
+    -- end
 end
 if APILevel == 3 then
     defaults.global.classConfig = {
