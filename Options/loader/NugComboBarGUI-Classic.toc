@@ -1,4 +1,4 @@
-## Interface: 11402
+## Interface: 11500
 ## Title: NugComboBarGUI
 ## Notes: NugComboBar Configuration Panel
 ## Version: @project-version@
