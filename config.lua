@@ -398,7 +398,7 @@ NugComboBar:RegisterConfig("Teachings", {
     setup = function(self, spec)
         self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
         self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-        self:SetMaxPoints(3)
+        self:SetMaxPoints(4)
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
         self:SetPointGetter(GetAuraStack(202090)) -- Teachings of the Monastery
