@@ -1042,6 +1042,20 @@ if APILevel <= 3 then
             self:SetPointGetter(GetAuraStack(400573, "HARMFUL")) -- Arcane Blast
         end
     }, "MAGE")
+
+    NugComboBar:RegisterConfig("MaelstromWeapon", {
+        triggers = { GetSpecialization },
+        setup = function(self, spec)
+            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
+            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+            self:SetMaxPoints(5)
+            self:SetDefaultValue(0)
+            self.flags.soundFullEnabled = true
+            self:SetPointGetter(GetAuraStack(408505, "HELPFUL")) -- Maelstrom Weapon
+        end
+    }, "SHAMAN")
+
+
     end
 
     if APILevel == 3 then
