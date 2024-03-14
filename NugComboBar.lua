@@ -916,32 +916,78 @@ function NugComboBar.ShowColorPicker(self,color)
     ColorPickerFrame:Hide()
     local upcolor = (color > 0) and color or 5
     NugComboBar.colorPickerColor = color
-    ColorPickerFrame:SetColorRGB(unpack(NugComboBar.db.profile.colors[upcolor]))
-    ColorPickerFrame.hasOpacity = false
-    ColorPickerFrame.previousValues = {unpack(NugComboBar.db.profile.colors[upcolor])} -- otherwise we'll get reference to changed table
-    ColorPickerFrame.func = function(previousValues)
-        local r,g,b
-        local color = NugComboBar.colorPickerColor
-        if previousValues then
-            r,g,b = unpack(previousValues)
-        else
-            r,g,b = ColorPickerFrame:GetColorRGB();
-        end
-        if color == 0 then
-            for i=1,#self.point do
-                NugComboBar.SetColor(i,r,g,b)
+
+    if ColorPickerFrame.SetupColorPickerAndShow then
+        local r2, g2, b2 = unpack(NugComboBar.db.profile.colors[upcolor])
+
+        local SaveColor = function(colorID,r,g,b)
+            if colorID == 0 then
+                for i=1,#self.point do
+                    NugComboBar.SetColor(i, r,g,b)
+                end
+            elseif colorID == -1 then
+                for i=1, self.MAX_POINTS2 do
+                    local index = i+self.MAX_POINTS
+                    NugComboBar.SetColor(index, r,g,b)
+                end
+            else
+                NugComboBar.SetColor(colorID, r,g,b)
             end
-        elseif color == -1 then
-            for i=1, self.MAX_POINTS2 do
-                local index = i+self.MAX_POINTS
-                NugComboBar.SetColor(index,r,g,b)
-            end
-        else
-            NugComboBar.SetColor(color,r,g,b)
         end
+
+        local info = {
+            swatchFunc = function()
+                local r, g, b = ColorPickerFrame:GetColorRGB()
+                local a = ColorPickerFrame:GetColorAlpha()
+                SaveColor(color, r, g, b)
+            end,
+
+            hasOpacity = false,
+            -- opacityFunc = function()
+            --     local r, g, b = ColorPickerFrame:GetColorRGB()
+            --     local a = ColorPickerFrame:GetColorAlpha()
+            --     ColorCallback(self, r, g, b, a, true)
+            -- end,
+            opacity = 1,
+
+            cancelFunc = function()
+                SaveColor(color, r2, g2, b2)
+            end,
+
+            r = r2,
+            g = g2,
+            b = b2,
+        }
+
+        ColorPickerFrame:SetupColorPickerAndShow(info)
+    else
+        ColorPickerFrame:SetColorRGB(unpack(NugComboBar.db.profile.colors[upcolor]))
+        ColorPickerFrame.hasOpacity = false
+        ColorPickerFrame.previousValues = {unpack(NugComboBar.db.profile.colors[upcolor])} -- otherwise we'll get reference to changed table
+        ColorPickerFrame.func = function(previousValues)
+            local r,g,b
+            local color = NugComboBar.colorPickerColor
+            if previousValues then
+                r,g,b = unpack(previousValues)
+            else
+                r,g,b = ColorPickerFrame:GetColorRGB();
+            end
+            if color == 0 then
+                for i=1,#self.point do
+                    NugComboBar.SetColor(i,r,g,b)
+                end
+            elseif color == -1 then
+                for i=1, self.MAX_POINTS2 do
+                    local index = i+self.MAX_POINTS
+                    NugComboBar.SetColor(index,r,g,b)
+                end
+            else
+                NugComboBar.SetColor(color,r,g,b)
+            end
+        end
+        ColorPickerFrame.cancelFunc = ColorPickerFrame.func
+        ColorPickerFrame:Show()
     end
-    ColorPickerFrame.cancelFunc = ColorPickerFrame.func
-    ColorPickerFrame:Show()
 end
 
 function NugComboBar.Set3DPreset(self, preset, preset2)
