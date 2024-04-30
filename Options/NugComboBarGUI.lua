@@ -4,7 +4,7 @@ local NugComboBar = _G.NugComboBar
 local L = NugComboBar.L
 
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
-local isClassic = APILevel <= 3
+local isClassic = APILevel <= 4
 
 local GetNumSpecializations = isClassic and function() return 1 end or _G.GetNumSpecializations
 local GetSpecializationInfo = isClassic and function() return nil end or _G.GetSpecializationInfo

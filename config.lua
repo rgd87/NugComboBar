@@ -1,9 +1,15 @@
-local APILevel = math.floor(select(4,GetBuildInfo())/10000)
+local addonName, ns = ...
+
+ns.APILevel = math.floor(select(4,GetBuildInfo())/10000)
+local APILevel = ns.APILevel
 local isClassic = APILevel <= 3
-local GetSpecialization = APILevel <= 3 and function() return 1 end or _G.GetSpecialization
+local GetSpecialization = APILevel <= 4 and function() return 1 end or _G.GetSpecialization
 
 local DRUID_CAT_FORM = DRUID_CAT_FORM or CAT_FORM or 1
 local DRUID_BEAR_FORM = DRUID_BEAR_FORM or BEAR_FORM or 5
+
+ns.DRUID_BEAR_FORM = DRUID_BEAR_FORM
+ns.DRUID_CAT_FORM = DRUID_CAT_FORM
 local UnitPower = UnitPower
 
 local GetSpell = function(spellId)
@@ -54,6 +60,27 @@ local MakeGetChargeFunc = function(spellID)
     end
 end
 
+local function GENERIC_FILTERED_UNIT_POWER_UPDATE(powerType)
+    return function(self,event,unit,ptype)
+        if unit ~= "player" or ptype ~= powerType then return end
+        return self:Update(unit, ptype)
+    end
+end
+
+local function MakeGetComboPower(powerTypeIndex)
+    return function(unit)
+        return UnitPower("player", powerTypeIndex)
+    end
+end
+
+ns.GetSpell = GetSpell
+ns.FindAura = FindAura
+ns.GetAuraStack = GetAuraStack
+ns.GetAuraStackWTimer = GetAuraStackWTimer
+ns.MakeGetChargeFunc = MakeGetChargeFunc
+ns.GENERIC_FILTERED_UNIT_POWER_UPDATE = GENERIC_FILTERED_UNIT_POWER_UPDATE
+ns.MakeGetComboPower = MakeGetComboPower
+
 ---------------
 -- COMMON
 ---------------
@@ -61,6 +88,8 @@ end
 local GENERAL_UPDATE = function(self)
     self:Update()
 end
+
+ns.GENERAL_UPDATE = GENERAL_UPDATE
 
 local COMBO_POINTS_UNIT_POWER_UPDATE = function(self,event,unit,ptype)
     if unit ~= "player" then return end
@@ -932,7 +961,7 @@ end -- end of retail configs
 
 -- Classic
 
-if APILevel <= 3 then
+if APILevel <= 4 then
 
     local OriginalGetComboPoints = _G.GetComboPoints
     local RogueGetComboPoints = function(unit)
@@ -1017,6 +1046,8 @@ if APILevel <= 3 then
         end
     }, "DRUID")
 
+
+    -- BURNING CRUSADE
     if APILevel == 2 then
     NugComboBar:RegisterConfig("ArcaneBlastClassic", {
         triggers = { GetSpecialization },
@@ -1056,11 +1087,13 @@ if APILevel <= 3 then
             self:SetPointGetter(GetAuraStack(408505, "HELPFUL")) -- Maelstrom Weapon
         end
     }, "SHAMAN")
-
-
     end
 
-    if APILevel == 3 then
+
+
+
+    -- WRATH & CATA ARCANE BLAST
+    if APILevel >= 3 then
         NugComboBar:RegisterConfig("ArcaneBlastClassic", {
             triggers = { GetSpecialization },
             setup = function(self, spec)
@@ -1072,7 +1105,10 @@ if APILevel <= 3 then
                 self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Arcane Blast
             end
         }, "MAGE")
+    end
 
+    -- WRATH & CATA MAELSTROM
+    if APILevel >= 3 then
         NugComboBar:RegisterConfig("MaelstromWeapon", {
             triggers = { GetSpecialization },
             setup = function(self, spec)

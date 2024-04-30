@@ -41,8 +41,8 @@ end
 --- Compatibility with Classic
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
 -- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local IsInPetBattle = APILevel <= 3 and function() end or C_PetBattles.IsInBattle
-local GetSpecialization = APILevel <= 3 and function() return 1 end or GetSpecializationWithFallback
+local IsInPetBattle = APILevel <= 4 and function() end or C_PetBattles.IsInBattle
+local GetSpecialization = APILevel <= 4 and function() return 1 end or GetSpecializationWithFallback
 
 local configs = {}
 local currentConfigName
@@ -202,6 +202,22 @@ if APILevel == 3 then
         SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
         HUNTER = { "Disabled", "Disabled", "Disabled" },
         PRIEST = { "Disabled", "Disabled", "Disabled" },
+    }
+end
+if APILevel == 4 then
+    defaults.global.classConfig = {
+        ROGUE = { "ComboPointsRogueClassic", "ComboPointsRogueClassic", "ComboPointsRogueClassic" },
+        DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
+        PALADIN = { "HolyPower", "HolyPower", "HolyPower" },
+        MONK = { "Disabled", "Disabled", "Disabled" },
+        WARLOCK = { "SoulShards", "SoulShards", "SoulShards" },
+        DEMONHUNTER = { "Disabled", "Disabled" },
+        DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
+        MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
+        WARRIOR = { "Disabled", "Disabled", "Disabled" },
+        SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
+        HUNTER = { "Disabled", "Disabled", "Disabled" },
+        PRIEST = { "ShadowOrbs", "ShadowOrbs", "ShadowOrbs" },
     }
 end
 
