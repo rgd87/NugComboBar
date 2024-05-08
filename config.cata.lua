@@ -65,3 +65,44 @@ NugComboBar:RegisterConfig("SoulShards", {
         self:SetPointGetter(MakeGetComboPower(Enum.PowerType.SoulShards))
     end
 }, "WARLOCK")
+
+
+
+NugComboBar:RegisterConfig("Pulverize", { --CATA
+    triggers = { GetSpecialization, GetSpell(80313) },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "target")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
+        self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
+        self:SetMaxPoints(3)
+        self.flags.soundFullEnabled = true
+        self:SetSourceUnit("player")
+        self:SetTargetUnit("target")
+        self:SetPointGetter(GetAuraStack(33745, "HARMFUL", "target", "player"))
+    end
+}, "DRUID")
+
+NugComboBar:RegisterConfig("ShapeshiftDruid", {
+    triggers = { GetSpecialization, GetSpell(80313), GetSpell(22568) }, -- Pulv, FerBite
+
+    setup = function(self, spec)
+        self:RegisterEvent("UPDATE_SHAPESHIFT_FORM") -- Registering on main addon, not event proxy
+        self.UPDATE_SHAPESHIFT_FORM = function(self)
+            local spec = GetSpecialization()
+            local form = GetShapeshiftFormID()
+            self:ResetConfig()
+
+            if form == DRUID_BEAR_FORM and IsPlayerSpell(80313) then --Pulverize
+                self:ApplyConfig("Pulverize")
+                self:Update()
+            elseif form == DRUID_CAT_FORM and IsPlayerSpell(22568) then -- Ferocious Bite, in bfa without Feral Affinity you don't have bite or cps
+                self:ApplyConfig("ComboPointsDruid")
+                self:Update()
+            else
+                self:Disable()
+            end
+        end
+        self.UPDATE_SHAPESHIFT_FORM(self)
+    end
+}, "DRUID")
