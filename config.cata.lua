@@ -106,3 +106,16 @@ NugComboBar:RegisterConfig("ShapeshiftDruid", {
         self.UPDATE_SHAPESHIFT_FORM(self)
     end
 }, "DRUID")
+
+
+NugComboBar:RegisterConfig("ShadowInfusion", {
+    triggers = { GetSpecialization },
+    setup = function(self, spec)
+        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "pet")
+        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
+        self:SetMaxPoints(5)
+        self:SetDefaultValue(0)
+        self.flags.soundFullEnabled = true
+        self:SetPointGetter(GetAuraStack(91342, "HELPFUL", "pet")) -- Shadow Infusion
+    end
+}, "DEATHKNIGHT")
