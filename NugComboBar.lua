@@ -26,7 +26,7 @@ local math_max = math.max
 local math_min = math.min
 local dummy = function() return 0 end
 local GetComboPoints = dummy
-
+local LoadAddOn = LoadAddOn or C_AddOns.LoadAddOn
 
 
 local function GetSpecializationWithFallback()
@@ -303,6 +303,7 @@ do
             local f = CreateFrame('Frame', nil, SettingsPanel or InterfaceOptionsFrame) -- helper frame to load GUI and to watch specialization changes
             f:SetScript('OnShow', function(self)
                 self:SetScript('OnShow', nil)
+
                 LoadAddOn('NugComboBarGUI')
             end)
 
@@ -1040,6 +1041,17 @@ local ParseOpts = function(str)
     end
     return fields
 end
+
+local function InterfaceOptionsFrame_OpenToCategory(categoryIDOrFrame)
+	if type(categoryIDOrFrame) == "table" then
+		local categoryID = categoryIDOrFrame.name;
+		return Settings.OpenToCategory(categoryID);
+	else
+		return Settings.OpenToCategory(categoryIDOrFrame);
+	end
+end
+
+
 NugComboBar.Commands = {
     ["unlock"] = function(v)
 		NugComboBar:Show()

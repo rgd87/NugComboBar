@@ -18,6 +18,16 @@ local GetSpell = function(spellId)
     end
 end
 
+local DeprecatedUnitAura = function(unitToken, index, filter)
+    local auraData = C_UnitAuras.GetAuraDataByIndex(unitToken, index, filter);
+    if not auraData then
+        return nil;
+    end
+
+    return AuraUtil.UnpackAuraData(auraData);
+end
+local UnitAura = UnitAura or DeprecatedUnitAura
+
 local function FindAura(unit, spellID, filter)
     for i=1, 100 do
         local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)

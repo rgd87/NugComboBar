@@ -169,5 +169,7 @@ globals = {
     "GetBuildInfo",
     "GetPowerRegenForPowerType",
     "CreateColor",
-    "CreateVector3D"
+    "CreateVector3D",
+    "C_AddOns",
+    "Settings",
 }
