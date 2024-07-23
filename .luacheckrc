@@ -171,5 +171,7 @@ globals = {
     "CreateColor",
     "CreateVector3D",
     "C_AddOns",
+    "C_UnitAuras",
+    "AuraUtil",
     "Settings",
 }
