@@ -1406,7 +1406,9 @@ NugComboBar.Create = function(self)
                 local bgt2 = self.selectTex:CreateTexture(nil, "BACKGROUND", nil, -4)
                 bgt2:SetAlpha(1)
                 bgt2:SetTexture("Interface\\AddOns\\NugComboBar\\tex\\selectBG")
-                bgt2:SetAllPoints(bgt)
+                -- bgt2:SetAllPoints(bgt)
+                bgt2:SetPoint("TOPLEFT", bgt, "TOPLEFT", -5, 5)
+                bgt2:SetPoint("BOTTOMRIGHT", bgt, "BOTTOMRIGHT", 5, -5)
 
                 selectTex = self.selectTex
             end
