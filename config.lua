@@ -163,7 +163,8 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
         local DeeperStratagem = IsPlayerSpell(193531) and 1 or 0 -- Deeper Stratagem
         local DeviousStratagem = IsPlayerSpell(394321) and 1 or 0 -- Deeper Stratagem
         local SecretStratagem = IsPlayerSpell(394320) and 1 or 0 -- Secret Stratagem
-        local maxCP = 5 + DeeperStratagem + DeviousStratagem + SecretStratagem
+        local SanguineStratagem = IsPlayerSpell(457512) and 1  or 0 -- Sanguine Stratagem
+        local maxCP = 5 + DeeperStratagem + DeviousStratagem + SecretStratagem + SanguineStratagem
 
         self:SetMaxPoints(maxCP)
         self:SetPointGetter(RogueGetComboPoints)
