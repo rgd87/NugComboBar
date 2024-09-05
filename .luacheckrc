@@ -104,6 +104,7 @@ globals = {
 
     "GetShapeshiftFormID",
     "GetSpellCharges",
+    "GetSpellCooldown",
     "GetRuneCooldown",
     "GetSpecialization",
     "GetSpellInfo",
@@ -171,6 +172,7 @@ globals = {
     "CreateColor",
     "CreateVector3D",
     "C_AddOns",
+    "C_Spell",
     "C_UnitAuras",
     "AuraUtil",
     "Settings",

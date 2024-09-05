@@ -7,6 +7,8 @@ local GetSpecialization = APILevel <= 4 and function() return 1 end or _G.GetSpe
 
 local DRUID_CAT_FORM = DRUID_CAT_FORM or CAT_FORM or 1
 local DRUID_BEAR_FORM = DRUID_BEAR_FORM or BEAR_FORM or 5
+local GetSpellCooldown = GetSpellCooldown or C_Spell.GetSpellCooldown
+local GetSpellCharges = GetSpellCharges or C_Spell.GetSpellCharges
 
 ns.DRUID_BEAR_FORM = DRUID_BEAR_FORM
 ns.DRUID_CAT_FORM = DRUID_CAT_FORM
