@@ -41,7 +41,7 @@
 					<Anchors>
 						<Anchor point="CENTER">
 							<Offset>
-								<AbsDimension x="4" y="5"/>
+								<AbsDimension x="2.7" y="3.7"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -90,7 +90,7 @@
 					<Anchors>
 						<Anchor point="CENTER">
 							<Offset>
-								<AbsDimension x="5" y="-7"/>
+								<AbsDimension x="3.7" y="3.7"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -159,19 +159,16 @@
 				<Anchors>
 					<Anchor point="TOP" relativeTo="NugComboBarPoint3" relativePoint="TOP">
 						<Offset>
-							<AbsDimension x="23" y="0"/>
+							<AbsDimension x="24" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
 			</Frame>
 			<Frame name="NugComboBarPoint5" inherits="NugComboBarPointTemplateBIG">
-				<Size>
-					<AbsDimension x="17" y="17"/>
-				</Size>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="NugComboBarPoint4" relativePoint="TOP">
 						<Offset>
-							<AbsDimension x="27" y="2"/>
+							<AbsDimension x="27" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
