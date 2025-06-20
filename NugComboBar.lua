@@ -256,10 +256,12 @@ function NugComboBarPointsFrame_SlashCmd(msg)
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb unlock")
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb scale (0.5 - 2.0)")
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb showempty")
-	elseif (msg == "unlock") then
-		NugComboBar:EnableDrag()
 	elseif (msg == "lock") then
 		NugComboBar:DisableDrag()
+		NugComboBarDB.locked = true
+	elseif (msg == "unlock") then
+		NugComboBar:EnableDrag()
+		NugComboBarDB.locked = false
 	elseif (string.sub(msg, 1, 5) == "scale" ) then
 		local scale = tonumber(string.sub(msg, 7));
 		if( scale <= 2.0 and scale >= 0.5 ) then
@@ -313,4 +315,5 @@ end
 function NugComboBar:DisableDrag()
 	this:EnableMouse(false)
 	this:SetMovable(false)
+	this:SetScript("OnDragStart", nil)
 end
