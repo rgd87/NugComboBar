@@ -28,9 +28,9 @@ local dummy = function() return 0 end
 local GetComboPoints = dummy
 local LoadAddOn = LoadAddOn or C_AddOns.LoadAddOn
 
-
+local GlobalGetSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or _G.GetSpecialization
 local function GetSpecializationWithFallback()
-    local spec = _G.GetSpecialization()
+    local spec = GlobalGetSpecialization()
     if spec == 5 then -- spec below lvl 10
         return 1
         -- windwalker 3
@@ -42,7 +42,11 @@ end
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
 -- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local IsInPetBattle = APILevel <= 4 and function() end or C_PetBattles.IsInBattle
-local GetSpecialization = APILevel <= 4 and function() return 1 end or GetSpecializationWithFallback
+if APILevel <= 4 then
+    GetSpecialization = function() return 1 end
+else
+    GetSpecialization = GetSpecializationWithFallback
+end
 
 local configs = {}
 local currentConfigName
@@ -215,6 +219,22 @@ if APILevel == 4 then
         DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
         MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
         WARRIOR = { "Disabled", "Disabled", "Disabled" },
+        SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
+        HUNTER = { "Disabled", "Disabled", "Disabled" },
+        PRIEST = { "ShadowOrbs", "ShadowOrbs", "ShadowOrbs" },
+    }
+end
+if APILevel == 5 then
+    defaults.global.classConfig = {
+        ROGUE = { "ComboPointsAnticipation", "ComboPointsAnticipation", "ComboPointsAnticipation" },
+        DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
+        PALADIN = { "HolyPower", "HolyPower", "HolyPower" },
+        MONK = { "Chi", "Chi", "Chi" },
+        WARLOCK = { "SoulShards", "SoulShards", "SoulShards" },
+        DEMONHUNTER = { "Disabled", "Disabled" },
+        DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
+        MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
+        WARRIOR = { "TasteForBlood", "Meatcleaver", "Disabled" },
         SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
         HUNTER = { "Disabled", "Disabled", "Disabled" },
         PRIEST = { "ShadowOrbs", "ShadowOrbs", "ShadowOrbs" },

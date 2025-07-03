@@ -176,4 +176,5 @@ globals = {
     "C_UnitAuras",
     "AuraUtil",
     "Settings",
+    "C_SpecializationInfo",
 }

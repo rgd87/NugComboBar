@@ -6,8 +6,8 @@ local L = NugComboBar.L
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
 local isClassic = APILevel <= 4
 
-local GetNumSpecializations = isClassic and function() return 1 end or _G.GetNumSpecializations
-local GetSpecializationInfo = isClassic and function() return nil end or _G.GetSpecializationInfo
+local GetNumSpecializations = APILevel <= 4 and function() return 1 end or _G.GetNumSpecializations
+local GetSpecializationInfo = APILevel <= 4 and function() return nil end or (C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo or _G.GetSpecializationInfo)
 
 local newFeatureIcon = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"
 
@@ -760,7 +760,7 @@ do
         specsTable["desc"..specIndex] = {
             name = "",
             type = "description",
-            width = APILevel >= 10 and 0.4 or 0.25,
+            width = APILevel >= 5 and 0.4 or 0.25,
             imageWidth = 23,
             imageHeight = 23,
             image = icon,

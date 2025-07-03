@@ -984,7 +984,7 @@ end -- end of retail configs
 
 -- Classic
 
-if APILevel <= 4 then
+if APILevel <= 5 then
 
     local OriginalGetComboPoints = _G.GetComboPoints
     local RogueGetComboPoints = function(unit)
