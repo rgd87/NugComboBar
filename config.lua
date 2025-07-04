@@ -3,7 +3,8 @@ local addonName, ns = ...
 ns.APILevel = math.floor(select(4,GetBuildInfo())/10000)
 local APILevel = ns.APILevel
 local isClassic = APILevel <= 3
-local GetSpecialization = APILevel <= 4 and function() return 1 end or _G.GetSpecialization
+local GlobalGetSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or _G.GetSpecialization
+local GetSpecialization = APILevel <= 4 and function() return 1 end or GlobalGetSpecialization
 
 local DRUID_CAT_FORM = DRUID_CAT_FORM or CAT_FORM or 1
 local DRUID_BEAR_FORM = DRUID_BEAR_FORM or BEAR_FORM or 5

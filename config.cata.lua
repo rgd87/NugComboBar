@@ -2,7 +2,8 @@ local addonName, ns = ...
 
 local APILevel = ns.APILevel
 
-local GetSpecialization = APILevel <= 4 and function() return 1 end or _G.GetSpecialization
+local GlobalGetSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or _G.GetSpecialization
+local GetSpecialization = APILevel <= 4 and function() return 1 end or GlobalGetSpecialization
 local GetSpell = ns.GetSpell
 local FindAura = ns.FindAura
 local GetAuraStack = ns.GetAuraStack
