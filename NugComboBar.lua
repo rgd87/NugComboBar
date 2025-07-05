@@ -42,6 +42,7 @@ end
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
 -- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local IsInPetBattle = APILevel <= 4 and function() end or C_PetBattles.IsInBattle
+local GetSpecialization
 if APILevel <= 4 then
     GetSpecialization = function() return 1 end
 else
