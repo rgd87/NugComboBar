@@ -389,11 +389,11 @@ do
     function NugComboBar.PLAYER_LOGIN(self, event)
         if NugComboBar.isDisabled then return end
 
-        local res = GetCVar("gxWindowedResolution") --select(GetCurrentResolution(), GetScreenResolutions())
-        if res then
-            local w,h = string.match(res, "(%d+)x(%d+)")
-            pmult = (768/h) / UIParent:GetScale()
-        end
+        -- local res = GetCVar("gxWindowedResolution") --select(GetCurrentResolution(), GetScreenResolutions())
+        -- if res then
+        --     local w,h = string.match(res, "(%d+)x(%d+)")
+        --     pmult = (768/h) / UIParent:GetScale()
+        -- end
 
         isDefaultSkin = NugComboBar:IsDefaultSkin()
 
