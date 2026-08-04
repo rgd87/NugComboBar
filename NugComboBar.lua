@@ -56,47 +56,37 @@ local defaults = {
 
 
 function NugComboBar:PLAYER_LOGIN(event)
-	local _,class = UnitClass("player");
+	NugComboBarDB = NugComboBarDB or {}
+	db = NugComboBarDB
+	SetupDefaults(db, defaults)
+
+	NugComboBar:SetScale(NugComboBarDB.scale)
+
+	if NugComboBarDB.locked then
+		NugComboBar:DisableDrag()
+	else
+		NugComboBar:EnableDrag()
+	end
+
+	SLASH_NUGCOMBOBAR1 = "/ncb"
+	SLASH_NUGCOMBOBAR2 = "/nugcombobar"
+	SlashCmdList["NUGCOMBOBAR"] = NugComboBarPointsFrame_SlashCmd
+
+	local _,class = UnitClass("player")
 	if (class == "ROGUE" or class == "DRUID") then
-		-- local realmName = GetCVar("realmName");
-		-- local playerName = UnitName("player");
-		-- player = realmName.."|"..playerName;
-
-		NugComboBarDB = NugComboBarDB or {}
-		db = NugComboBarDB
-		SetupDefaults(db, defaults)
-
-
 		if NugComboBarDB.showempty then
 			NugComboBar:PLAYER_COMBO_POINTS()
 		end
-		NugComboBar:SetScale(NugComboBarDB.scale)
 
+		this:RegisterEvent("PLAYER_TARGET_CHANGED")
+		this:RegisterEvent("PLAYER_COMBO_POINTS")
 
-
-		this:RegisterEvent("PLAYER_TARGET_CHANGED");
-		this:RegisterEvent("PLAYER_COMBO_POINTS");
-
-		ComboFrame:UnregisterEvent("PLAYER_TARGET_CHANGED");
-		ComboFrame:UnregisterEvent("PLAYER_COMBO_POINTS");
+		ComboFrame:UnregisterEvent("PLAYER_TARGET_CHANGED")
+		ComboFrame:UnregisterEvent("PLAYER_COMBO_POINTS")
 		-- init alpha
-		NugComboBarPoint1Highlight:SetAlpha(0);
-		NugComboBarPoint1Shine:SetAlpha(0);
-
-
-
-		if NugComboBarDB.locked then
-			NugComboBar:DisableDrag()
-		else
-			NugComboBar:EnableDrag()
-		end
-
-
-
-		SLASH_NUGCOMBOBAR1= "/ncb";
-		SLASH_NUGCOMBOBAR2 = "/nugcombobar";
-		SLASH_NUGCOMBOBAR2 = "/nugiecombobar";
-		SlashCmdList["NUGCOMBOBAR"] = NugComboBarPointsFrame_SlashCmd;
+		NugComboBarPoint1Highlight:SetAlpha(0)
+		NugComboBarPoint1Highlight2:SetAlpha(0)
+		NugComboBarPoint1Shine:SetAlpha(0)
 	end
 end
 
@@ -250,16 +240,24 @@ function NugComboBarPointShineFadeOut(frameName)
 end
 
 function NugComboBarPointsFrame_SlashCmd(msg)
+	msg = string.lower(msg or "")
 	if (msg == "help" or msg == "") then
-		DEFAULT_CHAT_FRAME:AddMessage("Usage:")
+		DEFAULT_CHAT_FRAME:AddMessage("NugComboBar usage:")
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb lock")
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb unlock")
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb scale (0.5 - 2.0)")
 		DEFAULT_CHAT_FRAME:AddMessage("/ncb showempty")
 	elseif (msg == "unlock") then
+		NugComboBarDB.locked = false
 		NugComboBar:EnableDrag()
+		DEFAULT_CHAT_FRAME:AddMessage("ncb: unlocked")
 	elseif (msg == "lock") then
+		NugComboBarDB.locked = true
+		if NugComboBar:IsMovable() and NugComboBar:IsMoving() then
+			NugComboBar:StopMovingOrSizing()
+		end
 		NugComboBar:DisableDrag()
+		DEFAULT_CHAT_FRAME:AddMessage("ncb: locked")
 	elseif (string.sub(msg, 1, 5) == "scale" ) then
 		local scale = tonumber(string.sub(msg, 7));
 		if( scale <= 2.0 and scale >= 0.5 ) then
