@@ -1,5 +1,6 @@
-## Interface: 110000
+## Interface: 120100
 ## Title: NugComboBarGUI
+## IconTexture: 136210
 ## Notes: NugComboBar Configuration Panel
 ## Version: @project-version@
 ## Dependencies: NugComboBar

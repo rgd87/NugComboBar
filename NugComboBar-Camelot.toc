@@ -1,7 +1,8 @@
-## Interface: 30402
+## Interface: 16001
 ## Title: NugComboBar
 ## Notes: Combopoints counter
 ## Author: d87
+## IconTexture: 136210
 ## SavedVariablesPerCharacter: NugComboBarDB_Character
 ## SavedVariables: NugComboBarDB_Global
 ## Version: @project-version@

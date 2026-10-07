@@ -2,7 +2,8 @@ local addonName, ns = ...
 
 ns.APILevel = math.floor(select(4,GetBuildInfo())/10000)
 local APILevel = ns.APILevel
-local isClassic = APILevel <= 3
+local isForever = WOW_PROJECT_ID == WOW_PROJECT_CAMELOT
+local isMainline = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local GlobalGetSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or _G.GetSpecialization
 local GetSpecialization = APILevel <= 4 and function() return 1 end or GlobalGetSpecialization
 
@@ -182,7 +183,7 @@ NugComboBar:RegisterConfig("ComboPointsRogue", {
         self:SetMaxPoints(maxCP)
         self:SetPointGetter(RogueGetComboPoints)
 
-        if not isClassic then -- Kyrian Covenant Ability
+        if isMainline then -- Charged Points
             self.eventProxy:RegisterUnitEvent("UNIT_POWER_POINT_CHARGE", "player")
 
             self.eventProxy.UNIT_POWER_POINT_CHARGE = function(self, event, unit)
@@ -250,7 +251,7 @@ NugComboBar:RegisterConfig("ComboPointsDruid", {
         self:SetDefaultValue(0)
         self.flags.soundFullEnabled = true
 
-        if APILevel <= 5 then
+        if isForever then
             self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
             self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
         end
@@ -448,18 +449,6 @@ NugComboBar:RegisterConfig("PurifyingBrew", {
     end
 }, "MONK", 1)
 
-NugComboBar:RegisterConfig("Teachings", {
-    triggers = { GetSpecialization },
-    setup = function(self, spec)
-        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-        self:SetMaxPoints(4)
-        self:SetDefaultValue(0)
-        self.flags.soundFullEnabled = true
-        self:SetPointGetter(GetAuraStack(202090)) -- Teachings of the Monastery
-    end
-}, "MONK", 2)
-
 NugComboBar:RegisterConfig("RenewingMist", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
@@ -479,6 +468,7 @@ NugComboBar:RegisterConfig("RenewingMist", {
 -- PRIEST
 ---------------------
 
+--[[
 NugComboBar:RegisterConfig("FlashConcentration", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
@@ -491,6 +481,7 @@ NugComboBar:RegisterConfig("FlashConcentration", {
         self:SetPointGetter(GetAuraStackWTimer(336267)) -- Flash Concentration
     end
 }, "PRIEST", 2)
+]]
 
 ---------------------
 -- WARLOCK
@@ -638,6 +629,7 @@ NugComboBar:RegisterConfig("Essence", {
 -- DEMON HUNTER
 ---------------------
 
+--[[
 NugComboBar:RegisterConfig("SoulFragments", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
@@ -649,7 +641,7 @@ NugComboBar:RegisterConfig("SoulFragments", {
         self:SetPointGetter(GetAuraStack(203981, "HELPFUL", "player")) -- Soul Fragments
     end
 }, "DEMONHUNTER")
-
+]]
 
 ---------------------
 -- DEATH KNIGHT
@@ -687,24 +679,6 @@ NugComboBar:RegisterConfig("Runes", {
     end
 }, "DEATHKNIGHT")
 
-
-NugComboBar:RegisterConfig("FesteringWounds", {
-    triggers = { GetSpecialization },
-    setup = function(self, spec)
-        self.eventProxy:RegisterUnitEvent("UNIT_AURA", "target")
-        self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-        self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
-        self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
-        self:SetMaxPoints(6)
-        self:SetDefaultValue(0)
-        self.flags.soundFullEnabled = true
-        self:SetSourceUnit("player")
-        self:SetTargetUnit("target")
-        self:SetPointGetter(GetAuraStack(194310, "HARMFUL", "target", "player")) -- Festering Wounds
-    end
-}, "DEATHKNIGHT", 3)
-
-
 ---------------------
 -- MAGE
 ---------------------
@@ -733,6 +707,8 @@ NugComboBar:RegisterConfig("ArcaneCharges", {
     end
 }, "MAGE", 1)
 
+
+--[[
 NugComboBar:RegisterConfig("Icicles", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
@@ -744,7 +720,7 @@ NugComboBar:RegisterConfig("Icicles", {
         self:SetPointGetter(GetAuraStack(205473, "HELPFUL", "player")) -- Icicles
     end
 }, "MAGE", 3)
-
+]]
 
 local GetFireBlastCharges = MakeGetChargeFunc(108853) -- Fire Blast
 local GetPhoenixFlamesCharges = MakeGetChargeFunc(194466) -- Phoenix's Flames
@@ -802,7 +778,7 @@ local GetMeatcleaver = function()
     local name, icon, count, debuffType, duration, expirationTime = FindAura("player", MeatcleaverBuff, "HELPFUL")
     return name and count*2 or 0
 end
-
+--[[
 NugComboBar:RegisterConfig("Meatcleaver", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
@@ -834,12 +810,13 @@ NugComboBar:RegisterConfig("ShieldBlock", {
         self:SetPointGetter(MakeGetChargeFunc(2565)) -- Shield Block
     end
 }, "WARRIOR", 3)
-
+]]
 
 ---------------------
 -- SHAMAN
 ---------------------
 
+--[[
 NugComboBar:RegisterConfig("TidalWaves", {
     triggers = { GetSpecialization },
     setup = function(self, spec)
@@ -850,7 +827,7 @@ NugComboBar:RegisterConfig("TidalWaves", {
         self:SetPointGetter(GetAuraStack(53390, "HELPFUL", "player")) -- Tidal Waves
     end
 }, "SHAMAN", 3)
-
+]]
 
 --[[
 local function GetTestData()
@@ -871,7 +848,7 @@ NugComboBar:RegisterConfig("TestConfig", {
     end
 }, "SHAMAN")
 ]]
-
+--[[
 do
 
 local undulationCharge = 0
@@ -949,6 +926,8 @@ NugComboBar:RegisterConfig("Undulation", {
 }, "SHAMAN", 3)
 end
 
+
+
 NugComboBar:RegisterConfig("Icefury", {
     triggers = { GetSpecialization, GetSpell(210714) },
     setup = function(self, spec)
@@ -960,7 +939,7 @@ NugComboBar:RegisterConfig("Icefury", {
         self:SetPointGetter(GetAuraStack(210714, "HELPFUL", "player")) -- Icefury
     end
 }, "SHAMAN", 1)
-
+]]
 
 local function GetMaelstromWaapon()
     local name, icon, count, debuffType, duration, expirationTime, caster = FindAura("player", 344179, "HELPFUL") -- new API function
@@ -985,7 +964,7 @@ end -- end of retail configs
 
 -- Classic
 
-if APILevel <= 5 then
+if isForever then
 
     local OriginalGetComboPoints = _G.GetComboPoints
     local RogueGetComboPoints = function(unit)
@@ -1013,7 +992,7 @@ if APILevel <= 5 then
             self:SetSourceUnit("player")
             self:SetTargetUnit("target")
 
-            if APILevel <= 5 then
+            if isForever then
                 self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
                 self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
             end
@@ -1035,7 +1014,7 @@ if APILevel <= 5 then
             self:SetDefaultValue(0)
             self.flags.soundFullEnabled = true
 
-            if APILevel <= 5 then
+            if isForever then
                 self.eventProxy:RegisterEvent("PLAYER_TARGET_CHANGED")
                 self.eventProxy.PLAYER_TARGET_CHANGED = GENERAL_UPDATE
             end
@@ -1069,84 +1048,6 @@ if APILevel <= 5 then
             self.UPDATE_SHAPESHIFT_FORM(self)
         end
     }, "DRUID")
-
-
-    -- BURNING CRUSADE
-    if APILevel == 2 then
-    NugComboBar:RegisterConfig("ArcaneBlastClassic", {
-        triggers = { GetSpecialization },
-        setup = function(self, spec)
-            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-            self:SetMaxPoints(3)
-            self:SetDefaultValue(0)
-            self.flags.soundFullEnabled = true
-            self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Arcane Blast
-        end
-    }, "MAGE")
-    end
-
-    -- Season of Discovery
-    if APILevel == 1 then
-    NugComboBar:RegisterConfig("ArcaneBlastClassic", {
-        triggers = { GetSpecialization },
-        setup = function(self, spec)
-            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-            self:SetMaxPoints(4)
-            self:SetDefaultValue(0)
-            self.flags.soundFullEnabled = true
-            self:SetPointGetter(GetAuraStack(400573, "HARMFUL")) -- Arcane Blast
-        end
-    }, "MAGE")
-
-    NugComboBar:RegisterConfig("MaelstromWeapon", {
-        triggers = { GetSpecialization },
-        setup = function(self, spec)
-            self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-            self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-            self:SetMaxPoints(5)
-            self:SetDefaultValue(0)
-            self.flags.soundFullEnabled = true
-            self:SetPointGetter(GetAuraStack(408505, "HELPFUL")) -- Maelstrom Weapon
-        end
-    }, "SHAMAN")
-    end
-
-
-
-
-    -- WRATH & CATA ARCANE BLAST
-    if APILevel >= 3 then
-        NugComboBar:RegisterConfig("ArcaneBlastClassic", {
-            triggers = { GetSpecialization },
-            setup = function(self, spec)
-                self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-                self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-                self:SetMaxPoints(4)
-                self:SetDefaultValue(0)
-                self.flags.soundFullEnabled = true
-                self:SetPointGetter(GetAuraStack(36032, "HARMFUL")) -- Arcane Blast
-            end
-        }, "MAGE")
-    end
-
-    -- WRATH & CATA MAELSTROM
-    if APILevel >= 3 then
-        NugComboBar:RegisterConfig("MaelstromWeapon", {
-            triggers = { GetSpecialization },
-            setup = function(self, spec)
-                self.eventProxy:RegisterUnitEvent("UNIT_AURA", "player")
-                self.eventProxy.UNIT_AURA = GENERAL_UPDATE
-                self:SetMaxPoints(5)
-                self:SetDefaultValue(0)
-                self.flags.soundFullEnabled = true
-                self:SetPointGetter(GetAuraStack(53817, "HELPFUL")) -- Maelstrom Weapon
-            end
-        }, "SHAMAN")
-    end
-
-
 
 end
 
