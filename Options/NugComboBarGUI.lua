@@ -570,86 +570,6 @@ do
                     },
                 },
             },
-            presets = {
-                type = "group",
-                name = L"3D Mode settings".."   (DISABLED)",
-                -- disabled = function() return (not NugComboBar:IsDefaultSkin() or not NugComboBar.db.global.enable3d) or NugComboBar.db.profile.classThemes end,
-                disabled = true,
-                guiInline = true,
-                order = 6,
-                args = {
-
-                    preset = {
-                        name = L"Preset",
-                        type = 'select',
-                        order = 1,
-                        values = function()
-                            local p = {}
-                            for k,preset in pairs(NugComboBar.presets) do
-                                local v = k
-                                if preset.name then v = string.format("%s %s", k, preset.name) end
-                                if k ~= "_RuneCharger2" then
-                                    p[k] = v
-                                end
-                            end
-                            return p
-                        end,
-                        get = function(info) return NugComboBar.db.profile.preset3d end,
-                        set = function( info, v ) NugComboBar.Commands.preset3d(v) end,
-                    },
-                    preset_layer2 = {
-                        name = L"Second Layer Preset",
-                        type = 'select',
-                        order = 2,
-                        values = function()
-                            local p = {}
-                            for k,_ in pairs(NugComboBar.presets) do
-                                p[k] = k
-                            end
-                            return p
-                        end,
-                        get = function(info) return NugComboBar.db.profile.preset3dlayer2 end,
-                        set = function( info, v ) NugComboBar.Commands.preset3dlayer2(v) end,
-                    },
-
-                    preset_pointbar2 = {
-                        name = L"Second Point Bar Preset",
-                        type = 'select',
-                        order = 3,
-                        values = function()
-                            local p = {}
-                            for k,_ in pairs(NugComboBar.presets) do
-                                p[k] = k
-                            end
-                            return p
-                        end,
-                        get = function(info) return NugComboBar.db.profile.preset3dpointbar2 end,
-                        set = function( info, v ) NugComboBar.Commands.preset3dpointbar2(v) end,
-                    },
-                    colors3d = {
-                        name = L"Use colors",
-                        desc = L"Only some effects can be altered using colored lighting.\nfireXXXX presets are good for it",
-                        width = "double",
-                        type = 'toggle',
-                        order = 5,
-                        get = function(info) return NugComboBar.db.profile.colors3d end,
-                        set = function( info, v ) NugComboBar.Commands.colors3d(v) end,
-                    },
-                    description1 = {
-                        name = "|cffffaa55 * "..L"Effects are influenced by Particle Density setting in Graphics Menu".."|r",
-                        width = "full",
-                        type = 'description',
-                        order = 7,
-                    },
-                    description2 = {
-                        name = "|cffffaa55 * "..L"Only several effects can change colors to some degree, marked as 'colored'".."|r",
-                        width = "full",
-                        type = 'description',
-                        order = 8,
-                    },
-                },
-            },
-
             sound = {
                 type = "group",
                 name = L"Sounds",
@@ -866,6 +786,8 @@ do
     local Config = LibStub("AceConfigRegistry-3.0")
     local Dialog = LibStub("AceConfigDialog-3.0")
 
-    Config:RegisterOptionsTable("NugComboBar", opt)
-    Dialog:AddToBlizOptions("NugComboBar", "NugComboBar")
+    Config:RegisterOptionsTable("NugComboBarOptions", opt)
+    local panel, catID = Dialog:AddToBlizOptions("NugComboBarOptions", "NugComboBar")
+
+    NugComboBar.settingsCategoryID = catID
 end

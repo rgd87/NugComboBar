@@ -40,7 +40,8 @@ end
 
 --- Compatibility with Classic
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
--- local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local isForever = WOW_PROJECT_ID == WOW_PROJECT_CAMELOT
 local IsInPetBattle = APILevel <= 4 and function() end or C_PetBattles.IsInBattle
 local GetSpecialization
 if APILevel <= 4 then
@@ -173,7 +174,7 @@ local defaults = {
 }
 NugComboBar.defaults = defaults
 
-if APILevel <= 2 then
+if isForever then
     defaults.global.classConfig = {
         ROGUE = { "ComboPointsRogueClassic", "ComboPointsRogueClassic", "ComboPointsRogueClassic" },
         DRUID = { "ShapeshiftDruid", "ShapeshiftDruid", "ShapeshiftDruid", "ShapeshiftDruid" },
@@ -187,58 +188,6 @@ if APILevel <= 2 then
         SHAMAN = { "Disabled", "Disabled", "Disabled" },
         HUNTER = { "Disabled", "Disabled", "Disabled" },
         PRIEST = { "Disabled", "Disabled", "Disabled" },
-    }
-    if APILevel == 1 then -- Now there's Arcane Blast in SoD
-        -- defaults.global.classConfig.MAGE = { "ArcaneBlastSoD", "ArcaneBlastSoD", "ArcaneBlastSoD" }
-        defaults.global.classConfig.SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" }
-    end
-end
-if APILevel == 3 then
-    defaults.global.classConfig = {
-        ROGUE = { "ComboPointsRogueClassic", "ComboPointsRogueClassic", "ComboPointsRogueClassic" },
-        DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
-        PALADIN = { "Disabled", "Disabled", "Disabled" },
-        MONK = { "Disabled", "Disabled", "Disabled" },
-        WARLOCK = { "Disabled", "Disabled", "Disabled" },
-        DEMONHUNTER = { "Disabled", "Disabled" },
-        DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
-        MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
-        WARRIOR = { "Disabled", "Disabled", "Disabled" },
-        SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
-        HUNTER = { "Disabled", "Disabled", "Disabled" },
-        PRIEST = { "Disabled", "Disabled", "Disabled" },
-    }
-end
-if APILevel == 4 then
-    defaults.global.classConfig = {
-        ROGUE = { "ComboPointsRogueClassic", "ComboPointsRogueClassic", "ComboPointsRogueClassic" },
-        DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
-        PALADIN = { "HolyPower", "HolyPower", "HolyPower" },
-        MONK = { "Disabled", "Disabled", "Disabled" },
-        WARLOCK = { "SoulShards", "SoulShards", "SoulShards" },
-        DEMONHUNTER = { "Disabled", "Disabled" },
-        DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
-        MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
-        WARRIOR = { "Disabled", "Disabled", "Disabled" },
-        SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
-        HUNTER = { "Disabled", "Disabled", "Disabled" },
-        PRIEST = { "ShadowOrbs", "ShadowOrbs", "ShadowOrbs" },
-    }
-end
-if APILevel == 5 then
-    defaults.global.classConfig = {
-        ROGUE = { "ComboPointsAnticipation", "ComboPointsAnticipation", "ComboPointsAnticipation" },
-        DRUID = { "ShapeshiftDruid", "ComboPointsDruid", "ShapeshiftDruid", "ComboPointsDruid" },
-        PALADIN = { "HolyPower", "HolyPower", "HolyPower" },
-        MONK = { "Chi", "Chi", "Chi" },
-        WARLOCK = { "SoulShards", "SoulShards", "SoulShards" },
-        DEMONHUNTER = { "Disabled", "Disabled" },
-        DEATHKNIGHT = { "Disabled", "Disabled", "Disabled" },
-        MAGE = { "ArcaneBlastClassic", "ArcaneBlastClassic", "ArcaneBlastClassic" },
-        WARRIOR = { "TasteForBlood", "Meatcleaver", "Disabled" },
-        SHAMAN = { "MaelstromWeapon", "MaelstromWeapon", "MaelstromWeapon" },
-        HUNTER = { "Disabled", "Disabled", "Disabled" },
-        PRIEST = { "ShadowOrbs", "ShadowOrbs", "ShadowOrbs" },
     }
 end
 
@@ -1223,9 +1172,12 @@ NugComboBar.Commands = {
         end
     end,
     ["gui"] = function(v)
-        LoadAddOn('NugComboBarGUI')
-        InterfaceOptionsFrame_OpenToCategory("NugComboBar")
-        InterfaceOptionsFrame_OpenToCategory("NugComboBar")
+        if not C_AddOns.IsAddOnLoaded("NugComboBarGUI") then
+            LoadAddOn('NugComboBarGUI')
+        end
+        if NugComboBar.settingsCategoryID then
+            Settings.OpenToCategory(NugComboBar.settingsCategoryID)
+        end
     end,
     ["vertical"] = function(v)
         NugComboBar.db.global.vertical = not NugComboBar.db.global.vertical
@@ -1311,32 +1263,34 @@ local HideBlizzFrame = function(frame, nosetup)
 end
 
 function NugComboBar.disableBlizzFrames()
-    local class = select(2,UnitClass("player"))
-    if APILevel >= 5 then
-        if class == "ROGUE" or class == "DRUID" then
-            HideBlizzFrame(ComboPointPlayerFrame)
-            HideBlizzFrame(RogueComboPointBarFrame)
-        end
-        if class == "WARLOCK" then
-            HideBlizzFrame(WarlockPowerFrame)
-        end
-        if class == "PALADIN" then
-			HideBlizzFrame(PaladinPowerBarFrame)
-        end
-        if class == "MAGE" then
-			HideBlizzFrame(MageArcaneChargesFrame)
-        end
-        if class == "MONK" then
-			MonkHarmonyBarFrame:UpdateMaxPower()
-			HideBlizzFrame(MonkHarmonyBarFrame)
-        end
-		if class == "DEATHKNIGHT" then
-			HideBlizzFrame(RuneFrame, true)
-        end
-    elseif APILevel <= 2 then
-        if class == "ROGUE" or class == "DRUID" then
-            ComboFrame:UnregisterAllEvents()
-            ComboFrame:Hide()
+    if isClassic then
+        local class = select(2,UnitClass("player"))
+        if APILevel >= 5 then
+            if class == "ROGUE" or class == "DRUID" then
+                HideBlizzFrame(ComboPointPlayerFrame)
+                HideBlizzFrame(RogueComboPointBarFrame)
+            end
+            if class == "WARLOCK" then
+                HideBlizzFrame(WarlockPowerFrame)
+            end
+            if class == "PALADIN" then
+                HideBlizzFrame(PaladinPowerBarFrame)
+            end
+            if class == "MAGE" then
+                HideBlizzFrame(MageArcaneChargesFrame)
+            end
+            if class == "MONK" then
+                MonkHarmonyBarFrame:UpdateMaxPower()
+                HideBlizzFrame(MonkHarmonyBarFrame)
+            end
+            if class == "DEATHKNIGHT" then
+                HideBlizzFrame(RuneFrame, true)
+            end
+        elseif APILevel <= 2 then
+            if class == "ROGUE" or class == "DRUID" then
+                ComboFrame:UnregisterAllEvents()
+                ComboFrame:Hide()
+            end
         end
     end
 end
