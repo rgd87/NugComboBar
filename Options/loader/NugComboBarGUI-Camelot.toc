@@ -1,4 +1,4 @@
-## Interface: 11307
+## Interface: 16001
 ## Title: NugComboBarGUI
 ## IconTexture: 136210
 ## Notes: NugComboBar Configuration Panel
