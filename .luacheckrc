@@ -176,5 +176,6 @@ globals = {
     "C_UnitAuras",
     "AuraUtil",
     "Settings",
+    "EditModeManagerFrame",
     "C_SpecializationInfo",
 }

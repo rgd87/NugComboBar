@@ -408,6 +408,13 @@ do
         self.PET_BATTLE_OPENING_START = self.CheckComboPoints
         self.PET_BATTLE_CLOSE = self.CheckComboPoints
 
+        hooksecurefunc(EditModeManagerFrame, "EnterEditMode", function(self)
+            NugComboBar:EDIT_MODE_ENTER()
+        end)
+        hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function(self)
+            NugComboBar:EDIT_MODE_EXIT()
+        end)
+
         initial = false
         --self:AttachAnimationGroup()
         -- self:UNIT_COMBO_POINTS("INIT", allowedUnit, nil, true)
@@ -1020,6 +1027,22 @@ local function InterfaceOptionsFrame_OpenToCategory(categoryIDOrFrame)
 		return Settings.OpenToCategory(categoryIDOrFrame);
 	end
 end
+
+function NugComboBar:EDIT_MODE_ENTER(event)
+    if not currentConfigName then return end
+    NugComboBar:Show()
+    NugComboBar.anchor:Show()
+    NugComboBar:SetAlpha(NugComboBar.db.profile.alpha)
+    for i=1,NugComboBar.MAX_POINTS do
+        NugComboBar.p[i]:Activate()
+    end
+end
+function NugComboBar:EDIT_MODE_EXIT(event)
+    if not currentConfigName then return end
+    NugComboBar.anchor:Hide()
+    NugComboBar:Update()
+end
+
 
 
 NugComboBar.Commands = {
